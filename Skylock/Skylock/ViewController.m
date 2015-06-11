@@ -12,6 +12,8 @@
 #import "SLLocationManager.h"
 #import <QuartzCore/QuartzCore.h>
 
+#define kMapBoxAccessToken @"pk.eyJ1IjoiYWNncmVlbjEyMjYiLCJhIjoiOGNiOGJlZTUyZDI1NDkzODhlNmJhMGVmZDU4OTZiMDcifQ.-MtqKH9lyJ2J1JDsxdmDRQ"
+#define kMapBoxMapId @"acgreen1226.98d39090"
 @interface ViewController ()
 
 @property (nonatomic, strong) UIView *touchStopperView;
@@ -35,17 +37,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:@"acgreen1226.98d39090"];
+    [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
+    
+    RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
     RMMapView *mapView = [[RMMapView alloc] initWithFrame:self.view.bounds andTilesource:source];
-    mapView.zoom = 2;
+    mapView.zoom = 5;
     mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
     
-    self.locationManager = [SLLocationManager new];
-    self.locationManager.delegate = self;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
+//    self.locationManager = [SLLocationManager new];
+//    self.locationManager.delegate = self;
+//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
     
     self.showSlideControllerButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     self.showSlideControllerButton.backgroundColor = [UIColor purpleColor];

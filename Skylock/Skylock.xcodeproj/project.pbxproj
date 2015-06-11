@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1A1AE21B2910DD00AEC10B /* libMapbox.a */; };
+		DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
@@ -278,6 +279,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */,
 				DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */,
 				DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
