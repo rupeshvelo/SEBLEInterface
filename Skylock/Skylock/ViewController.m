@@ -35,7 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    RMMapBoxSource *source = [[RMMapBoxSource alloc] initWithMapID:@"acgreen1226.98d39090"];
+    RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:@"acgreen1226.98d39090"];
     RMMapView *mapView = [[RMMapView alloc] initWithFrame:self.view.bounds andTilesource:source];
     mapView.zoom = 2;
     mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);

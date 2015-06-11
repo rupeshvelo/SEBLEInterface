@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1A1AE21B2910DD00AEC10B /* libMapbox.a */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
@@ -24,6 +25,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DC1A1AE11B2910DD00AEC10B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 17F31EFA1331050A00122B16;
+			remoteInfo = MapView;
+		};
+		DC1A1AE31B2910DD00AEC10B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD6A83751644A20C0097F31F;
+			remoteInfo = Resources;
+		};
 		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DCD82FCD1B1FCBBC00B38910 /* Project object */;
@@ -34,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
@@ -63,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
 				DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */,
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
@@ -80,9 +97,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC1A1ADD1B2910DC00AEC10B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC1A1AE21B2910DD00AEC10B /* libMapbox.a */,
+				DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */,
 				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
 				DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */,
 				DCD554401B27D65E0035B78C /* CoreLocation.framework */,
@@ -215,6 +242,12 @@
 			mainGroup = DCD82FCC1B1FCBBC00B38910;
 			productRefGroup = DCD82FD61B1FCBBC00B38910 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DC1A1ADD1B2910DC00AEC10B /* Products */;
+					ProjectRef = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DCD82FD41B1FCBBC00B38910 /* Skylock */,
@@ -222,6 +255,23 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DC1A1AE21B2910DD00AEC10B /* libMapbox.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMapbox.a;
+			remoteRef = DC1A1AE11B2910DD00AEC10B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Mapbox.bundle;
+			remoteRef = DC1A1AE31B2910DD00AEC10B /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DCD82FD31B1FCBBC00B38910 /* Resources */ = {
