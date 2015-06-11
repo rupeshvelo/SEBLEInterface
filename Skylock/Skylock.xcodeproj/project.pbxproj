@@ -1,0 +1,543 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DC43C7101B27E36C00CEA7CF /* MapBox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DCD554501B27D7580035B78C /* MapBox.bundle */; };
+		DC43C7111B27E4C700CEA7CF /* libMapBox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5544E1B27D7580035B78C /* libMapBox.a */; };
+		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
+		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
+		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
+		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
+		DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */; };
+		DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */; };
+		DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDA1B1FCBBC00B38910 /* main.m */; };
+		DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */; };
+		DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */; };
+		DCD82FE41B1FCBBC00B38910 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FE31B1FCBBC00B38910 /* ViewController.m */; };
+		DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE51B1FCBBC00B38910 /* Main.storyboard */; };
+		DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE81B1FCBBC00B38910 /* Images.xcassets */; };
+		DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */; };
+		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DCD5544D1B27D7580035B78C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 17F31EFA1331050A00122B16;
+			remoteInfo = MapView;
+		};
+		DCD5544F1B27D7580035B78C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD6A83751644A20C0097F31F;
+			remoteInfo = Resources;
+		};
+		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DCD82FCD1B1FCBBC00B38910 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCD82FD41B1FCBBC00B38910;
+			remoteInfo = Skylock;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
+		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
+		DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLocationManager.h; sourceTree = "<group>"; };
+		DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLocationManager.m; sourceTree = "<group>"; };
+		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		DCD554481B27D7580035B78C /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
+		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCD82FD91B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCD82FDA1B1FCBBC00B38910 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		DCD82FE01B1FCBBC00B38910 /* Skylock.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skylock.xcdatamodel; sourceTree = "<group>"; };
+		DCD82FE21B1FCBBC00B38910 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		DCD82FE31B1FCBBC00B38910 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		DCD82FE61B1FCBBC00B38910 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DCD82FE81B1FCBBC00B38910 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		DCD82FEB1B1FCBBC00B38910 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DCD82FD21B1FCBBC00B38910 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
+				DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */,
+				DC43C7111B27E4C700CEA7CF /* libMapBox.a in Frameworks */,
+				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
+				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCD82FEE1B1FCBBC00B38910 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DCD554491B27D7580035B78C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DCD5544E1B27D7580035B78C /* libMapBox.a */,
+				DCD554501B27D7580035B78C /* MapBox.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DCD82FCC1B1FCBBC00B38910 = {
+			isa = PBXGroup;
+			children = (
+				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
+				DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */,
+				DCD554481B27D7580035B78C /* MapView.xcodeproj */,
+				DCD554401B27D65E0035B78C /* CoreLocation.framework */,
+				DCD554421B27D6650035B78C /* QuartzCore.framework */,
+				DCD82FD71B1FCBBC00B38910 /* Skylock */,
+				DCD82FF41B1FCBBC00B38910 /* SkylockTests */,
+				DCD82FD61B1FCBBC00B38910 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DCD82FD61B1FCBBC00B38910 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DCD82FD51B1FCBBC00B38910 /* Skylock.app */,
+				DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
+			isa = PBXGroup;
+			children = (
+				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
+				DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */,
+				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
+				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
+				DCD82FE21B1FCBBC00B38910 /* ViewController.h */,
+				DCD82FE31B1FCBBC00B38910 /* ViewController.m */,
+				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
+				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
+				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
+				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
+				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
+				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
+				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
+			);
+			path = Skylock;
+			sourceTree = "<group>";
+		};
+		DCD82FD81B1FCBBC00B38910 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DCD82FD91B1FCBBC00B38910 /* Info.plist */,
+				DCD82FDA1B1FCBBC00B38910 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DCD82FF41B1FCBBC00B38910 /* SkylockTests */ = {
+			isa = PBXGroup;
+			children = (
+				DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */,
+				DCD82FF51B1FCBBC00B38910 /* Supporting Files */,
+			);
+			path = SkylockTests;
+			sourceTree = "<group>";
+		};
+		DCD82FF51B1FCBBC00B38910 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DCD82FF61B1FCBBC00B38910 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DCD82FD41B1FCBBC00B38910 /* Skylock */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Skylock" */;
+			buildPhases = (
+				DCD82FD11B1FCBBC00B38910 /* Sources */,
+				DCD82FD21B1FCBBC00B38910 /* Frameworks */,
+				DCD82FD31B1FCBBC00B38910 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Skylock;
+			productName = Skylock;
+			productReference = DCD82FD51B1FCBBC00B38910 /* Skylock.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DCD82FF01B1FCBBC00B38910 /* SkylockTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "SkylockTests" */;
+			buildPhases = (
+				DCD82FED1B1FCBBC00B38910 /* Sources */,
+				DCD82FEE1B1FCBBC00B38910 /* Frameworks */,
+				DCD82FEF1B1FCBBC00B38910 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DCD82FF31B1FCBBC00B38910 /* PBXTargetDependency */,
+			);
+			name = SkylockTests;
+			productName = SkylockTests;
+			productReference = DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DCD82FCD1B1FCBBC00B38910 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = "Andre Green";
+				TargetAttributes = {
+					DCD82FD41B1FCBBC00B38910 = {
+						CreatedOnToolsVersion = 6.3.2;
+					};
+					DCD82FF01B1FCBBC00B38910 = {
+						CreatedOnToolsVersion = 6.3.2;
+						TestTargetID = DCD82FD41B1FCBBC00B38910;
+					};
+				};
+			};
+			buildConfigurationList = DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Skylock" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DCD82FCC1B1FCBBC00B38910;
+			productRefGroup = DCD82FD61B1FCBBC00B38910 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DCD554491B27D7580035B78C /* Products */;
+					ProjectRef = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				DCD82FD41B1FCBBC00B38910 /* Skylock */,
+				DCD82FF01B1FCBBC00B38910 /* SkylockTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DCD5544E1B27D7580035B78C /* libMapBox.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMapBox.a;
+			remoteRef = DCD5544D1B27D7580035B78C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DCD554501B27D7580035B78C /* MapBox.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = MapBox.bundle;
+			remoteRef = DCD5544F1B27D7580035B78C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DCD82FD31B1FCBBC00B38910 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */,
+				DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */,
+				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
+				DC43C7101B27E36C00CEA7CF /* MapBox.bundle in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCD82FEF1B1FCBBC00B38910 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DCD82FD11B1FCBBC00B38910 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
+				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
+				DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */,
+				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
+				DCD82FE41B1FCBBC00B38910 /* ViewController.m in Sources */,
+				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCD82FED1B1FCBBC00B38910 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DCD82FF31B1FCBBC00B38910 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCD82FD41B1FCBBC00B38910 /* Skylock */;
+			targetProxy = DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		DCD82FE51B1FCBBC00B38910 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCD82FE61B1FCBBC00B38910 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DCD82FEB1B1FCBBC00B38910 /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DCD82FF91B1FCBBC00B38910 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		DCD82FFA1B1FCBBC00B38910 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DCD82FFC1B1FCBBC00B38910 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/mapbox-ios-sdk\"/**",
+				);
+				INFOPLIST_FILE = Skylock/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				"OTHER_LDFLAGS[arch=*]" = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		DCD82FFD1B1FCBBC00B38910 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/mapbox-ios-sdk\"/**",
+				);
+				INFOPLIST_FILE = Skylock/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		DCD82FFF1B1FCBBC00B38910 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SkylockTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skylock.app/Skylock";
+			};
+			name = Debug;
+		};
+		DCD830001B1FCBBC00B38910 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SkylockTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skylock.app/Skylock";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Skylock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCD82FF91B1FCBBC00B38910 /* Debug */,
+				DCD82FFA1B1FCBBC00B38910 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Skylock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCD82FFC1B1FCBBC00B38910 /* Debug */,
+				DCD82FFD1B1FCBBC00B38910 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "SkylockTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCD82FFF1B1FCBBC00B38910 /* Debug */,
+				DCD830001B1FCBBC00B38910 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				DCD82FE01B1FCBBC00B38910 /* Skylock.xcdatamodel */,
+			);
+			currentVersion = DCD82FE01B1FCBBC00B38910 /* Skylock.xcdatamodel */;
+			path = Skylock.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = DCD82FCD1B1FCBBC00B38910 /* Project object */;
+}
