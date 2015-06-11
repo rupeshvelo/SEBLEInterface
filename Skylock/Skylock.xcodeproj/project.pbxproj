@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC43C7101B27E36C00CEA7CF /* MapBox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DCD554501B27D7580035B78C /* MapBox.bundle */; };
-		DC43C7111B27E4C700CEA7CF /* libMapBox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD5544E1B27D7580035B78C /* libMapBox.a */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
@@ -26,20 +24,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DCD5544D1B27D7580035B78C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 17F31EFA1331050A00122B16;
-			remoteInfo = MapView;
-		};
-		DCD5544F1B27D7580035B78C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DD6A83751644A20C0097F31F;
-			remoteInfo = Resources;
-		};
 		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DCD82FCD1B1FCBBC00B38910 /* Project object */;
@@ -58,7 +42,6 @@
 		DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLocationManager.m; sourceTree = "<group>"; };
 		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		DCD554481B27D7580035B78C /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FD91B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FDA1B1FCBBC00B38910 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -82,7 +65,6 @@
 			files = (
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
 				DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */,
-				DC43C7111B27E4C700CEA7CF /* libMapBox.a in Frameworks */,
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
 			);
@@ -98,21 +80,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DCD554491B27D7580035B78C /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DCD5544E1B27D7580035B78C /* libMapBox.a */,
-				DCD554501B27D7580035B78C /* MapBox.bundle */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
 				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
 				DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */,
-				DCD554481B27D7580035B78C /* MapView.xcodeproj */,
 				DCD554401B27D65E0035B78C /* CoreLocation.framework */,
 				DCD554421B27D6650035B78C /* QuartzCore.framework */,
 				DCD82FD71B1FCBBC00B38910 /* Skylock */,
@@ -243,12 +215,6 @@
 			mainGroup = DCD82FCC1B1FCBBC00B38910;
 			productRefGroup = DCD82FD61B1FCBBC00B38910 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = DCD554491B27D7580035B78C /* Products */;
-					ProjectRef = DCD554481B27D7580035B78C /* MapView.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				DCD82FD41B1FCBBC00B38910 /* Skylock */,
@@ -256,23 +222,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		DCD5544E1B27D7580035B78C /* libMapBox.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libMapBox.a;
-			remoteRef = DCD5544D1B27D7580035B78C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DCD554501B27D7580035B78C /* MapBox.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = MapBox.bundle;
-			remoteRef = DCD5544F1B27D7580035B78C /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DCD82FD31B1FCBBC00B38910 /* Resources */ = {
@@ -282,7 +231,6 @@
 				DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */,
 				DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
-				DC43C7101B27E36C00CEA7CF /* MapBox.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
