@@ -1,3 +1,3 @@
-[submodule "mapbox-ios-sdk"]
-	path = mapbox-ios-sdk
+[submodule "Skylock/mapbox-ios-sdk"]
+	path = Skylock/mapbox-ios-sdk
 	url = https://github.com/mapbox/mapbox-ios-sdk.git
