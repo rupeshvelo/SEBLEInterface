@@ -19,5 +19,5 @@ typedef NS_ENUM(NSUInteger, SLRestManagerResponse) {
 
 - (void)restGetRequestWithURL:(NSString *)urlString
                       options:(NSArray *)options
-                   completion:(void(^)(NSDictionary *))completion;
+                   completion:(void(^)(NSDictionary *responseDict))completion;
 @end
