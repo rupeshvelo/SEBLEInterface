@@ -23,6 +23,7 @@
 		DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE81B1FCBBC00B38910 /* Images.xcassets */; };
 		DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */; };
 		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
+		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,8 @@
 		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
+		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
+		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +136,8 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
+				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
 				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
 				DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */,
 				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
@@ -304,6 +309,7 @@
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
+				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* ViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 			);
