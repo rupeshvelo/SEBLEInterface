@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 *xcuserdata
 *xcshareddata/
 .idea*
 *Pods*
+=======
+xcuserdata*
+project.xcworkspace*
+>>>>>>> Added initial (still very raw) files to repo
