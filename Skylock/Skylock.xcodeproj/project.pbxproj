@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
 		DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1A1AE21B2910DD00AEC10B /* libMapbox.a */; };
 		DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
@@ -27,6 +28,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		DC04279B1B2EF073008F3DDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC0427631B2DBC4F008F3DDE;
+			remoteInfo = SEBLEInterface;
+		};
+		DC04279D1B2EF073008F3DDE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC04276E1B2DBC4F008F3DDE;
+			remoteInfo = SEBLEInterfaceTests;
+		};
 		DC1A1AE11B2910DD00AEC10B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
@@ -48,9 +63,17 @@
 			remoteGlobalIDString = DCD82FD41B1FCBBC00B38910;
 			remoteInfo = Skylock;
 		};
+		DCE283241B2EFA2300864527 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = DC0427621B2DBC4F008F3DDE;
+			remoteInfo = SEBLEInterface;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SEBLEInterface.xcodeproj; path = SEBLEInterface/SEBLEInterface/SEBLEInterface.xcodeproj; sourceTree = "<group>"; };
 		DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -83,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
 				DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */,
@@ -101,6 +125,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC0427971B2EF073008F3DDE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */,
+				DC04279E1B2EF073008F3DDE /* SEBLEInterfaceTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DC1A1ADD1B2910DC00AEC10B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +146,7 @@
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */,
 				DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */,
 				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
 				DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */,
@@ -195,6 +229,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				DCE283251B2EFA2300864527 /* PBXTargetDependency */,
 			);
 			name = Skylock;
 			productName = Skylock;
@@ -253,6 +288,10 @@
 					ProductGroup = DC1A1ADD1B2910DC00AEC10B /* Products */;
 					ProjectRef = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
 				},
+				{
+					ProductGroup = DC0427971B2EF073008F3DDE /* Products */;
+					ProjectRef = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -263,6 +302,20 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSEBLEInterface.a;
+			remoteRef = DC04279B1B2EF073008F3DDE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DC04279E1B2EF073008F3DDE /* SEBLEInterfaceTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SEBLEInterfaceTests.xctest;
+			remoteRef = DC04279D1B2EF073008F3DDE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		DC1A1AE21B2910DD00AEC10B /* libMapbox.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -330,6 +383,11 @@
 			isa = PBXTargetDependency;
 			target = DCD82FD41B1FCBBC00B38910 /* Skylock */;
 			targetProxy = DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */;
+		};
+		DCE283251B2EFA2300864527 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SEBLEInterface;
+			targetProxy = DCE283241B2EFA2300864527 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -1,3 +1,6 @@
 [submodule "Skylock/mapbox-ios-sdk"]
 	path = Skylock/mapbox-ios-sdk
 	url = https://github.com/mapbox/mapbox-ios-sdk.git
+[submodule "Skylock/SEBLEInterface"]
+	path = Skylock/SEBLEInterface
+	url = https://github.com/greenac/SEBLEInterface.git
