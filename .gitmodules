@@ -4,3 +4,6 @@
 [submodule "Skylock/SEBLEInterface"]
 	path = Skylock/SEBLEInterface
 	url = https://github.com/greenac/SEBLEInterface.git
+[submodule "Skylock/facebook-ios-sdk"]
+	path = Skylock/facebook-ios-sdk
+	url = https://github.com/velolabs/facebook-ios-sdk.git

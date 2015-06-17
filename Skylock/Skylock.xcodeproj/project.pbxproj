@@ -10,6 +10,9 @@
 		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
 		DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1A1AE21B2910DD00AEC10B /* libMapbox.a */; };
 		DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */; };
+		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
+		DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */; };
+		DC23872F1B30805D00BB28F3 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = DC23872E1B30805D00BB28F3 /* assets */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
@@ -75,6 +78,12 @@
 /* Begin PBXFileReference section */
 		DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SEBLEInterface.xcodeproj; path = SEBLEInterface/SEBLEInterface/SEBLEInterface.xcodeproj; sourceTree = "<group>"; };
 		DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
+		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
+		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
+		DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewController.m; sourceTree = "<group>"; };
+		DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewHeader.h; sourceTree = "<group>"; };
+		DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewHeader.m; sourceTree = "<group>"; };
+		DC23872E1B30805D00BB28F3 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
@@ -178,6 +187,11 @@
 				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
 				DCD82FE21B1FCBBC00B38910 /* ViewController.h */,
 				DCD82FE31B1FCBBC00B38910 /* ViewController.m */,
+				DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */,
+				DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */,
+				DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */,
+				DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */,
+				DC2387241B304EC500BB28F3 /* SLConstants.h */,
 				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
 				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
 				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
@@ -185,6 +199,7 @@
 				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
 				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
 				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
+				DC23872E1B30805D00BB28F3 /* assets */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -337,6 +352,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC23872F1B30805D00BB28F3 /* assets in Resources */,
 				DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */,
 				DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */,
 				DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */,
@@ -358,6 +374,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */,
+				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */,

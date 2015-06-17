@@ -12,8 +12,9 @@
 #import "SLLocationManager.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kMapBoxAccessToken @"pk.eyJ1IjoiYWNncmVlbjEyMjYiLCJhIjoiOGNiOGJlZTUyZDI1NDkzODhlNmJhMGVmZDU4OTZiMDcifQ.-MtqKH9lyJ2J1JDsxdmDRQ"
-#define kMapBoxMapId @"acgreen1226.98d39090"
+#define kMapBoxAccessToken @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
+#define kMapBoxMapId @"michalumni.l2bh1bee"
+
 @interface ViewController ()
 
 @property (nonatomic, strong) UIView *touchStopperView;
