@@ -23,8 +23,6 @@
 @property (nonatomic, weak) id <SLLockInfoViewHeaderDelegate> delegate;
 
 - (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock;
-
-
 - (void)setBatteryImage;
 - (void)setCellSignalImage;
 

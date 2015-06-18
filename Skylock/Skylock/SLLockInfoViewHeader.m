@@ -10,6 +10,9 @@
 #import "SLLock.h"
 #import "SLConstants.h"
 
+#define kSLLockInfoViewHeaderLabelWidthScaler   .4f
+#define kSLLockInfoViewHeaderLabelHeight        30.0f
+
 @interface SLLockInfoViewHeader()
 
 @property (nonatomic, strong) UILabel *lockNameLabel;
@@ -19,7 +22,7 @@
 @property (nonatomic, strong) UIButton *settingsButton;
 @property (nonatomic, strong) UILabel *distanceAwayLabel;
 @property (nonatomic, strong) UILabel *lastLabel;
-@property (nonatomic, assign) SLLock *lock;
+@property (nonatomic, strong) SLLock *lock;
 
 @end
 
@@ -38,6 +41,7 @@
 
 - (UIButton *)settingsButton
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_settingsButton) {
         UIImage *settingImage = [UIImage imageNamed:@"settings-icon"];
         _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
@@ -56,6 +60,7 @@
 
 - (UIImageView *)batteryImageView
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_batteryImageView) {
         _batteryImageView = [[UIImageView alloc] initWithImage:[self batteryImage]];
         [self addSubview:_batteryImageView];
@@ -66,6 +71,7 @@
 
 - (UIImageView *)cellSignalImageView
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (_cellSignalImageView) {
         _cellSignalImageView = [[UIImageView alloc] initWithImage:[self cellSignalImage]];
         [self addSubview:_cellSignalImageView];
@@ -76,6 +82,7 @@
 
 - (UIImageView *)wifiImageView
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_wifiImageView) {
         _wifiImageView = [[UIImageView alloc] initWithImage:[self wifiImage]];
         [self addSubview:_wifiImageView];
@@ -86,14 +93,15 @@
 
 - (UILabel *)lastLabel
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_lastLabel) {
-        CGSize maxSize = CGSizeMake(.2*self.bounds.size.width, 20.0f);
+        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
         NSString *labelText = self.lastLabelText;
         CGRect labelFrame = [labelText boundingRectWithSize:maxSize
                                                     options:NSStringDrawingUsesLineFragmentOrigin
                                                  attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
                                                     context:nil];
-        _lastLabel.frame = labelFrame;
+        _lastLabel = [[UILabel alloc] initWithFrame:labelFrame];
         _lastLabel.text = labelText;
         [self addSubview:_lastLabel];
     }
@@ -103,14 +111,15 @@
 
 - (UILabel *)distanceAwayLabel
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_distanceAwayLabel) {
-        CGSize maxSize = CGSizeMake(.2*self.bounds.size.width, 20.0f);
+        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
         NSString *labelText = self.distanceAwayLabelText;
         CGRect labelFrame = [labelText  boundingRectWithSize:maxSize
                                                      options:NSStringDrawingUsesLineFragmentOrigin
                                                   attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
                                                      context:nil];
-        _distanceAwayLabel.frame = labelFrame;
+        _distanceAwayLabel = [[UILabel alloc] initWithFrame:labelFrame];
         _distanceAwayLabel.text = labelText;
         [self addSubview:_distanceAwayLabel];
     }
@@ -120,13 +129,14 @@
 
 - (UILabel *)lockNameLabel
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_lockNameLabel) {
-        CGSize maxNameSize = CGSizeMake(.2*self.bounds.size.width, 20.0f);
-        CGRect labelFrame = [_lock.name boundingRectWithSize:maxNameSize
-                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                  attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
-                                                     context:nil];
-        _lockNameLabel.frame = labelFrame;
+        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
+        CGRect labelFrame = [self.lock.name boundingRectWithSize:maxSize
+                                                         options:NSStringDrawingUsesLineFragmentOrigin
+                                                      attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
+                                                         context:nil];
+        _lockNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
         _lockNameLabel.text = NSLocalizedString(self.lock.name, nil);
         [self addSubview:_lockNameLabel];
     }
@@ -136,8 +146,9 @@
 
 - (void)layoutSubviews
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static CGFloat yPaddingScaler = .1f;
-    static CGFloat xPaddingScaler = .1f;
+    static CGFloat xPaddingScaler = .05f;
     
     CGFloat y0 = yPaddingScaler*self.bounds.size.height;
     CGFloat x0 = xPaddingScaler*self.bounds.size.width;
@@ -180,6 +191,7 @@
 
 - (UIImage *)batteryImage
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *imageName;
     switch (self.lock.batteryState) {
         case SLLockBatteryStateNone:
@@ -208,6 +220,7 @@
 
 - (UIImage *)cellSignalImage
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *imageName;
     switch (self.lock.cellSignalState) {
         case SLLockCellSignalStateNone:
@@ -236,6 +249,7 @@
 
 - (UIImage *)wifiImage
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *imageName;
     switch (self.lock.wifiState) {
         case SLLockWifiSignalStateNone:
@@ -264,6 +278,7 @@
 
 - (void)settingsButtonPressed
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self.delegate respondsToSelector:@selector(lockInfoViewHeaderSettingButtonPressed:)]) {
         [self.delegate lockInfoViewHeaderSettingButtonPressed:self];
     }
@@ -271,6 +286,7 @@
 
 - (NSString *)lastTimeString
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     // move this to an extension of NSString...when you're on the ground
     // and can look up how to do it
     
@@ -285,24 +301,27 @@
 
 - (NSString *)lastLabelText
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *last = NSLocalizedString(@"Last", nil);
     return [NSString stringWithFormat:@"%@:%@", last, self.lastTimeString];
 }
 
 - (NSString *)distanceAwayString
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     // should figure out a way to do this that does not involve hard coding the distance unit
     // probably should be a server side fix, or an option that the user can configure
     if (self.lock.distanceAway.integerValue < 5280) {
         return [NSString stringWithFormat:@"%@ ft", self.lock.distanceAway];
     } else {
-        CGFloat miles = self.lock.distanceAway.floatValue/5250.0;
+        CGFloat miles = self.lock.distanceAway.floatValue/5280.0;
         return [NSString stringWithFormat:@"%.1f mi", miles];
     }
 }
 
 - (NSString *)distanceAwayLabelText
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *away = NSLocalizedString(@"away", nil);
     return [NSString stringWithFormat:@"%@ %@", self.distanceAwayString, away];
 }

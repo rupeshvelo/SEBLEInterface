@@ -21,7 +21,7 @@ batteryRemaining:(NSNumber *)batteryRemaining
 {
     self = [super init];
     if (self) {
-        _name = name;
+        _name               = name;
         _batteryRemaining   = batteryRemaining;
         _wifiStrength       = wifiStrength;
         _cellStrength       = cellStrength;
@@ -35,6 +35,7 @@ batteryRemaining:(NSNumber *)batteryRemaining
 
 - (SLLockCellSignalState)cellSignalState
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLockCellSignalState cellState = SLLockCellSignalStateNone;
     if (self.cellStrength.floatValue > 0.0 && self.cellStrength.floatValue <= 20.0) {
         cellState = SLLockCellSignalState1;
@@ -53,6 +54,7 @@ batteryRemaining:(NSNumber *)batteryRemaining
 
 - (SLLockBatteryState)batteryState
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLockBatteryState batState = SLLockBatteryStateNone;
     if (self.batteryRemaining.floatValue > 0.0 && self.batteryRemaining.floatValue <= 20.0) {
         batState = SLLockBatteryState1;
@@ -71,6 +73,7 @@ batteryRemaining:(NSNumber *)batteryRemaining
 
 - (SLLockWifiSignalState)wifiState
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLockWifiSignalState wifiState = SLLockWifiSignalStateNone;
     if (self.wifiStrength.floatValue > 0.0 && self.wifiStrength.floatValue <= 20.0) {
         wifiState = SLLockWifiSignalState1;

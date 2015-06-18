@@ -38,7 +38,6 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 
 @interface SLLock : NSObject
 
-
 @property (nonatomic, copy) NSString *lockId;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSNumber *batteryRemaining;

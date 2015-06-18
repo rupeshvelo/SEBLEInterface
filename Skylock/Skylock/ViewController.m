@@ -10,6 +10,7 @@
 #import "Mapbox.h"
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
+#import "SLLockInfoViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kMapBoxAccessToken @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *showSlideControllerButton;
 @property (nonatomic, strong) SLLocationManager *locationManager;
+@property (nonatomic, strong) UIButton *lockInfoButton;
 
 @end
 
@@ -36,6 +38,7 @@
 }
 
 - (void)viewDidLoad {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
@@ -52,7 +55,8 @@
 //    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 //    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
     
-    self.showSlideControllerButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    CGRect buttonFrame = CGRectMake(0, 0, 50, 50);
+    self.showSlideControllerButton = [[UIButton alloc] initWithFrame:buttonFrame];
     self.showSlideControllerButton.backgroundColor = [UIColor purpleColor];
     [self.showSlideControllerButton addTarget:self
                                        action:@selector(slideControllerButtonPressed)
@@ -61,6 +65,15 @@
     self.showSlideControllerButton.clipsToBounds = YES;
     
     [self.view addSubview:self.showSlideControllerButton];
+    
+    self.lockInfoButton = [[UIButton alloc] initWithFrame:buttonFrame];
+    self.lockInfoButton.backgroundColor = [UIColor brownColor];
+    [self.lockInfoButton addTarget:self
+                            action:@selector(lockInfoButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+    self.lockInfoButton.layer.cornerRadius = .5*self.lockInfoButton.bounds.size.width;
+    self.lockInfoButton.clipsToBounds = YES;
+    [self.view addSubview:self.lockInfoButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -70,6 +83,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewWillAppear:animated];
     
     static CGFloat buttonScaler = 1.2f;
@@ -81,6 +95,8 @@
 
 - (void)slideControllerButtonPressed
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
     [self.view addSubview:self.touchStopperView];
     
     static CGFloat xSpacer = .8f;
@@ -107,6 +123,8 @@
 
 - (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
     [UIView animateWithDuration:.35 animations:^{
         slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
                                      0.0f,
@@ -117,6 +135,31 @@
         [slvc removeFromParentViewController];
         [self.touchStopperView removeFromSuperview];
     }];
-
 }
+
+- (void)lockInfoButtonPressed
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    [self.view addSubview:self.touchStopperView];
+    
+    SLLockInfoViewController *livc = [SLLockInfoViewController new];
+    static CGFloat xPadding = 10.0f;
+    livc.view.frame = CGRectMake(xPadding,
+                                 self.view.bounds.size.height,
+                                 self.view.bounds.size.width - 2*xPadding,
+                                 .4*self.view.bounds.size.height);
+    [self addChildViewController:livc];
+    [self.view addSubview:livc.view];
+    [self.view bringSubviewToFront:livc.view];
+    [livc didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:.35 animations:^{
+        livc.view.frame = CGRectMake(livc.view.frame.origin.x,
+                                     self.view.bounds.size.height - livc.view.bounds.size.height,
+                                     livc.view.bounds.size.width,
+                                     livc.view.bounds.size.height);
+    } completion:nil];
+}
+
 @end
