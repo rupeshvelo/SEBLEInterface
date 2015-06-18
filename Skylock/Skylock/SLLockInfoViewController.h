@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SLLockInfoViewHeader.h"
 
-@interface SLLockInfoViewController : UIViewController
+@interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate>
 
 @end

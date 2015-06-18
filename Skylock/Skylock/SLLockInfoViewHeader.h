@@ -8,32 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, SLLockInfoViewHeaderBatteryState) {
-    SLLockInfoViewHeaderBatteryStateNone,
-    SLLockInfoViewHeaderBatteryState0,
-    SLLockInfoViewHeaderBatteryState1,
-    SLLockInfoViewHeaderBatteryState2,
-    SLLockInfoViewHeaderBatteryState3,
-    SLLockInfoViewHeaderBatteryState4
-};
+@class SLLock;
+@class SLLockInfoViewHeader;
 
-typedef NS_ENUM(NSUInteger, SLLockInfoViewHeaderCellSignalState) {
-    SLLockInfoViewHeaderCellSignalStateNone,
-    SLLockInfoViewHeaderCellSignalState0,
-    SLLockInfoViewHeaderCellSignalState1,
-    SLLockInfoViewHeaderCellSignalState2,
-    SLLockInfoViewHeaderCellSignalState3,
-    SLLockInfoViewHeaderCellSignalState4
-};
+@protocol SLLockInfoViewHeaderDelegate <NSObject>
+
+- (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView;
+
+@end
+
 
 @interface SLLockInfoViewHeader : UIView
 
+@property (nonatomic, weak) id <SLLockInfoViewHeaderDelegate> delegate;
 
-
-- (void)setBatteryImage:(SLLockInfoViewHeaderBatteryState)batteryState;
-- (void)setCellSignalImage:(SLLockInfoViewHeaderCellSignalState)cellState;
-
-- (SLLockInfoViewHeaderBatteryState)SLLockBatteryState;
-- (SLLockInfoViewHeaderCellSignalState)SLCellSignalState;
+- (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock;
+- (void)setBatteryImage;
+- (void)setCellSignalImage;
 
 @end

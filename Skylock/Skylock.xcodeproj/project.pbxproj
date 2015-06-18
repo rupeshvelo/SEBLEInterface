@@ -19,6 +19,7 @@
 		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
 		DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */; };
 		DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */; };
+		DC61477A1B3233460077484B /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6147791B3233460077484B /* SLLock.m */; };
 		DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDA1B1FCBBC00B38910 /* main.m */; };
 		DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */; };
 		DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */; };
@@ -90,6 +91,9 @@
 		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
 		DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLocationManager.h; sourceTree = "<group>"; };
 		DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLocationManager.m; sourceTree = "<group>"; };
+		DC6147781B3233460077484B /* SLLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLock.h; sourceTree = "<group>"; };
+		DC6147791B3233460077484B /* SLLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLock.m; sourceTree = "<group>"; };
+		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +159,7 @@
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
 				DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */,
 				DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */,
 				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
@@ -179,6 +184,8 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DC6147781B3233460077484B /* SLLock.h */,
+				DC6147791B3233460077484B /* SLLock.m */,
 				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
 				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
 				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
@@ -375,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */,
+				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
