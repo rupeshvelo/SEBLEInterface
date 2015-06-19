@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "SLLockInfoViewHeader.h"
+#import "SLLockInfoMiddleView.h"
 
-@interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate>
+@interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate, SLLockMiddleViewDelegate>
 
 @end

@@ -22,23 +22,12 @@
 @property (nonatomic, strong) UIButton *settingsButton;
 @property (nonatomic, strong) UILabel *distanceAwayLabel;
 @property (nonatomic, strong) UILabel *lastLabel;
-@property (nonatomic, strong) SLLock *lock;
+
 
 @end
 
 
 @implementation SLLockInfoViewHeader
-
-- (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.backgroundColor = [UIColor grayColor];
-        _lock = lock;
-    }
-    
-    return self;
-}
 
 - (UIButton *)settingsButton
 {
@@ -96,16 +85,12 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_lastLabel) {
-//        CGRect labelFrame = [labelText boundingRectWithSize:maxSize
-//                                                    options:NSStringDrawingUsesLineFragmentOrigin
-//                                                 attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
-//                                                    context:nil];
-        
         _lastLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                0.0f,
                                                                kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
                                                                kSLLockInfoViewHeaderLabelHeight)];
         _lastLabel.text = self.lastLabelText;
+        _lastLabel.font = SLConstantsDefaultFont;
         [self addSubview:_lastLabel];
     }
     
@@ -121,6 +106,7 @@
                                                                        kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
                                                                        kSLLockInfoViewHeaderLabelHeight)];
         _distanceAwayLabel.text = self.distanceAwayLabelText;
+        _distanceAwayLabel.font = SLConstantsDefaultFont;
         [self addSubview:_distanceAwayLabel];
     }
     
@@ -136,6 +122,7 @@
                                                                    kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
                                                                    kSLLockInfoViewHeaderLabelHeight)];
         _lockNameLabel.text = NSLocalizedString(self.lock.name, nil);
+        _lockNameLabel.font = SLConstantsDefaultFont;
         [self addSubview:_lockNameLabel];
     }
     
@@ -145,11 +132,9 @@
 - (void)layoutSubviews
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    static CGFloat yPaddingScaler = .1f;
-    static CGFloat xPaddingScaler = .05f;
     
-    CGFloat y0 = yPaddingScaler*self.bounds.size.height;
-    CGFloat x0 = xPaddingScaler*self.bounds.size.width;
+    CGFloat y0 = self.yPaddingScaler*self.bounds.size.height;
+    CGFloat x0 = self.xPaddingScaler*self.bounds.size.width;
 
     self.lockNameLabel.frame = CGRectMake(x0,
                                           y0,
@@ -309,11 +294,11 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     // should figure out a way to do this that does not involve hard coding the distance unit
     // probably should be a server side fix, or an option that the user can configure
-    if (self.lock.distanceAway.integerValue < 5280) {
-        return [NSString stringWithFormat:@"%@ ft", self.lock.distanceAway];
+    if (self.lock.distanceAway.integerValue < SLConstantsFeetInMile) {
+        return [NSString stringWithFormat:@"%@ft", self.lock.distanceAway];
     } else {
-        CGFloat miles = self.lock.distanceAway.floatValue/5280.0;
-        return [NSString stringWithFormat:@"%.1f mi", miles];
+        CGFloat miles = self.lock.distanceAway.floatValue/(CGFloat)SLConstantsFeetInMile;
+        return [NSString stringWithFormat:@"%.1fmi", miles];
     }
 }
 
