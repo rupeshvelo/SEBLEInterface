@@ -10,8 +10,8 @@
 #import "SLLock.h"
 #import "SLConstants.h"
 
-#define kSLLockInfoViewHeaderLabelWidthScaler   .4f
-#define kSLLockInfoViewHeaderLabelHeight        30.0f
+#define kSLLockInfoViewHeaderLabelWidthScaler   .33f
+#define kSLLockInfoViewHeaderLabelHeight        16.0f
 
 @interface SLLockInfoViewHeader()
 
@@ -33,6 +33,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundColor = [UIColor grayColor];
         _lock = lock;
     }
     
@@ -95,14 +96,16 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_lastLabel) {
-        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
-        NSString *labelText = self.lastLabelText;
-        CGRect labelFrame = [labelText boundingRectWithSize:maxSize
-                                                    options:NSStringDrawingUsesLineFragmentOrigin
-                                                 attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
-                                                    context:nil];
-        _lastLabel = [[UILabel alloc] initWithFrame:labelFrame];
-        _lastLabel.text = labelText;
+//        CGRect labelFrame = [labelText boundingRectWithSize:maxSize
+//                                                    options:NSStringDrawingUsesLineFragmentOrigin
+//                                                 attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
+//                                                    context:nil];
+        
+        _lastLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                               0.0f,
+                                                               kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
+                                                               kSLLockInfoViewHeaderLabelHeight)];
+        _lastLabel.text = self.lastLabelText;
         [self addSubview:_lastLabel];
     }
     
@@ -113,14 +116,11 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_distanceAwayLabel) {
-        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
-        NSString *labelText = self.distanceAwayLabelText;
-        CGRect labelFrame = [labelText  boundingRectWithSize:maxSize
-                                                     options:NSStringDrawingUsesLineFragmentOrigin
-                                                  attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
-                                                     context:nil];
-        _distanceAwayLabel = [[UILabel alloc] initWithFrame:labelFrame];
-        _distanceAwayLabel.text = labelText;
+        _distanceAwayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                       0.0f,
+                                                                       kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
+                                                                       kSLLockInfoViewHeaderLabelHeight)];
+        _distanceAwayLabel.text = self.distanceAwayLabelText;
         [self addSubview:_distanceAwayLabel];
     }
     
@@ -131,12 +131,10 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_lockNameLabel) {
-        CGSize maxSize = CGSizeMake(kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width, 20.0f);
-        CGRect labelFrame = [self.lock.name boundingRectWithSize:maxSize
-                                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                                      attributes:@{NSFontAttributeName:SLConstantsDefaultFont}
-                                                         context:nil];
-        _lockNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
+        _lockNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                   0.0f,
+                                                                   kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
+                                                                   kSLLockInfoViewHeaderLabelHeight)];
         _lockNameLabel.text = NSLocalizedString(self.lock.name, nil);
         [self addSubview:_lockNameLabel];
     }
@@ -158,7 +156,7 @@
                                           self.lockNameLabel.bounds.size.width,
                                           self.lockNameLabel.bounds.size.height);
     
-    self.settingsButton.frame = CGRectMake(self.bounds.size.width - x0,
+    self.settingsButton.frame = CGRectMake(self.bounds.size.width - x0 - self.settingsButton.bounds.size.width,
                                            y0,
                                            self.settingsButton.bounds.size.width,
                                            self.settingsButton.bounds.size.height);
@@ -179,7 +177,7 @@
                                                 self.cellSignalImageView.bounds.size.height);
     
     self.lastLabel.frame = CGRectMake(x0,
-                                      self.lockNameLabel.frame.origin.x + self.lockNameLabel.frame.size.height + y0,
+                                      self.lockNameLabel.frame.origin.y + self.lockNameLabel.frame.size.height + 5.0f,
                                       self.lastLabel.bounds.size.width,
                                       self.lastLabel.bounds.size.height);
     

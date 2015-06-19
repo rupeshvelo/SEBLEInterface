@@ -22,8 +22,15 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    // add header temporarily
     
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     // add lock for testing
     SLLock *lock = [[SLLock alloc] initWithName:@"Bad Ass Lock"
                                batteryRemaining:@(46.7)
@@ -34,13 +41,16 @@
                                        isLocked:@(YES)
                                          lockId:@"bkdidlldie830387jdod9"];
     
-    // add header temporarily
-    self.header = [[SLLockInfoViewHeader alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, 50.0f)
+    self.header = [[SLLockInfoViewHeader alloc] initWithFrame:CGRectMake(0.0f,
+                                                                         0.0f,
+                                                                         self.view.bounds.size.width,
+                                                                         50.0f)
                                                       andLock:lock];
     self.header.delegate = self;
+    
     [self.view addSubview:self.header];
-}
 
+}
 #pragma mark - SLLockInfoViewHeaderDelegate Methods
 - (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView
 {
