@@ -11,6 +11,7 @@
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 #import "SLLockInfoViewController.h"
+#import "SLConstants.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kMapBoxAccessToken @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
@@ -117,7 +118,7 @@
     [self.view bringSubviewToFront:slvc.view];
     [slvc didMoveToParentViewController:self];
     
-    [UIView animateWithDuration:.35 animations:^{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         slvc.view.frame = CGRectMake(0.0f,
                                      0.0f,
                                      width,
@@ -129,7 +130,7 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    [UIView animateWithDuration:.35 animations:^{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
                                      0.0f,
                                      slvc.view.bounds.size.width,
@@ -158,9 +159,9 @@
     [self.view bringSubviewToFront:livc.view];
     [livc didMoveToParentViewController:self];
     
-    [UIView animateWithDuration:.35 animations:^{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         livc.view.frame = CGRectMake(livc.view.frame.origin.x,
-                                     self.view.bounds.size.height - livc.view.bounds.size.height,
+                                     self.view.bounds.size.height - livc.view.bounds.size.height - 5.0f,
                                      livc.view.bounds.size.width,
                                      livc.view.bounds.size.height);
     } completion:nil];
