@@ -20,6 +20,8 @@
 		DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */; };
 		DC61477A1B3233460077484B /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6147791B3233460077484B /* SLLock.m */; };
 		DC9EADCE1B349CC200DA1692 /* SLLockInfoMiddleView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */; };
+		DC9EADD81B34BA9A00DA1692 /* SLLockInfoViewBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */; };
+		DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */; };
 		DCB754C81B33DEDA00457FC1 /* add-contact-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754771B33DEDA00457FC1 /* add-contact-button-small.png */; };
 		DCB754C91B33DEDA00457FC1 /* add-contact-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754781B33DEDA00457FC1 /* add-contact-button-small@2x.png */; };
 		DCB754CA1B33DEDA00457FC1 /* add-contact-button-small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754791B33DEDA00457FC1 /* add-contact-button-small@3x.png */; };
@@ -176,6 +178,10 @@
 		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DC9EADCC1B349CC200DA1692 /* SLLockInfoMiddleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoMiddleView.h; sourceTree = "<group>"; };
 		DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoMiddleView.m; sourceTree = "<group>"; };
+		DC9EADD61B34BA9A00DA1692 /* SLLockInfoViewBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewBase.h; sourceTree = "<group>"; };
+		DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewBase.m; sourceTree = "<group>"; };
+		DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDropDownLabel.h; sourceTree = "<group>"; };
+		DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDropDownLabel.m; sourceTree = "<group>"; };
 		DCB754771B33DEDA00457FC1 /* add-contact-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small.png"; sourceTree = "<group>"; };
 		DCB754781B33DEDA00457FC1 /* add-contact-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small@2x.png"; sourceTree = "<group>"; };
 		DCB754791B33DEDA00457FC1 /* add-contact-button-small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small@3x.png"; sourceTree = "<group>"; };
@@ -435,7 +441,8 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
-				DCB754761B33DEBF00457FC1 /* assets */,
+				DC9EADD61B34BA9A00DA1692 /* SLLockInfoViewBase.h */,
+				DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */,
 				DC6147781B3233460077484B /* SLLock.h */,
 				DC6147791B3233460077484B /* SLLock.m */,
 				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
@@ -451,15 +458,18 @@
 				DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */,
 				DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */,
 				DC2387241B304EC500BB28F3 /* SLConstants.h */,
-				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
-				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
-				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
-				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
-				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
 				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
 				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
 				DC9EADCC1B349CC200DA1692 /* SLLockInfoMiddleView.h */,
 				DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */,
+				DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */,
+				DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */,
+				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
+				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
+				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
+				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
+				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
+				DCB754761B33DEBF00457FC1 /* assets */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -715,6 +725,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */,
+				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
+				DC9EADD81B34BA9A00DA1692 /* SLLockInfoViewBase.m in Sources */,
 				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SLLockInfoViewBase.h"
 
 @class SLLock;
 @class SLLockInfoViewHeader;
@@ -18,12 +19,9 @@
 @end
 
 
-@interface SLLockInfoViewHeader : UIView
+@interface SLLockInfoViewHeader : SLLockInfoViewBase
 
 @property (nonatomic, weak) id <SLLockInfoViewHeaderDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock;
-- (void)setBatteryImage;
-- (void)setCellSignalImage;
 
 @end

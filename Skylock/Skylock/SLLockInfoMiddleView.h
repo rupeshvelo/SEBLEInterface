@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SLLockInfoViewBase.h"
 
 @class SLLock;
 @class SLLockInfoMiddleView;
@@ -28,10 +29,9 @@ typedef NS_ENUM(NSUInteger, SLLockInfoMiddleViewButton) {
 
 @end
 
-@interface SLLockInfoMiddleView : UIView
+@interface SLLockInfoMiddleView : SLLockInfoViewBase
 
 @property (nonatomic, weak) id <SLLockMiddleViewDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock;
 
 @end

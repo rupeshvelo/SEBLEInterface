@@ -9,18 +9,17 @@
 #import "SLLockInfoMiddleView.h"
 #import "SLLock.h"
 #import "SLConstants.h"
+#import "SLDropDownLabel.h"
 
 @interface SLLockInfoMiddleView()
-
-@property (nonatomic, strong) SLLock *lock;
 
 @property (nonatomic, strong) UIButton *crashButton;
 @property (nonatomic, strong) UIButton *securityButton;
 @property (nonatomic, strong) UIButton *sharingButton;
 
 @property (nonatomic, strong) UILabel *crashLabel;
-@property (nonatomic, strong) UILabel *securityLabel;
-@property (nonatomic, strong) UILabel *sharingLabel;
+@property (nonatomic, strong) SLDropDownLabel *securityLabel;
+@property (nonatomic, strong) SLDropDownLabel *sharingLabel;
 
 @property (nonatomic, strong) UIImageView *securityArrowView;
 @property (nonatomic, strong) UIImageView *sharingArrowView;
@@ -28,16 +27,6 @@
 @end
 
 @implementation SLLockInfoMiddleView
-
-- (id)initWithFrame:(CGRect)frame andLock:(SLLock *)lock
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        _lock = lock;
-    }
-    
-    return self;
-}
 
 - (UIButton *)crashButton
 {
@@ -97,11 +86,10 @@
 {
     if (!_crashLabel) {
         NSString *text = NSLocalizedString(@"Crash Alert", nil);
-        _crashLabel = [[UILabel alloc] initWithFrame:[self labelFrameForText:text
-                                                                     andFont:SLConstantsDefaultFont
-                                                                  withOption:nil]];
+        _crashLabel = [[UILabel alloc] initWithFrame:self.labelRect];
         _crashLabel.text = text;
-        _crashLabel.backgroundColor = [UIColor yellowColor];
+        _crashLabel.textAlignment = NSTextAlignmentCenter;
+        _crashLabel.font = SLConstantsDefaultFont;
         
         [self addSubview:_crashLabel];
     }
@@ -109,32 +97,26 @@
     return _crashLabel;
 }
 
-- (UILabel *)securityLabel
+- (SLDropDownLabel *)securityLabel
 {
     if (!_securityLabel) {
         NSString *text = NSLocalizedString(@"Security", nil);
-        _securityLabel = [[UILabel alloc] initWithFrame:[self labelFrameForText:text
-                                                                        andFont:SLConstantsDefaultFont
-                                                                     withOption:nil]];
-        _securityLabel.text = text;
-        _securityLabel.backgroundColor = [UIColor yellowColor];
-        
+        _securityLabel = [[SLDropDownLabel alloc] initWithFrame:self.labelRect
+                                                           text:text
+                                                           font:SLConstantsDefaultFont];
         [self addSubview:_securityLabel];
     }
     
     return _securityLabel;
 }
 
-- (UILabel *)sharingLabel
+- (SLDropDownLabel *)sharingLabel
 {
     if (!_sharingLabel) {
         NSString *text = NSLocalizedString(@"Sharing", nil);
-        _sharingLabel = [[UILabel alloc] initWithFrame:[self labelFrameForText:text
-                                                                       andFont:SLConstantsDefaultFont
-                                                                    withOption:nil]];
-        _sharingLabel.text = text;
-        _sharingLabel.backgroundColor = [UIColor yellowColor];
-        
+        _sharingLabel = [[SLDropDownLabel alloc] initWithFrame:self.labelRect
+                                                          text:text
+                                                          font:SLConstantsDefaultFont];
         [self addSubview:_sharingLabel];
     }
     
@@ -168,7 +150,42 @@
 
 - (void)layoutSubviews
 {
+    CGFloat x0 = self.xPaddingScaler*self.bounds.size.width;
+    CGFloat y0 = 0.0f;
     
+    self.crashButton.frame = CGRectMake(x0,
+                                        y0,
+                                        self.crashButton.bounds.size.width,
+                                        self.crashButton.bounds.size.height);
+    
+    self.securityButton.frame = CGRectMake(.5*(self.bounds.size.width - self.securityButton.bounds.size.width),
+                                           y0,
+                                           self.securityButton.bounds.size.width,
+                                           self.securityButton.bounds.size.height);
+    
+    self.sharingButton.frame = CGRectMake(self.bounds.size.width - self.sharingButton.bounds.size.width - x0,
+                                          y0,
+                                          self.sharingButton.bounds.size.width,
+                                          self.sharingButton.bounds.size.height);
+    
+    
+    // set up buttons' labels
+    CGFloat labelY0 = 2.0f + CGRectGetMaxY(self.crashButton.frame);
+    
+    self.crashLabel.frame = CGRectMake(self.crashButton.center.x - .5*self.crashLabel.bounds.size.width,
+                                       labelY0,
+                                       self.crashLabel.bounds.size.width,
+                                       self.crashLabel.bounds.size.height);
+    
+    self.securityLabel.frame = CGRectMake(self.securityButton.center.x - .5*self.securityLabel.bounds.size.width,
+                                         labelY0,
+                                         self.securityLabel.bounds.size.width,
+                                         self.securityLabel.bounds.size.height);
+    
+    self.sharingLabel.frame = CGRectMake(self.sharingButton.center.x - .5*self.sharingLabel.bounds.size.width,
+                                         labelY0,
+                                         self.sharingLabel.bounds.size.width,
+                                         self.sharingLabel.bounds.size.height);
 }
 
 - (CGRect)initialButtonFrame
@@ -179,6 +196,8 @@
 
 - (void)crashButtonPressed:(id)sender
 {
+    self.crashButton.selected = !self.crashButton.isSelected;
+    
     if ([self.delegate respondsToSelector:@selector(middleViewCrashButtonPressed:)]) {
         [self.delegate middleViewCrashButtonPressed:self];
     }
@@ -186,6 +205,8 @@
 
 - (void)securityButtonPressed:(id)sender
 {
+    self.securityButton.selected = !self.securityButton.isSelected;
+    
     if ([self.delegate respondsToSelector:@selector(middleViewSecurityButtonPressed:)]) {
         [self.delegate middleViewSecurityButtonPressed:self];
     }
@@ -194,6 +215,8 @@
 
 - (void)sharingButtonPressed:(id)sender
 {
+    self.sharingButton.selected = !self.sharingButton.isSelected;
+    
     if ([self.delegate respondsToSelector:@selector(middleViewSharingButtonPressed:)]) {
         [self.delegate middleViewSharingButtonPressed:self];
     }
@@ -219,6 +242,11 @@
     }
 
     return [UIImage imageNamed:[NSString stringWithFormat:@"%@", imageName]];
+}
+
+- (CGRect)labelRect
+{
+    return CGRectMake(0.0f, 0.0f, .3*self.bounds.size.width, 25.0f);
 }
 
 - (CGRect)labelFrameForText:(NSString *)text andFont:(UIFont *)font withOption:(NSDictionary *)options
