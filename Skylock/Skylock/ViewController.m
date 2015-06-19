@@ -91,6 +91,10 @@
                                                       buttonScaler*self.showSlideControllerButton.bounds.size.height,
                                                       self.showSlideControllerButton.bounds.size.width,
                                                       self.showSlideControllerButton.bounds.size.height);
+    
+    self.lockInfoButton.frame = CGRectOffset(self.showSlideControllerButton.frame,
+                                             0.0f,
+                                             1.2*self.lockInfoButton.bounds.size.width);
 }
 
 - (void)slideControllerButtonPressed
