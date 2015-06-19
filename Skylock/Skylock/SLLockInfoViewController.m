@@ -9,6 +9,7 @@
 #import "SLLockInfoViewController.h"
 #import "SLLockInfoViewHeader.h"
 #import "SLLock.h"
+#import "SLConstants.h"
 
 @interface SLLockInfoViewController()
 
@@ -21,6 +22,9 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
+    
+    self.view.layer.cornerRadius = SLConstantsViewCornerRadius1;
+    self.view.clipsToBounds = YES;
     
     // add header temporarily
     
@@ -51,6 +55,7 @@
     [self.view addSubview:self.header];
 
 }
+
 #pragma mark - SLLockInfoViewHeaderDelegate Methods
 - (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView
 {

@@ -46,6 +46,9 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 @property (nonatomic, copy) NSNumber *lastTime;
 @property (nonatomic, copy) NSNumber *distanceAway;
 @property (nonatomic, copy) NSNumber *isLocked;
+@property (nonatomic, copy) NSNumber *isCrashOn;
+@property (nonatomic, copy) NSNumber *isSharing;
+@property (nonatomic, copy) NSNumber *isSecurityOn;
 
 
 - (id)initWithName:(NSString *)name
