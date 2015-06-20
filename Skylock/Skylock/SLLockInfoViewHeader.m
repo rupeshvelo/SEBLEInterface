@@ -9,6 +9,7 @@
 #import "SLLockInfoViewHeader.h"
 #import "SLLock.h"
 #import "SLConstants.h"
+#import "NSString+Skylock.h"
 
 #define kSLLockInfoViewHeaderLabelWidthScaler   .33f
 #define kSLLockInfoViewHeaderLabelHeight        16.0f
@@ -292,14 +293,7 @@
 - (NSString *)distanceAwayString
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    // should figure out a way to do this that does not involve hard coding the distance unit
-    // probably should be a server side fix, or an option that the user can configure
-    if (self.lock.distanceAway.integerValue < SLConstantsFeetInMile) {
-        return [NSString stringWithFormat:@"%@ft", self.lock.distanceAway];
-    } else {
-        CGFloat miles = self.lock.distanceAway.floatValue/(CGFloat)SLConstantsFeetInMile;
-        return [NSString stringWithFormat:@"%.1fmi", miles];
-    }
+    return [[NSString alloc] stringWithDistance:self.lock.distanceAway];
 }
 
 - (NSString *)distanceAwayLabelText

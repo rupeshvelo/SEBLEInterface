@@ -7,31 +7,75 @@
 //
 
 #import "SLSlideViewController.h"
-#import <QuartzCore/QuartzCore.h>
+#import "SLLockManager.h"
+#import "SLLockTableViewCell.h"
+
+
+#define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
+#define KSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
+#define KSLSlideViewControllerRowTextKey            @"SLSlideViewControllerRowTextKey"
+
 
 @interface SLSlideViewController()
 
 @property (nonatomic, strong) UIButton *testButton;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSArray *locks;
+@property (nonatomic, strong) NSArray *rowOptions;
 
 @end
 
 @implementation SLSlideViewController
 
+- (UITableView *)tableView
+{
+    if (!_tableView) {
+        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+    }
+    
+    return _tableView;
+}
+
+
+- (NSArray *)locks
+{
+    if (_locks) {
+        _locks = [SLLockManager.manager orderedLocks];
+    }
+    
+    return _locks;
+}
+
+- (NSArray *)rowOptions
+{
+    if (!_rowOptions) {
+        _rowOptions = @[@{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Add Lock", nil),
+                          KSLSlideViewControllerRowImageKey: @"add-icon"
+                          },
+                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Store", nil),
+                          KSLSlideViewControllerRowImageKey: @""
+                          },
+                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Settings", nil),
+                          KSLSlideViewControllerRowImageKey: @"settings-icon"
+                          },
+                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Help & Feedback", nil),
+                          KSLSlideViewControllerRowImageKey: @"help-icon"
+                          }
+                        ];
+    }
+    
+    return _rowOptions;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:.95f];
+    self.view.backgroundColor = [UIColor whiteColor];
     
-    self.testButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 50.0f, 50.0f)];
-    [self.testButton addTarget:self
-                        action:@selector(testButtonPressed)
-              forControlEvents:UIControlEventTouchDown];
-    [self.testButton setBackgroundColor:[UIColor blueColor]];
-    self.testButton.center = self.view.center;
-    self.testButton.clipsToBounds = YES;
-    self.testButton.layer.cornerRadius = .5*self.testButton.bounds.size.width;
-    [self.view addSubview:self.testButton];
+    [self.tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -41,10 +85,40 @@
     
 }
 
-- (void)testButtonPressed
+- (NSString *)lockTableViewCellIdentifier
 {
-    if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:)]) {
-        [self.delegate slideViewController:self buttonPushed:SLSlideViewControllerButtonActionExit];
+    return NSStringFromClass([SLLockTableViewCell class]);
+}
+
+#pragma mark UITableView delegate & datasource methods
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 2;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return section == 0 ? self.locks.count : self.rowOptions.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0) {
+        SLLock *lock = self.locks[indexPath.row];
+        SLLockTableViewCell *lockCell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
+        [lockCell updateCellWithLock:lock];
+        return lockCell;
+    } else {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSLSlideViewControllerOptionCellIdentifier];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier:kSLSlideViewControllerOptionCellIdentifier];
+        }
+       
+        NSString *imageName = self.rowOptions[indexPath.row][KSLSlideViewControllerRowImageKey];
+        cell.imageView.image = [UIImage imageNamed:imageName];
+        cell.textLabel.text = self.rowOptions[indexPath.row][KSLSlideViewControllerRowTextKey];
+        return cell;
     }
 }
 

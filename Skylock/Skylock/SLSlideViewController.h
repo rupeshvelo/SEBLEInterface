@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 @end
 
 
-@interface SLSlideViewController : UIViewController
+@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id <SLSliceViewControllerDelegate>delegate;
 

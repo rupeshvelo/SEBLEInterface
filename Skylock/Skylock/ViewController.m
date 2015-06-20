@@ -20,7 +20,7 @@
 @interface ViewController ()
 
 @property (nonatomic, strong) UIView *touchStopperView;
-@property (nonatomic, strong) UIButton *showSlideControllerButton;
+@property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) SLLocationManager *locationManager;
 @property (nonatomic, strong) UIButton *lockInfoButton;
 
@@ -33,9 +33,29 @@
     if (!_touchStopperView) {
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
         _touchStopperView.userInteractionEnabled = YES;
+        _touchStopperView.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:.95f];
     }
     
     return _touchStopperView;
+}
+
+- (UIButton *)menuButton
+{
+    if (!_menuButton) {
+        UIImage *menuButtonImage = [UIImage imageNamed:@"menu-button"];
+        self.menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                     0.0f,
+                                                                     menuButtonImage.size.width,
+                                                                     menuButtonImage.size.height)];
+        [self.menuButton setImage:menuButtonImage forState:UIControlStateNormal];
+        [self.menuButton addTarget:self
+                            action:@selector(slideControllerButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+        self.menuButton.layer.cornerRadius = .5*self.menuButton.bounds.size.width;
+        self.menuButton.clipsToBounds = YES;
+    }
+    
+    return _menuButton;
 }
 
 - (void)viewDidLoad {
@@ -56,18 +76,11 @@
 //    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
 //    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
     
-    CGRect buttonFrame = CGRectMake(0, 0, 50, 50);
-    self.showSlideControllerButton = [[UIButton alloc] initWithFrame:buttonFrame];
-    self.showSlideControllerButton.backgroundColor = [UIColor purpleColor];
-    [self.showSlideControllerButton addTarget:self
-                                       action:@selector(slideControllerButtonPressed)
-                             forControlEvents:UIControlEventTouchDown];
-    self.showSlideControllerButton.layer.cornerRadius = .5*self.showSlideControllerButton.bounds.size.width;
-    self.showSlideControllerButton.clipsToBounds = YES;
     
-    [self.view addSubview:self.showSlideControllerButton];
     
-    self.lockInfoButton = [[UIButton alloc] initWithFrame:buttonFrame];
+    [self.view addSubview:self.menuButton];
+    
+    self.lockInfoButton = [[UIButton alloc] initWithFrame:self.menuButton.bounds];
     self.lockInfoButton.backgroundColor = [UIColor brownColor];
     [self.lockInfoButton addTarget:self
                             action:@selector(lockInfoButtonPressed)
@@ -87,13 +100,12 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewWillAppear:animated];
     
-    static CGFloat buttonScaler = 1.2f;
-    self.showSlideControllerButton.frame = CGRectMake(self.view.bounds.size.width - buttonScaler*self.showSlideControllerButton.bounds.size.width,
-                                                      buttonScaler*self.showSlideControllerButton.bounds.size.height,
-                                                      self.showSlideControllerButton.bounds.size.width,
-                                                      self.showSlideControllerButton.bounds.size.height);
+    self.menuButton.frame = CGRectMake(10.0f,
+                                       20.0f,
+                                       self.menuButton.bounds.size.width,
+                                       self.menuButton.bounds.size.height);
     
-    self.lockInfoButton.frame = CGRectOffset(self.showSlideControllerButton.frame,
+    self.lockInfoButton.frame = CGRectOffset(self.menuButton.frame,
                                              0.0f,
                                              1.2*self.lockInfoButton.bounds.size.width);
 }
