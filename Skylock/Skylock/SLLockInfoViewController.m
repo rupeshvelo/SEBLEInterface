@@ -21,7 +21,6 @@
 @property (nonatomic, strong) SLLockInfoViewHeader *headerView;
 @property (nonatomic, strong) SLLockInfoMiddleView *middleView;
 @property (nonatomic, strong) SLLockInfoBottomView *bottomView;
-@property (nonatomic, strong) SLLock *lock;
 @property (nonatomic, assign) CGFloat bottomHeight;
 @end
 
@@ -84,16 +83,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     self.view.layer.cornerRadius = SLConstantsViewCornerRadius1;
     self.view.clipsToBounds = YES;
-    
-    // mock lock data for testing
-    self.lock = [[SLLock alloc] initWithName:@"One Love"
-                            batteryRemaining:@(46.7)
-                                wifiStrength:@(56.8)
-                                cellStrength:@(87.98)
-                                    lastTime:@(354)
-                                distanceAway:@(12765)
-                                    isLocked:@(YES)
-                                      lockId:@"bkdidlldie830387jdod9"];
     
     self.bottomHeight = -1.0;
     

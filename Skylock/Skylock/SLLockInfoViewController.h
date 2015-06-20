@@ -13,4 +13,6 @@
 
 @interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate, SLLockMiddleViewDelegate, SLLockInfoBottomViewDelegate>
 
+@property (nonatomic, strong) SLLock *lock;
+
 @end

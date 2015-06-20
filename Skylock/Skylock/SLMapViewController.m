@@ -1,46 +1,69 @@
 //
-//  ViewController.m
+//  SLMapViewController.m
 //  Skylock
 //
 //  Created by Andre Green on 6/3/15.
 //  Copyright (c) 2015 Andre Green. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "SLMapViewController.h"
 #import "Mapbox.h"
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 #import "SLLockInfoViewController.h"
 #import "SLConstants.h"
+#import "SLLockManager.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kMapBoxAccessToken @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
-#define kMapBoxMapId @"michalumni.l2bh1bee"
+#define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
+#define kMapBoxMapId        @"michalumni.l2bh1bee"
 
-@interface ViewController ()
+@interface SLMapViewController ()
 
 @property (nonatomic, strong) UIView *touchStopperView;
-@property (nonatomic, strong) UIButton *showSlideControllerButton;
+@property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) SLLocationManager *locationManager;
-@property (nonatomic, strong) UIButton *lockInfoButton;
 
 @end
 
-@implementation ViewController
+@implementation SLMapViewController
 
 - (UIView *)touchStopperView
 {
     if (!_touchStopperView) {
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
         _touchStopperView.userInteractionEnabled = YES;
+        _touchStopperView.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:.95f];
     }
     
     return _touchStopperView;
 }
 
+- (UIButton *)menuButton
+{
+    if (!_menuButton) {
+        UIImage *menuButtonImage = [UIImage imageNamed:@"menu-button"];
+        self.menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                     0.0f,
+                                                                     menuButtonImage.size.width,
+                                                                     menuButtonImage.size.height)];
+        [self.menuButton setImage:menuButtonImage forState:UIControlStateNormal];
+        [self.menuButton addTarget:self
+                            action:@selector(slideControllerButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+        self.menuButton.layer.cornerRadius = .5*self.menuButton.bounds.size.width;
+        self.menuButton.clipsToBounds = YES;
+    }
+    
+    return _menuButton;
+}
+
 - (void)viewDidLoad {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
+    
+    // temporarily populate locks
+    [SLLockManager.manager createTestLocks];
     
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
     
@@ -51,30 +74,7 @@
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
     
-//    self.locationManager = [SLLocationManager new];
-//    self.locationManager.delegate = self;
-//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
-    
-    CGRect buttonFrame = CGRectMake(0, 0, 50, 50);
-    self.showSlideControllerButton = [[UIButton alloc] initWithFrame:buttonFrame];
-    self.showSlideControllerButton.backgroundColor = [UIColor purpleColor];
-    [self.showSlideControllerButton addTarget:self
-                                       action:@selector(slideControllerButtonPressed)
-                             forControlEvents:UIControlEventTouchDown];
-    self.showSlideControllerButton.layer.cornerRadius = .5*self.showSlideControllerButton.bounds.size.width;
-    self.showSlideControllerButton.clipsToBounds = YES;
-    
-    [self.view addSubview:self.showSlideControllerButton];
-    
-    self.lockInfoButton = [[UIButton alloc] initWithFrame:buttonFrame];
-    self.lockInfoButton.backgroundColor = [UIColor brownColor];
-    [self.lockInfoButton addTarget:self
-                            action:@selector(lockInfoButtonPressed)
-                  forControlEvents:UIControlEventTouchDown];
-    self.lockInfoButton.layer.cornerRadius = .5*self.lockInfoButton.bounds.size.width;
-    self.lockInfoButton.clipsToBounds = YES;
-    [self.view addSubview:self.lockInfoButton];
+    [self.view addSubview:self.menuButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -87,15 +87,10 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewWillAppear:animated];
     
-    static CGFloat buttonScaler = 1.2f;
-    self.showSlideControllerButton.frame = CGRectMake(self.view.bounds.size.width - buttonScaler*self.showSlideControllerButton.bounds.size.width,
-                                                      buttonScaler*self.showSlideControllerButton.bounds.size.height,
-                                                      self.showSlideControllerButton.bounds.size.width,
-                                                      self.showSlideControllerButton.bounds.size.height);
-    
-    self.lockInfoButton.frame = CGRectOffset(self.showSlideControllerButton.frame,
-                                             0.0f,
-                                             1.2*self.lockInfoButton.bounds.size.width);
+    self.menuButton.frame = CGRectMake(10.0f,
+                                       20.0f,
+                                       self.menuButton.bounds.size.width,
+                                       self.menuButton.bounds.size.height);
 }
 
 - (void)slideControllerButtonPressed
@@ -130,6 +125,11 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
+    
+}
+
+- (void)removeSlideViewController:(SLSlideViewController *)slvc shouldPresentLockInfoVCWithLock:(SLLock *)lock
+{
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
                                      0.0f,
@@ -139,16 +139,19 @@
         [slvc.view removeFromSuperview];
         [slvc removeFromParentViewController];
         [self.touchStopperView removeFromSuperview];
+        if (lock) {
+            [self presentLockInfoViewControllerWithLock:lock];
+        }
     }];
 }
 
-- (void)lockInfoButtonPressed
+- (void)presentLockInfoViewControllerWithLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    [self.view addSubview:self.touchStopperView];
-    
+        
     SLLockInfoViewController *livc = [SLLockInfoViewController new];
+    livc.lock = lock;
+    
     static CGFloat xPadding = 10.0f;
     livc.view.frame = CGRectMake(xPadding,
                                  self.view.bounds.size.height,
@@ -167,4 +170,13 @@
     } completion:nil];
 }
 
+#pragma mark - SLSlideViewController Delegate Methods
+- (void)slideViewController:(SLSlideViewController *)slvc
+               buttonPushed:(SLSlideViewControllerButtonAction)action
+                    options:(NSDictionary *)options
+{
+    if (action == SLSlideViewControllerButtonActionLockSelected && options) {
+        [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:options[@"lock"]];
+    }
+}
 @end
