@@ -1,23 +1,24 @@
 //
-//  ViewController.m
+//  SLMapViewController.m
 //  Skylock
 //
 //  Created by Andre Green on 6/3/15.
 //  Copyright (c) 2015 Andre Green. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "SLMapViewController.h"
 #import "Mapbox.h"
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 #import "SLLockInfoViewController.h"
 #import "SLConstants.h"
+#import "SLLockManager.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kMapBoxAccessToken @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
-#define kMapBoxMapId @"michalumni.l2bh1bee"
+#define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
+#define kMapBoxMapId        @"michalumni.l2bh1bee"
 
-@interface ViewController ()
+@interface SLMapViewController ()
 
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *menuButton;
@@ -26,7 +27,7 @@
 
 @end
 
-@implementation ViewController
+@implementation SLMapViewController
 
 - (UIView *)touchStopperView
 {
@@ -62,6 +63,9 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
+    // temporarily populate locks
+    [SLLockManager.manager createTestLocks];
+    
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
     
     RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
@@ -70,13 +74,6 @@
     mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
-    
-//    self.locationManager = [SLLocationManager new];
-//    self.locationManager.delegate = self;
-//    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-//    self.locationManager.persmissionState = SLLocationManagerPermissionStateDenied;
-    
-    
     
     [self.view addSubview:self.menuButton];
     

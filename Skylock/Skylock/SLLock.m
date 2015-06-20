@@ -11,23 +11,30 @@
 @implementation SLLock
 
 - (id)initWithName:(NSString *)name
-batteryRemaining:(NSNumber *)batteryRemaining
+            lockId:(NSString *)lockId
+  batteryRemaining:(NSNumber *)batteryRemaining
       wifiStrength:(NSNumber *)wifiStrength
       cellStrength:(NSNumber *)cellStrength
           lastTime:(NSNumber *)lastTime
       distanceAway:(NSNumber *)distanceAway
           isLocked:(NSNumber *)isLocked
-            lockId:(NSString *)lockId
+         isCrashOn:(NSNumber *)isCrashOn
+       isSharingOn:(NSNumber *)isSharingOn
+      isSecurityOn:(NSNumber *)isSecurityOn
 {
     self = [super init];
     if (self) {
         _name               = name;
+        _lockId             = lockId;
         _batteryRemaining   = batteryRemaining;
         _wifiStrength       = wifiStrength;
         _cellStrength       = cellStrength;
         _lastTime           = lastTime;
         _distanceAway       = distanceAway;
-        _lockId             = lockId;
+        _isLocked           = isLocked;
+        _isCrashOn          = isCrashOn;
+        _isSharingOn        = isSharingOn;
+        _isSecurityOn       = isSecurityOn;
     }
     
     return self;

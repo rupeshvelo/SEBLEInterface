@@ -17,10 +17,10 @@
     // should figure out a way to do this that does not involve hard coding the distance unit
     // probably should be a server side fix, or an option that the user can configure
     if (distance.integerValue < SLConstantsFeetInMile) {
-        return [NSString stringWithFormat:@"%@ft", distance];
+        return [NSString stringWithFormat:@"%@ft away", distance];
     } else {
         float miles = distance.floatValue/(float)SLConstantsFeetInMile;
-        return [NSString stringWithFormat:@"%.1fmi", miles];
+        return [NSString stringWithFormat:@"%.1fmi away", miles];
     }
 }
 

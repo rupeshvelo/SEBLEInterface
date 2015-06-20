@@ -47,18 +47,21 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 @property (nonatomic, copy) NSNumber *distanceAway;
 @property (nonatomic, copy) NSNumber *isLocked;
 @property (nonatomic, copy) NSNumber *isCrashOn;
-@property (nonatomic, copy) NSNumber *isSharing;
+@property (nonatomic, copy) NSNumber *isSharingOn;
 @property (nonatomic, copy) NSNumber *isSecurityOn;
 
 
 - (id)initWithName:(NSString *)name
+            lockId:(NSString *)lockId
   batteryRemaining:(NSNumber *)batteryRemaining
       wifiStrength:(NSNumber *)wifiStrength
       cellStrength:(NSNumber *)cellStrength
           lastTime:(NSNumber *)lastTime
       distanceAway:(NSNumber *)distanceAway
           isLocked:(NSNumber *)isLocked
-            lockId:(NSString *)lockId;
+         isCrashOn:(NSNumber *)isCrashOn
+       isSharingOn:(NSNumber *)isSharingOn
+      isSecurityOn:(NSNumber *)isSecurityOn;
 
 - (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;

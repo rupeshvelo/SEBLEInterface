@@ -41,7 +41,7 @@
 
 - (NSArray *)locks
 {
-    if (_locks) {
+    if (!_locks) {
         _locks = [SLLockManager.manager orderedLocks];
     }
     
@@ -76,6 +76,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     [self.tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
+    [self.view addSubview:self.tableView];
 }
 
 - (void)viewWillAppear:(BOOL)animated

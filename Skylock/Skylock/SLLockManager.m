@@ -15,6 +15,9 @@
 @property (nonatomic, strong) NSMutableDictionary *locks;
 @property (nonatomic, strong) NSMutableArray *lockOrder;
 
+// testing
+@property (nonatomic, strong) NSArray *testLocks;
+
 @end
 
 @implementation SLLockManager
@@ -41,6 +44,63 @@
     return lockManger;
 }
 
+- (NSArray *)testLocks
+{
+    if (!_testLocks) {
+        SLLock *lock1 = [[SLLock alloc] initWithName:@"One Love"
+                                              lockId:@"bkdidlldie830387jdod9"
+                                    batteryRemaining:@(46.7)
+                                        wifiStrength:@(56.8)
+                                        cellStrength:@(87.98)
+                                            lastTime:@(354)
+                                        distanceAway:@(12765)
+                                            isLocked:@(YES)
+                                           isCrashOn:@(YES)
+                                         isSharingOn:@(YES)
+                                        isSecurityOn:@(YES)];
+        
+        SLLock *lock2 = [[SLLock alloc] initWithName:@"Three Little Birds"
+                                              lockId:@"opdkdopwp08djwwkddidh"
+                                    batteryRemaining:@(99)
+                                        wifiStrength:@(56)
+                                        cellStrength:@(45.21)
+                                            lastTime:@(65)
+                                        distanceAway:@(100)
+                                            isLocked:@(NO)
+                                           isCrashOn:@(YES)
+                                         isSharingOn:@(NO)
+                                        isSecurityOn:@(YES)];
+        
+        SLLock *lock3 = [[SLLock alloc] initWithName:@"Buffalo Soldier"
+                                              lockId:@"pdidmhjdghsjsyy27d6th"
+                                    batteryRemaining:@(2.98)
+                                        wifiStrength:@(45)
+                                        cellStrength:@(46.4)
+                                            lastTime:@(45)
+                                        distanceAway:@(1256)
+                                            isLocked:@(YES)
+                                           isCrashOn:@(YES)
+                                         isSharingOn:@(YES)
+                                        isSecurityOn:@(YES)];
+        
+        SLLock *lock4 = [[SLLock alloc] initWithName:@"Stir It Up"
+                                              lockId:@"eoeopwpwpeie993pw-0-2"
+                                    batteryRemaining:@(63)
+                                        wifiStrength:@(78)
+                                        cellStrength:@(36)
+                                            lastTime:@(853)
+                                        distanceAway:@(7000)
+                                            isLocked:@(NO)
+                                           isCrashOn:@(YES)
+                                         isSharingOn:@(NO)
+                                        isSecurityOn:@(YES)];
+        
+        _testLocks = @[lock1, lock2, lock3, lock4];
+    }
+    
+    return _testLocks;
+}
+
 - (BOOL)containsLock:(SLLock *)lock
 {
     return [self.locks objectForKey:lock.lockId];
@@ -48,7 +108,9 @@
 
 - (void)addLock:(SLLock *)lock
 {
-    if (![self containsLock:lock]) {
+    if ([self containsLock:lock]) {
+        NSLog(@"Duplicate lock with id: %@", lock.lockId);
+    } else {
         self.locks[lock.lockId] = lock;
         [self.lockOrder addObject:lock.lockId];
     }
@@ -74,37 +136,14 @@
 
 - (SLLock *)getTestLock
 {
-    // mock lock data for testing
-    SLLock *lock1 = [[SLLock alloc] initWithName:@"One Love"
-                                batteryRemaining:@(46.7)
-                                    wifiStrength:@(56.8)
-                                    cellStrength:@(87.98)
-                                        lastTime:@(354)
-                                    distanceAway:@(12765)
-                                        isLocked:@(YES)
-                                          lockId:@"bkdidlldie830387jdod9"];
-    
-    SLLock *lock2 = [[SLLock alloc] initWithName:@"Three Little Birds"
-                                batteryRemaining:@(99)
-                                    wifiStrength:@(56)
-                                    cellStrength:@(45.21)
-                                        lastTime:@(65)
-                                    distanceAway:@(100)
-                                        isLocked:@(NO)
-                                          lockId:@"opdkdopwp08djwwkddidh"];
-    
-    SLLock *lock3 = [[SLLock alloc] initWithName:@"Buffalo Soldier"
-                                batteryRemaining:@(2.98)
-                                    wifiStrength:@(45)
-                                    cellStrength:@(464)
-                                        lastTime:@(45)
-                                    distanceAway:@(1256)
-                                        isLocked:@(YES)
-                                          lockId:@"pdidmhjdghsjsyy27d6th"];
-    
     int target = arc4random_uniform(3);
-    NSArray *locks = @[lock1, lock2, lock3];
+    return self.testLocks[target];
+}
 
-    return locks[target];
+- (void)createTestLocks
+{
+    [self.testLocks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
+        [self addLock:lock];
+    }];
 }
 @end

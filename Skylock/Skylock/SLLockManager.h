@@ -19,5 +19,6 @@
 
 // methods for testing
 - (SLLock *)getTestLock;
+- (void)createTestLocks;
 
 @end

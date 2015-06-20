@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  SLMapViewController.h
 //  Skylock
 //
 //  Created by Andre Green on 6/3/15.
@@ -10,10 +10,6 @@
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 
-@interface ViewController : UIViewController <SLSliceViewControllerDelegate, CLLocationManagerDelegate>
-
-
-
+@interface SLMapViewController : UIViewController <SLSliceViewControllerDelegate, CLLocationManagerDelegate>
 
 @end
-
