@@ -10,6 +10,7 @@
 #import "SLLockInfoViewHeader.h"
 #import "SLLock.h"
 #import "SLLockInfoMiddleView.h"
+#import "SLLockInfoBottomView.h"
 #import "SLConstants.h"
 
 #define kSLLockInfoViewControllerXPaddingScaler 0.05f
@@ -19,8 +20,9 @@
 
 @property (nonatomic, strong) SLLockInfoViewHeader *headerView;
 @property (nonatomic, strong) SLLockInfoMiddleView *middleView;
+@property (nonatomic, strong) SLLockInfoBottomView *bottomView;
 @property (nonatomic, strong) SLLock *lock;
-
+@property (nonatomic, assign) CGFloat bottomHeight;
 @end
 
 
@@ -45,10 +47,11 @@
 - (SLLockInfoMiddleView *)middleView
 {
     if (!_middleView) {
+        CGFloat height = self.view.bounds.size.height - self.headerView.bounds.size.height - self.bottomHeight;
         _middleView = [[SLLockInfoMiddleView alloc] initWithFrame:CGRectMake(0.0f,
                                                                              0.0f,
                                                                              self.view.bounds.size.width,
-                                                                             self.view.bounds.size.height - self.headerView.bounds.size.height)
+                                                                             height)
                                                           andLock:self.lock
                                                    xPaddingScaler:kSLLockInfoViewControllerXPaddingScaler
                                                    yPaddingScaler:kSLLockInfoViewControllerYPaddingScaler];
@@ -58,11 +61,27 @@
     return _middleView;
 }
 
+- (SLLockInfoBottomView *)bottomView
+{
+    if (!_bottomView) {
+        _bottomView = [[SLLockInfoBottomView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                             0.0f,
+                                                                             self.view.bounds.size.width,
+                                                                             self.bottomHeight)
+                                                          andLock:self.lock xPaddingScaler:kSLLockInfoViewControllerXPaddingScaler
+                                                   yPaddingScaler:kSLLockInfoViewControllerYPaddingScaler];
+        _bottomView.delegate = self;
+    }
+    
+    return _bottomView;
+}
+
 - (void)viewDidLoad
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
     self.view.layer.cornerRadius = SLConstantsViewCornerRadius1;
     self.view.clipsToBounds = YES;
     
@@ -76,21 +95,46 @@
                                     isLocked:@(YES)
                                       lockId:@"bkdidlldie830387jdod9"];
     
+    self.bottomHeight = -1.0;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    self.view.backgroundColor = [UIColor whiteColor];
+    if (self.bottomHeight < 0.0) {
+        self.bottomHeight = .3*self.view.bounds.size.height;
+    }
     
     self.middleView.frame = CGRectMake(0.0f,
                                        CGRectGetMaxY(self.headerView.frame),
                                        self.middleView.frame.size.width,
                                        self.middleView.frame.size.height);
     
-    [self.view addSubview:self.headerView];
-    [self.view addSubview:self.middleView];
+    self.bottomView.frame = CGRectMake(0.0f,
+                                       CGRectGetMaxY(self.middleView.frame),
+                                       self.bottomView.frame.size.width,
+                                       self.bottomView.frame.size.height);
+    
+    [self addSubView:self.headerView];
+    [self addSubView:self.middleView];
+    [self addSubView:self.bottomView];
+}
+
+- (void)addSubView:(UIView *)view
+{
+    BOOL hasView = NO;
+    for (UIView *subview in self.view.subviews) {
+        if (view == subview) {
+            hasView = YES;
+            break;
+        }
+    }
+    
+    if (!hasView) {
+        [self.view addSubview:view];
+    }
 }
 
 #pragma mark - SLLockInfoViewHeaderDelegate Methods
@@ -103,20 +147,21 @@
 - (void)middleViewCrashButtonPressed:(SLLockInfoMiddleView *)middleView
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
 }
 
 - (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
 }
 
 - (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
 }
 
-
+#pragma mark - SLLockInfoBottomView Delegate Methods
+- (void)bottomViewButtonPressed:(SLLockInfoBottomView *)bottomView withLockState:(BOOL)isLocked
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+}
 @end
