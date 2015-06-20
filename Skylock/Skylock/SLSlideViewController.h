@@ -11,18 +11,24 @@
 @class SLSlideViewController;
 
 typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
-    SLSlideViewControllerButtonActionExit
+    SLSlideViewControllerButtonActionNone,
+    SLSlideViewControllerButtonActionExit,
+    SLSlideViewcontrollerButtonActionAddLock,
+    SLSlideViewControllerButtonActionStore,
+    SLSlideViewControllerButtonActionSettings,
+    SLSlideViewControllerButtonActionHelp,
+    SLSlideViewControllerButtonActionLockSelected
 };
 
-@protocol SLSliceViewControllerDelegate <NSObject>
+@protocol SLSlideViewControllerDelegate <NSObject>
 
-- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action;
+- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action options:(NSDictionary *)options;
 
 @end
 
 
 @interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, weak) id <SLSliceViewControllerDelegate>delegate;
+@property (nonatomic, weak) id <SLSlideViewControllerDelegate>delegate;
 
 @end

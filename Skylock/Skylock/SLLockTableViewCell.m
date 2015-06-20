@@ -51,13 +51,7 @@
     
     
     CGSize imageViewSize = self.imageViewSize;
-//    self.imageView.frame = CGRectMake(self.imageView.frame.origin.x,
-//                                      self.imageView.frame.origin.y,
-//                                      imageViewSize.width,
-//                                      imageViewSize.height);
-    
-    
-    self.textLabel.frame = CGRectMake(imageViewSize.width + 20.0f,
+    self.textLabel.frame = CGRectMake(imageViewSize.width + 25.0f,
                                       self.textLabel.frame.origin.y,
                                       self.textLabel.frame.size.width,
                                       self.textLabel.frame.size.height);
@@ -66,7 +60,9 @@
                                             self.detailTextLabel.frame.origin.y,
                                             self.detailTextLabel.frame.size.width,
                                             self.textLabel.frame.size.height);
+    
 }
+
 
 - (void)updateCellWithLock:(SLLock *)lock
 {
@@ -85,15 +81,14 @@
 
 - (CGSize)imageViewSize
 {
-    UIImage *image = [UIImage imageNamed:@"sharebike-icon"];
-    return image.size;
+    return CGSizeMake(16.0f, 19.0f);
 }
 
 - (UIImage *)placeHolderImage
 {
     CGSize imageSize = self.imageViewSize;
-    UIGraphicsBeginImageContextWithOptions(imageSize, YES, 0);
-    [[UIColor whiteColor] setFill];
+    UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+    [[UIColor colorWithRed:.4 green:.2 blue:.6 alpha:0] setFill];
     UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
     UIImage *holderImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

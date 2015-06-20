@@ -10,6 +10,6 @@
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 
-@interface SLMapViewController : UIViewController <SLSliceViewControllerDelegate, CLLocationManagerDelegate>
+@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, CLLocationManagerDelegate>
 
 @end
