@@ -115,6 +115,11 @@
 		DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE81B1FCBBC00B38910 /* Images.xcassets */; };
 		DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */; };
 		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
+		DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */; };
+		DCE2CE061B364558007C4AC5 /* SLSettingTheftView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */; };
+		DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */; };
+		DCE2CE0C1B3724A7007C4AC5 /* SLSettingEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */; };
+		DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 /* End PBXBuildFile section */
 
@@ -291,6 +296,16 @@
 		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
+		DCE2CDFB1B364359007C4AC5 /* SLSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSettingsViewController.h; sourceTree = "<group>"; };
+		DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSettingsViewController.m; sourceTree = "<group>"; };
+		DCE2CE041B364558007C4AC5 /* SLSettingTheftView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSettingTheftView.h; sourceTree = "<group>"; };
+		DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSettingTheftView.m; sourceTree = "<group>"; };
+		DCE2CE071B36463B007C4AC5 /* SLSettingSharingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSettingSharingView.h; sourceTree = "<group>"; };
+		DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSettingSharingView.m; sourceTree = "<group>"; };
+		DCE2CE0A1B3724A7007C4AC5 /* SLSettingEmergencyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSettingEmergencyView.h; sourceTree = "<group>"; };
+		DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSettingEmergencyView.m; sourceTree = "<group>"; };
+		DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNavigationViewController.h; sourceTree = "<group>"; };
+		DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNavigationViewController.m; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -453,6 +468,16 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
+				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
+				DCE2CE041B364558007C4AC5 /* SLSettingTheftView.h */,
+				DCE2CE0A1B3724A7007C4AC5 /* SLSettingEmergencyView.h */,
+				DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */,
+				DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */,
+				DCE2CE071B36463B007C4AC5 /* SLSettingSharingView.h */,
+				DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */,
+				DCE2CDFB1B364359007C4AC5 /* SLSettingsViewController.h */,
+				DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */,
 				DC9EADED1B34EFB100DA1692 /* SLLockManager.h */,
 				DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */,
 				DC9EADD61B34BA9A00DA1692 /* SLLockInfoViewBase.h */,
@@ -745,9 +770,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */,
+				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
+				DCE2CE0C1B3724A7007C4AC5 /* SLSettingEmergencyView.m in Sources */,
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
 				DC9EADD81B34BA9A00DA1692 /* SLLockInfoViewBase.m in Sources */,
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
+				DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */,
+				DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */,
 				DC9EADE51B34D92B00DA1692 /* SLLockInfoBottomView.m in Sources */,
 				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
@@ -756,6 +785,7 @@
 				DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
+				DCE2CE061B364558007C4AC5 /* SLSettingTheftView.m in Sources */,
 				DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DC9EADCE1B349CC200DA1692 /* SLLockInfoMiddleView.m in Sources */,
