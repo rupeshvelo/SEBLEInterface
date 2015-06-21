@@ -54,10 +54,10 @@
                                         cellStrength:@(87.98)
                                             lastTime:@(354)
                                         distanceAway:@(12765)
-                                            isLocked:@(YES)
-                                           isCrashOn:@(YES)
-                                         isSharingOn:@(YES)
-                                        isSecurityOn:@(YES)];
+                                            isLocked:@(NO)
+                                           isCrashOn:@(NO)
+                                         isSharingOn:@(NO)
+                                        isSecurityOn:@(NO)];
         
         SLLock *lock2 = [[SLLock alloc] initWithName:@"Three Little Birds"
                                               lockId:@"opdkdopwp08djwwkddidh"
@@ -79,9 +79,9 @@
                                             lastTime:@(45)
                                         distanceAway:@(1256)
                                             isLocked:@(YES)
-                                           isCrashOn:@(YES)
+                                           isCrashOn:@(NO)
                                          isSharingOn:@(YES)
-                                        isSecurityOn:@(YES)];
+                                        isSecurityOn:@(NO)];
         
         SLLock *lock4 = [[SLLock alloc] initWithName:@"Stir It Up"
                                               lockId:@"eoeopwpwpeie993pw-0-2"
@@ -103,7 +103,11 @@
 
 - (BOOL)containsLock:(SLLock *)lock
 {
-    return [self.locks objectForKey:lock.lockId];
+    if ([self.locks objectForKey:lock.lockId]) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)addLock:(SLLock *)lock

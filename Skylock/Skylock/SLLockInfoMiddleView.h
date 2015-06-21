@@ -23,9 +23,9 @@ typedef NS_ENUM(NSUInteger, SLLockInfoMiddleViewButton) {
 
 @protocol SLLockMiddleViewDelegate <NSObject>
 
-- (void)middleViewCrashButtonPressed:(SLLockInfoMiddleView *)middleView;
-- (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView;
-- (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView;
+- (void)middleViewCrashButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn;
+- (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn;
+- (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn;
 
 @end
 

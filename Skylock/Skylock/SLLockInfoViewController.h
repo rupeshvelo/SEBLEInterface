@@ -11,8 +11,24 @@
 #import "SLLockInfoMiddleView.h"
 #import "SLLockInfoBottomView.h"
 
+@class SLLockInfoViewController;
+
+
+typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
+    SLLockInfoViewControllerActionNone,
+    SLLockInfoViewControllerActionCrash,
+    SLLockInfoViewControllerActionSecurity,
+    SLLockInfoViewControllerActionSharing
+};
+
+@protocol SLLockInfoViewControllerDelegate <NSObject>
+
+- (void)lockInfoViewController:(SLLockInfoViewController *)livc action:(SLLockInfoViewControllerAction)action;
+
+@end
 @interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate, SLLockMiddleViewDelegate, SLLockInfoBottomViewDelegate>
 
+@property (nonatomic, weak) id <SLLockInfoViewControllerDelegate> delegate;
 @property (nonatomic, strong) SLLock *lock;
 
 @end
