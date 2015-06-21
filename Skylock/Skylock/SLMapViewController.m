@@ -49,7 +49,7 @@
                                                                      menuButtonImage.size.height)];
         [self.menuButton setImage:menuButtonImage forState:UIControlStateNormal];
         [self.menuButton addTarget:self
-                            action:@selector(slideControllerButtonPressed)
+                            action:@selector(menuButtonPressed)
                   forControlEvents:UIControlEventTouchDown];
         self.menuButton.layer.cornerRadius = .5*self.menuButton.bounds.size.width;
         self.menuButton.clipsToBounds = YES;
@@ -93,10 +93,38 @@
                                        self.menuButton.bounds.size.height);
 }
 
-- (void)slideControllerButtonPressed
+- (void)menuButtonPressed
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
+    BOOL showingInfoVC = NO;
+    for (UIViewController *vc in self.childViewControllers) {
+        if ([vc isMemberOfClass:[SLLockInfoViewController class]]) {
+            SLLockInfoViewController *livc = (SLLockInfoViewController *)vc;
+            __typeof(self) __weak weakSelf = self;
+            [self removeLockInfoViewController:livc withCompletion:^{
+                [weakSelf presentSlideViewController];
+            }];
+            
+            showingInfoVC = YES;
+            break;
+        }
+    }
+    
+    if (!showingInfoVC) {
+        [self presentSlideViewController];
+    }
+}
+
+- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    
+}
+
+- (void)presentSlideViewController
+{
     [self.view addSubview:self.touchStopperView];
     
     static CGFloat xSpacer = .8f;
@@ -104,9 +132,9 @@
     SLSlideViewController *slvc = [SLSlideViewController new];
     slvc.delegate = self;
     slvc.view.frame = CGRectMake(-width,
-                                0.0f,
-                                width,
-                                self.view.bounds.size.height);
+                                 0.0f,
+                                 width,
+                                 self.view.bounds.size.height);
     
     [self addChildViewController:slvc];
     [self.view addSubview:slvc.view];
@@ -120,14 +148,6 @@
                                      self.view.bounds.size.height);
     } completion:nil];
 }
-
-- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    
-}
-
 - (void)removeSlideViewController:(SLSlideViewController *)slvc shouldPresentLockInfoVCWithLock:(SLLock *)lock
 {
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
@@ -170,6 +190,23 @@
     } completion:nil];
 }
 
+- (void)removeLockInfoViewController:(SLLockInfoViewController *)livc withCompletion:(void(^)(void))completion
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        livc.view.frame = CGRectMake(0.0f,
+                                     self.view.bounds.size.height,
+                                     livc.view.bounds.size.width,
+                                     livc.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [livc.view removeFromSuperview];
+        [livc removeFromParentViewController];
+        [self.touchStopperView removeFromSuperview];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
 #pragma mark - SLSlideViewController Delegate Methods
 - (void)slideViewController:(SLSlideViewController *)slvc
                buttonPushed:(SLSlideViewControllerButtonAction)action

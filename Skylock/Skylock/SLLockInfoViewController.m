@@ -12,6 +12,7 @@
 #import "SLLockInfoMiddleView.h"
 #import "SLLockInfoBottomView.h"
 #import "SLConstants.h"
+#import "SLLockManager.h"
 
 #define kSLLockInfoViewControllerXPaddingScaler 0.05f
 #define kSLLockInfoViewControllerYPaddingScaler 0.1f
@@ -67,7 +68,8 @@
                                                                              0.0f,
                                                                              self.view.bounds.size.width,
                                                                              self.bottomHeight)
-                                                          andLock:self.lock xPaddingScaler:kSLLockInfoViewControllerXPaddingScaler
+                                                          andLock:self.lock
+                                                   xPaddingScaler:kSLLockInfoViewControllerXPaddingScaler
                                                    yPaddingScaler:kSLLockInfoViewControllerYPaddingScaler];
         _bottomView.delegate = self;
     }
@@ -126,6 +128,13 @@
     }
 }
 
+- (void)handleAction:(SLLockInfoViewControllerAction)action
+{
+    if ([self.delegate respondsToSelector:@selector(lockInfoViewController:action:)]) {
+        [self.delegate lockInfoViewController:self action:action];
+    }
+}
+
 #pragma mark - SLLockInfoViewHeaderDelegate Methods
 - (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView
 {
@@ -133,19 +142,23 @@
 }
 
 #pragma mark - SLLockInfoMiddleView Delegate Methods
-- (void)middleViewCrashButtonPressed:(SLLockInfoMiddleView *)middleView
+- (void)middleViewCrashButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    self.lock.isCrashOn = @(stateOn);
+    [self handleAction:SLLockInfoViewControllerActionCrash];
 }
 
-- (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView
+- (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    self.lock.isSecurityOn = @(stateOn);
 }
 
-- (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView
+- (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    self.lock.isSharingOn = @(stateOn);
 }
 
 #pragma mark - SLLockInfoBottomView Delegate Methods

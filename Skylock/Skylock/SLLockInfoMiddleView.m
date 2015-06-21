@@ -39,6 +39,7 @@
                       forState:UIControlStateSelected];
         [_crashButton setImage:[self imageForButton:SLLockInfoMiddleViewButtonCrash active:NO]
                       forState:UIControlStateNormal];
+        _crashButton.selected = self.lock.isCrashOn.boolValue;
         
         [self addSubview:_crashButton];
     }
@@ -57,6 +58,7 @@
                          forState:UIControlStateSelected];
         [_securityButton setImage:[self imageForButton:SLLockInfoMiddleViewButtonSecurity active:NO]
                          forState:UIControlStateNormal];
+        _securityButton.selected = self.lock.isSecurityOn.boolValue;
         
         [self addSubview:_securityButton];
     }
@@ -75,6 +77,7 @@
                          forState:UIControlStateSelected];
         [_sharingButton setImage:[self imageForButton:SLLockInfoMiddleViewButtonSharing active:NO]
                          forState:UIControlStateNormal];
+        _sharingButton.selected = self.lock.isSharingOn.boolValue;
         
         [self addSubview:_sharingButton];
     }
@@ -198,8 +201,8 @@
 {
     self.crashButton.selected = !self.crashButton.isSelected;
     
-    if ([self.delegate respondsToSelector:@selector(middleViewCrashButtonPressed:)]) {
-        [self.delegate middleViewCrashButtonPressed:self];
+    if ([self.delegate respondsToSelector:@selector(middleViewCrashButtonPressed:stateOn:)]) {
+        [self.delegate middleViewCrashButtonPressed:self stateOn:self.crashButton.isSelected];
     }
 }
 
@@ -207,8 +210,8 @@
 {
     self.securityButton.selected = !self.securityButton.isSelected;
     
-    if ([self.delegate respondsToSelector:@selector(middleViewSecurityButtonPressed:)]) {
-        [self.delegate middleViewSecurityButtonPressed:self];
+    if ([self.delegate respondsToSelector:@selector(middleViewSecurityButtonPressed:stateOn:)]) {
+        [self.delegate middleViewSecurityButtonPressed:self stateOn:self.securityButton.isSelected];
     }
 }
 
@@ -217,8 +220,8 @@
 {
     self.sharingButton.selected = !self.sharingButton.isSelected;
     
-    if ([self.delegate respondsToSelector:@selector(middleViewSharingButtonPressed:)]) {
-        [self.delegate middleViewSharingButtonPressed:self];
+    if ([self.delegate respondsToSelector:@selector(middleViewSharingButtonPressed:stateOn:)]) {
+        [self.delegate middleViewSharingButtonPressed:self stateOn:self.sharingButton.isSelected];
     }
 }
 
