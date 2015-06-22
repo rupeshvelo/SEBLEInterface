@@ -13,6 +13,8 @@
 #import "SLLockInfoBottomView.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
+#import "SLSettingsViewController.h"
+#import "SLNavigationViewController.h"
 
 #define kSLLockInfoViewControllerXPaddingScaler 0.05f
 #define kSLLockInfoViewControllerYPaddingScaler 0.1f
@@ -139,6 +141,13 @@
 - (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    SLSettingsViewController *svc = [SLSettingsViewController new];
+    svc.lock = self.lock;
+    
+    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
+
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - SLLockInfoMiddleView Delegate Methods
