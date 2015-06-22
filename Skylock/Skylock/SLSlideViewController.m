@@ -10,6 +10,9 @@
 #import "SLLockManager.h"
 #import "SLLockTableViewCell.h"
 #import "SLConstants.h"
+#import "SLSettingsViewController.h"
+#import "SLNavigationViewController.h"
+
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
 #define KSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
@@ -186,6 +189,22 @@
                                   buttonPushed:[self buttonActionForIndexPath:indexPath]
                                        options:[self optionsForIndexPath:indexPath]];
         }
+    } else {
+        switch (indexPath.row) {
+            case 0:
+                NSLog(@"Add lock");
+                break;
+            case 1:
+                NSLog(@"Store");
+            case 2:
+                [self presentSettingsViewControllerWithIndexPath:indexPath];
+                break;
+            case 3:
+                NSLog(@"Health and Feedback");
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -212,6 +231,16 @@
                 break;
         }
     }
+}
+
+- (void)presentSettingsViewControllerWithIndexPath:(NSIndexPath *)indexPath
+{
+    SLSettingsViewController *svc = [SLSettingsViewController new];
+    svc.lock = self.locks[indexPath.row];
+    
+    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
+    
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (NSDictionary *)optionsForIndexPath:(NSIndexPath *)indexPath
