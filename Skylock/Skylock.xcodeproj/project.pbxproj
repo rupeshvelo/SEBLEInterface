@@ -120,6 +120,7 @@
 		DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */; };
 		DCE2CE0C1B3724A7007C4AC5 /* SLSettingEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */; };
 		DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */; };
+		DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 /* End PBXBuildFile section */
 
@@ -306,6 +307,8 @@
 		DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSettingEmergencyView.m; sourceTree = "<group>"; };
 		DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNavigationViewController.h; sourceTree = "<group>"; };
 		DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNavigationViewController.m; sourceTree = "<group>"; };
+		DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBackButton.h; sourceTree = "<group>"; };
+		DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBackButton.m; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -515,6 +518,8 @@
 				DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */,
 				DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */,
 				DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */,
+				DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */,
+				DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -778,6 +783,7 @@
 				DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */,
 				DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */,
 				DC9EADE51B34D92B00DA1692 /* SLLockInfoBottomView.m in Sources */,
+				DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */,
 				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,

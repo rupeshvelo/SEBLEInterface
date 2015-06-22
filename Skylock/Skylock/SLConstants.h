@@ -26,6 +26,7 @@
 
 #define SLConstantsMainTeal     [UIColor colorWithRed:118./255. green:180./255. blue:192./255. alpha:1.]
 #define SLConstantsLightTeal    [UIColor colorWithRed:183./255. green:217./255. blue:223./255. alpha:1.]
+#define SLConstantsSwitchTeal   [UIColor colorWithRed:40./255. green:82./255. blue:135./255. alpha:1.]
 #define SLConstantsNavControllerTitleColor    [UIColor whiteColor]
 
 #endif

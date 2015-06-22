@@ -97,7 +97,7 @@
                     forControlEvents:UIControlEventTouchDown];
         [_autoUnlockButton setTitle:NSLocalizedString(@"Auto Unlock", nil)
                            forState:UIControlStateNormal];
-        _autoUnlockButton.titleLabel.textColor = [UIColor blackColor];
+        [_autoUnlockButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         _autoUnlockButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
         [self addSubview:_autoUnlockButton];
     }

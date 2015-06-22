@@ -15,6 +15,8 @@
 - (void)settingEmergencyView:(SLSettingEmergencyView *)emergencyView autoUnlockState:(BOOL)stateOn;
 
 @end
+
+
 @interface SLSettingEmergencyView : SLLockInfoViewBase
 
 @property (nonatomic, weak) id <SLSettingEmergencyViewDelegate> delegate;

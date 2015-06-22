@@ -12,6 +12,8 @@
 #import "SLSettingEmergencyView.h"
 #import "SLNavigationViewController.h"
 #import "SLLock.h"
+#import "SLConstants.h"
+#import "SLBackButton.h"
 
 #define kSLSettingViewControllerxPaddingScaler  .1f
 
@@ -78,6 +80,7 @@
     [super viewDidLoad];
     
     self.navigationItem.title = self.lock.name;
+    self.navigationItem.leftBarButtonItem = self.backButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -101,9 +104,17 @@
                                           self.emergencyView.frame.size.height);
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (UIBarButtonItem *)backButton
+{
+    SLBackButton *button = [[SLBackButton alloc] initWithTitle:NSLocalizedString(@"Lock", nil)];
+    button.delegate = self;
+    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+    return barButton;
 }
 
+#pragma mark - back button delegate methods
+- (void)backButtonPressed:(SLBackButton *)backButton
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
 @end

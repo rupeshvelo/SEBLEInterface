@@ -8,6 +8,18 @@
 
 #import "SLLockInfoViewBase.h"
 
+@class SLSettingTheftView;
+
+@protocol SLSettingTheftViewDelegate <NSObject>
+
+- (void)settingTheftView:(SLSettingTheftView *)theftView alertSwitchValueChangedTo:(BOOL)state;
+
+- (void)settingTheftView:(SLSettingTheftView *)theftView sensitivityValueChangedTo:(NSNumber *)newValue;
+@end
+
+
 @interface SLSettingTheftView : SLLockInfoViewBase
+
+@property (nonatomic, weak) id <SLSettingTheftViewDelegate> delegate;
 
 @end

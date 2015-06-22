@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SLBackButton.h"
+
 @class SLLock;
 
-@interface SLSettingsViewController : UIViewController
+@interface SLSettingsViewController : UIViewController <SLBackButtonDelegate>
 
 @property (nonatomic, strong) SLLock *lock;
 
