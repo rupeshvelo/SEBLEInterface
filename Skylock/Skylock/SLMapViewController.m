@@ -33,7 +33,7 @@
     if (!_touchStopperView) {
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
         _touchStopperView.userInteractionEnabled = YES;
-        _touchStopperView.backgroundColor = [[UIColor darkGrayColor] colorWithAlphaComponent:.95f];
+        _touchStopperView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.85f];
     }
     
     return _touchStopperView;

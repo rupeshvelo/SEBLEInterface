@@ -196,6 +196,7 @@
                 break;
             case 1:
                 NSLog(@"Store");
+                break;
             case 2:
                 [self presentSettingsViewControllerWithIndexPath:indexPath];
                 break;
