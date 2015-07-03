@@ -96,4 +96,80 @@
     
     return wifiState;
 }
+
+- (NSDictionary *)dictionaryRepresentation
+{
+    NSMutableDictionary *dictRep = [NSMutableDictionary new];
+    for (NSNumber *property in self.propertiesArray) {
+        dictRep[property] = [self getPropertyOrNull:property.unsignedIntegerValue];
+    }
+    
+    return dictRep;
+}
+
+- (id)getPropertyOrNull:(SLLockProperty)property
+{
+    NSString *key = [self keyForProperty:property];
+    id value = [self valueForKey:key];
+    
+    return value ? value : [NSNull null];
+}
+
+- (NSString *)keyForProperty:(SLLockProperty)property
+{
+    switch (property) {
+        case SLLockPropertyName:
+            return @"name";
+            break;
+        case SLLockPropertyLockId:
+            return @"lockId";
+            break;
+        case SLLockPropertyBatteryRemaining:
+            return @"batteryRemaining";
+            break;
+        case SLLockPropertyWifiStrength:
+            return @"wifiStrength";
+            break;
+        case SLLockPropertyCellStrength:
+            return @"cellStrength";
+            break;
+        case SLLockPropertyLastTime:
+            return @"lastTime";
+            break;
+        case SLLockPropertyDistanceAway:
+            return @"distanceAway";
+            break;
+        case SLLockPropertyIsLocked:
+            return @"isLocked";
+            break;
+        case SLLockPropertyIsCrashOn:
+            return @"isCrashOn";
+            break;
+        case SLLockPropertyIsSharingOn:
+            return @"isSharingOn";
+            break;
+        case SLLockPropertyIsSecurityOn:
+            return @"isSecurityOn";
+            break;
+        default:
+            return nil;
+            break;
+    }
+}
+
+- (NSArray *)propertiesArray
+{
+    return @[@(SLLockPropertyName),
+             @(SLLockPropertyLockId),
+             @(SLLockPropertyBatteryRemaining),
+             @(SLLockPropertyWifiStrength),
+             @(SLLockPropertyCellStrength),
+             @(SLLockPropertyLastTime),
+             @(SLLockPropertyDistanceAway),
+             @(SLLockPropertyIsLocked),
+             @(SLLockPropertyIsCrashOn),
+             @(SLLockPropertyIsSharingOn),
+             @(SLLockPropertyIsSecurityOn)
+             ];
+}
 @end

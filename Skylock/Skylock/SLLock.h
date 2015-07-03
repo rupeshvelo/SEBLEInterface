@@ -35,6 +35,19 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
     SLLockWifiSignalState5
 };
 
+typedef NS_ENUM(NSUInteger, SLLockProperty) {
+    SLLockPropertyName,
+    SLLockPropertyLockId,
+    SLLockPropertyBatteryRemaining,
+    SLLockPropertyWifiStrength,
+    SLLockPropertyCellStrength,
+    SLLockPropertyLastTime,
+    SLLockPropertyDistanceAway,
+    SLLockPropertyIsLocked,
+    SLLockPropertyIsCrashOn,
+    SLLockPropertyIsSharingOn,
+    SLLockPropertyIsSecurityOn
+};
 
 @interface SLLock : NSObject
 
@@ -66,5 +79,6 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 - (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;
 - (SLLockWifiSignalState)wifiState;
+- (NSDictionary *)dictionaryRepresentation;
 
 @end

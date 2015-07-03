@@ -12,6 +12,8 @@
 		DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
 		DC23872D1B307CF300BB28F3 /* SLLockInfoViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */; };
+		DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */; };
+		DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7151B27E5E100CEA7CF /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
@@ -107,6 +109,9 @@
 		DCB755161B33DEDA00457FC1 /* unlocked-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754C51B33DEDA00457FC1 /* unlocked-icon.png */; };
 		DCB755171B33DEDA00457FC1 /* unlocked-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754C61B33DEDA00457FC1 /* unlocked-icon@2x.png */; };
 		DCB755181B33DEDA00457FC1 /* unlocked-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCB754C71B33DEDA00457FC1 /* unlocked-icon@3x.png */; };
+		DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */; };
+		DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */; };
+		DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */; };
 		DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDA1B1FCBBC00B38910 /* main.m */; };
 		DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */; };
 		DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */; };
@@ -177,6 +182,10 @@
 		DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewController.m; sourceTree = "<group>"; };
 		DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewHeader.h; sourceTree = "<group>"; };
 		DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewHeader.m; sourceTree = "<group>"; };
+		DC2E04EF1B3EE24800B7D6F6 /* SLSharingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSharingViewController.h; sourceTree = "<group>"; };
+		DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSharingViewController.m; sourceTree = "<group>"; };
+		DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLContact.h; sourceTree = "<group>"; };
+		DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLContact.m; sourceTree = "<group>"; };
 		DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
@@ -281,6 +290,12 @@
 		DCB754C51B33DEDA00457FC1 /* unlocked-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unlocked-icon.png"; sourceTree = "<group>"; };
 		DCB754C61B33DEDA00457FC1 /* unlocked-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unlocked-icon@2x.png"; sourceTree = "<group>"; };
 		DCB754C71B33DEDA00457FC1 /* unlocked-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unlocked-icon@3x.png"; sourceTree = "<group>"; };
+		DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBaseTableViewCell.h; sourceTree = "<group>"; };
+		DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBaseTableViewCell.m; sourceTree = "<group>"; };
+		DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockDidShareTableViewCell.h; sourceTree = "<group>"; };
+		DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockDidShareTableViewCell.m; sourceTree = "<group>"; };
+		DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLShareingBaseTableViewCell.h; sourceTree = "<group>"; };
+		DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLShareingBaseTableViewCell.m; sourceTree = "<group>"; };
 		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -471,6 +486,12 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
+				DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */,
+				DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */,
+				DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */,
+				DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */,
+				DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */,
 				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
 				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
 				DCE2CE041B364558007C4AC5 /* SLSettingTheftView.h */,
@@ -491,6 +512,10 @@
 				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
 				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
 				DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */,
+				DC2E04EF1B3EE24800B7D6F6 /* SLSharingViewController.h */,
+				DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */,
+				DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */,
+				DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */,
 				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
 				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
 				DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */,
@@ -781,13 +806,18 @@
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
 				DC9EADD81B34BA9A00DA1692 /* SLLockInfoViewBase.m in Sources */,
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
+				DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */,
 				DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */,
 				DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */,
 				DC9EADE51B34D92B00DA1692 /* SLLockInfoBottomView.m in Sources */,
+				DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */,
 				DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */,
+				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
 				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
+				DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
+				DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
