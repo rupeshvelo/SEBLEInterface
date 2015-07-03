@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SLBaseTableViewCell.h"
 
 @class SLLock;
 
-@interface SLLockTableViewCell : UITableViewCell
+@interface SLLockTableViewCell : SLBaseTableViewCell
 
 - (void)updateCellWithLock:(SLLock *)lock;
 
