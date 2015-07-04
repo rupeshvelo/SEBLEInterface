@@ -12,6 +12,7 @@
 #import "SLConstants.h"
 #import "SLSettingsViewController.h"
 #import "SLNavigationViewController.h"
+#import "SLAddLockViewController.h"
 
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
@@ -193,6 +194,7 @@
         switch (indexPath.row) {
             case 0:
                 NSLog(@"Add lock");
+                [self presentAddLockViewController];
                 break;
             case 1:
                 NSLog(@"Store");
@@ -251,5 +253,42 @@
     }
     
     return nil;
+}
+
+- (void)presentAddLockViewController
+{
+    SLAddLockViewController *alvc = [SLAddLockViewController new];
+    alvc.delegate = self;
+    alvc.headerHeight = [self tableView:self.tableView heightForHeaderInSection:0];
+    alvc.view.frame = CGRectMake(-self.view.bounds.size.width,
+                                 0.0f,
+                                 self.view.bounds.size.width,
+                                 self.view.bounds.size.height);
+    [self addChildViewController:alvc];
+    [self.view addSubview:alvc.view];
+    [self.view bringSubviewToFront:alvc.view];
+    [alvc didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        alvc.view.frame = CGRectMake(0.0f,
+                                     0.0f,
+                                     alvc.view.bounds.size.width,
+                                     alvc.view.bounds.size.height);
+    } completion:nil];
+    
+}
+
+#pragma mark - SLAddLockViewController Delegate Methods
+- (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        alvc.view.frame = CGRectMake(-alvc.view.bounds.size.width,
+                                     0.0f,
+                                     alvc.view.bounds.size.width,
+                                     alvc.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [alvc.view removeFromSuperview];
+        [alvc removeFromParentViewController];
+    }];
 }
 @end

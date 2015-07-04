@@ -23,6 +23,7 @@
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) SLLocationManager *locationManager;
+@property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 
 @end
 
@@ -75,6 +76,10 @@
     [self.view addSubview:mapView];
     
     [self.view addSubview:self.menuButton];
+    
+    // testing ble interface manager
+    self.bleManager = [SEBLEInterfaceMangager manager];
+    self.bleManager.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
