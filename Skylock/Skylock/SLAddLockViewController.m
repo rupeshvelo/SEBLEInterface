@@ -10,7 +10,7 @@
 #import "SLLockManager.h"
 #import "SLLock.h"
 #import "SLConstants.h"
-
+#import "SLNotifications.h"
 
 @interface SLAddLockViewController ()
 
@@ -26,18 +26,22 @@
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
+        _tableView.rowHeight = 80.0f;
     }
     
     return _tableView;
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.locks = [SLLockManager.manager unaddedLocks];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
+    self.locks = [NSArray new];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -47,16 +51,23 @@
     if (![self.view.subviews containsObject:self.tableView]) {
         [self.view addSubview:self.tableView];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockDiscovered)
+                                                 name:kSLNotificationLockManagerDiscoverdLock
+                                               object:nil];
+}
+
+- (void)lockDiscovered
+{
+    self.locks = [SLLockManager.manager unaddedLocks];
+    [self.tableView reloadData];
 }
 
 - (void)headerButtonPressed
 {
     NSLog(@"header button pressed");
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+    [SLLockManager.manager startScan];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -112,8 +123,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    SLLock *lock = self.locks[indexPath.row];
+    [SLLockManager.manager addLock:lock];
+    
     if ([self.delegate respondsToSelector:@selector(addLockViewController:didAddLock:)]) {
-        [self.delegate addLockViewController:self didAddLock:self.locks[indexPath.row]];
+        [self.delegate addLockViewController:self didAddLock:lock];
     }
 }
 @end

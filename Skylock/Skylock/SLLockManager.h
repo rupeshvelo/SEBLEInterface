@@ -18,6 +18,7 @@
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
 - (NSArray *)orderedLocks;
+- (void)startScan;
 
 // methods for testing
 - (SLLock *)getTestLock;
