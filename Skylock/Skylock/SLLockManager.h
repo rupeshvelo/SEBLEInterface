@@ -7,17 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+
 @class SLLock;
 
-@interface SLLockManager : NSObject
+@interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate>
 
 + (id)manager;
 
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
 - (NSArray *)orderedLocks;
+
 // methods for testing
 - (SLLock *)getTestLock;
 - (void)createTestLocks;
+- (NSArray *)unaddedLocks;
 
 @end

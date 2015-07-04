@@ -9,11 +9,16 @@
 #import "SLLockManager.h"
 #import "SLLock.h"
 #include <stdlib.h>
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SEBLEInterface/SEBLEPeripheral.h"
 
 @interface SLLockManager()
 
 @property (nonatomic, strong) NSMutableDictionary *locks;
 @property (nonatomic, strong) NSMutableArray *lockOrder;
+@property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
+@property (nonatomic, strong) NSMutableDictionary *locksToAdd;
+
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -28,6 +33,9 @@
     if (self) {
         _locks      = [NSMutableDictionary new];
         _lockOrder  = [NSMutableArray new];
+        _locksToAdd = [NSMutableDictionary new];
+        _bleManager = [[SEBLEInterfaceMangager alloc] init];
+        _bleManager.delegate = self;
     }
     
     return self;
@@ -144,10 +152,66 @@
     return self.testLocks[target];
 }
 
+- (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
+{
+    SLLock *lock = [[SLLock alloc] initWithName:blePeripheral.peripheral.name
+                                         lockId:blePeripheral.UUID
+                               batteryRemaining:@(0)
+                                   wifiStrength:@(0)
+                                   cellStrength:@(0)
+                                       lastTime:@(0)
+                                   distanceAway:@(0)
+                                       isLocked:@(YES)
+                                      isCrashOn:@(YES)
+                                    isSharingOn:@(YES)
+                                   isSecurityOn:@(YES)];
+    return lock;
+}
+
 - (void)createTestLocks
 {
     [self.testLocks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
         [self addLock:lock];
     }];
 }
+
+- (NSArray *)unaddedLocks
+{
+    NSMutableArray *unaddedKeys = [NSMutableArray arrayWithArray:self.locksToAdd.allKeys];
+    [unaddedKeys sortUsingComparator:^NSComparisonResult(SLLock *lock1, SLLock *lock2) {
+        return [lock1.name compare:lock2.name];
+    }];
+    
+    NSMutableArray *locks = [NSMutableArray new];
+    for(NSUInteger i=0; i < unaddedKeys.count; i++) {
+        [locks addObject:self.locksToAdd[unaddedKeys[i]]];
+    }
+    
+    return locks;
+}
+
+#pragma mark - SEBLEInterfaceManager Delegate Methods
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger discoveredPeripheral:(SEBLEPeripheral *)peripheral
+{
+    SLLock *lock = [self lockFromPeripheral:peripheral];
+    if (!self.locksToAdd[lock.lockId]) {
+        self.locksToAdd[lock.lockId] = lock;
+    }
+}
+
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectPeripheral:(SEBLEPeripheral *)peripheral
+{
+    
+}
+
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager removePeripheral:(SEBLEPeripheral *)peripheral
+{
+    
+}
+
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager didUpdateDeviceValues:(NSDictionary *)values
+{
+    
+}
+
 @end
