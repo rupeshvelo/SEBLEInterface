@@ -11,18 +11,30 @@
 
 @class SLLock;
 
+typedef NS_ENUM(NSUInteger, SLLockManagerServices) {
+    SLLockManagerServicesLedService,
+    SLLockManagerServicesLedOn,
+    SLLockManagerServicesLedOff,
+    SLLockManagerServicesLockService,
+    SLLockManagerServicesLockState,
+    SLLockManagerServicesLockShift,
+    SLLockManagerServicesLedState,
+    SLLockManagerServicesTxPwr,
+    SLLockManagerServicesTesting
+};
+
 @interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate>
 
 + (id)manager;
 
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
-- (NSArray *)orderedLocks;
+- (NSArray *)orderedLocksByName;
 - (void)startScan;
-
+- (NSArray *)unaddedLocks;
+- (void)toggleCrash:(BOOL)turnOn;
 // methods for testing
 - (SLLock *)getTestLock;
 - (void)createTestLocks;
-- (NSArray *)unaddedLocks;
 
 @end

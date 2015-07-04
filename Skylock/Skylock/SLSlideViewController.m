@@ -49,7 +49,7 @@
 - (NSArray *)locks
 {
     if (!_locks) {
-        _locks = [SLLockManager.manager orderedLocks];
+        _locks = [SLLockManager.manager orderedLocksByName];
     }
     
     return _locks;
@@ -281,7 +281,7 @@
 #pragma mark - SLAddLockViewController Delegate Methods
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
 {
-    self.locks = [SLLockManager.manager orderedLocks];
+    self.locks = [SLLockManager.manager orderedLocksByName];
     [self.tableView reloadData];
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
