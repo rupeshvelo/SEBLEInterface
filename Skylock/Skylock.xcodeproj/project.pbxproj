@@ -329,6 +329,7 @@
 		DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBackButton.m; sourceTree = "<group>"; };
 		DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddLockViewController.h; sourceTree = "<group>"; };
 		DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAddLockViewController.m; sourceTree = "<group>"; };
+		DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLNotifications.h; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -494,6 +495,7 @@
 			children = (
 				DC5C51C61B46E38F006CC57B /* assets */,
 				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
+				DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */,
 				DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */,
 				DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */,
 				DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */,

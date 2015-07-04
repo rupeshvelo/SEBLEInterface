@@ -40,6 +40,20 @@
     return self;
 }
 
++ (id)lockWithName:(NSString *)name andLockId:(NSString *)lockId
+{
+    return [[self alloc] initWithName:name
+                               lockId:lockId
+                     batteryRemaining:@(0)
+                         wifiStrength:@(0)
+                         cellStrength:@(0)
+                             lastTime:@(0)
+                         distanceAway:@(0)
+                             isLocked:@(NO)
+                            isCrashOn:@(NO)
+                          isSharingOn:@(NO)
+                         isSecurityOn:@(NO)];
+}
 - (SLLockCellSignalState)cellSignalState
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));

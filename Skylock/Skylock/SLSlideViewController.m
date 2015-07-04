@@ -281,6 +281,9 @@
 #pragma mark - SLAddLockViewController Delegate Methods
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
 {
+    self.locks = [SLLockManager.manager orderedLocks];
+    [self.tableView reloadData];
+    
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         alvc.view.frame = CGRectMake(-alvc.view.bounds.size.width,
                                      0.0f,

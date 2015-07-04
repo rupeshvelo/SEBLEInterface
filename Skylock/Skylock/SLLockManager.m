@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #import "SEBLEInterface/SEBLEInterfaceManager.h"
 #import "SEBLEInterface/SEBLEPeripheral.h"
+#import "SLNotifications.h"
 
 @interface SLLockManager()
 
@@ -34,7 +35,7 @@
         _locks      = [NSMutableDictionary new];
         _lockOrder  = [NSMutableArray new];
         _locksToAdd = [NSMutableDictionary new];
-        _bleManager = [[SEBLEInterfaceMangager alloc] init];
+        _bleManager = [SEBLEInterfaceMangager manager];
         _bleManager.delegate = self;
     }
     
@@ -52,6 +53,10 @@
     return lockManger;
 }
 
+- (void)dealloc
+{
+    
+}
 - (NSArray *)testLocks
 {
     if (!_testLocks) {
@@ -154,18 +159,7 @@
 
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
-    SLLock *lock = [[SLLock alloc] initWithName:blePeripheral.peripheral.name
-                                         lockId:blePeripheral.UUID
-                               batteryRemaining:@(0)
-                                   wifiStrength:@(0)
-                                   cellStrength:@(0)
-                                       lastTime:@(0)
-                                   distanceAway:@(0)
-                                       isLocked:@(YES)
-                                      isCrashOn:@(YES)
-                                    isSharingOn:@(YES)
-                                   isSecurityOn:@(YES)];
-    return lock;
+    return [SLLock lockWithName:blePeripheral.peripheral.name andLockId:blePeripheral.UUID];
 }
 
 - (void)createTestLocks
@@ -190,6 +184,12 @@
     return locks;
 }
 
+- (void)startScan
+{
+    self.bleManager.delegate = self;
+    [SEBLEInterfaceMangager.manager startScan];
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
@@ -197,6 +197,9 @@
     if (!self.locksToAdd[lock.lockId]) {
         self.locksToAdd[lock.lockId] = lock;
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                        object:nil];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectPeripheral:(SEBLEPeripheral *)peripheral

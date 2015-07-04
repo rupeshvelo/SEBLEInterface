@@ -76,10 +76,6 @@
     [self.view addSubview:mapView];
     
     [self.view addSubview:self.menuButton];
-    
-    // testing ble interface manager
-    self.bleManager = [SEBLEInterfaceMangager manager];
-    self.bleManager.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
