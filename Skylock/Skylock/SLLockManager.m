@@ -13,13 +13,37 @@
 #import "SEBLEInterface/SEBLEPeripheral.h"
 #import "SLNotifications.h"
 
+typedef NS_ENUM(NSUInteger, SLLockManagerService) {
+    SLLockManagerServiceLedService = 0,
+    SLLockManagerServiceLedState,
+    SLLockManagerServiceLedOn,
+    SLLockManagerServiceLedOff,
+    SLLockManagerServiceLockService,
+    SLLockManagerServiceLockShift,
+    SLLockManagerServiceLockState,
+    SLLockManagerServiceTxPwr,
+    SLLockManagerServiceTesting
+};
+
+typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
+    SLLockManagerCharacteristicLed = 100,
+    SLLockManagerCharacteristicLock
+};
+
+typedef enum {
+    SLLockManagerValueNone      = 0xFF,
+    SLLockManagerValueLedOn     = 0x4F,
+    SLLockManagerValueLedOff    = 0x00,
+    SLLockManagerValueLock      = 0x01,
+    SLLockManagerValueUnlock    = 0x00
+} SLLockMangerValue;
+
 @interface SLLockManager()
 
 @property (nonatomic, strong) NSMutableDictionary *locks;
-@property (nonatomic, strong) NSMutableArray *lockOrder;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, strong) NSMutableDictionary *locksToAdd;
-
+@property (nonatomic, strong) NSDictionary *services;
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -33,10 +57,10 @@
     self = [super init];
     if (self) {
         _locks      = [NSMutableDictionary new];
-        _lockOrder  = [NSMutableArray new];
         _locksToAdd = [NSMutableDictionary new];
         _bleManager = [SEBLEInterfaceMangager manager];
         _bleManager.delegate = self;
+
     }
     
     return self;
@@ -53,10 +77,24 @@
     return lockManger;
 }
 
-- (void)dealloc
+- (NSDictionary *)services
 {
+    if (!_services) {
+        _services = @{@(SLLockManagerServiceLedService): @"9c7d1523-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceLedOn): @"9c7d1525-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceLedOff): @"9c7d1526-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceLockState): @"9c7d1529-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerCharacteristicLock): @"9c7d152a-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceLockShift): @"9c7d152b-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerCharacteristicLed): @"9c7d1524-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceTxPwr): @"9c7d1528-ba74-0bac-bb4b-539d6a70eadd",
+                      @(SLLockManagerServiceTesting): @"9c7d152c-ba74-0bac-bb4b-539d6a70eadd"
+                      };
+    }
     
+    return _services;
 }
+
 - (NSArray *)testLocks
 {
     if (!_testLocks) {
@@ -116,7 +154,7 @@
 
 - (BOOL)containsLock:(SLLock *)lock
 {
-    if ([self.locks objectForKey:lock.lockId]) {
+    if ([self.locks objectForKey:lock.name]) {
         return YES;
     }
     
@@ -126,29 +164,31 @@
 - (void)addLock:(SLLock *)lock
 {
     if ([self containsLock:lock]) {
-        NSLog(@"Duplicate lock with id: %@", lock.lockId);
+        NSLog(@"Duplicate lock: %@", lock.name);
     } else {
-        self.locks[lock.lockId] = lock;
-        [self.lockOrder addObject:lock.lockId];
+        if (self.locksToAdd[lock.name]) {
+            [self.locksToAdd removeObjectForKey:lock.name];
+        }
+        
+        self.locks[lock.name] = lock;
+        [self.bleManager addPeripheralNamed:lock.name];
     }
 }
 
 - (void)removeLock:(SLLock *)lock
 {
     if ([self containsLock:lock]) {
-        [self.locks removeObjectForKey:lock.lockId];
-        [self.lockOrder removeObject:lock.lockId];
+        [self.locks removeObjectForKey:lock.name];
     }
 }
 
-- (NSArray *)orderedLocks
+- (NSArray *)orderedLocksByName
 {
-    NSMutableArray *locks = [NSMutableArray new];
-    for (NSString *lockId in self.lockOrder) {
-        [locks addObject:self.locks[lockId]];
-    }
+    NSArray *locksByName = [self.locks.allValues sortedArrayUsingComparator:^NSComparisonResult(SLLock *l1, SLLock *l2) {
+        return [l1.name compare:l2.name];
+    }];
     
-    return locks;
+    return locksByName;
 }
 
 - (SLLock *)getTestLock
@@ -159,7 +199,7 @@
 
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
-    return [SLLock lockWithName:blePeripheral.peripheral.name andLockId:blePeripheral.UUID];
+    return [SLLock lockWithName:blePeripheral.peripheral.name lockId:blePeripheral.CBUUIDAsString];
 }
 
 - (void)createTestLocks
@@ -186,20 +226,73 @@
 
 - (void)startScan
 {
-    self.bleManager.delegate = self;
-    [SEBLEInterfaceMangager.manager startScan];
+    [self.bleManager startScan];
 }
 
+- (void)toggleCrashForLock:(SLLock *)lock
+{
+    [self writeToPeripheralFoLockName:lock.name
+                              service:SLLockManagerServiceLedService
+                       characteristic:SLLockManagerCharacteristicLed
+                               turnOn:lock.isCrashOn.boolValue];
+}
+
+- (void)toggleSecurityForLock:(SLLock *)lock
+{
+    [self writeToPeripheralFoLockName:lock.name
+                              service:SLLockManagerServiceLockState
+                       characteristic:SLLockManagerCharacteristicLock
+                               turnOn:lock.isSecurityOn.boolValue];
+}
+
+- (void)toggleSharignForLock:(SLLock *)lock
+{
+    
+}
+
+- (void)writeToPeripheralFoLockName:(NSString *)lockName
+                            service:(SLLockManagerService)service
+                     characteristic:(SLLockManagerCharacteristic)characteristic
+                             turnOn:(BOOL)turnOn
+{
+    NSString *serviceUUID = self.services[@(service)];
+    NSString *characteristicUUID = self.services[@(characteristic)];
+    u_int8_t value = [self valueForCharacteristic:characteristic turnOn:turnOn];
+    NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
+    [self.bleManager writeToPeripheralWithName:lockName
+                                   serviceUUID:serviceUUID.uppercaseString
+                            characteristicUUID:characteristicUUID.uppercaseString
+                                          data:data];
+}
+
+- (SLLockMangerValue)valueForCharacteristic:(SLLockManagerCharacteristic)characteristic
+                                     turnOn:(BOOL)turnOn
+{
+    switch (characteristic) {
+        case SLLockManagerCharacteristicLed:
+            return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueLedOff;
+            break;
+        case SLLockManagerCharacteristicLock:
+            return turnOn ? SLLockManagerValueLock : SLLockManagerValueUnlock;
+            break;
+        default:
+            return SLLockManagerValueNone;
+            break;
+    }
+    
+}
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
     SLLock *lock = [self lockFromPeripheral:peripheral];
-    if (!self.locksToAdd[lock.lockId]) {
-        self.locksToAdd[lock.lockId] = lock;
+    if (!self.locksToAdd[lock.name]) {
+        self.locksToAdd[lock.name] = lock;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                            object:nil];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                        object:nil];
+    
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectPeripheral:(SEBLEPeripheral *)peripheral

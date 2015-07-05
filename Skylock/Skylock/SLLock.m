@@ -40,7 +40,7 @@
     return self;
 }
 
-+ (id)lockWithName:(NSString *)name andLockId:(NSString *)lockId
++ (id)lockWithName:(NSString *)name lockId:(NSString *)lockId
 {
     return [[self alloc] initWithName:name
                                lockId:lockId
@@ -54,6 +54,7 @@
                           isSharingOn:@(NO)
                          isSecurityOn:@(NO)];
 }
+
 - (SLLockCellSignalState)cellSignalState
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));

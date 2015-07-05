@@ -11,18 +11,22 @@
 
 @class SLLock;
 
+
+
 @interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate>
 
 + (id)manager;
 
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
-- (NSArray *)orderedLocks;
+- (NSArray *)orderedLocksByName;
 - (void)startScan;
-
+- (NSArray *)unaddedLocks;
+- (void)toggleCrashForLock:(SLLock *)lock;
+- (void)toggleSecurityForLock:(SLLock *)lock;
+- (void)toggleSharignForLock:(SLLock *)lock;
 // methods for testing
 - (SLLock *)getTestLock;
 - (void)createTestLocks;
-- (NSArray *)unaddedLocks;
 
 @end

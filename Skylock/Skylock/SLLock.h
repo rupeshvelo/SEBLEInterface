@@ -76,7 +76,7 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
        isSharingOn:(NSNumber *)isSharingOn
       isSecurityOn:(NSNumber *)isSecurityOn;
 
-+ (id)lockWithName:(NSString *)name andLockId:(NSString *)lockId;
++ (id)lockWithName:(NSString *)name lockId:(NSString *)lockId;
 - (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;
 - (SLLockWifiSignalState)wifiState;
