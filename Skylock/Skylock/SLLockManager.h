@@ -11,17 +11,7 @@
 
 @class SLLock;
 
-typedef NS_ENUM(NSUInteger, SLLockManagerServices) {
-    SLLockManagerServicesLedService,
-    SLLockManagerServicesLedOn,
-    SLLockManagerServicesLedOff,
-    SLLockManagerServicesLockService,
-    SLLockManagerServicesLockState,
-    SLLockManagerServicesLockShift,
-    SLLockManagerServicesLedState,
-    SLLockManagerServicesTxPwr,
-    SLLockManagerServicesTesting
-};
+
 
 @interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate>
 
@@ -32,7 +22,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerServices) {
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
 - (NSArray *)unaddedLocks;
-- (void)toggleCrash:(BOOL)turnOn;
+- (void)toggleCrashForLock:(SLLock *)lock;
+- (void)toggleSecurityForLock:(SLLock *)lock;
+- (void)toggleSharignForLock:(SLLock *)lock;
 // methods for testing
 - (SLLock *)getTestLock;
 - (void)createTestLocks;

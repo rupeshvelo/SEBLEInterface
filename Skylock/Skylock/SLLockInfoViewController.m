@@ -155,19 +155,21 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.lock.isCrashOn = @(stateOn);
-    [self handleAction:SLLockInfoViewControllerActionCrash];
+    [SLLockManager.manager toggleCrashForLock:self.lock];
 }
 
 - (void)middleViewSecurityButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.lock.isSecurityOn = @(stateOn);
+    [SLLockManager.manager toggleSecurityForLock:self.lock];
 }
 
 - (void)middleViewSharingButtonPressed:(SLLockInfoMiddleView *)middleView stateOn:(BOOL)stateOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.lock.isSharingOn = @(stateOn);
+    [SLLockManager.manager toggleSharignForLock:self.lock];
 }
 
 #pragma mark - SLLockInfoBottomView Delegate Methods

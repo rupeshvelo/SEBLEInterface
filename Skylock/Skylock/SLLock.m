@@ -40,10 +40,10 @@
     return self;
 }
 
-+ (id)lockWithName:(NSString *)name
++ (id)lockWithName:(NSString *)name lockId:(NSString *)lockId
 {
     return [[self alloc] initWithName:name
-                               lockId:nil
+                               lockId:lockId
                      batteryRemaining:@(0)
                          wifiStrength:@(0)
                          cellStrength:@(0)
