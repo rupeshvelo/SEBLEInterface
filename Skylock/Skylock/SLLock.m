@@ -35,6 +35,10 @@
         _isCrashOn          = isCrashOn;
         _isSharingOn        = isSharingOn;
         _isSecurityOn       = isSecurityOn;
+        
+        // hard code these guys temporarily to velo-labs
+        _latitude           = @(37.761663);
+        _longitude          = @(-122.422855);
     }
     
     return self;
@@ -122,6 +126,16 @@
     return dictRep;
 }
 
+- (NSDictionary *)asDbDictionary
+{
+    NSDictionary *db = @{[self keyForProperty:SLLockPropertyName]:self.name,
+                         [self keyForProperty:SLLockPropertyLockId]:self.lockId,
+                         [self keyForProperty:SLLockPropertyLatitude]:self.latitude,
+                         [self keyForProperty:SLLockPropertyLongitude]:self.longitude
+                         };
+    return db;
+}
+
 - (id)getPropertyOrNull:(SLLockProperty)property
 {
     NSString *key = [self keyForProperty:property];
@@ -166,6 +180,11 @@
         case SLLockPropertyIsSecurityOn:
             return @"isSecurityOn";
             break;
+        case SLLockPropertyLatitude:
+            return @"latitude";
+            break;
+        case SLLockPropertyLongitude:
+            return @"longitude";
         default:
             return nil;
             break;

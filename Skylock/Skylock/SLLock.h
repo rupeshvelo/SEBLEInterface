@@ -46,7 +46,9 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
     SLLockPropertyIsLocked,
     SLLockPropertyIsCrashOn,
     SLLockPropertyIsSharingOn,
-    SLLockPropertyIsSecurityOn
+    SLLockPropertyIsSecurityOn,
+    SLLockPropertyLatitude,
+    SLLockPropertyLongitude
 };
 
 @interface SLLock : NSObject
@@ -62,7 +64,8 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *isCrashOn;
 @property (nonatomic, copy) NSNumber *isSharingOn;
 @property (nonatomic, copy) NSNumber *isSecurityOn;
-
+@property (nonatomic, copy) NSNumber *latitude;
+@property (nonatomic, copy) NSNumber *longitude;
 
 - (id)initWithName:(NSString *)name
             lockId:(NSString *)lockId
@@ -81,5 +84,5 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (SLLockCellSignalState)cellSignalState;
 - (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)dictionaryRepresentation;
-
+- (NSDictionary *)asDbDictionary;
 @end
