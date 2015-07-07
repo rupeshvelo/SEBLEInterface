@@ -17,6 +17,7 @@
 @interface SLDatabaseManager()
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
+
 @end
 
 
@@ -134,5 +135,18 @@
     }
     
     return fetchedLocks;
+}
+
+- (void)deleteLock:(SLLock *)lock withCompletion:(void (^)(BOOL))completion
+{
+    SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
+    BOOL didSucceed = NO;
+    
+    if (dbLock) {
+        [self.context deleteObject:dbLock];
+        didSucceed = YES;
+    }
+    
+    completion(didSucceed);
 }
 @end
