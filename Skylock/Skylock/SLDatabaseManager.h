@@ -15,5 +15,5 @@
 
 - (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 - (NSArray *)getAllLocksFromDb;
-- (BOOL)deleteLock:(SLLock *)lock;
+- (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 @end

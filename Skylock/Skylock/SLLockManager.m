@@ -190,11 +190,11 @@ typedef enum {
 
 - (void)addLocksFromDb:(NSArray *)locks
 {
-    for (SLLock *lock in locks) {
+    [locks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
         if (![self containsLock:lock]) {
             self.locks[lock.name] = lock;
         }
-    }
+    }];
 }
 
 - (void)removeLock:(SLLock *)lock
@@ -224,7 +224,11 @@ typedef enum {
     
     // testing
     if (self.locks.allKeys.count == 0) {
-        [self addLocksFromDb:self.testLocks];
+        for (SLLock *lock in self.testLocks) {
+            [self saveLockToDatabase:lock];
+        }
+        
+        [self getLocksFromDatabase];
     }
 }
 
@@ -235,10 +239,10 @@ typedef enum {
         return [lock1.name compare:lock2.name];
     }];
     
-    NSMutableArray *locks = [NSMutableArray new];
-    for(NSUInteger i=0; i < unaddedKeys.count; i++) {
-        [locks addObject:self.locksToAdd[unaddedKeys[i]]];
-    }
+    __block NSMutableArray *locks = [NSMutableArray new];
+    [unaddedKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [locks addObject:self.locksToAdd[unaddedKeys[idx]]];
+    }];
     
     return locks;
 }
