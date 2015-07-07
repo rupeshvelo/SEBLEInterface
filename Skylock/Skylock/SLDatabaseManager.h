@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#define kSLDatabaseManagerTableOwner    @"owner"
-#define kSLDatabaseManagerTableLock     @"lock"
+@class SLLock;
 
 @interface SLDatabaseManager : NSObject
 
 +(id)manager;
-- (BOOL)saveDictionary:(NSDictionary *)dictionary forTable:(NSString *)table isNew:(BOOL)isNew;
 
+- (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
+- (NSArray *)getAllLocksFromDb;
 @end

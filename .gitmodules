@@ -7,6 +7,3 @@
 [submodule "Skylock/facebook-ios-sdk"]
 	path = Skylock/facebook-ios-sdk
 	url = https://github.com/velolabs/facebook-ios-sdk.git
-[submodule "Skylock/fmdb"]
-	path = Skylock/fmdb
-	url = https://github.com/ccgus/fmdb.git

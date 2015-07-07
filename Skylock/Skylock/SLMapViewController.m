@@ -63,9 +63,6 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
-    // temporarily populate locks
-    [SLLockManager.manager createTestLocks];
-    
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
     
     RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
@@ -76,6 +73,8 @@
     [self.view addSubview:mapView];
     
     [self.view addSubview:self.menuButton];
+    
+    [SLLockManager.manager createTestLocks];
 }
 
 - (void)didReceiveMemoryWarning {

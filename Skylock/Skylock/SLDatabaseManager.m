@@ -7,37 +7,20 @@
 //
 
 #import "SLDatabaseManager.h"
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
+#import "AppDelegate.h"
+#import "SLDbLock+Methods.m"
+#import "SLLock.h"
 
-#define kSLDatabaseManagerDataBaseName  @"SLDatabase.sqlite"
-#define kSLDatabaseManagerQueryKeys     @"kSLDatabaseManagerQueryKeys"
-#define kSLDatabaseManagerQueryValues   @"kSLDatabaseManagerQueryValues"
-#define kSLDatabaseManagerQueryObjects  @"kSLDatabaseManagerQueryObjects"
-#define kSLDatabaseManagerInsertQuery   @"kSLDatabaseManagerInsertQuery"
+
+#define kSLDatabaseManagerEnityLock @"SLDbLock"
 
 @interface SLDatabaseManager()
 
-@property (nonatomic, strong) FMDatabase *database;
-@property (nonatomic, strong) FMDatabaseQueue *queue;
-@property (assign) BOOL dbCreated;
+@property (nonatomic, strong) NSManagedObjectContext *context;
 @end
 
 
 @implementation SLDatabaseManager
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        NSString *databasePath = self.databasePath;
-        _database = [FMDatabase databaseWithPath:databasePath];
-        _queue = [FMDatabaseQueue databaseQueueWithPath:databasePath];
-        [self createTables];
-    }
-    
-    return self;
-}
 
 + (id)manager
 {
@@ -50,94 +33,50 @@
     return dbManager;
 }
 
-- (NSString *)databasePath
+- (NSManagedObjectContext *)context
 {
-    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *dirPath = [documentPaths firstObject];
-    return [dirPath stringByAppendingPathComponent:kSLDatabaseManagerDataBaseName];
-}
-
-- (BOOL)doesDatabaseExist
-{
-    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *dirPath = [documentPaths firstObject];
-    NSString *filePath = [dirPath stringByAppendingPathComponent:kSLDatabaseManagerDataBaseName];
-    return [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-}
-
-- (NSString *)createTableQuery
-{
-    NSString *owners = @"CREATE TABLE SLDatabase.owner( \
-                            ownerIdNumber INTEGER PRIMARY KEY NOT NULL, \
-                            firstName TEXT, \
-                            lastName TEXT, \
-                            username TEXT);";
-    
-    NSString *lockTable = @"CREATE TABLE SLDatabase.lock( \
-                                lockIdNumber INTEGER PRIMARY KEY NOT NULL, \
-                                lockId TEXT, \
-                                name TEXT, \
-                                latitude REAL, \
-                                longitued REAL, \
-                                FOREIGN KEY(ownerIdNumber) REFERENCES owners(ownerIdNumber));";
-    
-    return [NSString stringWithFormat:@"%@%@", owners, lockTable];
-}
-
-- (void)createTables
-{
-    [self.database executeUpdate:self.createTableQuery];
-}
-
-- (BOOL)saveDictionary:(NSDictionary *)dictionary forTable:(NSString *)table isNew:(BOOL)isNew
-{
-    [self.queue inDatabase:^(FMDatabase *db) {
-       db execute
-    }];
-}
-
-- (NSDictionary *)parametersFromDictionary:(NSDictionary *)dictionary
-{
-    NSArray *keys = dictionary.allKeys;
-    NSMutableString *names = [[NSMutableString alloc] initWithString:@"("];
-    [names appendString:[keys componentsJoinedByString:@","]];
-    [names appendString:@")"];
-    NSMutableString *values = [[NSMutableString alloc] initWithString:@"("];
-    NSMutableArray *objects = [NSMutableArray new];
-    NSUInteger counter = 0;
-    for (id key in keys) {
-        id value = dictionary[key];
-        [objects addObject:value];
-        
-        [values appendString:@"?"];
-        
-        if (counter == keys.count - 1) {
-            [values appendString:@")"];
-        } else {
-            [values appendString:@","];
-        }
-        
-        counter++;
+    if (!_context) {
+        _context = ((AppDelegate *)[UIApplication sharedApplication].delegate).managedObjectContext;
     }
     
-    NSDictionary *params = @{kSLDatabaseManagerQueryKeys:keys,
-                             kSLDatabaseManagerQueryValues:values,
-                             kSLDatabaseManagerQueryObjects:objects
-                             };
-    
-    return params;
+    return _context;
 }
 
-- (NSDictionary *)insertQueryFor:(NSDictionary *)dictionary table:(NSString *)table
+- (SLDbLock *)newDBLock
 {
-    NSDictionary *parts = [self parametersFromDictionary:dictionary];
-    NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ %@ VALUES %@",
-                       table,
-                       parts[kSLDatabaseManagerQueryKeys],
-                       parts[kSLDatabaseManagerQueryValues]];
-    
-    return @{kSLDatabaseManagerInsertQuery:query,
-             kSLDatabaseManagerQueryObjects:parts[kSLDatabaseManagerQueryObjects]
-             };
+    return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityLock
+                                         inManagedObjectContext:self.context];
 }
+
+- (void)saveLockToDb:(SLLock *)lock withCompletion:(void (^)(BOOL))completion
+{
+    SLDbLock *dbLock = self.newDBLock;
+    [dbLock setProperitesWithDictionary:lock.asDbDictionary];
+    
+    NSError *error;
+    if ([self.context save:&error]) {
+        completion(YES);
+    } else {
+        NSLog(@"Failed to save lock to database with error: %@", error.localizedDescription);
+    }
+}
+
+- (NSArray *)getAllLocksFromDb
+{
+    NSFetchRequest *fetchRequest = [NSFetchRequest new];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:kSLDatabaseManagerEnityLock
+                                              inManagedObjectContext:self.context];
+    [fetchRequest setEntity:entity];
+    
+    NSError *error;
+    NSArray *fetchedLocks = [self.context executeFetchRequest:fetchRequest error:&error];
+    
+    if (error) {
+        NSLog(@"Failed to fetch all locks with error: %@", error.localizedDescription);
+        return nil;
+    }
+    
+    return fetchedLocks;
+}
+
 @end

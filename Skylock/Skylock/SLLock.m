@@ -11,7 +11,7 @@
 @implementation SLLock
 
 - (id)initWithName:(NSString *)name
-            lockId:(NSString *)lockId
+              uuid:(NSString *)uuid
   batteryRemaining:(NSNumber *)batteryRemaining
       wifiStrength:(NSNumber *)wifiStrength
       cellStrength:(NSNumber *)cellStrength
@@ -21,11 +21,13 @@
          isCrashOn:(NSNumber *)isCrashOn
        isSharingOn:(NSNumber *)isSharingOn
       isSecurityOn:(NSNumber *)isSecurityOn
+          latitude:(NSNumber *)latitude
+         longitude:(NSNumber *)longitude
 {
     self = [super init];
     if (self) {
         _name               = name;
-        _lockId             = lockId;
+        _uuid               = uuid;
         _batteryRemaining   = batteryRemaining;
         _wifiStrength       = wifiStrength;
         _cellStrength       = cellStrength;
@@ -35,19 +37,17 @@
         _isCrashOn          = isCrashOn;
         _isSharingOn        = isSharingOn;
         _isSecurityOn       = isSecurityOn;
-        
-        // hard code these guys temporarily to velo-labs
-        _latitude           = @(37.761663);
-        _longitude          = @(-122.422855);
+        _latitude           = latitude;
+        _longitude          = longitude;
     }
     
     return self;
 }
 
-+ (id)lockWithName:(NSString *)name lockId:(NSString *)lockId
++ (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
 {
     return [[self alloc] initWithName:name
-                               lockId:lockId
+                                 uuid:uuid
                      batteryRemaining:@(0)
                          wifiStrength:@(0)
                          cellStrength:@(0)
@@ -56,7 +56,27 @@
                              isLocked:@(NO)
                             isCrashOn:@(NO)
                           isSharingOn:@(NO)
-                         isSecurityOn:@(NO)];
+                         isSecurityOn:@(NO)
+                             latitude:@(37.761663)
+                            longitude:@(-122.422855)];
+}
+
++ (id)lockWithDbDictionary:(NSDictionary *)dbDictionary
+{
+    return [[self alloc] initWithName:dbDictionary[@"name"]
+                                 uuid:dbDictionary[@"uuid"]
+                     batteryRemaining:@(0)
+                         wifiStrength:@(0)
+                         cellStrength:@(0)
+                             lastTime:@(0)
+                         distanceAway:@(0)
+                             isLocked:@(NO)
+                            isCrashOn:@(NO)
+                          isSharingOn:@(NO)
+                         isSecurityOn:@(NO)
+                             latitude:dbDictionary[@"latitude"]
+                            longitude:dbDictionary[@"longitude"]];
+    
 }
 
 - (SLLockCellSignalState)cellSignalState
@@ -128,20 +148,17 @@
 
 - (NSDictionary *)asDbDictionary
 {
-    NSDictionary *db = @{[self keyForProperty:SLLockPropertyName]:self.name,
-                         [self keyForProperty:SLLockPropertyLockId]:self.lockId,
-                         [self keyForProperty:SLLockPropertyLatitude]:self.latitude,
-                         [self keyForProperty:SLLockPropertyLongitude]:self.longitude
+    NSDictionary *db = @{@"name":self.name,
+                         @"uuid":self.uuid,
+                         @"latitude":self.latitude,
+                         @"longitude":self.longitude
                          };
     return db;
 }
 
 - (id)getPropertyOrNull:(SLLockProperty)property
 {
-    NSString *key = [self keyForProperty:property];
-    id value = [self valueForKey:key];
-    
-    return value ? value : [NSNull null];
+    return [self valueForKey:[self keyForProperty:property]];
 }
 
 - (NSString *)keyForProperty:(SLLockProperty)property
@@ -149,9 +166,6 @@
     switch (property) {
         case SLLockPropertyName:
             return @"name";
-            break;
-        case SLLockPropertyLockId:
-            return @"lockId";
             break;
         case SLLockPropertyBatteryRemaining:
             return @"batteryRemaining";
@@ -185,6 +199,10 @@
             break;
         case SLLockPropertyLongitude:
             return @"longitude";
+            break;
+        case SLLockPropertyUUID:
+            return @"UUID";
+            break;
         default:
             return nil;
             break;
@@ -194,7 +212,7 @@
 - (NSArray *)propertiesArray
 {
     return @[@(SLLockPropertyName),
-             @(SLLockPropertyLockId),
+             @(SLLockPropertyUUID),
              @(SLLockPropertyBatteryRemaining),
              @(SLLockPropertyWifiStrength),
              @(SLLockPropertyCellStrength),
