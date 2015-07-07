@@ -9,18 +9,21 @@
 #import "SLDatabaseManager.h"
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "FMResultSet.h"
 
-#define kSLDatabaseManagerDataBaseName  @"SLDatabase.sqlite"
-#define kSLDatabaseManagerQueryKeys     @"kSLDatabaseManagerQueryKeys"
+
+#define kSLDatabaseManagerDatabasePath  @"databases"
+#define kSLDatabaseManagerDatabaseName  @"skylock.db"
+#define kSLDatabaseManagerQueryColumns  @"kSLDatabaseManagerQueryColumns"
 #define kSLDatabaseManagerQueryValues   @"kSLDatabaseManagerQueryValues"
-#define kSLDatabaseManagerQueryObjects  @"kSLDatabaseManagerQueryObjects"
 #define kSLDatabaseManagerInsertQuery   @"kSLDatabaseManagerInsertQuery"
 
 @interface SLDatabaseManager()
 
 @property (nonatomic, strong) FMDatabase *database;
 @property (nonatomic, strong) FMDatabaseQueue *queue;
-@property (assign) BOOL dbCreated;
+@property (nonatomic, strong) NSString *databaseDirPath;
+
 @end
 
 
@@ -30,10 +33,10 @@
 {
     self = [super init];
     if (self) {
-        NSString *databasePath = self.databasePath;
-        _database = [FMDatabase databaseWithPath:databasePath];
-        _queue = [FMDatabaseQueue databaseQueueWithPath:databasePath];
-        [self createTables];
+        _database = [self createDatabase];
+        _database.traceExecution = YES;
+        _database.logsErrors = YES;
+        _queue = [FMDatabaseQueue databaseQueueWithPath:self.databasePath];
     }
     
     return self;
@@ -50,94 +53,192 @@
     return dbManager;
 }
 
+- (NSString *)databaseDirPath
+{
+    if (!_databaseDirPath) {
+        NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *dirPath = [documentPaths firstObject];
+        dirPath = [dirPath stringByAppendingPathComponent:kSLDatabaseManagerDatabasePath];
+        _databaseDirPath = dirPath;
+    }
+    
+    return _databaseDirPath;
+}
+
 - (NSString *)databasePath
 {
-    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *dirPath = [documentPaths firstObject];
-    return [dirPath stringByAppendingPathComponent:kSLDatabaseManagerDataBaseName];
+    return [self.databaseDirPath stringByAppendingPathComponent:kSLDatabaseManagerDatabaseName];
+}
+
+- (FMDatabase *)createDatabase
+{
+    if (![[NSFileManager defaultManager] fileExistsAtPath:self.databasePath]) {
+        NSString *databasePathFromApp = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:kSLDatabaseManagerDatabaseName];
+        NSError *error;
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:self.databaseDirPath]) {
+            [[NSFileManager defaultManager] createDirectoryAtPath:self.databaseDirPath
+                                      withIntermediateDirectories:NO
+                                                       attributes:nil
+                                                            error:&error];
+            if (error) {
+                [NSException raise:@"FAILED TO CREATE DATABASE DIR" format:@"%@", error.localizedDescription];
+            }
+        }
+        
+        [[NSFileManager defaultManager] copyItemAtPath:databasePathFromApp toPath:self.databasePath error:&error];
+        
+        if (error) {
+            [NSException raise:@"FAILED TO COPY DATABASE FILE" format:@"%@", error.localizedDescription];
+        }
+    }
+    
+    return [FMDatabase databaseWithPath:self.databasePath];
 }
 
 - (BOOL)doesDatabaseExist
 {
-    NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *dirPath = [documentPaths firstObject];
-    NSString *filePath = [dirPath stringByAppendingPathComponent:kSLDatabaseManagerDataBaseName];
-    return [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    return [[NSFileManager defaultManager] fileExistsAtPath:self.databasePath];
 }
 
-- (NSString *)createTableQuery
-{
-    NSString *owners = @"CREATE TABLE SLDatabase.owner( \
-                            ownerIdNumber INTEGER PRIMARY KEY NOT NULL, \
-                            firstName TEXT, \
-                            lastName TEXT, \
-                            username TEXT);";
-    
-    NSString *lockTable = @"CREATE TABLE SLDatabase.lock( \
-                                lockIdNumber INTEGER PRIMARY KEY NOT NULL, \
-                                lockId TEXT, \
-                                name TEXT, \
-                                latitude REAL, \
-                                longitued REAL, \
-                                FOREIGN KEY(ownerIdNumber) REFERENCES owners(ownerIdNumber));";
-    
-    return [NSString stringWithFormat:@"%@%@", owners, lockTable];
-}
-
-- (void)createTables
-{
-    [self.database executeUpdate:self.createTableQuery];
-}
-
-- (BOOL)saveDictionary:(NSDictionary *)dictionary forTable:(NSString *)table isNew:(BOOL)isNew
+- (void)saveDictionary:(NSDictionary *)dictionary
+              forTable:(NSString *)table
+                 isNew:(BOOL)isNew
+            completion:(void (^)(BOOL success))completion
 {
     [self.queue inDatabase:^(FMDatabase *db) {
-       db execute
+        [db open];
+        
+        NSString *queryString = [self insertQueryFor:dictionary table:table];
+        BOOL ok = [db executeQuery:queryString withParameterDictionary:dictionary];
+        
+        if (!ok) {
+            NSLog(@"database failed to save %@\n with error: %@",
+                  dictionary,
+                  db.lastError.localizedDescription);
+        }
+        
+        if (completion) {
+            completion(ok);
+        }
+            
+        [db close];
     }];
+}
+
+- (void)saveColumnValues:(NSArray *)columnValues
+                forTable:(NSString *)table
+                   isNew:(BOOL)isNew
+              completion:(void (^)(BOOL))completion
+{
+    if (![self.database open]) {
+        NSLog(@"Could not open database");
+    } else {
+        NSLog(@"dir path %@", self.databaseDirPath);
+        NSString *query = [self insertArrayQuery:columnValues table:table];
+        BOOL ok = [self.database executeQuery:query];
+        [self.database close];
+    }
+    
+    
+//    [self.queue inDatabase:^(FMDatabase *db) {
+//        [db open];
+//        
+//        NSString *query = [self insertArrayQuery:columnValues table:table];
+//        BOOL ok = [db executeQuery:query];
+//    
+//        NSLog(@"last db error: %@", db.lastError.localizedDescription);
+//        
+//        if (completion) {
+//            completion(ok);
+//        }
+//        
+//        [db close];
+//    }];
+    
+}
+- (void)getAllObjectsFromTable:(NSString *)table
+                withCompletion:(void (^)(NSDictionary *))completion
+{
+    [self.queue inDatabase:^(FMDatabase *db) {
+        [db open];
+        NSString *query = [NSString stringWithFormat:@"SELECT * FROM %@", table];
+        FMResultSet *results = [db executeQuery:query];
+        completion(results.resultDictionary);
+        [db close];
+    }];
+    
 }
 
 - (NSDictionary *)parametersFromDictionary:(NSDictionary *)dictionary
 {
     NSArray *keys = dictionary.allKeys;
-    NSMutableString *names = [[NSMutableString alloc] initWithString:@"("];
-    [names appendString:[keys componentsJoinedByString:@","]];
-    [names appendString:@")"];
+    NSString *columns = [NSString stringWithFormat:@"(%@)", [keys componentsJoinedByString:@","]];
     NSMutableString *values = [[NSMutableString alloc] initWithString:@"("];
-    NSMutableArray *objects = [NSMutableArray new];
-    NSUInteger counter = 0;
-    for (id key in keys) {
-        id value = dictionary[key];
-        [objects addObject:value];
-        
+    
+    for (NSUInteger i=0; i < keys.count; i++) {
         [values appendString:@"?"];
         
-        if (counter == keys.count - 1) {
+        if (i == keys.count - 1) {
             [values appendString:@")"];
         } else {
             [values appendString:@","];
         }
-        
-        counter++;
     }
     
-    NSDictionary *params = @{kSLDatabaseManagerQueryKeys:keys,
+    NSDictionary *params = @{kSLDatabaseManagerQueryColumns:columns,
                              kSLDatabaseManagerQueryValues:values,
-                             kSLDatabaseManagerQueryObjects:objects
                              };
     
     return params;
 }
 
-- (NSDictionary *)insertQueryFor:(NSDictionary *)dictionary table:(NSString *)table
+- (NSString *)insertQueryFor:(NSDictionary *)dictionary table:(NSString *)table
 {
     NSDictionary *parts = [self parametersFromDictionary:dictionary];
-    NSString *query = [NSString stringWithFormat:@"INSERT INTO %@ %@ VALUES %@",
+    NSString *query = [NSString stringWithFormat:@"INSERT INTO %@%@ VALUES%@",
                        table,
-                       parts[kSLDatabaseManagerQueryKeys],
+                       parts[kSLDatabaseManagerQueryColumns],
                        parts[kSLDatabaseManagerQueryValues]];
     
-    return @{kSLDatabaseManagerInsertQuery:query,
-             kSLDatabaseManagerQueryObjects:parts[kSLDatabaseManagerQueryObjects]
-             };
+    return query;
+}
+
+- (NSString *)insertArrayQuery:(NSArray *)array table:(NSString *)table
+{
+//    NSMutableString *params = [[NSMutableString alloc] initWithString:@"("];
+//    for (NSInteger i=0; i < array.count; i++) {
+//        [params appendString:@"?"];
+//        if (i == array.count - 1) {
+//            [params appendString:@")"];
+//        } else {
+//            [params appendString:@","];
+//        }
+//    }
+//
+//    return [NSString stringWithFormat:@"INSERT INTO %@ VALUES%@", table, params];
+    
+    NSMutableString *query = [[NSMutableString alloc] initWithFormat:@"INSERT INTO %@ VALUES(", table];
+    for (NSUInteger i=0; i < array.count; i++) {
+        id value = array[i];
+        BOOL isString = [value isKindOfClass:[NSString class]] && ![value isEqual:@"null"];
+        if (isString) {
+            [query appendString:@"\""];
+        }
+        
+        [query appendFormat:@"%@", value];
+        
+        if (isString) {
+            [query appendString:@"\""];
+        }
+        
+        if (i == array.count - 1) {
+            [query appendString:@")"];
+        } else {
+            [query appendString:@","];
+        }
+    }
+    
+    return query;
 }
 @end

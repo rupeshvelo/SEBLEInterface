@@ -14,6 +14,19 @@
 @interface SLDatabaseManager : NSObject
 
 +(id)manager;
-- (BOOL)saveDictionary:(NSDictionary *)dictionary forTable:(NSString *)table isNew:(BOOL)isNew;
+- (void)saveDictionary:(NSDictionary *)dictionary
+              forTable:(NSString *)table
+                 isNew:(BOOL)isNew
+            completion:(void(^)(BOOL success))completion;
 
+- (void)saveColumnValues:(NSArray *)columnValues
+                forTable:(NSString *)table
+                   isNew:(BOOL)isNew
+              completion:(void(^)(BOOL success))completion;
+
+- (NSArray *)getAllObjectsWithInfo:(NSDictionary *)info forTable:(NSString *)table;
+
+- (NSArray *)allObjectsWithColumnValues:(NSArray *)columnValues forTable:(NSString *)table;
+
+- (void)getAllObjectsFromTable:(NSString *)table withCompletion:(void (^)(NSDictionary *results))completion;
 @end

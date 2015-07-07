@@ -19,6 +19,7 @@
 		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
 		DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */; };
 		DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */; };
+		DC4D80611B4AF7B700ECC2B4 /* skylock.db in Resources */ = {isa = PBXBuildFile; fileRef = DC4D80601B4AF7B700ECC2B4 /* skylock.db */; };
 		DC5C52191B46E38F006CC57B /* .png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C71B46E38F006CC57B /* .png */; };
 		DC5C521A1B46E38F006CC57B /* add-contact-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C81B46E38F006CC57B /* add-contact-button-small.png */; };
 		DC5C521B1B46E38F006CC57B /* add-contact-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C91B46E38F006CC57B /* add-contact-button-small@2x.png */; };
@@ -102,6 +103,7 @@
 		DC5C52691B46E38F006CC57B /* unlocked-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C52171B46E38F006CC57B /* unlocked-icon@2x.png */; };
 		DC5C526A1B46E38F006CC57B /* unlocked-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C52181B46E38F006CC57B /* unlocked-icon@3x.png */; };
 		DC61477A1B3233460077484B /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6147791B3233460077484B /* SLLock.m */; };
+		DC7C53231B4A12F500442099 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7141B27E5E100CEA7CF /* libsqlite3.dylib */; };
 		DC9EADCE1B349CC200DA1692 /* SLLockInfoMiddleView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */; };
 		DC9EADD81B34BA9A00DA1692 /* SLLockInfoViewBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */; };
 		DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */; };
@@ -223,6 +225,7 @@
 		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
 		DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLocationManager.h; sourceTree = "<group>"; };
 		DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLocationManager.m; sourceTree = "<group>"; };
+		DC4D80601B4AF7B700ECC2B4 /* skylock.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = skylock.db; sourceTree = "<group>"; };
 		DC5C51C71B46E38F006CC57B /* .png */ = {isa = PBXFileReference; lastKnownFileType = file; path = .png; sourceTree = "<group>"; };
 		DC5C51C81B46E38F006CC57B /* add-contact-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small.png"; sourceTree = "<group>"; };
 		DC5C51C91B46E38F006CC57B /* add-contact-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small@2x.png"; sourceTree = "<group>"; };
@@ -331,7 +334,6 @@
 		DCC1E72A1B497DB90083A665 /* fmdb.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = fmdb.xcodeproj; path = fmdb/fmdb.xcodeproj; sourceTree = "<group>"; };
 		DCC1E73D1B49800B0083A665 /* SLDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDatabaseManager.h; sourceTree = "<group>"; };
 		DCC1E73E1B49800B0083A665 /* SLDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDatabaseManager.m; sourceTree = "<group>"; };
-		DCC1E74A1B49942E0083A665 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -372,6 +374,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC7C53231B4A12F500442099 /* libsqlite3.dylib in Frameworks */,
 				DCC1E73C1B497DFD0083A665 /* libFMDB-IOS.a in Frameworks */,
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */,
@@ -407,6 +410,14 @@
 				DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DC4D80581B4AF79200ECC2B4 /* database */ = {
+			isa = PBXGroup;
+			children = (
+				DC4D80601B4AF7B700ECC2B4 /* skylock.db */,
+			);
+			name = database;
 			sourceTree = "<group>";
 		};
 		DC5C51C61B46E38F006CC57B /* assets */ = {
@@ -512,7 +523,6 @@
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
-				DCC1E74A1B49942E0083A665 /* libsqlite3.0.dylib */,
 				DCC1E72A1B497DB90083A665 /* fmdb.xcodeproj */,
 				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
 				DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */,
@@ -539,6 +549,7 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DC4D80581B4AF79200ECC2B4 /* database */,
 				DC5C51C61B46E38F006CC57B /* assets */,
 				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
 				DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */,
@@ -864,6 +875,7 @@
 				DC5C52571B46E38F006CC57B /* settings-icon@2x.png in Resources */,
 				DC5C52441B46E38F006CC57B /* pencil-button.png in Resources */,
 				DC5C52251B46E38F006CC57B /* arrow-down-more-small@3x.png in Resources */,
+				DC4D80611B4AF7B700ECC2B4 /* skylock.db in Resources */,
 				DC5C521C1B46E38F006CC57B /* add-contact-button-small@3x.png in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
 				DC5C52411B46E38F006CC57B /* menu-button.png in Resources */,

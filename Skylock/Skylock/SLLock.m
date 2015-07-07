@@ -11,7 +11,7 @@
 @implementation SLLock
 
 - (id)initWithName:(NSString *)name
-            lockId:(NSString *)lockId
+              UUID:(NSString *)UUID
   batteryRemaining:(NSNumber *)batteryRemaining
       wifiStrength:(NSNumber *)wifiStrength
       cellStrength:(NSNumber *)cellStrength
@@ -25,7 +25,7 @@
     self = [super init];
     if (self) {
         _name               = name;
-        _lockId             = lockId;
+        _UUID               = UUID;
         _batteryRemaining   = batteryRemaining;
         _wifiStrength       = wifiStrength;
         _cellStrength       = cellStrength;
@@ -44,10 +44,10 @@
     return self;
 }
 
-+ (id)lockWithName:(NSString *)name lockId:(NSString *)lockId
++ (id)lockWithName:(NSString *)name UUID:(NSString *)UUID
 {
     return [[self alloc] initWithName:name
-                               lockId:lockId
+                                 UUID:UUID
                      batteryRemaining:@(0)
                          wifiStrength:@(0)
                          cellStrength:@(0)
@@ -128,20 +128,32 @@
 
 - (NSDictionary *)asDbDictionary
 {
-    NSDictionary *db = @{[self keyForProperty:SLLockPropertyName]:self.name,
-                         [self keyForProperty:SLLockPropertyLockId]:self.lockId,
+    NSDictionary *db = @{[self keyForProperty:SLLockPropertyLockId]:@"null",
+                         [self keyForProperty:SLLockPropertyName]:self.name,
+                         [self keyForProperty:SLLockPropertyUUID]:self.UUID,
                          [self keyForProperty:SLLockPropertyLatitude]:self.latitude,
                          [self keyForProperty:SLLockPropertyLongitude]:self.longitude
                          };
     return db;
 }
 
+- (NSArray *)valuesForDbColumns
+{
+    NSArray *values = @[@"null",
+                        self.UUID,
+                        self.name,
+                        self.latitude,
+                        self.longitude
+                        ];
+    return values;
+}
+
 - (id)getPropertyOrNull:(SLLockProperty)property
 {
-    NSString *key = [self keyForProperty:property];
-    id value = [self valueForKey:key];
-    
-    return value ? value : [NSNull null];
+    if (property == SLLockPropertyLockId) {
+        return [NSNull null];
+    }
+    return [self valueForKey:[self keyForProperty:property]];
 }
 
 - (NSString *)keyForProperty:(SLLockProperty)property
@@ -185,6 +197,10 @@
             break;
         case SLLockPropertyLongitude:
             return @"longitude";
+            break;
+        case SLLockPropertyUUID:
+            return @"UUID";
+            break;
         default:
             return nil;
             break;
@@ -194,7 +210,7 @@
 - (NSArray *)propertiesArray
 {
     return @[@(SLLockPropertyName),
-             @(SLLockPropertyLockId),
+             @(SLLockPropertyUUID),
              @(SLLockPropertyBatteryRemaining),
              @(SLLockPropertyWifiStrength),
              @(SLLockPropertyCellStrength),
