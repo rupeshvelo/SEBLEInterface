@@ -72,9 +72,7 @@
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
     
-    [self.view addSubview:self.menuButton];
-    
-    [SLLockManager.manager createTestLocks];
+    [self.view addSubview:self.menuButton];    
 }
 
 - (void)didReceiveMemoryWarning {

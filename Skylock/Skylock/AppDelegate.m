@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "SLLockManager.h"
 
 @interface AppDelegate ()
 
@@ -36,6 +37,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [SLLockManager.manager fetchLocks];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -52,7 +54,9 @@
 
 - (NSURL *)applicationDocumentsDirectory {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "Greuw.Skylock" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL *dirUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSLog(@"Application documents directory: %@", dirUrl.absoluteString);
+    return dirUrl;
 }
 
 - (NSManagedObjectModel *)managedObjectModel {

@@ -24,9 +24,7 @@
 - (NSArray *)unaddedLocks;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
-- (void)toggleSharignForLock:(SLLock *)lock;
-// methods for testing
-- (SLLock *)getTestLock;
-- (void)createTestLocks;
+- (void)toggleSharingForLock:(SLLock *)lock;
+- (void)fetchLocks;
 
 @end
