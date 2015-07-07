@@ -36,7 +36,6 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 };
 
 typedef NS_ENUM(NSUInteger, SLLockProperty) {
-    SLLockPropertyLockId,
     SLLockPropertyName,
     SLLockPropertyUUID,
     SLLockPropertyBatteryRemaining,
@@ -54,8 +53,7 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 
 @interface SLLock : NSObject
 
-@property (nonatomic, copy) NSNumber *lockId;
-@property (nonatomic, copy) NSString *UUID;
+@property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSNumber *batteryRemaining;
 @property (nonatomic, copy) NSNumber *wifiStrength;
@@ -70,7 +68,7 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *longitude;
 
 - (id)initWithName:(NSString *)name
-              UUID:(NSString *)UUID
+              uuid:(NSString *)uuid
   batteryRemaining:(NSNumber *)batteryRemaining
       wifiStrength:(NSNumber *)wifiStrength
       cellStrength:(NSNumber *)cellStrength
@@ -79,14 +77,15 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
           isLocked:(NSNumber *)isLocked
          isCrashOn:(NSNumber *)isCrashOn
        isSharingOn:(NSNumber *)isSharingOn
-      isSecurityOn:(NSNumber *)isSecurityOn;
+      isSecurityOn:(NSNumber *)isSecurityOn latitude:(NSNumber *)latitude
+         longitude:(NSNumber *)longitude;
 
-+ (id)lockWithName:(NSString *)name UUID:(NSString *)UUID;
++ (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
 + (id)lockWithDataBaseDictionary:(NSDictionary *)dictionary;
++ (id)lockWithDbDictionary:(NSDictionary *)dbDictionary;
 - (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;
 - (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)dictionaryRepresentation;
 - (NSDictionary *)asDbDictionary;
-- (NSArray *)valuesForDbColumns;
 @end

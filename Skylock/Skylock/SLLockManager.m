@@ -13,6 +13,7 @@
 #import "SEBLEInterface/SEBLEPeripheral.h"
 #import "SLNotifications.h"
 #import "SLDatabaseManager.h"
+#import "SLDbLock+Methods.m"
 
 typedef NS_ENUM(NSUInteger, SLLockManagerService) {
     SLLockManagerServiceLedService = 0,
@@ -102,7 +103,7 @@ typedef enum {
 {
     if (!_testLocks) {
         SLLock *lock1 = [[SLLock alloc] initWithName:@"One Love"
-                                                UUID:@"bkdi-dlldi-e830387-jdod9"
+                                                uuid:@"bkdi-dlldi-e830387-jdod9"
                                     batteryRemaining:@(46.7)
                                         wifiStrength:@(56.8)
                                         cellStrength:@(87.98)
@@ -111,10 +112,12 @@ typedef enum {
                                             isLocked:@(NO)
                                            isCrashOn:@(NO)
                                          isSharingOn:@(NO)
-                                        isSecurityOn:@(NO)];
+                                        isSecurityOn:@(NO)
+                                            latitude:@(37.761663)
+                                           longitude:@(-122.422855)];
         
         SLLock *lock2 = [[SLLock alloc] initWithName:@"Three Little Birds"
-                                                UUID:@"opdkdopwp08djwwkddidh"
+                                                uuid:@"opdkdopwp08djwwkddidh"
                                     batteryRemaining:@(99)
                                         wifiStrength:@(56)
                                         cellStrength:@(45.21)
@@ -123,10 +126,12 @@ typedef enum {
                                             isLocked:@(NO)
                                            isCrashOn:@(YES)
                                          isSharingOn:@(NO)
-                                        isSecurityOn:@(YES)];
+                                        isSecurityOn:@(YES)
+                                            latitude:@(37.761663)
+                                           longitude:@(-122.422855)];
         
         SLLock *lock3 = [[SLLock alloc] initWithName:@"Buffalo Soldier"
-                                                UUID:@"pdidmhjdghsjsyy27d6th"
+                                                uuid:@"pdidmhjdghsjsyy27d6th"
                                     batteryRemaining:@(2.98)
                                         wifiStrength:@(45)
                                         cellStrength:@(46.4)
@@ -135,10 +140,13 @@ typedef enum {
                                             isLocked:@(YES)
                                            isCrashOn:@(NO)
                                          isSharingOn:@(YES)
-                                        isSecurityOn:@(NO)];
+                                        isSecurityOn:@(NO)
+                                            latitude:@(37.761663)
+                                           longitude:@(-122.422855)];
+    
         
         SLLock *lock4 = [[SLLock alloc] initWithName:@"Stir It Up"
-                                                UUID:@"eoeopwpwpeie993pw-0-2"
+                                                uuid:@"eoeopwpwpeie993pw-0-2"
                                     batteryRemaining:@(63)
                                         wifiStrength:@(78)
                                         cellStrength:@(36)
@@ -147,7 +155,9 @@ typedef enum {
                                             isLocked:@(NO)
                                            isCrashOn:@(YES)
                                          isSharingOn:@(NO)
-                                        isSecurityOn:@(YES)];
+                                        isSecurityOn:@(YES)
+                                            latitude:@(37.761663)
+                                           longitude:@(-122.422855)];
         
         _testLocks = @[lock1, lock2, lock3, lock4];
     }
@@ -202,7 +212,7 @@ typedef enum {
 
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
-    return [SLLock lockWithName:blePeripheral.peripheral.name UUID:blePeripheral.CBUUIDAsString];
+    return [SLLock lockWithName:blePeripheral.peripheral.name uuid:blePeripheral.CBUUIDAsString];
 }
 
 - (void)createTestLocks
@@ -211,14 +221,8 @@ typedef enum {
         self.locksToAdd[lock.name] = lock;
         [self addLock:lock];
     }];
-    //[self getLocksFromDatabase];
-}
-
-- (void)getLocksFromDatabase
-{
-    [self.databaseManger getAllObjectsFromTable:kSLDatabaseManagerTableLock withCompletion:^(NSDictionary *results) {
-        NSLog(@"Lock from database results: %@", results);
-    }];
+    
+    [self getLocksFromDatabase];
 }
 
 - (NSArray *)unaddedLocks
@@ -296,10 +300,20 @@ typedef enum {
 
 - (void)saveLockToDatabase:(SLLock *)lock
 {
-    [self.databaseManger saveColumnValues:lock.valuesForDbColumns
-                               forTable:kSLDatabaseManagerTableLock
-                                  isNew:YES
-                             completion:nil];
+    [self.databaseManger saveLockToDb:lock withCompletion:^(BOOL success) {
+        
+    }];
+}
+
+- (void)getLocksFromDatabase
+{
+    NSArray *dbLocks = [self.databaseManger getAllLocksFromDb];
+    NSMutableArray *locks = [NSMutableArray new];
+    for (SLDbLock *dbLock in dbLocks) {
+        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
+    }
+         
+    NSLog(@"all locks: %@", locks.description);
 }
 
 #pragma mark - SEBLEInterfaceManager Delegate Methods
