@@ -170,7 +170,6 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.lock.isSharingOn = @(stateOn);
     //[SLLockManager.manager toggleSharignForLock:self.lock];
-    [SLLockManager.manager createTestLocks];
 }
 
 #pragma mark - SLLockInfoBottomView Delegate Methods

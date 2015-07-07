@@ -188,6 +188,15 @@ typedef enum {
     }
 }
 
+- (void)addLocksFromDb:(NSArray *)locks
+{
+    for (SLLock *lock in locks) {
+        if (![self containsLock:lock]) {
+            self.locks[lock.name] = lock;
+        }
+    }
+}
+
 - (void)removeLock:(SLLock *)lock
 {
     if ([self containsLock:lock]) {
@@ -204,25 +213,19 @@ typedef enum {
     return locksByName;
 }
 
-- (SLLock *)getTestLock
-{
-    int target = arc4random_uniform(3);
-    return self.testLocks[target];
-}
-
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
     return [SLLock lockWithName:blePeripheral.peripheral.name uuid:blePeripheral.CBUUIDAsString];
 }
 
-- (void)createTestLocks
+- (void)fetchLocks
 {
-    [self.testLocks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
-        self.locksToAdd[lock.name] = lock;
-        [self addLock:lock];
-    }];
-    
     [self getLocksFromDatabase];
+    
+    // testing
+    if (self.locks.allKeys.count == 0) {
+        [self addLocksFromDb:self.testLocks];
+    }
 }
 
 - (NSArray *)unaddedLocks
@@ -247,34 +250,36 @@ typedef enum {
 
 - (void)toggleCrashForLock:(SLLock *)lock
 {
-    [self writeToPeripheralFoLockName:lock.name
-                              service:SLLockManagerServiceLedService
-                       characteristic:SLLockManagerCharacteristicLed
-                               turnOn:lock.isCrashOn.boolValue];
+    [self writeToPeripheralForLockName:lock.name
+                               service:SLLockManagerServiceLedService
+                        characteristic:SLLockManagerCharacteristicLed
+                                turnOn:lock.isCrashOn.boolValue];
 }
 
 - (void)toggleSecurityForLock:(SLLock *)lock
 {
-    [self writeToPeripheralFoLockName:lock.name
-                              service:SLLockManagerServiceLockState
-                       characteristic:SLLockManagerCharacteristicLock
-                               turnOn:lock.isSecurityOn.boolValue];
+    [self writeToPeripheralForLockName:lock.name
+                               service:SLLockManagerServiceLockState
+                        characteristic:SLLockManagerCharacteristicLock
+                                turnOn:lock.isSecurityOn.boolValue];
 }
 
-- (void)toggleSharignForLock:(SLLock *)lock
+- (void)toggleSharingForLock:(SLLock *)lock
 {
     
 }
 
-- (void)writeToPeripheralFoLockName:(NSString *)lockName
-                            service:(SLLockManagerService)service
-                     characteristic:(SLLockManagerCharacteristic)characteristic
-                             turnOn:(BOOL)turnOn
+- (void)writeToPeripheralForLockName:(NSString *)lockName
+                             service:(SLLockManagerService)service
+                      characteristic:(SLLockManagerCharacteristic)characteristic
+                              turnOn:(BOOL)turnOn
 {
     NSString *serviceUUID = self.services[@(service)];
     NSString *characteristicUUID = self.services[@(characteristic)];
+    
     u_int8_t value = [self valueForCharacteristic:characteristic turnOn:turnOn];
     NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
+    
     [self.bleManager writeToPeripheralWithName:lockName
                                    serviceUUID:serviceUUID.uppercaseString
                             characteristicUUID:characteristicUUID.uppercaseString
@@ -301,19 +306,14 @@ typedef enum {
 - (void)saveLockToDatabase:(SLLock *)lock
 {
     [self.databaseManger saveLockToDb:lock withCompletion:^(BOOL success) {
-        
+        NSLog(@"saving lock: %@ was a %@", lock.name, success ? @"succes":@"failure");
     }];
 }
 
 - (void)getLocksFromDatabase
 {
-    NSArray *dbLocks = [self.databaseManger getAllLocksFromDb];
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
-    }
-         
-    NSLog(@"all locks: %@", locks.description);
+    NSArray *locks = [self.databaseManger getAllLocksFromDb];
+    [self addLocksFromDb:locks];
 }
 
 #pragma mark - SEBLEInterfaceManager Delegate Methods
