@@ -8,12 +8,16 @@
 
 #import <Foundation/Foundation.h>
 @class SLLock;
+@class NSManagedObjectContext;
 
 @interface SLDatabaseManager : NSObject
 
 +(id)manager;
 
+- (void)setContext:(NSManagedObjectContext *)context;
+
 - (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 - (NSArray *)getAllLocksFromDb;
 - (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
+
 @end

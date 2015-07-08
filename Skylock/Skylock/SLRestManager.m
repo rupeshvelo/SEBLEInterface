@@ -24,9 +24,7 @@
 - (NSDictionary *)serverUrls
 {
     if (!_serverUrls) {
-        _serverUrls = @{
-                      @"server1Url":@"path/to/server"
-                      };
+        _serverUrls = @{@"server1Url":@"path/to/server"};
     }
     
     return _serverUrls;
