@@ -19,7 +19,7 @@
              };
 }
 
-- (void)setProperitesWithDictionary:(NSDictionary *)dictionary
+- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary
 {
     self.uuid = dictionary[@"uuid"];
     self.name = dictionary[@"name"];

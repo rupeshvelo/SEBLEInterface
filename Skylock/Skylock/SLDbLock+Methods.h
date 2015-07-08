@@ -11,5 +11,5 @@
 @interface SLDbLock (Methods)
 
 - (NSDictionary *)asDictionary;
-- (void)setProperitesWithDictionary:(NSDictionary *)dictionary;
+- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
 @end

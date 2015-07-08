@@ -7,7 +7,6 @@
 //
 
 #import "SLDatabaseManager.h"
-#import "AppDelegate.h"
 #import "SLDbLock+Methods.m"
 #import "SLLock.h"
 
@@ -34,16 +33,12 @@
     return dbManager;
 }
 
-- (NSManagedObjectContext *)context
+- (void)setContext:(NSManagedObjectContext *)context
 {
-    if (!_context) {
-        _context = ((AppDelegate *)[UIApplication sharedApplication].delegate).managedObjectContext;
-    }
-    
-    return _context;
+    _context = context;
 }
 
-- (SLDbLock *)newDBLock
+- (SLDbLock *)newDbLock
 {
     return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityLock
                                          inManagedObjectContext:self.context];
@@ -63,10 +58,10 @@
 {
     SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
     if (!dbLock) {
-        dbLock = [self newDBLock];
+        dbLock = [self newDbLock];
     }
     
-    [dbLock setProperitesWithDictionary:lock.asDbDictionary];
+    [dbLock updatePropertiesWithDictionary:lock.asDbDictionary];
     
     NSError *error;
     BOOL success = NO;

@@ -22,7 +22,6 @@
 		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
 		DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */; };
 		DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */; };
-		DC4D80611B4AF7B700ECC2B4 /* skylock.db in Resources */ = {isa = PBXBuildFile; fileRef = DC4D80601B4AF7B700ECC2B4 /* skylock.db */; };
 		DC5C52191B46E38F006CC57B /* .png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C71B46E38F006CC57B /* .png */; };
 		DC5C521A1B46E38F006CC57B /* add-contact-button-small.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C81B46E38F006CC57B /* add-contact-button-small.png */; };
 		DC5C521B1B46E38F006CC57B /* add-contact-button-small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C51C91B46E38F006CC57B /* add-contact-button-small@2x.png */; };
@@ -131,6 +130,8 @@
 		DCE2CE0C1B3724A7007C4AC5 /* SLSettingEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */; };
 		DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */; };
 		DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */; };
+		DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */; };
+		DCEAD1061B4C59900065D9BE /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */; };
 		DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 /* End PBXBuildFile section */
@@ -202,7 +203,6 @@
 		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
 		DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLocationManager.h; sourceTree = "<group>"; };
 		DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLocationManager.m; sourceTree = "<group>"; };
-		DC4D80601B4AF7B700ECC2B4 /* skylock.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = skylock.db; sourceTree = "<group>"; };
 		DC5C51C71B46E38F006CC57B /* .png */ = {isa = PBXFileReference; lastKnownFileType = file; path = .png; sourceTree = "<group>"; };
 		DC5C51C81B46E38F006CC57B /* add-contact-button-small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small.png"; sourceTree = "<group>"; };
 		DC5C51C91B46E38F006CC57B /* add-contact-button-small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "add-contact-button-small@2x.png"; sourceTree = "<group>"; };
@@ -338,6 +338,9 @@
 		DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNavigationViewController.m; sourceTree = "<group>"; };
 		DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBackButton.h; sourceTree = "<group>"; };
 		DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBackButton.m; sourceTree = "<group>"; };
+		DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLFacebookManger.h; sourceTree = "<group>"; };
+		DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLFacebookManger.m; sourceTree = "<group>"; };
+		DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "facebook-ios-sdk/build/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
 		DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddLockViewController.h; sourceTree = "<group>"; };
 		DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAddLockViewController.m; sourceTree = "<group>"; };
 		DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLNotifications.h; sourceTree = "<group>"; };
@@ -354,6 +357,7 @@
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
+				DCEAD1061B4C59900065D9BE /* FBSDKCoreKit.framework in Frameworks */,
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
 			);
@@ -378,6 +382,92 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DC0520C41B4C0E8D00FBAAB7 /* views */ = {
+			isa = PBXGroup;
+			children = (
+				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
+				DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */,
+				DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */,
+				DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */,
+				DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */,
+				DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */,
+				DCE2CE041B364558007C4AC5 /* SLSettingTheftView.h */,
+				DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */,
+				DCE2CE0A1B3724A7007C4AC5 /* SLSettingEmergencyView.h */,
+				DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */,
+				DCE2CE071B36463B007C4AC5 /* SLSettingSharingView.h */,
+				DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */,
+				DC9EADD61B34BA9A00DA1692 /* SLLockInfoViewBase.h */,
+				DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */,
+				DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */,
+				DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */,
+				DC9EADCC1B349CC200DA1692 /* SLLockInfoMiddleView.h */,
+				DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */,
+				DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */,
+				DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */,
+				DC9EADE31B34D92B00DA1692 /* SLLockInfoBottomView.h */,
+				DC9EADE41B34D92B00DA1692 /* SLLockInfoBottomView.m */,
+				DC9EADFD1B35013200DA1692 /* SLLockTableViewCell.h */,
+				DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */,
+				DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */,
+				DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */,
+			);
+			name = views;
+			sourceTree = "<group>";
+		};
+		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
+				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
+				DCE2CDFB1B364359007C4AC5 /* SLSettingsViewController.h */,
+				DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */,
+				DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */,
+				DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */,
+				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
+				DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */,
+				DC2E04EF1B3EE24800B7D6F6 /* SLSharingViewController.h */,
+				DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */,
+				DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */,
+				DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */,
+				DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */,
+				DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */,
+			);
+			name = controllers;
+			sourceTree = "<group>";
+		};
+		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				DC6147781B3233460077484B /* SLLock.h */,
+				DC6147791B3233460077484B /* SLLock.m */,
+				DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */,
+				DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */,
+				DC0520B41B4B8BD500FBAAB7 /* SLDbLock.h */,
+				DC0520B51B4B8BD500FBAAB7 /* SLDbLock.m */,
+				DC0520B71B4B8C0E00FBAAB7 /* SLDbLock+Methods.h */,
+				DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */,
+			);
+			name = models;
+			sourceTree = "<group>";
+		};
+		DC0520CA1B4C0F1B00FBAAB7 /* managers */ = {
+			isa = PBXGroup;
+			children = (
+				DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */,
+				DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */,
+				DCC1E73D1B49800B0083A665 /* SLDatabaseManager.h */,
+				DCC1E73E1B49800B0083A665 /* SLDatabaseManager.m */,
+				DC9EADED1B34EFB100DA1692 /* SLLockManager.h */,
+				DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */,
+				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
+				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
+				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
+				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
+			);
+			name = managers;
+			sourceTree = "<group>";
+		};
 		DC1A1ADD1B2910DC00AEC10B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -385,14 +475,6 @@
 				DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DC4D80581B4AF79200ECC2B4 /* database */ = {
-			isa = PBXGroup;
-			children = (
-				DC4D80601B4AF7B700ECC2B4 /* skylock.db */,
-			);
-			name = database;
 			sourceTree = "<group>";
 		};
 		DC5C51C61B46E38F006CC57B /* assets */ = {
@@ -487,6 +569,7 @@
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */,
 				DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */,
 				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
 				DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */,
@@ -512,73 +595,20 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
-				DC4D80581B4AF79200ECC2B4 /* database */,
+				DC0520C81B4C0EC500FBAAB7 /* controllers */,
 				DC5C51C61B46E38F006CC57B /* assets */,
-				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
+				DC0520C41B4C0E8D00FBAAB7 /* views */,
+				DC0520CA1B4C0F1B00FBAAB7 /* managers */,
+				DC0520C91B4C0EFE00FBAAB7 /* models */,
 				DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */,
-				DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */,
-				DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */,
-				DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */,
-				DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */,
-				DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */,
-				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
-				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
-				DCE2CE041B364558007C4AC5 /* SLSettingTheftView.h */,
-				DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */,
-				DCE2CE0A1B3724A7007C4AC5 /* SLSettingEmergencyView.h */,
-				DCE2CE0B1B3724A7007C4AC5 /* SLSettingEmergencyView.m */,
-				DCE2CE071B36463B007C4AC5 /* SLSettingSharingView.h */,
-				DCE2CE081B36463B007C4AC5 /* SLSettingSharingView.m */,
-				DCE2CDFB1B364359007C4AC5 /* SLSettingsViewController.h */,
-				DCC1E73D1B49800B0083A665 /* SLDatabaseManager.h */,
-				DCC1E73E1B49800B0083A665 /* SLDatabaseManager.m */,
-				DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */,
-				DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */,
-				DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */,
-				DC9EADED1B34EFB100DA1692 /* SLLockManager.h */,
-				DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */,
-				DC9EADD61B34BA9A00DA1692 /* SLLockInfoViewBase.h */,
-				DC9EADD71B34BA9A00DA1692 /* SLLockInfoViewBase.m */,
-				DC6147781B3233460077484B /* SLLock.h */,
-				DC6147791B3233460077484B /* SLLock.m */,
-				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
-				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
-				DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */,
-				DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */,
-				DC2E04EF1B3EE24800B7D6F6 /* SLSharingViewController.h */,
-				DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */,
-				DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */,
-				DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */,
 				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
 				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
-				DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */,
-				DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */,
-				DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */,
-				DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */,
-				DC23872B1B307CF300BB28F3 /* SLLockInfoViewHeader.h */,
-				DC23872C1B307CF300BB28F3 /* SLLockInfoViewHeader.m */,
 				DC2387241B304EC500BB28F3 /* SLConstants.h */,
-				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
-				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
-				DC9EADCC1B349CC200DA1692 /* SLLockInfoMiddleView.h */,
-				DC9EADCD1B349CC200DA1692 /* SLLockInfoMiddleView.m */,
-				DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */,
-				DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */,
-				DC9EADE31B34D92B00DA1692 /* SLLockInfoBottomView.h */,
-				DC9EADE41B34D92B00DA1692 /* SLLockInfoBottomView.m */,
-				DC9EADFD1B35013200DA1692 /* SLLockTableViewCell.h */,
-				DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */,
 				DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */,
 				DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */,
-				DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */,
-				DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */,
 				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
 				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
 				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
-				DC0520B41B4B8BD500FBAAB7 /* SLDbLock.h */,
-				DC0520B51B4B8BD500FBAAB7 /* SLDbLock.m */,
-				DC0520B71B4B8C0E00FBAAB7 /* SLDbLock+Methods.h */,
-				DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */,
 				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
 				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
 			);
@@ -810,7 +840,6 @@
 				DC5C52571B46E38F006CC57B /* settings-icon@2x.png in Resources */,
 				DC5C52441B46E38F006CC57B /* pencil-button.png in Resources */,
 				DC5C52251B46E38F006CC57B /* arrow-down-more-small@3x.png in Resources */,
-				DC4D80611B4AF7B700ECC2B4 /* skylock.db in Resources */,
 				DC5C521C1B46E38F006CC57B /* add-contact-button-small@3x.png in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
 				DC5C52411B46E38F006CC57B /* menu-button.png in Resources */,
@@ -869,6 +898,7 @@
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DC9EADCE1B349CC200DA1692 /* SLLockInfoMiddleView.m in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
+				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1011,6 +1041,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/facebook-ios-sdk/build",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -1029,6 +1063,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/facebook-ios-sdk/build",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
