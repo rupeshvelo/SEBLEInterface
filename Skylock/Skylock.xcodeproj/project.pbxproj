@@ -11,6 +11,7 @@
 		DC0520B61B4B8BD500FBAAB7 /* SLDbLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0520B51B4B8BD500FBAAB7 /* SLDbLock.m */; };
 		DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */; };
 		DC0520BE1B4B9E8500FBAAB7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */; };
+		DC0B36621B4DB7E0008E25F4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */; };
 		DC1A1AE51B2910E400AEC10B /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1A1AE21B2910DD00AEC10B /* libMapbox.a */; };
 		DC1A1AE61B291CF000AEC10B /* Mapbox.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
@@ -188,6 +189,7 @@
 		DC0520B71B4B8C0E00FBAAB7 /* SLDbLock+Methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLDbLock+Methods.h"; sourceTree = "<group>"; };
 		DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLDbLock+Methods.m"; sourceTree = "<group>"; };
 		DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "facebook-ios-sdk/build/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
 		DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
@@ -359,6 +361,7 @@
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
 				DCEAD1061B4C59900065D9BE /* FBSDKCoreKit.framework in Frameworks */,
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
+				DC0B36621B4DB7E0008E25F4 /* FBSDKLoginKit.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -569,6 +572,7 @@
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */,
 				DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */,
 				DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */,
 				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
