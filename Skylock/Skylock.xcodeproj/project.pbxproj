@@ -494,9 +494,7 @@
 		DCD82FDE1B1FCBBC00B38910 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */; };
 		DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */; };
 		DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */; };
-		DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE51B1FCBBC00B38910 /* Main.storyboard */; };
 		DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE81B1FCBBC00B38910 /* Images.xcassets */; };
-		DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */; };
 		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
 		DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CDFC1B364359007C4AC5 /* SLSettingsViewController.m */; };
 		DCE2CE061B364558007C4AC5 /* SLSettingTheftView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE051B364558007C4AC5 /* SLSettingTheftView.m */; };
@@ -1071,9 +1069,7 @@
 		DCD82FE01B1FCBBC00B38910 /* Skylock.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Skylock.xcdatamodel; sourceTree = "<group>"; };
 		DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLMapViewController.h; sourceTree = "<group>"; };
 		DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLMapViewController.m; sourceTree = "<group>"; };
-		DCD82FE61B1FCBBC00B38910 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DCD82FE81B1FCBBC00B38910 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		DCD82FEB1B1FCBBC00B38910 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
@@ -1959,8 +1955,6 @@
 				DC2387241B304EC500BB28F3 /* SLConstants.h */,
 				DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */,
 				DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */,
-				DCD82FE51B1FCBBC00B38910 /* Main.storyboard */,
-				DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */,
 				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
 				DCD82FE81B1FCBBC00B38910 /* Images.xcassets */,
 				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
@@ -2356,7 +2350,6 @@
 				DC78212F1B4FA53D00B59C11 /* unlock-btn@2x.png in Resources */,
 				DC7821631B4FA53D00B59C11 /* navigate-active@3x.png in Resources */,
 				DC7820881B4FA53D00B59C11 /* high-threat@2x.png in Resources */,
-				DCD82FE71B1FCBBC00B38910 /* Main.storyboard in Resources */,
 				DC7820FD1B4FA53D00B59C11 /* image-4@3x.png in Resources */,
 				DC5C52221B46E38F006CC57B /* add-icon@3x.png in Resources */,
 				DC78211F1B4FA53D00B59C11 /* pagination1@3x.png in Resources */,
@@ -2442,7 +2435,6 @@
 				DC5C52471B46E38F006CC57B /* reserve-button.png in Resources */,
 				DC7820EC1B4FA53D00B59C11 /* bluetooth-icon.png in Resources */,
 				DC7820DB1B4FA53D00B59C11 /* wifi-1@2x.png in Resources */,
-				DCD82FEC1B1FCBBC00B38910 /* LaunchScreen.xib in Resources */,
 				DC7820991B4FA53D00B59C11 /* theft-alert-android-lockscreen.png in Resources */,
 				DC7820D31B4FA53D00B59C11 /* battery-66%.png in Resources */,
 				DC5C524A1B46E38F006CC57B /* right-arrow-button.png in Resources */,
@@ -2652,25 +2644,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		DCD82FE51B1FCBBC00B38910 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DCD82FE61B1FCBBC00B38910 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		DCD82FEA1B1FCBBC00B38910 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DCD82FEB1B1FCBBC00B38910 /* Base */,
-			);
-			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		DCD82FF91B1FCBBC00B38910 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2767,6 +2740,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/facebook-ios-sdk/build",
@@ -2789,6 +2763,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-2";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/facebook-ios-sdk/build",
