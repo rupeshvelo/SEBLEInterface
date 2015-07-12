@@ -10,7 +10,7 @@
 #import "SLLockManager.h"
 #import "SLDatabaseManager.h"
 #import "SLFacebookManger.h"
-#import "SLMainTutorialViewController.h"
+#import "SLLoginViewController.h"
 
 @interface AppDelegate ()
 
@@ -26,8 +26,8 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    SLMainTutorialViewController *mtvc = [SLMainTutorialViewController new];
-    self.window.rootViewController = mtvc;
+    SLLoginViewController *lvc = [SLLoginViewController new];
+    self.window.rootViewController = lvc;
     
     [self.window makeKeyAndVisible];
     

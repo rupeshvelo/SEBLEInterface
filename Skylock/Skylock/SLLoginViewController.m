@@ -1,0 +1,413 @@
+//
+//  SLLoginViewController.m
+//  Skylock
+//
+//  Created by Andre Green on 7/11/15.
+//  Copyright (c) 2015 Andre Green. All rights reserved.
+//
+
+#import "SLLoginViewController.h"
+#import "SLConstants.h"
+#import "SLUnderlineTextField.h"
+#import "UIColor+RGB.h"
+
+#define kSLLoginVCFontName      @"HelveticaNeue"
+#define kSLLoginVCFont          [UIFont fontWithName:kSLLoginVCFontName size:13.0f]
+#define KSLLoginVCDarkGrey      [UIColor colorWithRed:97 green:100 blue:100]
+#define KSLLoginVCLightGrey     [UIColor colorWithRed:146 green:148 blue:151]
+#define KSLLoginVCUnderlineGrey [UIColor colorWithRed:191 green:191 blue:191]
+
+@interface SLLoginViewController ()
+
+@property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIButton *getStartedButton;
+@property (nonatomic, strong) UIImageView *skylockLogoView;
+@property (nonatomic, assign) BOOL isGetStarted;
+@property (nonatomic, strong) UILabel *letsGetStartedLabel;
+@property (nonatomic, strong) UILabel *facebookLabel;
+@property (nonatomic, strong) UIButton *facebookButton;
+@property (nonatomic, strong) UILabel *alternateLabel;
+@property (nonatomic, strong) SLUnderlineTextField *emailField;
+@property (nonatomic, strong) SLUnderlineTextField *passwordField;
+@property (nonatomic, strong) UIButton *loginButton;
+@property (nonatomic, strong) UIButton *signUpButton;
+@property (nonatomic, strong) UIButton *forgotPasswordButton;
+@property (nonatomic, copy) NSString *password;
+@property (nonatomic, copy) NSString *email;
+@property (nonatomic, assign) CGFloat xPadding;
+
+@end
+
+@implementation SLLoginViewController
+
+- (UIImageView *)backgroundImageView
+{
+    if (!_backgroundImageView) {
+        UIImage *image = [UIImage imageNamed:@"bg2"];
+        _backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                             0.0f,
+                                                                             .5*image.size.width,
+                                                                             .5*image.size.height)];
+        _backgroundImageView.image = image;
+        [self.view addSubview:_backgroundImageView];
+    }
+    return _backgroundImageView;
+}
+
+- (UIImageView *)skylockLogoView
+{
+    if (!_skylockLogoView) {
+        UIImage *image = [UIImage imageNamed:@"logo2"];
+        _skylockLogoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                         0.0f,
+                                                                         .5*image.size.width,
+                                                                         .5*image.size.height)];
+        _skylockLogoView.image = image;
+        [self.view addSubview:_skylockLogoView];
+    }
+    
+    return _skylockLogoView;
+}
+
+- (UIButton *)getStartedButton
+{
+    if (!_getStartedButton) {
+        UIImage *image = [UIImage imageNamed:@"let’s-get-started-btn"];
+        _getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                       0.0f,
+                                                                       .5*image.size.width,
+                                                                       .5*image.size.height)];
+        [_getStartedButton addTarget:self
+                              action:@selector(getStartedButtonPressed)
+                    forControlEvents:UIControlEventTouchDown];
+        [_getStartedButton setImage:image forState:UIControlStateNormal];
+        [self.view addSubview:_getStartedButton];
+    }
+    
+    return _getStartedButton;
+}
+
+- (UILabel *)letsGetStartedLabel
+{
+    if (!_letsGetStartedLabel) {
+        _letsGetStartedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                         0.0f,
+                                                                         self.view.bounds.size.width,
+                                                                         15.0f)];
+        _letsGetStartedLabel.text = NSLocalizedString(@"Let's get started!", nil);
+        _letsGetStartedLabel.font = kSLLoginVCFont;
+        _letsGetStartedLabel.textColor = KSLLoginVCDarkGrey;
+        _letsGetStartedLabel.textAlignment = NSTextAlignmentCenter;
+        [self.view addSubview:_letsGetStartedLabel];
+    }
+    
+    return _letsGetStartedLabel;
+}
+
+- (UILabel *)facebookLabel
+{
+    if (!_facebookLabel) {
+        _facebookLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                   0.0f,
+                                                                   self.view.bounds.size.width,
+                                                                   self.letsGetStartedLabel.bounds.size.height)];
+        _facebookLabel.text = NSLocalizedString(@"Login with your existing Facebook account.", nil);
+        _facebookLabel.font = [UIFont fontWithName:kSLLoginVCFontName size:10.0f];
+        _facebookLabel.textColor = KSLLoginVCLightGrey;
+        _facebookLabel.textAlignment = NSTextAlignmentCenter;
+        [self.view addSubview:_facebookLabel];
+    }
+    
+    return _facebookLabel;
+}
+
+- (UIButton *)facebookButton
+{
+    if (!_facebookButton) {
+        UIImage *image = [UIImage imageNamed:@"login-with-facebook-btn"];
+        _facebookButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                     0.0f,
+                                                                     .5*image.size.width,
+                                                                     .5*image.size.height)];
+        [_facebookButton addTarget:self
+                            action:@selector(facebookButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+        [_facebookButton setImage:image forState:UIControlStateNormal];
+        [self.view addSubview:_facebookButton];
+    }
+    
+    return _facebookButton;
+}
+
+- (UILabel *)alternateLabel
+{
+    if (!_alternateLabel) {
+        _alternateLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                    0.0f,
+                                                                    self.view.bounds.size.width,
+                                                                    15.0f)];
+        _alternateLabel.text = NSLocalizedString(@"Alternatively", nil);
+        _alternateLabel.font = kSLLoginVCFont;
+        _alternateLabel.textColor = KSLLoginVCDarkGrey;
+        _alternateLabel.textAlignment = NSTextAlignmentCenter;
+        [self.view addSubview:_alternateLabel];
+    }
+    
+    return _alternateLabel;
+}
+
+- (SLUnderlineTextField *)emailField
+{
+    if (!_emailField) {
+        _emailField = [[SLUnderlineTextField alloc] initWithFrame:CGRectMake(0.0f,
+                                                                             0.0f,
+                                                                             self.view.bounds.size.width - 2*self.xPadding,
+                                                                             20.0f)
+                                                        lineColor:KSLLoginVCUnderlineGrey];
+        _emailField.placeholder = NSLocalizedString(@"Email Address", nil);
+        _emailField.font = kSLLoginVCFont;
+        _emailField.textColor = KSLLoginVCLightGrey;
+        [self.view addSubview:_emailField];
+    }
+    
+    return _emailField;
+}
+
+- (SLUnderlineTextField *)passwordField
+{
+    if (!_passwordField) {
+        _passwordField = [[SLUnderlineTextField alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                0.0f,
+                                                                                self.view.bounds.size.width - 2*self.xPadding,
+                                                                                20.0f)
+                                                           lineColor:KSLLoginVCUnderlineGrey];
+        _passwordField.placeholder = NSLocalizedString(@"Password", nil);
+        _passwordField.font = kSLLoginVCFont;
+        _passwordField.textColor = KSLLoginVCLightGrey;
+        [self.view addSubview:_passwordField];
+    }
+    
+    return _passwordField;
+}
+
+- (UIButton *)loginButton
+{
+    if (!_loginButton) {
+        UIImage *image = [UIImage imageNamed:@"login-btn"];
+        _loginButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                  0.0f,
+                                                                  .5*image.size.width,
+                                                                  .5*image.size.height)];
+        [_loginButton addTarget:self
+                         action:@selector(loginButtonPressed)
+               forControlEvents:UIControlEventTouchDown];
+        [_loginButton setImage:image forState:UIControlStateNormal];
+        [self.view addSubview:_loginButton];
+    }
+    
+    return _loginButton;
+}
+
+- (UIButton *)signUpButton
+{
+    if (!_signUpButton) {
+        UIImage *image = [UIImage imageNamed:@"signup-btn"];
+        _signUpButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                   0.0f,
+                                                                   .5*image.size.width,
+                                                                   .5*image.size.height)];
+        [_signUpButton addTarget:self
+                          action:@selector(signUpButtonPressed)
+                forControlEvents:UIControlEventTouchDown];
+        [_signUpButton setImage:image forState:UIControlStateNormal];
+        [self.view addSubview:_signUpButton];
+    }
+    
+    return _signUpButton;
+}
+
+- (UIButton *)forgotPasswordButton
+{
+    if (!_forgotPasswordButton) {
+        _forgotPasswordButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                           0.0f,
+                                                                           self.view.bounds.size.width,
+                                                                           15.0f)];
+        [_forgotPasswordButton addTarget:self
+                          action:@selector(forgotPasswordButtonPressed)
+                forControlEvents:UIControlEventTouchDown];
+        [_forgotPasswordButton setTitle:NSLocalizedString(@"Forgot Password", nil)
+                               forState:UIControlStateNormal];
+        _forgotPasswordButton.titleLabel.font = [UIFont fontWithName:kSLLoginVCFontName size:9.0f];
+        [_forgotPasswordButton setTitleColor:KSLLoginVCLightGrey forState:UIControlStateNormal];
+        [self.view addSubview:_forgotPasswordButton];
+    }
+    
+    return _forgotPasswordButton;
+
+}
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.isGetStarted = YES;
+    
+    self.backgroundImageView.frame = CGRectMake(0.0f,
+                                                0.0f,
+                                                self.backgroundImageView.bounds.size.width,
+                                                self.backgroundImageView.bounds.size.height);
+
+    self.xPadding = .5*(self.view.bounds.size.width - self.facebookButton.bounds.size.width);
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.skylockLogoView.frame = CGRectMake(.5*(self.view.bounds.size.width - self.skylockLogoView.bounds.size.width),
+                                            189.0f,
+                                            self.skylockLogoView.bounds.size.width,
+                                            self.skylockLogoView.bounds.size.height);
+    
+    self.getStartedButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.getStartedButton.bounds.size.width),
+                                             CGRectGetMaxY(self.skylockLogoView.frame) + 20.0f,
+                                             self.getStartedButton.bounds.size.width,
+                                             self.getStartedButton.bounds.size.height);
+    
+    self.letsGetStartedLabel.frame = CGRectMake(-self.letsGetStartedLabel.bounds.size.width,
+                                                160.0f,
+                                                self.letsGetStartedLabel.bounds.size.width,
+                                                self.letsGetStartedLabel.bounds.size.height);
+    
+    self.facebookLabel.frame = CGRectMake(self.view.bounds.size.width,
+                                          CGRectGetMaxY(self.letsGetStartedLabel.frame) + 40.0f,
+                                          self.facebookLabel.bounds.size.width,
+                                          self.facebookLabel.bounds.size.height);
+    
+    self.facebookButton.frame = CGRectMake(-self.facebookButton.bounds.size.width,
+                                           CGRectGetMaxY(self.facebookLabel.frame) + 6.0f,
+                                           self.facebookButton.bounds.size.width,
+                                           self.facebookButton.bounds.size.height);
+    
+    self.alternateLabel.frame = CGRectMake(self.view.bounds.size.width,
+                                           CGRectGetMaxY(self.facebookButton.frame) + 40.0f,
+                                           self.alternateLabel.bounds.size.width,
+                                           self.alternateLabel.bounds.size.height);
+    
+    self.emailField.frame = CGRectMake(-self.emailField.bounds.size.width,
+                                       CGRectGetMaxY(self.alternateLabel.frame) + 40.0f,
+                                       self.emailField.bounds.size.width,
+                                       self.emailField.bounds.size.height);
+    
+    self.passwordField.frame = CGRectMake(self.view.bounds.size.width,
+                                          CGRectGetMaxY(self.emailField.frame) + 25.0f,
+                                          self.passwordField.bounds.size.width,
+                                          self.passwordField.bounds.size.height);
+    
+    self.loginButton.frame = CGRectMake(-self.loginButton.bounds.size.width,
+                                        CGRectGetMaxY(self.passwordField.frame) + 25.0f,
+                                        self.loginButton.bounds.size.width,
+                                        self.loginButton.bounds.size.height);
+    
+    self.signUpButton.frame = CGRectMake(self.view.bounds.size.width,
+                                         self.loginButton.frame.origin.y,
+                                         self.signUpButton.bounds.size.width,
+                                         self.loginButton.bounds.size.height);
+    
+    self.forgotPasswordButton.frame = CGRectMake(-self.forgotPasswordButton.bounds.size.width,
+                                                 CGRectGetMaxY(self.signUpButton.frame) + 20.0f,
+                                                 self.forgotPasswordButton.bounds.size.width,
+                                                 self.forgotPasswordButton.bounds.size.height);
+    
+    [self setUpGetStartedViews];
+}
+
+- (void)setUpGetStartedViews
+{
+    }
+
+- (void)transitionToLogin
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration2 animations:^{
+        self.skylockLogoView.frame = CGRectOffset(self.skylockLogoView.frame,
+                                                  0.0f,
+                                                  50.0f - self.skylockLogoView.frame.origin.y);
+        
+        self.getStartedButton.frame = CGRectOffset(self.getStartedButton.frame,
+                                                   0.0,
+                                                   self.view.bounds.size.height + self.skylockLogoView.bounds.size.height - self.skylockLogoView.frame.origin.y);
+    } completion:^(BOOL finished) {
+        [self.getStartedButton removeFromSuperview];
+        [self animateLoginComponents];
+    }];
+}
+
+- (void)animateLoginComponents
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration2 animations:^{
+        self.letsGetStartedLabel.frame = CGRectOffset(self.letsGetStartedLabel.frame,
+                                                      self.letsGetStartedLabel.bounds.size.width,
+                                                      0.0f);
+        self.facebookLabel.frame = CGRectOffset(self.facebookLabel.frame,
+                                                -self.facebookLabel.frame.size.width,
+                                                0.0f);
+        
+        self.facebookButton.frame = CGRectOffset(self.facebookButton.frame,
+                                                 self.facebookButton.bounds.size.width + .5*(self.view.bounds.size.width - self.facebookButton.bounds.size.width),
+                                                 0.0f);
+        
+        self.alternateLabel.frame = CGRectOffset(self.alternateLabel.frame,
+                                                 -self.alternateLabel.bounds.size.width,
+                                                 0.0f);
+        
+        self.emailField.frame = CGRectOffset(self.emailField.frame,
+                                             self.emailField.bounds.size.width + .5*(self.view.bounds.size.width - self.emailField.bounds.size.width),
+                                             0.0f);
+        
+        self.passwordField.frame = CGRectMake(self.emailField.frame.origin.x,
+                                              self.passwordField.frame.origin.y,
+                                              self.passwordField.bounds.size.width,
+                                              self.passwordField.bounds.size.height);
+        
+        self.loginButton.frame = CGRectOffset(self.loginButton.frame,
+                                              self.loginButton.bounds.size.width + self.xPadding,
+                                              0.0f);
+        
+        self.signUpButton.frame = CGRectOffset(self.signUpButton.frame,
+                                               -self.xPadding - self.loginButton.bounds.size.width,
+                                               0.0f);
+        
+        self.forgotPasswordButton.frame = CGRectOffset(self.forgotPasswordButton.frame,
+                                                       self.forgotPasswordButton.bounds.size.width,
+                                                       0.0f);
+    }];
+}
+
+- (void)getStartedButtonPressed
+{
+    NSLog(@"get started button pressed");
+    
+    [self transitionToLogin];
+}
+
+- (void)facebookButtonPressed
+{
+    NSLog(@"facebook login button pressed");
+}
+
+- (void)loginButtonPressed
+{
+    NSLog(@"login button pressed");
+}
+
+- (void)signUpButtonPressed
+{
+    NSLog(@"sign up button pressed");
+}
+
+- (void)forgotPasswordButtonPressed
+{
+    NSLog(@"forgot password button pressed");
+}
+
+@end
