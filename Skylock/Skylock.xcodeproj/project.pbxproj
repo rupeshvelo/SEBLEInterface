@@ -1100,6 +1100,7 @@
 		DCF36BAD1B524B5000070F11 /* SLUnderlineTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLUnderlineTextField.m; sourceTree = "<group>"; };
 		DCF36BAF1B52503000070F11 /* UIColor+RGB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RGB.h"; sourceTree = "<group>"; };
 		DCF36BB01B52503000070F11 /* UIColor+RGB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RGB.m"; sourceTree = "<group>"; };
+		DCF36BB21B52F29D00070F11 /* SLUserDefaults.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLUserDefaults.h; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1963,6 +1964,7 @@
 				DC0520CA1B4C0F1B00FBAAB7 /* managers */,
 				DC0520C91B4C0EFE00FBAAB7 /* models */,
 				DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */,
+				DCF36BB21B52F29D00070F11 /* SLUserDefaults.h */,
 				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
 				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
 				DC2387241B304EC500BB28F3 /* SLConstants.h */,
