@@ -505,6 +505,9 @@
 		DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */; };
 		DCEAD1061B4C59900065D9BE /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */; };
 		DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */; };
+		DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BA71B52425400070F11 /* SLLoginViewController.m */; };
+		DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BAD1B524B5000070F11 /* SLUnderlineTextField.m */; };
+		DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BB01B52503000070F11 /* UIColor+RGB.m */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 /* End PBXBuildFile section */
 
@@ -1091,6 +1094,12 @@
 		DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddLockViewController.h; sourceTree = "<group>"; };
 		DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAddLockViewController.m; sourceTree = "<group>"; };
 		DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLNotifications.h; sourceTree = "<group>"; };
+		DCF36BA61B52425400070F11 /* SLLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLoginViewController.h; sourceTree = "<group>"; };
+		DCF36BA71B52425400070F11 /* SLLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLoginViewController.m; sourceTree = "<group>"; };
+		DCF36BAC1B524B5000070F11 /* SLUnderlineTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLUnderlineTextField.h; sourceTree = "<group>"; };
+		DCF36BAD1B524B5000070F11 /* SLUnderlineTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLUnderlineTextField.m; sourceTree = "<group>"; };
+		DCF36BAF1B52503000070F11 /* UIColor+RGB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+RGB.h"; sourceTree = "<group>"; };
+		DCF36BB01B52503000070F11 /* UIColor+RGB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+RGB.m"; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1133,6 +1142,8 @@
 		DC0520C41B4C0E8D00FBAAB7 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				DCF36BAC1B524B5000070F11 /* SLUnderlineTextField.h */,
+				DCF36BAD1B524B5000070F11 /* SLUnderlineTextField.m */,
 				DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */,
 				DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */,
 				DCB7A0951B417B2400636D8E /* SLShareingBaseTableViewCell.h */,
@@ -1166,6 +1177,8 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DCF36BA61B52425400070F11 /* SLLoginViewController.h */,
+				DCF36BA71B52425400070F11 /* SLLoginViewController.m */,
 				DC7821AE1B4FAEBC00B59C11 /* SLTutorial1ViewController.h */,
 				DC7821AF1B4FAEBC00B59C11 /* SLTutorial1ViewController.m */,
 				DC7818A21B4F5C5400B59C11 /* SLMainTutorialViewController.h */,
@@ -1953,6 +1966,8 @@
 				DCD82FDC1B1FCBBC00B38910 /* AppDelegate.h */,
 				DCD82FDD1B1FCBBC00B38910 /* AppDelegate.m */,
 				DC2387241B304EC500BB28F3 /* SLConstants.h */,
+				DCF36BAF1B52503000070F11 /* UIColor+RGB.h */,
+				DCF36BB01B52503000070F11 /* UIColor+RGB.m */,
 				DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */,
 				DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */,
 				DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */,
@@ -2593,6 +2608,7 @@
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
 				DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */,
 				DCE2CDFD1B364359007C4AC5 /* SLSettingsViewController.m in Sources */,
+				DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */,
 				DCE2CE091B36463B007C4AC5 /* SLSettingSharingView.m in Sources */,
 				DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */,
 				DC9EADE51B34D92B00DA1692 /* SLLockInfoBottomView.m in Sources */,
@@ -2615,8 +2631,10 @@
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DC9EADCE1B349CC200DA1692 /* SLLockInfoMiddleView.m in Sources */,
 				DC7818A41B4F5C5400B59C11 /* SLMainTutorialViewController.m in Sources */,
+				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
+				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -19,6 +19,7 @@
 #define SLConstantsNavControllerFont    [UIFont boldSystemFontOfSize:25]
 
 #define SLConstantsAnimationDurration1  .35f
+#define SLConstantsAnimationDurration2  .5f
 
 #define SLConstantsViewCornerRadius1    2.0f
 
