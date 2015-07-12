@@ -10,6 +10,7 @@
 #import "SLLockManager.h"
 #import "SLDatabaseManager.h"
 #import "SLFacebookManger.h"
+#import "SLMainTutorialViewController.h"
 
 @interface AppDelegate ()
 
@@ -19,9 +20,27 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
     [SLDatabaseManager.manager setContext:self.managedObjectContext];
     [SLLockManager.manager fetchLocks];
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    SLMainTutorialViewController *mtvc = [SLMainTutorialViewController new];
+    self.window.rootViewController = mtvc;
+    
+    [self.window makeKeyAndVisible];
+    
+    UIPageControl *pageControl = [UIPageControl appearance];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:225.0f/255.0f
+                                                         green:225.0f/255.0f
+                                                          blue:225.0f/255.0f
+                                                         alpha:1.0f];
+    
+    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88.0f/255.0f
+                                                                green:204.0f/255.0f
+                                                                 blue:131.0f/255.0f
+                                                                alpha:1.0f];
     
     return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
 }

@@ -10,4 +10,8 @@
 
 @interface SLTutorial1ViewController : SLTutorialViewController
 
+@property (nonatomic, copy) NSString *orderInfoText;
+@property (nonatomic, copy) NSString *orderText;
+
+
 @end
