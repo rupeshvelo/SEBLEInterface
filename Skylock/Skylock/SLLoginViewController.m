@@ -10,6 +10,11 @@
 #import "SLConstants.h"
 #import "SLUnderlineTextField.h"
 #import "UIColor+RGB.h"
+#import "SLFacebookManger.h"
+#import "SLNotifications.h"
+#import "SLUserDefaults.h"
+#import "SLMapViewController.h"
+#import "SLMainTutorialViewController.h"
 
 #define kSLLoginVCFontName      @"HelveticaNeue"
 #define kSLLoginVCFont          [UIFont fontWithName:kSLLoginVCFontName size:13.0f]
@@ -246,6 +251,12 @@
     return _forgotPasswordButton;
 
 }
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -258,6 +269,11 @@
                                                 self.backgroundImageView.bounds.size.height);
 
     self.xPadding = .5*(self.view.bounds.size.width - self.facebookButton.bounds.size.width);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(facebookSignInSuccessful)
+                                                 name:kSLNotificationUserSignedInFacebook
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -353,7 +369,7 @@
                                                 0.0f);
         
         self.facebookButton.frame = CGRectOffset(self.facebookButton.frame,
-                                                 self.facebookButton.bounds.size.width + .5*(self.view.bounds.size.width - self.facebookButton.bounds.size.width),
+                                                 self.facebookButton.bounds.size.width + self.xPadding,
                                                  0.0f);
         
         self.alternateLabel.frame = CGRectOffset(self.alternateLabel.frame,
@@ -361,7 +377,7 @@
                                                  0.0f);
         
         self.emailField.frame = CGRectOffset(self.emailField.frame,
-                                             self.emailField.bounds.size.width + .5*(self.view.bounds.size.width - self.emailField.bounds.size.width),
+                                             self.emailField.bounds.size.width + self.xPadding,
                                              0.0f);
         
         self.passwordField.frame = CGRectMake(self.emailField.frame.origin.x,
@@ -393,6 +409,9 @@
 - (void)facebookButtonPressed
 {
     NSLog(@"facebook login button pressed");
+    [SLFacebookManger.manager loginWithCompletion:^{
+        NSLog(@"user loging completed!!! Yay!!");
+    }];
 }
 
 - (void)loginButtonPressed
@@ -410,4 +429,26 @@
     NSLog(@"forgot password button pressed");
 }
 
+- (void)facebookSignInSuccessful
+{
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:@(YES) forKey:SLUserDefaultsSignedIn];
+    
+    if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
+        NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
+        if (isTutorialComplete.boolValue) {
+            SLMapViewController *mvc = [SLMapViewController new];
+            [self presentViewController:mvc animated:YES completion:nil];
+        } else {
+            SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+            [self presentViewController:tvc animated:YES completion:nil];
+        }
+    } else {
+        [ud setObject:@(NO) forKey:SLUserDefaultsTutorialComplete];
+        SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+        [self presentViewController:tvc animated:YES completion:nil];
+    }
+    
+    [ud synchronize];
+}
 @end

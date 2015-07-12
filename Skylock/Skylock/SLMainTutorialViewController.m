@@ -11,6 +11,7 @@
 #import "SLTutorial1ViewController.h"
 #import "SLConstants.h"
 #import "SLMapViewController.h"
+#import "SLUserDefaults.h"
 
 #define kSLTutorialXPadding 25.0f
 
@@ -143,7 +144,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
                                                                    .5*image.size.width,
                                                                    .5*image.size.height)];
         [_searchButton addTarget:self
-                        action:@selector(doneButtonPressed)
+                        action:@selector(searchButtonPressed)
               forControlEvents:UIControlEventTouchDown];
         [_searchButton setImage:image forState:UIControlStateNormal];
         _searchButton.hidden = YES;
@@ -385,6 +386,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)doneButtonPressed
 {
     NSLog(@"done button pressed");
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    [ud setObject:@(YES) forKey:SLUserDefaultsTutorialComplete];
+    [ud synchronize];
+    
     SLMapViewController *mvc = [SLMapViewController new];
     [self presentViewController:mvc animated:YES completion:nil];
 }

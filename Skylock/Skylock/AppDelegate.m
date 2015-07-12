@@ -11,6 +11,9 @@
 #import "SLDatabaseManager.h"
 #import "SLFacebookManger.h"
 #import "SLLoginViewController.h"
+#import "SLMapViewController.h"
+#import "SLMainTutorialViewController.h"
+#import "SLUserDefaults.h"
 
 @interface AppDelegate ()
 
@@ -26,8 +29,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    SLLoginViewController *lvc = [SLLoginViewController new];
-    self.window.rootViewController = lvc;
+    self.window.rootViewController = self.initialViewController;
     
     [self.window makeKeyAndVisible];
     
@@ -80,6 +82,35 @@
                                          openURL:url
                                sourceApplication:sourceApplication
                                       annotation:annotation];
+}
+
+- (UIViewController *)initialViewController
+{
+    UIViewController *initialVC;
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:SLUserDefaultsSignedIn]) {
+        NSNumber *isSignedIn = [ud objectForKey:SLUserDefaultsSignedIn];
+        if (isSignedIn.boolValue) {
+            if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
+                NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
+                if (isTutorialComplete.boolValue) {
+                    SLMapViewController *mvc = [SLMapViewController new];
+                    initialVC = mvc;
+                } else {
+                    SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+                    initialVC = tvc;
+                }
+            }
+        } else {
+            SLLoginViewController *lvc = [SLLoginViewController new];
+            initialVC = lvc;
+        }
+    } else {
+        SLLoginViewController *lvc = [SLLoginViewController new];
+        initialVC = lvc;
+    }
+    
+    return initialVC;
 }
 
 #pragma mark - Core Data stack

@@ -7,6 +7,8 @@
 //
 
 #import "SLFacebookManger.h"
+#import "SLUserDefaults.h"
+#import "SLNotifications.h"
 
 
 @interface SLFacebookManger()
@@ -76,15 +78,12 @@
     [login logInWithReadPermissions:self.permissions
                             handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
         if (error) {
-            // Process error
+
         } else if (result.isCancelled) {
-            // Handle cancellations
+
         } else {
-            // If you ask for multiple permissions at once, you
-            // should check if specific permissions missing
-            if ([result.grantedPermissions containsObject:@"email"]) {
-                // Do work
-            }
+
+            [self getFBUserInfo];
         }
     }];
 }
@@ -95,10 +94,19 @@
         [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
              if (!error) {
-                 NSLog(@"fetched user:%@", result);
+                 [self userInfoRecieved:result];
              }
          }];
     }
+}
+
+- (void)userInfoRecieved:(NSDictionary *)info
+{
+    NSLog(@"fetched user:%@", info);
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
+                                                        object:nil];
+    NSLog(@"me");
 }
 
 @end

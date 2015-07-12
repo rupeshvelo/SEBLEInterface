@@ -9,6 +9,6 @@
 #ifndef Skylock_SLNotifications_h
 #define Skylock_SLNotifications_h
 
-#define kSLNotificationLockManagerDiscoverdLock @"SLNotificationLockManagerDiscoverdLock"
-
+#define kSLNotificationLockManagerDiscoverdLock @"kSLNotificationLockManagerDiscoverdLock"
+#define kSLNotificationUserSignedInFacebook @"kSLNotificationUserSignedInFacebook"
 #endif
