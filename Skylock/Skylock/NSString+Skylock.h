@@ -7,9 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface NSString (Skylock)
 
 - (instancetype)stringWithDistance:(NSNumber *)distance;
+
+- (CGSize)sizeWithFont:(UIFont *)font maxSize:(CGSize)maxSize;
 
 @end

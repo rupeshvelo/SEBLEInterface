@@ -20,9 +20,11 @@
 @property (nonatomic, strong) UIImageView *batteryImageView;
 @property (nonatomic, strong) UIImageView *wifiImageView;
 @property (nonatomic, strong) UIImageView *cellSignalImageView;
-@property (nonatomic, strong) UIButton *settingsButton;
-@property (nonatomic, strong) UILabel *distanceAwayLabel;
-@property (nonatomic, strong) UILabel *lastLabel;
+@property (nonatomic, strong) UIButton *arrowButton;
+
+//@property (nonatomic, strong) UIButton *settingsButton;
+//@property (nonatomic, strong) UILabel *distanceAwayLabel;
+//@property (nonatomic, strong) UILabel *lastLabel;
 
 
 @end
@@ -30,24 +32,24 @@
 
 @implementation SLLockInfoViewHeader
 
-- (UIButton *)settingsButton
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (!_settingsButton) {
-        UIImage *settingImage = [UIImage imageNamed:@"settings-icon"];
-        _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                     0.0f,
-                                                                     settingImage.size.width,
-                                                                     settingImage.size.height)];
-        [_settingsButton setBackgroundImage:settingImage forState:UIControlStateNormal];
-        [_settingsButton addTarget:self
-                            action:@selector(settingsButtonPressed)
-                  forControlEvents:UIControlEventTouchDown];
-        [self addSubview:_settingsButton];
-    }
-    
-    return _settingsButton;
-}
+//- (UIButton *)settingsButton
+//{
+//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+//    if (!_settingsButton) {
+//        UIImage *settingImage = [UIImage imageNamed:@"settings-icon"];
+//        _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+//                                                                     0.0f,
+//                                                                     settingImage.size.width,
+//                                                                     settingImage.size.height)];
+//        [_settingsButton setBackgroundImage:settingImage forState:UIControlStateNormal];
+//        [_settingsButton addTarget:self
+//                            action:@selector(settingsButtonPressed)
+//                  forControlEvents:UIControlEventTouchDown];
+//        [self addSubview:_settingsButton];
+//    }
+//    
+//    return _settingsButton;
+//}
 
 - (UIImageView *)batteryImageView
 {
@@ -82,37 +84,55 @@
     return _wifiImageView;
 }
 
-- (UILabel *)lastLabel
+- (UIButton *)arrowButton
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (!_lastLabel) {
-        _lastLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
-                                                               0.0f,
-                                                               kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
-                                                               kSLLockInfoViewHeaderLabelHeight)];
-        _lastLabel.text = self.lastLabelText;
-        _lastLabel.font = SLConstantsDefaultFont;
-        [self addSubview:_lastLabel];
+    if (!_arrowButton) {
+        UIImage *image = [UIImage imageNamed:@"arrow-down"];
+        _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                  0.0f,
+                                                                  .5*image.size.width,
+                                                                  .5*image.size.height)];
+        [_arrowButton addTarget:self
+                         action:@selector(arrowButtonPressd)
+               forControlEvents:UIControlEventTouchDown];
+        [_arrowButton setImage:image forState:UIControlStateNormal];
+        [self addSubview:_arrowButton];
     }
     
-    return _lastLabel;
+    return _arrowButton;
 }
 
-- (UILabel *)distanceAwayLabel
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (!_distanceAwayLabel) {
-        _distanceAwayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
-                                                                       0.0f,
-                                                                       kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
-                                                                       kSLLockInfoViewHeaderLabelHeight)];
-        _distanceAwayLabel.text = self.distanceAwayLabelText;
-        _distanceAwayLabel.font = SLConstantsDefaultFont;
-        [self addSubview:_distanceAwayLabel];
-    }
-    
-    return _distanceAwayLabel;
-}
+//- (UILabel *)lastLabel
+//{
+//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+//    if (!_lastLabel) {
+//        _lastLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+//                                                               0.0f,
+//                                                               kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
+//                                                               kSLLockInfoViewHeaderLabelHeight)];
+//        _lastLabel.text = self.lastLabelText;
+//        _lastLabel.font = SLConstantsDefaultFont;
+//        [self addSubview:_lastLabel];
+//    }
+//    
+//    return _lastLabel;
+//}
+//
+//- (UILabel *)distanceAwayLabel
+//{
+//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+//    if (!_distanceAwayLabel) {
+//        _distanceAwayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+//                                                                       0.0f,
+//                                                                       kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
+//                                                                       kSLLockInfoViewHeaderLabelHeight)];
+//        _distanceAwayLabel.text = self.distanceAwayLabelText;
+//        _distanceAwayLabel.font = SLConstantsDefaultFont;
+//        [self addSubview:_distanceAwayLabel];
+//    }
+//    
+//    return _distanceAwayLabel;
+//}
 
 - (UILabel *)lockNameLabel
 {
@@ -142,10 +162,15 @@
                                           self.lockNameLabel.bounds.size.width,
                                           self.lockNameLabel.bounds.size.height);
     
-    self.settingsButton.frame = CGRectMake(self.bounds.size.width - x0 - self.settingsButton.bounds.size.width,
-                                           y0,
-                                           self.settingsButton.bounds.size.width,
-                                           self.settingsButton.bounds.size.height);
+//    self.settingsButton.frame = CGRectMake(self.bounds.size.width - x0 - self.settingsButton.bounds.size.width,
+//                                           y0,
+//                                           self.settingsButton.bounds.size.width,
+//                                           self.settingsButton.bounds.size.height);
+    
+    self.arrowButton.frame = CGRectMake(self.bounds.size.width - x0 - self.arrowButton.bounds.size.width,
+                                        y0,
+                                        self.arrowButton.bounds.size.width,
+                                        self.arrowButton.bounds.size.height);
     
     self.wifiImageView.frame = CGRectMake(.5f*(self.bounds.size.width - self.wifiImageView.frame.size.width),
                                           y0,
@@ -162,15 +187,15 @@
                                                 self.cellSignalImageView.bounds.size.width,
                                                 self.cellSignalImageView.bounds.size.height);
     
-    self.lastLabel.frame = CGRectMake(x0,
-                                      self.lockNameLabel.frame.origin.y + self.lockNameLabel.frame.size.height + 5.0f,
-                                      self.lastLabel.bounds.size.width,
-                                      self.lastLabel.bounds.size.height);
-    
-    self.distanceAwayLabel.frame = CGRectMake(self.batteryImageView.frame.origin.x,
-                                              self.lastLabel.frame.origin.y,
-                                              self.distanceAwayLabel.bounds.size.width,
-                                              self.distanceAwayLabel.bounds.size.height);
+//    self.lastLabel.frame = CGRectMake(x0,
+//                                      self.lockNameLabel.frame.origin.y + self.lockNameLabel.frame.size.height + 5.0f,
+//                                      self.lastLabel.bounds.size.width,
+//                                      self.lastLabel.bounds.size.height);
+//    
+//    self.distanceAwayLabel.frame = CGRectMake(self.batteryImageView.frame.origin.x,
+//                                              self.lastLabel.frame.origin.y,
+//                                              self.distanceAwayLabel.bounds.size.width,
+//                                              self.distanceAwayLabel.bounds.size.height);
 }
 
 - (UIImage *)batteryImage
@@ -183,19 +208,25 @@
             imageName = nil;
             break;
         case SLLockBatteryState1:
-            imageName = @"somename";
+            imageName = @"battery-0%";
             break;
         case SLLockBatteryState2:
-            imageName = @"somename";
+            imageName = @"battery-25%";
             break;
         case SLLockBatteryState3:
-            imageName = @"somename";
+            imageName = @"battery-33%";
             break;
         case SLLockBatteryState4:
-            imageName = @"somename";
+            imageName = @"battery-50%";
             break;
         case SLLockBatteryState5:
-            imageName = @"somename";
+            imageName = @"battery-66%";
+            break;
+        case SLLockBatteryState6:
+            imageName = @"battery-75%";
+            break;
+        case SLLockBatteryState7:
+            imageName = @"battery-100%";
             break;
     }
     
@@ -241,19 +272,19 @@
             imageName = nil;
             break;
         case SLLockWifiSignalState1:
-            imageName = @"somename";
+            imageName = @"wifi-1";
             break;
         case SLLockWifiSignalState2:
-            imageName = @"somename";
+            imageName = @"wifi-2";
             break;
         case SLLockWifiSignalState3:
-            imageName = @"somename";
+            imageName = @"wifi-3";
             break;
         case SLLockWifiSignalState4:
-            imageName = @"somename";
+            imageName = @"wifi-4";
             break;
         case SLLockWifiSignalState5:
-            imageName = @"somename";
+            imageName = @"wifi-5";
             break;
     }
     
@@ -265,6 +296,14 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self.delegate respondsToSelector:@selector(lockInfoViewHeaderSettingButtonPressed:)]) {
         [self.delegate lockInfoViewHeaderSettingButtonPressed:self];
+    }
+}
+
+- (void)arrowButtonPressd
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    if ([self.delegate respondsToSelector:@selector(lockInfoViewHeaderArrowButtonPressed:)]) {
+        [self.delegate lockInfoViewHeaderArrowButtonPressed:self];
     }
 }
 

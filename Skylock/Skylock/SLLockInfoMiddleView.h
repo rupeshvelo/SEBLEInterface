@@ -11,7 +11,7 @@
 
 @class SLLock;
 @class SLLockInfoMiddleView;
-
+@class SLDropDownLabel;
 
 typedef NS_ENUM(NSUInteger, SLLockInfoMiddleViewButton) {
     SLLockInfoMiddleViewButtonNone,
@@ -30,6 +30,15 @@ typedef NS_ENUM(NSUInteger, SLLockInfoMiddleViewButton) {
 @end
 
 @interface SLLockInfoMiddleView : SLLockInfoViewBase
+
+@property (nonatomic, strong) UIButton *crashButton;
+@property (nonatomic, strong) UIButton *securityButton;
+@property (nonatomic, strong) UIButton *sharingButton;
+
+@property (nonatomic, strong) UILabel *crashLabel;
+@property (nonatomic, strong) SLDropDownLabel *securityLabel;
+@property (nonatomic, strong) SLDropDownLabel *sharingLabel;
+
 
 @property (nonatomic, weak) id <SLLockMiddleViewDelegate> delegate;
 

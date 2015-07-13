@@ -14,7 +14,9 @@ typedef NS_ENUM(NSUInteger, SLLockBatteryState) {
     SLLockBatteryState2,
     SLLockBatteryState3,
     SLLockBatteryState4,
-    SLLockBatteryState5
+    SLLockBatteryState5,
+    SLLockBatteryState6,
+    SLLockBatteryState7
 };
 
 typedef NS_ENUM(NSUInteger, SLLockCellSignalState) {

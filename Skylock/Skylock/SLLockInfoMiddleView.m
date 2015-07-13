@@ -11,15 +11,9 @@
 #import "SLConstants.h"
 #import "SLDropDownLabel.h"
 
+#define kSLMiddleViewLabelFont [UIFont fontWithName:@"Roboto-Regular" size:10.0f]
+
 @interface SLLockInfoMiddleView()
-
-@property (nonatomic, strong) UIButton *crashButton;
-@property (nonatomic, strong) UIButton *securityButton;
-@property (nonatomic, strong) UIButton *sharingButton;
-
-@property (nonatomic, strong) UILabel *crashLabel;
-@property (nonatomic, strong) SLDropDownLabel *securityLabel;
-@property (nonatomic, strong) SLDropDownLabel *sharingLabel;
 
 @property (nonatomic, strong) UIImageView *securityArrowView;
 @property (nonatomic, strong) UIImageView *sharingArrowView;
@@ -92,7 +86,7 @@
         _crashLabel = [[UILabel alloc] initWithFrame:self.labelRect];
         _crashLabel.text = text;
         _crashLabel.textAlignment = NSTextAlignmentCenter;
-        _crashLabel.font = SLConstantsDefaultFont;
+        _crashLabel.font = kSLMiddleViewLabelFont;
         
         [self addSubview:_crashLabel];
     }
@@ -106,7 +100,7 @@
         NSString *text = NSLocalizedString(@"Security", nil);
         _securityLabel = [[SLDropDownLabel alloc] initWithFrame:self.labelRect
                                                            text:text
-                                                           font:SLConstantsDefaultFont];
+                                                           font:kSLMiddleViewLabelFont];
         [self addSubview:_securityLabel];
     }
     
@@ -119,7 +113,7 @@
         NSString *text = NSLocalizedString(@"Sharing", nil);
         _sharingLabel = [[SLDropDownLabel alloc] initWithFrame:self.labelRect
                                                           text:text
-                                                          font:SLConstantsDefaultFont];
+                                                          font:kSLMiddleViewLabelFont];
         [self addSubview:_sharingLabel];
     }
     
@@ -194,7 +188,7 @@
 - (CGRect)initialButtonFrame
 {
     UIImage *buttonImage = [UIImage imageNamed:@"crash-alert-active"];
-    return CGRectMake(0, 0, buttonImage.size.width, buttonImage.size.height);
+    return CGRectMake(0, 0, .5*buttonImage.size.width, .5*buttonImage.size.height);
 }
 
 - (void)crashButtonPressed:(id)sender
@@ -234,7 +228,7 @@
             break;
             
         case SLLockInfoMiddleViewButtonSecurity:
-            imageName = active ? @"security-alert-active" : @"security-alert-inactive";
+            imageName = active ? @"theft-alert-active" : @"theft-alert-inactive";
             break;
             
         case SLLockInfoMiddleViewButtonSharing:
@@ -262,12 +256,5 @@
     
     return frame;
 }
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

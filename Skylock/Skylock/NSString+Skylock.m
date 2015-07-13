@@ -24,4 +24,12 @@
     }
 }
 
+- (CGSize)sizeWithFont:(UIFont *)font maxSize:(CGSize)maxSize
+{
+    CGRect rect = [self boundingRectWithSize:maxSize
+                                     options:NSStringDrawingUsesLineFragmentOrigin
+                                  attributes:@{NSFontAttributeName:font}
+                                     context:nil];
+    return rect.size;
+}
 @end

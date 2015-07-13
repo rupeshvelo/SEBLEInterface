@@ -30,5 +30,6 @@ typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
 
 @property (nonatomic, weak) id <SLLockInfoViewControllerDelegate> delegate;
 @property (nonatomic, strong) SLLock *lock;
+@property (nonatomic, strong) SLLockInfoMiddleView *middleView;
 
 @end

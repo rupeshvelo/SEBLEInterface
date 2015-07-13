@@ -13,6 +13,9 @@
 #import "SLLockInfoViewController.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
+#import "SLCoachMarkViewController.h"
+#import "SLUserDefaults.h"
+#import "SLDropDownLabel.h"
 #import <QuartzCore/QuartzCore.h>
 
 #define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
@@ -43,7 +46,7 @@
 - (UIButton *)menuButton
 {
     if (!_menuButton) {
-        UIImage *menuButtonImage = [UIImage imageNamed:@"menu-button"];
+        UIImage *menuButtonImage = [UIImage imageNamed:@"menu"];
         self.menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                      0.0f,
                                                                      menuButtonImage.size.width,
@@ -52,8 +55,6 @@
         [self.menuButton addTarget:self
                             action:@selector(menuButtonPressed)
                   forControlEvents:UIControlEventTouchDown];
-        self.menuButton.layer.cornerRadius = .5*self.menuButton.bounds.size.width;
-        self.menuButton.clipsToBounds = YES;
     }
     
     return _menuButton;
@@ -72,7 +73,7 @@
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
     
-    [self.view addSubview:self.menuButton];    
+    [self.view addSubview:self.menuButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -89,6 +90,11 @@
                                        20.0f,
                                        self.menuButton.bounds.size.width,
                                        self.menuButton.bounds.size.height);
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
 - (void)menuButtonPressed
@@ -170,11 +176,14 @@
     SLLockInfoViewController *livc = [SLLockInfoViewController new];
     livc.lock = lock;
     
-    static CGFloat xPadding = 10.0f;
-    livc.view.frame = CGRectMake(xPadding,
+    static CGFloat width = 295.0f;
+    CGFloat padding = .5*(self.view.bounds.size.width - width);
+
+    livc.view.frame = CGRectMake(padding,
                                  self.view.bounds.size.height,
-                                 self.view.bounds.size.width - 2*xPadding,
-                                 .4*self.view.bounds.size.height);
+                                 width,
+                                 217.0f);
+    
     [self addChildViewController:livc];
     [self.view addSubview:livc.view];
     [self.view bringSubviewToFront:livc.view];
@@ -182,10 +191,14 @@
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         livc.view.frame = CGRectMake(livc.view.frame.origin.x,
-                                     self.view.bounds.size.height - livc.view.bounds.size.height - 5.0f,
+                                     self.view.bounds.size.height - livc.view.bounds.size.height - padding,
                                      livc.view.bounds.size.width,
                                      livc.view.bounds.size.height);
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        if (finished) {
+            [self presentCoachMarkViewController];
+        }
+    }];
 }
 
 - (void)removeLockInfoViewController:(SLLockInfoViewController *)livc withCompletion:(void(^)(void))completion
@@ -205,6 +218,80 @@
         }
     }];
 }
+
+- (void)presentCoachMarkViewController
+{
+    SLCoachMarkViewController *cmvc;
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:SLUserDefaultsCoachMarksComplete]) {
+        NSNumber *complete = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
+        if (!complete.boolValue) {
+            cmvc = [SLCoachMarkViewController new];
+        }
+    } else {
+        cmvc = [SLCoachMarkViewController new];
+    }
+    
+    if (cmvc) {
+        cmvc.delegate = self;
+        cmvc.buttonPositions = self.coachMarkParameters;
+
+        cmvc.view.frame = self.view.bounds;
+        cmvc.view.alpha = 0.0f;
+        
+        [self addChildViewController:cmvc];
+        [self.view addSubview:cmvc.view];
+        [self.view bringSubviewToFront:cmvc.view];
+        [cmvc didMoveToParentViewController:self];
+        
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            cmvc.view.alpha = 1.0f;
+        }];
+    }
+}
+
+- (NSDictionary *)coachMarkParameters
+{
+    SLLockInfoViewController *livc;
+    for (UIViewController *vc in self.childViewControllers) {
+        if ([vc isMemberOfClass:[SLLockInfoViewController class]]) {
+            livc = (SLLockInfoViewController *)vc;
+            break;
+        }
+    }
+    
+    NSDictionary *params;
+    if (livc) {
+        static NSString *button = @"button";
+        static NSString *label = @"label";
+        
+        CGRect crashButtonFrame = [self.view convertRect:livc.middleView.crashButton.frame fromView:livc.middleView];
+        CGRect crashLabelFrame = [self.view convertRect:livc.middleView.crashLabel.frame
+                                               fromView:livc.middleView];
+        CGRect securityButtonFrame = [self.view convertRect:livc.middleView.securityButton.frame
+                                                   fromView:livc.middleView];
+        CGRect securityLabelFrame = [self.view convertRect:livc.middleView.securityLabel.frame
+                                                  fromView:livc.middleView];
+        CGRect sharingButtonFrame = [self.view convertRect:livc.middleView.sharingButton.frame
+                                                  fromView:livc.middleView];
+        CGRect sharingLabelFrame = [self.view convertRect:livc.middleView.sharingLabel.frame
+                                                 fromView:livc.middleView];
+        
+        params = @{@(SLCoachMarkPageCrash):@{button:[NSValue valueWithCGRect:crashButtonFrame],
+                                             label:[NSValue valueWithCGRect:crashLabelFrame]
+                                             },
+                   @(SLCoachMarkPageSharing):@{button:[NSValue valueWithCGRect:sharingButtonFrame],
+                                               label:[NSValue valueWithCGRect:sharingLabelFrame]
+                                               },
+                   @(SLCoachMarkPageTheft):@{button:[NSValue valueWithCGRect:securityButtonFrame],
+                                             label:[NSValue valueWithCGRect:securityLabelFrame]
+                                             }
+                   };
+    }
+    
+    return params;
+}
+
 #pragma mark - SLSlideViewController Delegate Methods
 - (void)slideViewController:(SLSlideViewController *)slvc
                buttonPushed:(SLSlideViewControllerButtonAction)action
@@ -213,5 +300,20 @@
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
         [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:options[@"lock"]];
     }
+}
+
+#pragma mark - SLCoachMarkViewController Delegate Methods
+- (void)coachMarkViewControllerDoneButtonPressed:(SLCoachMarkViewController *)cmvc
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        cmvc.view.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [cmvc.view removeFromSuperview];
+        [cmvc removeFromParentViewController];
+        
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        [ud setObject:@(YES) forKey:SLUserDefaultsCoachMarksComplete];
+        [ud synchronize];
+    }];
 }
 @end

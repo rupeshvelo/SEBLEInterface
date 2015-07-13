@@ -65,9 +65,9 @@
 {
     return [[self alloc] initWithName:dbDictionary[@"name"]
                                  uuid:dbDictionary[@"uuid"]
-                     batteryRemaining:@(0)
-                         wifiStrength:@(0)
-                         cellStrength:@(0)
+                     batteryRemaining:@(87)
+                         wifiStrength:@(55)
+                         cellStrength:@(98)
                              lastTime:@(0)
                          distanceAway:@(0)
                              isLocked:@(NO)
@@ -102,16 +102,18 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLockBatteryState batState = SLLockBatteryStateNone;
-    if (self.batteryRemaining.floatValue > 0.0 && self.batteryRemaining.floatValue <= 20.0) {
+    if (self.batteryRemaining.floatValue > 0.0 && self.batteryRemaining.floatValue <= 10.0) {
         batState = SLLockBatteryState1;
-    } else if (self.batteryRemaining.floatValue > 20.0 && self.batteryRemaining.floatValue <= 40.0) {
+    } else if (self.batteryRemaining.floatValue > 25.0 && self.batteryRemaining.floatValue <= 33.0) {
         batState = SLLockBatteryState2;
-    } else if (self.batteryRemaining.floatValue > 40.0 && self.batteryRemaining.floatValue <= 60.0f) {
+    } else if (self.batteryRemaining.floatValue > 33.0 && self.batteryRemaining.floatValue <= 50.0f) {
         batState = SLLockBatteryState3;
-    } else if (self.batteryRemaining.floatValue > 60.0 && self.batteryRemaining.floatValue <= 80.0f) {
+    } else if (self.batteryRemaining.floatValue > 50.0 && self.batteryRemaining.floatValue <= 66.0f) {
         batState = SLLockBatteryState4;
-    } else if (self.batteryRemaining.floatValue > 80.0 && self.batteryRemaining.floatValue <= 100.0f) {
-        batState = SLLockBatteryState3;
+    } else if (self.batteryRemaining.floatValue > 66.0 && self.batteryRemaining.floatValue <= 75.0f) {
+        batState = SLLockBatteryState5;
+    } else if (self.batteryRemaining.floatValue > 75.0 && self.batteryRemaining.floatValue <= 100.0f) {
+        batState = SLLockBatteryState6;
     }
     
     return batState;
