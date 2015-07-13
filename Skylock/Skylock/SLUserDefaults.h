@@ -9,7 +9,8 @@
 #ifndef Skylock_SLUserDefaults_h
 #define Skylock_SLUserDefaults_h
 
-#define SLUserDefaultsSignedIn          @"SLUserDefaultsSignedIn"
-#define SLUserDefaultsTutorialComplete  @"SLUserDefaultsTutorialComplete"
+#define SLUserDefaultsSignedIn              @"SLUserDefaultsSignedIn"
+#define SLUserDefaultsTutorialComplete      @"SLUserDefaultsTutorialComplete"
+#define SLUserDefaultsCoachMarksComplete    @"SLUserDefaultsCoachMarksComplete"
 
 #endif

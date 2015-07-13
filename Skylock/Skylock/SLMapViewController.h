@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
+#import "SLCoachMarkViewController.h"
 
-@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, CLLocationManagerDelegate>
+@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, CLLocationManagerDelegate, SLCoachMarkViewControllerDelegate>
 
 @end

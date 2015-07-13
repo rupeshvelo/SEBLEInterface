@@ -16,6 +16,8 @@
 
 - (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView;
 
+- (void)lockInfoViewHeaderArrowButtonPressed:(SLLockInfoViewHeader *)headerView;
+
 @end
 
 

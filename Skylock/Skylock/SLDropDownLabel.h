@@ -14,4 +14,6 @@
                text:(NSString *)text
                font:(UIFont *)font;
 
+- (CGRect)labelFrame;
+
 @end

@@ -94,5 +94,9 @@
     return frame;
 }
 
+- (CGRect)labelFrame
+{
+    return self.label.frame;
+}
 
 @end

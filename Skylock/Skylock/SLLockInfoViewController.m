@@ -22,7 +22,6 @@
 @interface SLLockInfoViewController()
 
 @property (nonatomic, strong) SLLockInfoViewHeader *headerView;
-@property (nonatomic, strong) SLLockInfoMiddleView *middleView;
 @property (nonatomic, strong) SLLockInfoBottomView *bottomView;
 @property (nonatomic, assign) CGFloat bottomHeight;
 @end
