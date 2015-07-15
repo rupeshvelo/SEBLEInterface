@@ -21,20 +21,20 @@
 - (UIButton *)lockButton
 {
     if (!_lockButton) {
+        UIImage *normalImage = [UIImage imageNamed:@"lock_btn2"];
+        UIImage *selectedImage = [UIImage imageNamed:@"unlock_btn2"];
         _lockButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
-                                                                 .5f*self.bounds.size.width,
-                                                                 .6*self.bounds.size.height)];
+                                                                 normalImage.size.width,
+                                                                 normalImage.size.height)];
         [_lockButton addTarget:self
                         action:@selector(lockButtonPressed)
               forControlEvents:UIControlEventTouchDown];
  
-        [_lockButton setTitle:NSLocalizedString(@"Unlock", nil) forState:UIControlStateNormal];
-        [_lockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_lockButton setImage:normalImage forState:UIControlStateNormal];
+        [_lockButton setImage:selectedImage forState:UIControlStateSelected];
         _lockButton.backgroundColor = SLConstantsLightTeal;
         _lockButton.selected = NO;
-        _lockButton.layer.cornerRadius = SLConstantsViewCornerRadius1;
-        _lockButton.clipsToBounds = YES;
         [self addSubview:_lockButton];
     }
     

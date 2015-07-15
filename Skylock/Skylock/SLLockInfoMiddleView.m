@@ -97,7 +97,7 @@
 - (SLDropDownLabel *)securityLabel
 {
     if (!_securityLabel) {
-        NSString *text = NSLocalizedString(@"Security", nil);
+        NSString *text = NSLocalizedString(@"Theft Alert", nil);
         _securityLabel = [[SLDropDownLabel alloc] initWithFrame:self.labelRect
                                                            text:text
                                                            font:kSLMiddleViewLabelFont];
