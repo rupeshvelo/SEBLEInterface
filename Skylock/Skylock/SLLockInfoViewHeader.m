@@ -90,8 +90,8 @@
         UIImage *image = [UIImage imageNamed:@"arrow-down"];
         _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                   0.0f,
-                                                                  .5*image.size.width,
-                                                                  .5*image.size.height)];
+                                                                  image.size.width,
+                                                                  image.size.height)];
         [_arrowButton addTarget:self
                          action:@selector(arrowButtonPressd)
                forControlEvents:UIControlEventTouchDown];
@@ -141,7 +141,7 @@
         _lockNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
                                                                    kSLLockInfoViewHeaderLabelWidthScaler*self.bounds.size.width,
-                                                                   kSLLockInfoViewHeaderLabelHeight)];
+                                                                   15.0f)];
         _lockNameLabel.text = NSLocalizedString(self.lock.name, nil);
         _lockNameLabel.font = SLConstantsDefaultFont;
         [self addSubview:_lockNameLabel];
@@ -153,39 +153,40 @@
 - (void)layoutSubviews
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    CGFloat y0 = self.yPaddingScaler*self.bounds.size.height;
-    CGFloat x0 = self.xPaddingScaler*self.bounds.size.width;
 
-    self.lockNameLabel.frame = CGRectMake(x0,
-                                          y0,
+    self.lockNameLabel.frame = CGRectMake(0.0,
+                                          self.bounds.size.height - self.lockNameLabel.bounds.size.height,
                                           self.lockNameLabel.bounds.size.width,
                                           self.lockNameLabel.bounds.size.height);
+    
+    self.batteryImageView.frame = CGRectMake(97.0f,
+                                             self.bounds.size.height - self.batteryImageView.bounds.size.height,
+                                             self.batteryImageView.bounds.size.width,
+                                             self.batteryImageView.bounds.size.height);
     
 //    self.settingsButton.frame = CGRectMake(self.bounds.size.width - x0 - self.settingsButton.bounds.size.width,
 //                                           y0,
 //                                           self.settingsButton.bounds.size.width,
 //                                           self.settingsButton.bounds.size.height);
     
-    self.arrowButton.frame = CGRectMake(self.bounds.size.width - x0 - self.arrowButton.bounds.size.width,
-                                        y0,
-                                        self.arrowButton.bounds.size.width,
-                                        self.arrowButton.bounds.size.height);
-    
-    self.wifiImageView.frame = CGRectMake(.5f*(self.bounds.size.width - self.wifiImageView.frame.size.width),
-                                          y0,
+    self.wifiImageView.frame = CGRectMake(164.0f,
+                                          16.0f,
                                           self.wifiImageView.bounds.size.width,
                                           self.wifiImageView.bounds.size.height);
     
-    self.batteryImageView.frame = CGRectMake(self.wifiImageView.frame.origin.x - 1.2f*self.batteryImageView.bounds.size.width,
-                                             y0,
-                                             self.batteryImageView.bounds.size.width,
-                                             self.batteryImageView.bounds.size.height);
+    self.arrowButton.frame = CGRectMake(self.bounds.size.width - self.arrowButton.bounds.size.width,
+                                        self.bounds.size.height - self.arrowButton.bounds.size.height,
+                                        self.arrowButton.bounds.size.width,
+                                        self.arrowButton.bounds.size.height);
     
-    self.cellSignalImageView.frame = CGRectMake(self.wifiImageView.frame.origin.x + self.wifiImageView.bounds.size.width + 10.0f,
-                                                y0,
-                                                self.cellSignalImageView.bounds.size.width,
-                                                self.cellSignalImageView.bounds.size.height);
+    
+    
+    
+    
+//    self.cellSignalImageView.frame = CGRectMake(self.wifiImageView.frame.origin.x + self.wifiImageView.bounds.size.width + 10.0f,
+//                                                y0,
+//                                                self.cellSignalImageView.bounds.size.width,
+//                                                self.cellSignalImageView.bounds.size.height);
     
 //    self.lastLabel.frame = CGRectMake(x0,
 //                                      self.lockNameLabel.frame.origin.y + self.lockNameLabel.frame.size.height + 5.0f,

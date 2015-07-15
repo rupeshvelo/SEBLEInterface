@@ -12,12 +12,8 @@
 @interface SLLockInfoViewBase : UIView
 
 @property (nonatomic, strong) SLLock *lock;
-@property (nonatomic, assign) CGFloat xPaddingScaler;
-@property (nonatomic, assign) CGFloat yPaddingScaler;
 
 - (id)initWithFrame:(CGRect)frame
-            andLock:(SLLock *)lock
-     xPaddingScaler:(CGFloat)xPaddingScaler
-     yPaddingScaler:(CGFloat)yPaddingScaler;
+            andLock:(SLLock *)lock;
 
 @end

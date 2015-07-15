@@ -13,14 +13,10 @@
 
 - (id)initWithFrame:(CGRect)frame
             andLock:(SLLock *)lock
-     xPaddingScaler:(CGFloat)xPaddingScaler
-     yPaddingScaler:(CGFloat)yPaddingScaler
 {
     self = [super initWithFrame:frame];
     if (self) {
         _lock           = lock;
-        _xPaddingScaler = xPaddingScaler;
-        _yPaddingScaler = yPaddingScaler;
     }
     
     return self;
