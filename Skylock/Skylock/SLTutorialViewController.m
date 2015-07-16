@@ -7,7 +7,7 @@
 //
 
 #import "SLTutorialViewController.h"
-
+#import "UIColor+RGB.h"
 
 @interface SLTutorialViewController ()
 
@@ -21,11 +21,13 @@
 {
     if (!_picView) {
         UIImage *image = [UIImage imageNamed:self.imageName];
-        _picView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                 0.0f,
-                                                                 270.0f,
-                                                                 176.0f)];
-        _picView.image = image;
+//        _picView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
+//                                                                 0.0f,
+//                                                                 270.0f,
+//                                                                 176.0f)];
+        _picView = [[UIImageView alloc] initWithImage:image];
+
+        //_picView.image = image;
         [self.view addSubview:_picView];
     }
     
@@ -41,10 +43,7 @@
                                                                    kSLTutorialVCLabelHeightScaler*self.view.bounds.size.height)];
         _mainInfoLabel.text = self.mainText;
         _mainInfoLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
-        _mainInfoLabel.textColor = [UIColor colorWithRed:97.0f/255.0f
-                                                   green:97.0f/255.0f
-                                                    blue:97.0f/255.0f
-                                                   alpha:1.0f];
+        _mainInfoLabel.textColor = [UIColor colorWithRed:97 green:97 blue:97];
         _mainInfoLabel.numberOfLines = 0;
         [self.view addSubview:_mainInfoLabel];
     }
@@ -76,10 +75,7 @@
                                                                      kSLTutorialVCLabelHeightScaler*self.view.bounds.size.height)];
         _detailInfoLabel.text = self.detailText;
         _detailInfoLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
-        _detailInfoLabel.textColor = [UIColor colorWithRed:146.0f/255.0f
-                                                     green:148.0f/255.0f
-                                                      blue:151.0f/255.0f
-                                                     alpha:1.0f];
+        _detailInfoLabel.textColor = [UIColor colorWithRed:146 green:148 blue:151];
         _detailInfoLabel.numberOfLines = 0;
         [self.view addSubview:_detailInfoLabel];
     }

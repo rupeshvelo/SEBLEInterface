@@ -44,8 +44,8 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
         UIImage *image = self.paramsForPage[@(SLCoachMarkParamPaginationImage)];
         _paginationView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                         0.0f,
-                                                                        .5*image.size.width,
-                                                                        .5*image.size.height)];
+                                                                        image.size.width,
+                                                                        image.size.height)];
         _paginationView.image = image;
         [self.view addSubview:_paginationView];
     }
@@ -132,7 +132,7 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
 - (UIButton *)doneButton
 {
     if (!_doneButton) {
-        UIImage *image = [UIImage imageNamed:@"done-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_done"];
         _doneButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
                                                                  image.size.width,
@@ -151,11 +151,11 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
 - (UIImageView *)handView
 {
     if (!_handView) {
-        UIImage *image = [UIImage imageNamed:@"hand-icon"];
+        UIImage *image = [UIImage imageNamed:@"icon_hand"];
         _handView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                   0.0f,
-                                                                  .5*image.size.width,
-                                                                  .5*image.size.height)];
+                                                                  image.size.width,
+                                                                  image.size.height)];
         _handView.image = image;
         [self.view addSubview:_handView];
     }
@@ -192,7 +192,7 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
                                       self.infoLabel.bounds.size.width,
                                       self.infoLabel.bounds.size.height);
     
-    self.doneButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.infoLabel.bounds.size.width),
+    self.doneButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.doneButton.bounds.size.width),
                                        271.0f,
                                        self.doneButton.bounds.size.width,
                                        self.doneButton.bounds.size.height);
@@ -210,22 +210,22 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
     
     switch (self.currentPage) {
         case SLCoachMarkPageCrash:
-            paginationImageName = @"pagination2";
-            buttonImageName = @"crash-alert-active";
+            paginationImageName = @"pagination_white1";
+            buttonImageName = @"btn_crashalert_on";
             titleLabelText = NSLocalizedString(@"CRASH ALERT", nil);
             infoLabelText = NSLocalizedString(@"Skylock can detect serious crashes, and the Skylock app can notify anyone in your trusted network.", nil);
             buttonLabelText = NSLocalizedString(@"Crash Alert", nil);
             break;
         case SLCoachMarkPageTheft:
-            paginationImageName = @"pagination3";
-            buttonImageName = @"theft-alert-active";
+            paginationImageName = @"pagination_white2";
+            buttonImageName = @"btn_theftalert_on";
             titleLabelText = NSLocalizedString(@"THEFT ALERT", nil);
             infoLabelText = NSLocalizedString(@"Skylock uses its accelerometer to notify you that your bike is being tampered with.", nil);
             buttonLabelText = NSLocalizedString(@"Theft Alert", nil);
             break;
         case SLCoachMarkPageSharing:
-            paginationImageName = @"pagination4";
-            buttonImageName = @"sharing-active";
+            paginationImageName = @"pagination_white3";
+            buttonImageName = @"btn_sharing_on";
             titleLabelText = NSLocalizedString(@"SHARE ACCESS", nil);
             infoLabelText = NSLocalizedString(@"Share access to your bike with anyone in your trusted network. Create and set up your own bike share system.", nil);
             buttonLabelText = NSLocalizedString(@"Sharing", nil);

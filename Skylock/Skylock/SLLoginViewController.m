@@ -48,11 +48,11 @@
 - (UIImageView *)backgroundImageView
 {
     if (!_backgroundImageView) {
-        UIImage *image = [UIImage imageNamed:@"bg2"];
+        UIImage *image = [UIImage imageNamed:@"bg_splash2"];
         _backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                              0.0f,
-                                                                             .5*image.size.width,
-                                                                             .5*image.size.height)];
+                                                                             image.size.width,
+                                                                             image.size.height)];
         _backgroundImageView.image = image;
         [self.view addSubview:_backgroundImageView];
     }
@@ -62,11 +62,11 @@
 - (UIImageView *)skylockLogoView
 {
     if (!_skylockLogoView) {
-        UIImage *image = [UIImage imageNamed:@"logo2"];
+        UIImage *image = [UIImage imageNamed:@"img_logo2"];
         _skylockLogoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                          0.0f,
-                                                                         .5*image.size.width,
-                                                                         .5*image.size.height)];
+                                                                         image.size.width,
+                                                                         image.size.height)];
         _skylockLogoView.image = image;
         [self.view addSubview:_skylockLogoView];
     }
@@ -77,11 +77,11 @@
 - (UIButton *)getStartedButton
 {
     if (!_getStartedButton) {
-        UIImage *image = [UIImage imageNamed:@"let’s-get-started-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_letsgetstarted"];
         _getStartedButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                        0.0f,
-                                                                       .5*image.size.width,
-                                                                       .5*image.size.height)];
+                                                                       image.size.width,
+                                                                       image.size.height)];
         [_getStartedButton addTarget:self
                               action:@selector(getStartedButtonPressed)
                     forControlEvents:UIControlEventTouchDown];
@@ -129,11 +129,11 @@
 - (UIButton *)facebookButton
 {
     if (!_facebookButton) {
-        UIImage *image = [UIImage imageNamed:@"login-with-facebook-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_facebooklogin"];
         _facebookButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                      0.0f,
-                                                                     .5*image.size.width,
-                                                                     .5*image.size.height)];
+                                                                     image.size.width,
+                                                                     image.size.height)];
         [_facebookButton addTarget:self
                             action:@selector(facebookButtonPressed)
                   forControlEvents:UIControlEventTouchDown];
@@ -198,11 +198,11 @@
 - (UIButton *)loginButton
 {
     if (!_loginButton) {
-        UIImage *image = [UIImage imageNamed:@"login-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_login"];
         _loginButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                   0.0f,
-                                                                  .5*image.size.width,
-                                                                  .5*image.size.height)];
+                                                                  image.size.width,
+                                                                  image.size.height)];
         [_loginButton addTarget:self
                          action:@selector(loginButtonPressed)
                forControlEvents:UIControlEventTouchDown];
@@ -216,11 +216,11 @@
 - (UIButton *)signUpButton
 {
     if (!_signUpButton) {
-        UIImage *image = [UIImage imageNamed:@"signup-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_signup"];
         _signUpButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
-                                                                   .5*image.size.width,
-                                                                   .5*image.size.height)];
+                                                                   image.size.width,
+                                                                   image.size.height)];
         [_signUpButton addTarget:self
                           action:@selector(signUpButtonPressed)
                 forControlEvents:UIControlEventTouchDown];

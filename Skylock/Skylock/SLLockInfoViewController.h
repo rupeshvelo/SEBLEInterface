@@ -7,12 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SLLockInfoViewHeader.h"
-#import "SLLockInfoMiddleView.h"
-#import "SLLockInfoBottomView.h"
 
 @class SLLockInfoViewController;
-
+@class SLLock;
 
 typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
     SLLockInfoViewControllerActionNone,
@@ -26,10 +23,20 @@ typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc action:(SLLockInfoViewControllerAction)action;
 
 @end
-@interface SLLockInfoViewController : UIViewController <SLLockInfoViewHeaderDelegate, SLLockMiddleViewDelegate, SLLockInfoBottomViewDelegate>
+
+@interface SLLockInfoViewController : UIViewController
 
 @property (nonatomic, weak) id <SLLockInfoViewControllerDelegate> delegate;
 @property (nonatomic, strong) SLLock *lock;
-@property (nonatomic, strong) SLLockInfoMiddleView *middleView;
+
+- (NSDictionary *)buttonFrames;
+
+- (CGRect)crashButtonFrame;
+- (CGRect)securityButtonFrame;
+- (CGRect)sharingButtonFrame;
+
+- (CGRect)crashLabelFrame;
+- (CGRect)securityLabelFrame;
+- (CGRect)sharingLabelFrame;
 
 @end

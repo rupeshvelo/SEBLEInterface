@@ -9,7 +9,7 @@
 #import "SLFacebookManger.h"
 #import "SLUserDefaults.h"
 #import "SLNotifications.h"
-
+#import "SLDatabaseManager.h"
 
 @interface SLFacebookManger()
 
@@ -47,11 +47,13 @@
 
 - (void)applicationBecameActive
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [FBSDKAppEvents activateApp];
 }
 
 - (BOOL)application:(UIApplication *)application finishedLauchingWithOptions:(NSDictionary *)options
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                     didFinishLaunchingWithOptions:options];
 
@@ -61,6 +63,7 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:sourceApplication
@@ -69,11 +72,13 @@
 
 - (BOOL)currentToken
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [FBSDKAccessToken currentAccessToken];
 }
 
 - (void)loginWithCompletion:(void (^)(void))completion
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     [login logInWithReadPermissions:self.permissions
                             handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
@@ -90,6 +95,7 @@
 
 - (void)getFBUserInfo
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([FBSDKAccessToken currentAccessToken]) {
         [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
@@ -102,11 +108,38 @@
 
 - (void)userInfoRecieved:(NSDictionary *)info
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
 
+    [SLDatabaseManager.manager saveFacebookUserWithDictionary:info];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
-    NSLog(@"me");
 }
 
+- (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSString *path = [NSString stringWithFormat:@"/%@/picture", userId];
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+                                  initWithGraphPath:path
+                                  parameters:nil
+                                  HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        
+        if (completion) {
+            if (error) {
+                NSLog(@"error retrieving pic from Facebook for user: %@", userId);
+                completion(nil);
+            } else {
+                if ([result isKindOfClass:[NSData class]]) {
+                    NSData *data = (NSData *)result;
+                    UIImage *image = [UIImage imageWithData:data];
+                    completion(image);
+                } else {
+                    completion(nil);
+                }
+            }
+        }
+    }];
+}
 @end

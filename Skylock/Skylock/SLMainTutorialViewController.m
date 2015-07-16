@@ -43,7 +43,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     if (!_tutorialViewControllers) {
         SLTutorial1ViewController *tvc1 = [SLTutorial1ViewController new];
         tvc1.pageIndex = 0;
-        tvc1.imageName = @"image-1";
+        tvc1.imageName = @"img_walkthrough1";
         tvc1.iconName = @"wifi-icon";
         tvc1.mainText = self.tutorialText[@"1Main"];
         tvc1.detailText = self.tutorialText[@"1Detail"];
@@ -53,7 +53,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         
         SLTutorialViewController *tvc2 = [SLTutorialViewController new];
         tvc2.pageIndex = 1;
-        tvc2.imageName = @"image-2";
+        tvc2.imageName = @"img_walkthrough2";
         tvc2.iconName = @"bluetooth-icon";
         tvc2.mainText = self.tutorialText[@"2Main"];
         tvc2.detailText = self.tutorialText[@"2Detail"];
@@ -61,14 +61,14 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
         SLTutorialViewController *tvc3 = [SLTutorialViewController new];
         tvc3.pageIndex = 2;
-        tvc3.imageName = @"image-3";
+        tvc3.imageName = @"img_walkthrough3";
         tvc3.mainText = self.tutorialText[@"3Main"];
         tvc3.detailText = self.tutorialText[@"3Detail"];
         tvc3.padding = kSLTutorialXPadding;
 
         SLTutorialViewController *tvc4 = [SLTutorialViewController new];
         tvc4.pageIndex = 3;
-        tvc4.imageName = @"image-4";
+        tvc4.imageName = @"img_walkthrough3";
         tvc4.mainText = self.tutorialText[@"4Main"];
         tvc4.detailText = self.tutorialText[@"4Detail"];
         tvc4.padding = kSLTutorialXPadding;
@@ -82,11 +82,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (UIButton *)nextButton
 {
     if (!_nextButton) {
-        UIImage *image = [UIImage imageNamed:@"next-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_next"];
         _nextButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
-                                                                 .5*image.size.width,
-                                                                 .5*image.size.height)];
+                                                                 image.size.width,
+                                                                 image.size.height)];
         [_nextButton addTarget:self
                         action:@selector(nextButtonPressed)
               forControlEvents:UIControlEventTouchDown];
@@ -100,11 +100,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (UIButton *)backButton
 {
     if (!_backButton) {
-        UIImage *image = [UIImage imageNamed:@"back-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_back"];
         _backButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
-                                                                 .5*image.size.width,
-                                                                 .5*image.size.height)];
+                                                                 image.size.width,
+                                                                 image.size.height)];
         [_backButton addTarget:self
                         action:@selector(backButtonPressed)
               forControlEvents:UIControlEventTouchDown];
@@ -119,11 +119,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (UIButton *)doneButton
 {
     if (!_doneButton) {
-        UIImage *image = [UIImage imageNamed:@"done-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_done"];
         _doneButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
-                                                                 .5*image.size.width,
-                                                                 .5*image.size.height)];
+                                                                 image.size.width,
+                                                                 image.size.height)];
         [_doneButton addTarget:self
                         action:@selector(doneButtonPressed)
               forControlEvents:UIControlEventTouchDown];
@@ -138,11 +138,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (UIButton *)searchButton
 {
     if (!_searchButton) {
-        UIImage *image = [UIImage imageNamed:@"search-btn"];
+        UIImage *image = [UIImage imageNamed:@"btn_search"];
         _searchButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
-                                                                   .5*image.size.width,
-                                                                   .5*image.size.height)];
+                                                                   image.size.width,
+                                                                   image.size.height)];
         [_searchButton addTarget:self
                         action:@selector(searchButtonPressed)
               forControlEvents:UIControlEventTouchDown];

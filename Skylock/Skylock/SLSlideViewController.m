@@ -10,7 +10,7 @@
 #import "SLLockManager.h"
 #import "SLLockTableViewCell.h"
 #import "SLConstants.h"
-#import "SLSettingsViewController.h"
+//#import "SLSettingsViewController.h"
 #import "SLNavigationViewController.h"
 #import "SLAddLockViewController.h"
 
@@ -238,12 +238,12 @@
 
 - (void)presentSettingsViewControllerWithIndexPath:(NSIndexPath *)indexPath
 {
-    SLSettingsViewController *svc = [SLSettingsViewController new];
-    svc.lock = self.locks[indexPath.row];
-    
-    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+//    SLSettingsViewController *svc = [SLSettingsViewController new];
+//    svc.lock = self.locks[indexPath.row];
+//    
+//    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
+//    
+//    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (NSDictionary *)optionsForIndexPath:(NSIndexPath *)indexPath
