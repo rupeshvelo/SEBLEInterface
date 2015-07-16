@@ -72,6 +72,7 @@ typedef enum {
 
 + (id)manager
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLLockManager *lockManger = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -83,6 +84,7 @@ typedef enum {
 
 - (NSDictionary *)services
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_services) {
         _services = @{@(SLLockManagerServiceLedService): @"9c7d1523-ba74-0bac-bb4b-539d6a70eadd",
                       @(SLLockManagerServiceLedOn): @"9c7d1525-ba74-0bac-bb4b-539d6a70eadd",
@@ -101,6 +103,7 @@ typedef enum {
 
 - (NSArray *)testLocks
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!_testLocks) {
         SLLock *lock1 = [[SLLock alloc] initWithName:@"One Love"
                                                 uuid:@"bkdi-dlldi-e830387-jdod9"
@@ -167,6 +170,7 @@ typedef enum {
 
 - (BOOL)containsLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self.locks objectForKey:lock.name]) {
         return YES;
     }
@@ -176,6 +180,7 @@ typedef enum {
 
 - (void)addLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self containsLock:lock]) {
         NSLog(@"Duplicate lock: %@", lock.name);
     } else {
@@ -190,6 +195,7 @@ typedef enum {
 
 - (void)addLocksFromDb:(NSArray *)locks
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [locks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
         if (![self containsLock:lock]) {
             self.locks[lock.name] = lock;
@@ -199,6 +205,7 @@ typedef enum {
 
 - (void)removeLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self containsLock:lock]) {
         [self.locks removeObjectForKey:lock.name];
     }
@@ -206,6 +213,7 @@ typedef enum {
 
 - (NSArray *)orderedLocksByName
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSArray *locksByName = [self.locks.allValues sortedArrayUsingComparator:^NSComparisonResult(SLLock *l1, SLLock *l2) {
         return [l1.name compare:l2.name];
     }];
@@ -215,11 +223,13 @@ typedef enum {
 
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [SLLock lockWithName:blePeripheral.peripheral.name uuid:blePeripheral.CBUUIDAsString];
 }
 
 - (void)fetchLocks
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self getLocksFromDatabase];
     
     // testing
@@ -234,6 +244,7 @@ typedef enum {
 
 - (NSArray *)unaddedLocks
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSMutableArray *unaddedKeys = [NSMutableArray arrayWithArray:self.locksToAdd.allKeys];
     [unaddedKeys sortUsingComparator:^NSComparisonResult(SLLock *lock1, SLLock *lock2) {
         return [lock1.name compare:lock2.name];
@@ -249,11 +260,13 @@ typedef enum {
 
 - (void)startScan
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager startScan];
 }
 
 - (void)toggleCrashForLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self writeToPeripheralForLockName:lock.name
                                service:SLLockManagerServiceLedService
                         characteristic:SLLockManagerCharacteristicLed
@@ -262,6 +275,7 @@ typedef enum {
 
 - (void)toggleSecurityForLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self writeToPeripheralForLockName:lock.name
                                service:SLLockManagerServiceLockState
                         characteristic:SLLockManagerCharacteristicLock
@@ -270,7 +284,7 @@ typedef enum {
 
 - (void)toggleSharingForLock:(SLLock *)lock
 {
-    
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
 }
 
 - (void)writeToPeripheralForLockName:(NSString *)lockName
@@ -278,6 +292,7 @@ typedef enum {
                       characteristic:(SLLockManagerCharacteristic)characteristic
                               turnOn:(BOOL)turnOn
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSString *serviceUUID = self.services[@(service)];
     NSString *characteristicUUID = self.services[@(characteristic)];
     
@@ -293,6 +308,7 @@ typedef enum {
 - (SLLockMangerValue)valueForCharacteristic:(SLLockManagerCharacteristic)characteristic
                                      turnOn:(BOOL)turnOn
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     switch (characteristic) {
         case SLLockManagerCharacteristicLed:
             return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueLedOff;
@@ -309,6 +325,7 @@ typedef enum {
 
 - (void)saveLockToDatabase:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.databaseManger saveLockToDb:lock withCompletion:^(BOOL success) {
         NSLog(@"saving lock: %@ was a %@", lock.name, success ? @"succes":@"failure");
     }];
@@ -316,13 +333,17 @@ typedef enum {
 
 - (void)getLocksFromDatabase
 {
-    NSArray *locks = [self.databaseManger getAllLocksFromDb];
-    [self addLocksFromDb:locks];
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSArray *locks = [self.databaseManger locksForCurrentUser];
+    if (locks) {
+        [self addLocksFromDb:locks];
+    }
 }
 
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLock *lock = [self lockFromPeripheral:peripheral];
     if (!self.locksToAdd[lock.name]) {
         self.locksToAdd[lock.name] = lock;

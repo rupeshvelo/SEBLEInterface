@@ -8,9 +8,14 @@
 
 #import <Foundation/Foundation.h>
 @class SLLock;
+@class SLDbUser;
+
 @class NSManagedObjectContext;
 
 @interface SLDatabaseManager : NSObject
+
+@property (strong) SLDbUser *currentUser;
+
 
 +(id)manager;
 
@@ -18,6 +23,8 @@
 
 - (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 - (NSArray *)getAllLocksFromDb;
+- (NSArray *)locksForCurrentUser;
 - (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
-
+- (void)saveUser:(SLDbUser *)user withCompletion:(void(^)(BOOL success))completion;
+- (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary;
 @end

@@ -1,3 +1,2 @@
 after cloning project do:
-1. git submodule update --init --recursive
-2. source setup.scr
+1. source setup.scr

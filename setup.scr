@@ -1,1 +1,4 @@
+# this script should be run after the initial clone from https://github.com/velolabs/skylock_ios.git
+
+git submodule update --init --recursive
 ./Skylock/facebook-ios-sdk/scripts/build_framework.sh

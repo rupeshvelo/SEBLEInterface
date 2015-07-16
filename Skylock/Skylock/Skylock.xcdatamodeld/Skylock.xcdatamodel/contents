@@ -5,8 +5,20 @@
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLDbUser" inverseName="locks" inverseEntity="SLDbUser" syncable="YES"/>
+    </entity>
+    <entity name="SLDbUser" representedClassName="SLDbUser" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="facebookId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="facebookLink" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="locks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLDbLock" inverseName="user" inverseEntity="SLDbLock" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SLDbLock" positionX="-63" positionY="-18" width="128" height="105"/>
+        <element name="SLDbLock" positionX="-63" positionY="-18" width="128" height="120"/>
+        <element name="SLDbUser" positionX="-63" positionY="9" width="128" height="165"/>
     </elements>
 </model>

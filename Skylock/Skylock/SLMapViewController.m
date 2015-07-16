@@ -46,15 +46,15 @@
 - (UIButton *)menuButton
 {
     if (!_menuButton) {
-        UIImage *menuButtonImage = [UIImage imageNamed:@"menu"];
-        self.menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                     0.0f,
-                                                                     menuButtonImage.size.width,
-                                                                     menuButtonImage.size.height)];
-        [self.menuButton setImage:menuButtonImage forState:UIControlStateNormal];
-        [self.menuButton addTarget:self
-                            action:@selector(menuButtonPressed)
-                  forControlEvents:UIControlEventTouchDown];
+        UIImage *menuButtonImage = [UIImage imageNamed:@"icon_menu"];
+        _menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                 0.0f,
+                                                                 2*menuButtonImage.size.width,
+                                                                 2*menuButtonImage.size.height)];
+        [_menuButton setImage:menuButtonImage forState:UIControlStateNormal];
+        [_menuButton addTarget:self
+                        action:@selector(menuButtonPressed)
+              forControlEvents:UIControlEventTouchDown];
     }
     
     return _menuButton;
@@ -64,6 +64,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
+    [SLLockManager.manager fetchLocks];
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
     
     RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
@@ -86,8 +87,8 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewWillAppear:animated];
     
-    self.menuButton.frame = CGRectMake(10.0f,
-                                       20.0f,
+    self.menuButton.frame = CGRectMake(15.0f,
+                                       30.0f,
                                        self.menuButton.bounds.size.width,
                                        self.menuButton.bounds.size.height);
 }
@@ -129,6 +130,7 @@
 
 - (void)presentSlideViewController
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.view addSubview:self.touchStopperView];
     
     static CGFloat xSpacer = .8f;
@@ -154,6 +156,7 @@
 }
 - (void)removeSlideViewController:(SLSlideViewController *)slvc shouldPresentLockInfoVCWithLock:(SLLock *)lock
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
                                      0.0f,
@@ -203,6 +206,7 @@
 
 - (void)removeLockInfoViewController:(SLLockInfoViewController *)livc withCompletion:(void(^)(void))completion
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         livc.view.frame = CGRectMake(0.0f,
                                      self.view.bounds.size.height,
@@ -221,7 +225,8 @@
 
 - (void)presentCoachMarkViewController
 {
-    SLCoachMarkViewController *cmvc;
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    SLCoachMarkViewController *cmvc = nil;
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     if ([ud objectForKey:SLUserDefaultsCoachMarksComplete]) {
         NSNumber *complete = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
@@ -252,6 +257,7 @@
 
 - (NSDictionary *)coachMarkParameters
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLockInfoViewController *livc;
     for (UIViewController *vc in self.childViewControllers) {
         if ([vc isMemberOfClass:[SLLockInfoViewController class]]) {
@@ -265,17 +271,18 @@
         static NSString *button = @"button";
         static NSString *label = @"label";
         
-        CGRect crashButtonFrame = [self.view convertRect:livc.middleView.crashButton.frame fromView:livc.middleView];
-        CGRect crashLabelFrame = [self.view convertRect:livc.middleView.crashLabel.frame
-                                               fromView:livc.middleView];
-        CGRect securityButtonFrame = [self.view convertRect:livc.middleView.securityButton.frame
-                                                   fromView:livc.middleView];
-        CGRect securityLabelFrame = [self.view convertRect:livc.middleView.securityLabel.frame
-                                                  fromView:livc.middleView];
-        CGRect sharingButtonFrame = [self.view convertRect:livc.middleView.sharingButton.frame
-                                                  fromView:livc.middleView];
-        CGRect sharingLabelFrame = [self.view convertRect:livc.middleView.sharingLabel.frame
-                                                 fromView:livc.middleView];
+        CGRect crashButtonFrame = [self.view convertRect:livc.crashButtonFrame
+                                                fromView:livc.view];
+        CGRect crashLabelFrame = [self.view convertRect:livc.crashLabelFrame
+                                               fromView:livc.view];
+        CGRect securityButtonFrame = [self.view convertRect:livc.securityButtonFrame
+                                                   fromView:livc.view];
+        CGRect securityLabelFrame = [self.view convertRect:livc.securityLabelFrame
+                                                  fromView:livc.view];
+        CGRect sharingButtonFrame = [self.view convertRect:livc.sharingButtonFrame
+                                                  fromView:livc.view];
+        CGRect sharingLabelFrame = [self.view convertRect:livc.sharingLabelFrame
+                                                 fromView:livc.view];
         
         params = @{@(SLCoachMarkPageCrash):@{button:[NSValue valueWithCGRect:crashButtonFrame],
                                              label:[NSValue valueWithCGRect:crashLabelFrame]
@@ -297,6 +304,7 @@
                buttonPushed:(SLSlideViewControllerButtonAction)action
                     options:(NSDictionary *)options
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
         [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:options[@"lock"]];
     }
@@ -305,6 +313,7 @@
 #pragma mark - SLCoachMarkViewController Delegate Methods
 - (void)coachMarkViewControllerDoneButtonPressed:(SLCoachMarkViewController *)cmvc
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         cmvc.view.alpha = 0.0f;
     } completion:^(BOOL finished) {
