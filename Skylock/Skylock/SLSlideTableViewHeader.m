@@ -11,9 +11,6 @@
 #import "UIColor+RGB.h"
 
 
-#define kSLSlideTableViewHeaderCircleY0 5.0f
-
-
 @interface SLSlideTableViewHeader()
 
 @property (nonatomic, strong) UILabel *addAccountLabel;
@@ -70,10 +67,11 @@
 - (SLCirclePicView *)circleView
 {
     if (!_circleView) {
+        CGFloat height = self.bounds.size.height - self.seperatorView.bounds.size.height - self.addAccountLabel.bounds.size.height;
         _circleView = [[SLCirclePicView alloc] initWithFrame:CGRectMake(0.0f,
                                                                         0.0f,
                                                                         self.bounds.size.width,
-                                                                        self.bounds.size.height - self.seperatorView.bounds.size.height - self.addAccountLabel.bounds.size.height - kSLSlideTableViewHeaderCircleY0)
+                                                                        height)
                                                         name:self.name
                                                    picRadius:22.5f];
         [self addSubview:_circleView];
@@ -87,12 +85,12 @@
     [super layoutSubviews];
     
     self.circleView.frame = CGRectMake(0.0f,
-                                       kSLSlideTableViewHeaderCircleY0,
+                                       0.0f,
                                        self.circleView.bounds.size.width,
                                        self.circleView.bounds.size.height);
     
     self.addAccountLabel.frame = CGRectMake(0.0f,
-                                            self.bounds.size.height - self.addAccountLabel.bounds.size.height - 8.0f,
+                                            self.bounds.size.height - self.addAccountLabel.bounds.size.height - 10.0f,
                                             self.addAccountLabel.bounds.size.width,
                                             self.addAccountLabel.bounds.size.height);
     

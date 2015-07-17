@@ -82,7 +82,7 @@
     [super layoutSubviews];
     
     self.picView.frame = CGRectMake(.5*(self.bounds.size.width - self.picView.bounds.size.width),
-                                    15.0f,
+                                    20.0f,
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     
