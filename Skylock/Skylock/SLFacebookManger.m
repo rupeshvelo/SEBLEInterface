@@ -10,6 +10,8 @@
 #import "SLUserDefaults.h"
 #import "SLNotifications.h"
 #import "SLDatabaseManager.h"
+#import "SLRestManager.h"
+
 
 @interface SLFacebookManger()
 
@@ -87,7 +89,6 @@
         } else if (result.isCancelled) {
 
         } else {
-
             [self getFBUserInfo];
         }
     }];
@@ -119,27 +120,16 @@
 - (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSString *path = [NSString stringWithFormat:@"/%@/picture", userId];
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-                                  initWithGraphPath:path
-                                  parameters:nil
-                                  HTTPMethod:@"GET"];
-    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-        
-        if (completion) {
-            if (error) {
-                NSLog(@"error retrieving pic from Facebook for user: %@", userId);
-                completion(nil);
-            } else {
-                if ([result isKindOfClass:[NSData class]]) {
-                    NSData *data = (NSData *)result;
-                    UIImage *image = [UIImage imageWithData:data];
-                    completion(image);
-                } else {
-                    completion(nil);
-                }
-            }
+
+    NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
+    [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
+        if (data) {
+            UIImage *image = [UIImage imageWithData:data];
+            completion(image);
+            return;
         }
+        
+        completion(nil);
     }];
 }
 @end

@@ -27,4 +27,6 @@
 - (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 - (void)saveUser:(SLDbUser *)user withCompletion:(void(^)(BOOL success))completion;
 - (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary;
+- (void)setCurrentUser;
+
 @end

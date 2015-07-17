@@ -13,5 +13,6 @@
 - (NSDictionary *)asDictionary;
 - (void)setPropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)setPropertiesWithFacebookDictionary:(NSDictionary *)dictionary;
+- (NSString *)fullName;
 
 @end

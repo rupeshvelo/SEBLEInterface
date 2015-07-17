@@ -9,10 +9,10 @@
 #import "SLLockTableViewCell.h"
 #import "SLLock.h"
 #import "NSString+Skylock.h"
+#import "UIColor+RGB.h"
 
 @interface SLLockTableViewCell()
 
-@property (nonatomic, strong) UIImageView *rightImageView;
 
 @end
 
@@ -21,55 +21,32 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
+    if (self) {
+        UIImage *image = [UIImage imageNamed:@"icon_chevron_right"];
+        self.accessoryView = [[UIImageView alloc] initWithImage:image];
+        
+        self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+        self.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
+        
+        self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:8];
+        self.detailTextLabel.textColor = [UIColor colorWithRed:191 green:191 blue:191];
+    }
+    
     return self;
 }
 
-- (UIImageView *)rightImageView
-{
-    if (!_rightImageView) {
-        _rightImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sharebike-icon"]];
-        [self.contentView addSubview:_rightImageView];
-    }
-    
-    return _rightImageView;
-}
 
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    self.rightImageView.image = nil;
 }
 
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    self.rightImageView.frame = CGRectMake(self.contentView.bounds.size.width - self.rightImageView.bounds.size.width - 10.0f,
-                                           .5*(self.contentView.bounds.size.height - self.rightImageView.bounds.size.height),
-                                           self.rightImageView.bounds.size.width,
-                                           self.rightImageView.bounds.size.height);
-    
-    
-    CGSize imageViewSize = self.imageViewSize;
-    self.textLabel.frame = CGRectMake(imageViewSize.width + 25.0f,
-                                      self.textLabel.frame.origin.y,
-                                      self.textLabel.frame.size.width,
-                                      self.textLabel.frame.size.height);
-    
-    self.detailTextLabel.frame = CGRectMake(self.textLabel.frame.origin.x,
-                                            self.detailTextLabel.frame.origin.y,
-                                            self.detailTextLabel.frame.size.width,
-                                            self.textLabel.frame.size.height);
-    
-}
 
 
 - (void)updateCellWithLock:(SLLock *)lock
 {
     self.textLabel.text = lock.name;
     self.detailTextLabel.text = [[NSString alloc] stringWithDistance:lock.distanceAway];
-    self.imageView.image = lock.isLocked.boolValue ? [UIImage imageNamed:@"lock-icon"] : self.placeHolderImage;
-    self.rightImageView.image = lock.isSharingOn.boolValue ? [UIImage imageNamed:@"sharebike-icon"] : nil;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
@@ -79,21 +56,5 @@
     // Configure the view for the selected state
 }
 
-- (CGSize)imageViewSize
-{
-    return CGSizeMake(16.0f, 19.0f);
-}
-
-- (UIImage *)placeHolderImage
-{
-    CGSize imageSize = self.imageViewSize;
-    UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
-    [[UIColor colorWithRed:.4 green:.2 blue:.6 alpha:0] setFill];
-    UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
-    UIImage *holderImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return holderImage;
-}
 
 @end

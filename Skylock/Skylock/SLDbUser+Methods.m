@@ -44,4 +44,15 @@
     self.email          = dictionary[@"email"];
     self.isCurrentUser  = dictionary[@"isCurrentUser"];
 }
+
+- (NSString *)fullName
+{
+    NSDictionary *d = self.asDictionary;
+
+    if (!self.lastName) {
+        return self.firstName;
+    }
+    
+    return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
+}
 @end

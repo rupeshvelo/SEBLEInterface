@@ -140,6 +140,7 @@
 
 - (NSDictionary *)dictionaryRepresentation
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSMutableDictionary *dictRep = [NSMutableDictionary new];
     for (NSNumber *property in self.propertiesArray) {
         dictRep[property] = [self getPropertyOrNull:property.unsignedIntegerValue];
@@ -150,6 +151,7 @@
 
 - (NSDictionary *)asDbDictionary
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSDictionary *db = @{@"name":self.name,
                          @"uuid":self.uuid,
                          @"latitude":self.latitude,
@@ -160,11 +162,13 @@
 
 - (id)getPropertyOrNull:(SLLockProperty)property
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self valueForKey:[self keyForProperty:property]];
 }
 
 - (NSString *)keyForProperty:(SLLockProperty)property
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     switch (property) {
         case SLLockPropertyName:
             return @"name";
@@ -213,6 +217,7 @@
 
 - (NSArray *)propertiesArray
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return @[@(SLLockPropertyName),
              @(SLLockPropertyUUID),
              @(SLLockPropertyBatteryRemaining),

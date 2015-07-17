@@ -17,6 +17,10 @@
 #import "SLUserDefaults.h"
 #import "SLDropDownLabel.h"
 #import <QuartzCore/QuartzCore.h>
+#import "SLDatabaseManager.h"
+#import "UIColor+RGB.h"
+
+
 
 #define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
@@ -35,9 +39,10 @@
 - (UIView *)touchStopperView
 {
     if (!_touchStopperView) {
+        UIColor *color = [UIColor colorWithRed:51 green:51 blue:51];
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
         _touchStopperView.userInteractionEnabled = YES;
-        _touchStopperView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.85f];
+        _touchStopperView.backgroundColor = [color colorWithAlphaComponent:.8f];
     }
     
     return _touchStopperView;
@@ -55,6 +60,7 @@
         [_menuButton addTarget:self
                         action:@selector(menuButtonPressed)
               forControlEvents:UIControlEventTouchDown];
+        [self.view addSubview:_menuButton];
     }
     
     return _menuButton;
@@ -64,7 +70,8 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
-    [SLLockManager.manager fetchLocks];
+    [SLDatabaseManager.manager setCurrentUser];
+    
     [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
     
     RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
@@ -73,8 +80,6 @@
     mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
-    
-    [self.view addSubview:self.menuButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,10 +136,10 @@
 - (void)presentSlideViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    [SLLockManager.manager fetchLocks];
     [self.view addSubview:self.touchStopperView];
     
-    static CGFloat xSpacer = .8f;
-    CGFloat width = xSpacer*self.view.bounds.size.width;
+    static CGFloat width = 127.0f;
     SLSlideViewController *slvc = [SLSlideViewController new];
     slvc.delegate = self;
     slvc.view.frame = CGRectMake(-width,
@@ -151,7 +156,7 @@
         slvc.view.frame = CGRectMake(0.0f,
                                      0.0f,
                                      width,
-                                     self.view.bounds.size.height);
+                                     slvc.view.bounds.size.height);
     } completion:nil];
 }
 - (void)removeSlideViewController:(SLSlideViewController *)slvc shouldPresentLockInfoVCWithLock:(SLLock *)lock

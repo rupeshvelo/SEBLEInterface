@@ -10,7 +10,6 @@
 
 @interface SLCirclePicView : UIView
 
-@property (nonatomic, assign) CGFloat picRadius;
 
 - (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius;
 
