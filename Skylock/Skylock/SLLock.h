@@ -83,11 +83,11 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
          longitude:(NSNumber *)longitude;
 
 + (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
-+ (id)lockWithDataBaseDictionary:(NSDictionary *)dictionary;
 + (id)lockWithDbDictionary:(NSDictionary *)dbDictionary;
 - (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;
 - (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)dictionaryRepresentation;
 - (NSDictionary *)asDbDictionary;
+
 @end

@@ -34,12 +34,13 @@
     [self.window makeKeyAndVisible];
     
     UIPageControl *pageControl = [UIPageControl appearance];
-    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:225 green:225 blue:225];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:225
+                                                         green:225
+                                                          blue:225];
     
-    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88.0f/255.0f
-                                                                green:204.0f/255.0f
-                                                                 blue:131.0f/255.0f
-                                                                alpha:1.0f];
+    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88
+                                                                green:204
+                                                                 blue:131];
     
     return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
 }

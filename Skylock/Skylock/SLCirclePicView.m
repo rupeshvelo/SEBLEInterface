@@ -12,9 +12,10 @@
 
 @interface SLCirclePicView()
 
-@property (nonatomic, strong) UIImageView *picView;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, copy) NSString *name;
+@property (nonatomic, assign) CGFloat picRadius;
+@property (nonatomic, strong) UIImageView *picView;
 
 @end
 
@@ -26,7 +27,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _name = name;
-        _picRadius = _picRadius;
+        _picRadius = picRadius;
     }
     
     return self;
@@ -37,10 +38,10 @@
     if (!_picView) {
         _picView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
-                                                                 self.picRadius,
-                                                                 self.picRadius)];
+                                                                 2*self.picRadius,
+                                                                 2*self.picRadius)];
         _picView.clipsToBounds = YES;
-        _picView.layer.cornerRadius = .5*self.bounds.size.width;
+        _picView.layer.cornerRadius = self.picRadius;
         [self addSubview:_picView];
     }
     
@@ -73,7 +74,7 @@
 - (void)setPicImage:(UIImage *)image
 {
     self.picView.image = image;
-    [self.picView setNeedsDisplay];
+    [self setNeedsDisplay];
 }
 
 - (void)layoutSubviews
@@ -81,13 +82,13 @@
     [super layoutSubviews];
     
     self.picView.frame = CGRectMake(.5*(self.bounds.size.width - self.picView.bounds.size.width),
-                                    0.0f,
+                                    15.0f,
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     
     self.nameLabel.frame = CGRectMake(.5*(self.bounds.size.width - self.nameLabel.bounds.size.width),
-                                      CGRectGetMaxY(self.picView.frame) + 10.0f,
+                                      CGRectGetMaxY(self.picView.frame) + 5.0f,
                                       self.nameLabel.bounds.size.width,
-                                      self.nameLabel.bounds.size.width);
+                                      self.nameLabel.bounds.size.height);
 }
 @end

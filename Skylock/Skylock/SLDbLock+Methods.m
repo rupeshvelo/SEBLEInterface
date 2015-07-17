@@ -12,6 +12,7 @@
 
 - (NSDictionary *)asDictionary
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return @{@"uuid":self.uuid,
              @"name":self.name,
              @"latitude":self.latitude,
@@ -21,6 +22,7 @@
 
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.uuid = dictionary[@"uuid"];
     self.name = dictionary[@"name"];
     self.latitude = dictionary[@"latitude"];

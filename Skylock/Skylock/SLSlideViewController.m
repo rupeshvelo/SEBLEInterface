@@ -13,12 +13,17 @@
 //#import "SLSettingsViewController.h"
 #import "SLNavigationViewController.h"
 #import "SLAddLockViewController.h"
-
+#import "SLCirclePicView.h"
+#import "SLDbUser+Methods.h"
+#import "SLDatabaseManager.h"
+#import "SLFacebookManger.h"
+#import "SLSlideControllerOptionsView.h"
+#import "UIColor+RGB.h"
+#import "SLSlideTableViewHeader.h"
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
-#define KSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
-#define KSLSlideViewControllerRowTextKey            @"SLSlideViewControllerRowTextKey"
-
+#define kSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
+#define kSLSlideViewControllerRowTextKey            @"SLSlideViewControllerRowTextKey"
 
 @interface SLSlideViewController()
 
@@ -26,6 +31,8 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *locks;
 @property (nonatomic, strong) NSArray *rowOptions;
+@property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
+@property (nonatomic, strong) UIView *dividerView;
 
 @end
 
@@ -34,7 +41,11 @@
 - (UITableView *)tableView
 {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                   0.0f,
+                                                                   self.view.bounds.size.width,
+                                                                   self.view.bounds.size.height - self.optionsView.bounds.size.height - self.dividerView.bounds.size.height)
+                                                  style:UITableViewStylePlain];
         [_tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
         _tableView.delegate = self;
         _tableView.dataSource = self;
@@ -58,22 +69,48 @@
 - (NSArray *)rowOptions
 {
     if (!_rowOptions) {
-        _rowOptions = @[@{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Add Lock", nil),
-                          KSLSlideViewControllerRowImageKey: @"add-icon"
+        _rowOptions = @[@{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Add Lock", nil),
+                          kSLSlideViewControllerRowImageKey: @"add-icon"
                           },
-                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Store", nil),
-                          KSLSlideViewControllerRowImageKey: @""
+                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Store", nil),
+                          kSLSlideViewControllerRowImageKey: @""
                           },
-                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Settings", nil),
-                          KSLSlideViewControllerRowImageKey: @"settings-icon"
+                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Settings", nil),
+                          kSLSlideViewControllerRowImageKey: @"settings-icon"
                           },
-                        @{KSLSlideViewControllerRowTextKey: NSLocalizedString(@"Help & Feedback", nil),
-                          KSLSlideViewControllerRowImageKey: @"help-icon"
+                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Help & Feedback", nil),
+                          kSLSlideViewControllerRowImageKey: @"help-icon"
                           }
                         ];
     }
     
     return _rowOptions;
+}
+
+- (SLSlideControllerOptionsView *)optionsView
+{
+    if (!_optionsView) {
+        _optionsView = [[SLSlideControllerOptionsView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                      0.0f,
+                                                                                      127.0f,
+                                                                                      125.0f)];
+        _optionsView.delegate = self;
+    }
+    
+    return _optionsView;
+}
+
+- (UIView *)dividerView
+{
+    if (!_dividerView) {
+        _dividerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                0.0f,
+                                                                self.view.bounds.size.width,
+                                                                1.0f)];
+        _dividerView.backgroundColor = [UIColor colorWithRed:191 green:191 blue:191];
+    }
+    
+    return _dividerView;
 }
 
 - (void)viewDidLoad
@@ -90,6 +127,24 @@
     if (![self.view.subviews containsObject:self.tableView]) {
         [self.view addSubview:self.tableView];
     }
+    
+    if (![self.view.subviews containsObject:self.dividerView]) {
+        self.dividerView.frame = CGRectMake(0.0f,
+                                            CGRectGetMaxY(self.tableView.frame),
+                                            self.dividerView.bounds.size.width,
+                                            self.dividerView.bounds.size.height);
+        [self.view addSubview:self.dividerView];
+    }
+    
+    if (![self.view.subviews containsObject:self.optionsView]) {
+        self.optionsView.frame = CGRectMake(0.0f,
+                                            CGRectGetMaxY(self.dividerView.frame),
+                                            self.optionsView.bounds.size.width,
+                                            self.optionsView.bounds.size.height);
+        [self.view addSubview:self.optionsView];
+    }
+    
+    
 }
 
 - (NSString *)lockTableViewCellIdentifier
@@ -100,33 +155,21 @@
 #pragma mark UITableView delegate & datasource methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return section == 0 ? self.locks.count : self.rowOptions.count;
+    return self.locks.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        SLLock *lock = self.locks[indexPath.row];
-        SLLockTableViewCell *lockCell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
-        [lockCell updateCellWithLock:lock];
-        return lockCell;
-    } else {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSLSlideViewControllerOptionCellIdentifier];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                          reuseIdentifier:kSLSlideViewControllerOptionCellIdentifier];
-        }
-       
-        NSString *imageName = self.rowOptions[indexPath.row][KSLSlideViewControllerRowImageKey];
-        cell.imageView.image = [UIImage imageNamed:imageName];
-        cell.textLabel.text = self.rowOptions[indexPath.row][KSLSlideViewControllerRowTextKey];
-        return cell;
-    }
+    SLLock *lock = self.locks[indexPath.row];
+    SLLockTableViewCell *lockCell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
+    [lockCell updateCellWithLock:lock];
+    return lockCell;
+    
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -147,34 +190,34 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
-                                                                    0.0f,
-                                                                    self.tableView.bounds.size.width,
-                                                                    [self tableView:tableView heightForHeaderInSection:section])];
-        header.backgroundColor = SLConstantsMainTeal;
-        header.text = NSLocalizedString(@"SKYLOCK", nil);
-        header.textAlignment = NSTextAlignmentCenter;
-        header.font = SLConstantsTableHeaderFont;
-        header.textColor = [UIColor whiteColor];
-        return header;
-    } else {
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                      0.0f,
-                                                                      self.tableView.bounds.size.width,
-                                                                      [self tableView:tableView heightForHeaderInSection:section])];
-        headerView.backgroundColor = [UIColor grayColor];
-        return headerView;
+    SLDbUser *user = [SLDatabaseManager.manager currentUser];
+    
+    SLSlideTableViewHeader *header = [[SLSlideTableViewHeader alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                              0.0f,
+                                                                                              self.view.bounds.size.width,
+                                                                                              [self tableView:tableView heightForHeaderInSection:section])];
+    header.name = user.fullName;
+    header.delegate = self;
+    
+    if (user.facebookId) {
+        [SLFacebookManger.manager getFacebookPicForUserId:user.facebookId withCompletion:^(UIImage *image) {
+            if (!image) {
+                image = [UIImage imageNamed:@"img_userav_small"];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [header.circleView setPicImage:image];
+            });
+        }];
     }
+    
+    
+    return header;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return .15*tableView.bounds.size.height;
-    }
-    
-    return 1;
+    return 100.0f;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -293,5 +336,10 @@
         [alvc.view removeFromSuperview];
         [alvc removeFromParentViewController];
     }];
+}
+#pragma mark - Slide Tableview Header Delegate Methods
+- (void)addAccountPressedForSlideTableHeader:(SLSlideTableViewHeader *)header
+{
+    NSLog(@"Add Account Pressed on slide header view");
 }
 @end

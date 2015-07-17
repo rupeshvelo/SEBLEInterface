@@ -21,6 +21,18 @@
 
 @implementation SLRestManager
 
++ (id)manager
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    static SLRestManager *restManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        restManager = [[self alloc] init];
+    });
+    
+    return restManager;
+}
+
 - (NSDictionary *)serverUrls
 {
     if (!_serverUrls) {
@@ -101,6 +113,33 @@
     [task resume];
 }
 
+- (void)getPictureFromUrl:(NSString *)url withCompletion:(void (^)(NSData *))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [request setHTTPMethod:@"GET"];
+    
+    [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request
+                                                            completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+                                                                NSLog(@"response: %@", response);
+                                                                
+                                                                if (error) {
+                                                                    NSLog(@"Error downloading pic: %@", error.localizedDescription);
+                                                                    completion(nil);
+                                                                    return;
+                                                                }
+                                                                
+                                                                NSData *responseData = [NSData dataWithContentsOfURL:location];
+                                                                completion(responseData);
+                                                            }];
+    [downloadTask resume];
+}
 // add Post and Put
 
 @end

@@ -53,7 +53,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSMutableArray *locks = [NSMutableArray new];
     for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDataBaseDictionary:dbLock.asDictionary]];
+        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
     }
     
     return locks;
@@ -122,7 +122,12 @@
 - (NSArray *)locksForCurrentUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    return self.currentUser.locks.allObjects;
+    NSMutableArray *locks = [NSMutableArray new];
+    for (SLDbLock *dbLock in self.currentUser.locks.allObjects) {
+        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
+    }
+    
+    return locks;
 }
 
 - (SLDbLock *)getDbLockWithUUID:(NSString *)uuid
@@ -215,7 +220,7 @@
     } else {
         // there is no current user or facebook user
         facebookUser = self.newDbUser;
-        [facebookUser setPropertiesWithDictionary:dictionary];
+        [facebookUser setPropertiesWithFacebookDictionary:dictionary];
         facebookUser.isCurrentUser = @(YES);
         [self saveUser:facebookUser withCompletion:nil];
         [self setCurrentUser];

@@ -16,9 +16,11 @@ typedef NS_ENUM(NSUInteger, SLRestManagerResponse) {
 
 @interface SLRestManager : NSObject
 
++ (id)manager;
 
 - (void)restGetRequestWithURL:(NSString *)urlString
                       options:(NSArray *)options
                    completion:(void(^)(NSDictionary *responseDict))completion;
 
+- (void)getPictureFromUrl:(NSString *)url withCompletion:(void(^)(NSData *))completion;
 @end
