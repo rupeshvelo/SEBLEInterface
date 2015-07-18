@@ -47,8 +47,6 @@
 
 - (NSString *)fullName
 {
-    NSDictionary *d = self.asDictionary;
-
     if (!self.lastName) {
         return self.firstName;
     }

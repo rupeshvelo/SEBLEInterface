@@ -172,23 +172,27 @@
     return CGRectMake(0.0f, 0.0f, 63.0, 61.0);
 }
 
-- (void)addLockPressed
+- (void)buttonPressed:(SLSlideControllerOptionsButton *)button
 {
-    
+    if ([self.delegate respondsToSelector:@selector(slideOptionsView:action:)]) {
+        SLSlideOptionsViewAction action = [self actionForButton:button];
+        [self.delegate slideOptionsView:self action:action];
+    }
 }
 
-- (void)storePressed
+- (SLSlideOptionsViewAction)actionForButton:(SLSlideControllerOptionsButton *)button
 {
+    SLSlideOptionsViewAction action = SLSlideOptionsViewActionNone;
+    if (button == self.addLockButton) {
+        action = SLSlideOptionsViewActionAddLock;
+    } else if (button == self.storeButton) {
+        action = SLSlideOptionsViewActionStore;
+    } else if (button == self.settingsButton) {
+        action = SLSlideOptionsViewActionSettings;
+    } else if (button == self.helpButton) {
+        action = SLSlideOptionsViewActionHelp;
+    }
     
-}
-
-- (void)settingsPressed
-{
-    
-}
-
-- (void)helpPressed
-{
-    
+    return action;
 }
 @end

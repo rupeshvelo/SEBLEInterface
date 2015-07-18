@@ -37,6 +37,7 @@
 @property (nonatomic, strong) UILabel *sharingLabel;
 
 @property (nonatomic, strong) UIButton *lockButton;
+@property (nonatomic, assign) CGFloat arrowButtonLeftOrigin;
 
 @end
 
@@ -56,6 +57,7 @@
                                                                    size.height)];
         _lockNameLabel.text = self.lock.name;
         _lockNameLabel.font = font;
+        _lockNameLabel.textColor = [UIColor colorWithRed:123 green:124 blue:124];
         [self.view addSubview:_lockNameLabel];
     }
     
@@ -240,7 +242,6 @@
         
         [_lockButton setImage:normalImage forState:UIControlStateNormal];
         [_lockButton setImage:selectedImage forState:UIControlStateSelected];
-        _lockButton.backgroundColor = SLConstantsLightTeal;
         _lockButton.selected = NO;
         
         [self.view addSubview:_lockButton];
@@ -253,6 +254,8 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
+    
+    self.isUp = YES;
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.view.layer.cornerRadius = SLConstantsViewCornerRadius1;
@@ -280,7 +283,8 @@
                                           self.wifiImageView.bounds.size.width,
                                           self.wifiImageView.bounds.size.height);
     
-    self.arrowButton.frame = CGRectMake(self.view.bounds.size.width - kSLLockInfoViewControllerPadding - self.arrowButton.bounds.size.width,
+    self.arrowButtonLeftOrigin = self.view.bounds.size.width - kSLLockInfoViewControllerPadding - self.arrowButton.bounds.size.width;
+    self.arrowButton.frame = CGRectMake(self.arrowButtonLeftOrigin,
                                         xCenter -.5*self.arrowButton.bounds.size.height,
                                         self.arrowButton.bounds.size.width,
                                         self.arrowButton.bounds.size.height);
@@ -336,17 +340,6 @@
     }
 }
 
-- (void)handleAction:(SLLockInfoViewControllerAction)action
-{
-    if ([self.delegate respondsToSelector:@selector(lockInfoViewController:action:)]) {
-        [self.delegate lockInfoViewController:self action:action];
-    }
-}
-
-- (void)arrowButtonPressed
-{
-    
-}
 
 - (UIImage *)batteryImage
 {
@@ -490,7 +483,98 @@
 ////    [self presentViewController:navController animated:YES completion:nil];
 //}
 
-#pragma mark - SLLockInfoMiddleView Delegate Methods
+
+
+- (void)arrowButtonPressed
+{
+    self.isUp = !self.isUp;
+    
+
+    CGFloat arrowDx = self.arrowButtonLeftOrigin - .5*self.view.bounds.size.width;
+    
+    void (^firstAnimation)(void);
+    void (^secondAnimation)(void);
+    
+    if (self.isUp) {
+        firstAnimation = ^{
+            self.arrowButton.transform = CGAffineTransformRotate(self.arrowButton.transform, M_PI);
+            self.arrowButton.frame = CGRectOffset(self.arrowButton.frame,
+                                                  arrowDx,
+                                                  0.0f);
+        };
+        
+        secondAnimation = ^{
+            self.lockButton.frame = CGRectOffset(self.lockButton.frame,
+                                                 0.0f,
+                                                 107.0f);
+            // face views in
+            [self fadeViews:NO];
+        };
+    } else {
+        firstAnimation = ^{
+            // hide views
+            [self fadeViews:YES];
+        };
+        
+        secondAnimation = ^{
+            self.lockButton.frame = CGRectOffset(self.lockButton.frame,
+                                                 0.0f,
+                                                 -107.0f);
+            self.arrowButton.transform = CGAffineTransformRotate(self.arrowButton.transform, M_PI);
+            self.arrowButton.frame = CGRectOffset(self.arrowButton.frame,
+                                                  -arrowDx,
+                                                  0.0f);
+        };
+    }
+    
+    
+    if (self.isUp) {
+        [self hideViews:NO];
+    }
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:firstAnimation
+                     completion:^(BOOL finished) {
+                         if ([self.delegate respondsToSelector:@selector(lockInfoViewController:shouldIncreaseSize:)]) {
+                             [self.delegate lockInfoViewController:self shouldIncreaseSize:self.isUp];
+                         }
+                         
+                         if (!self.isUp) {
+                             [self hideViews:YES];
+                         }
+                         
+                         [UIView animateWithDuration:SLConstantsAnimationDurration1
+                                          animations:secondAnimation];
+    }];
+}
+
+- (void)hideViews:(BOOL)shouldHide
+{
+    self.lockNameLabel.hidden = shouldHide;
+    self.batteryImageView.hidden = shouldHide;
+    self.wifiImageView.hidden = shouldHide;
+    self.crashButton.hidden = shouldHide;
+    self.securityButton.hidden = shouldHide;
+    self.sharingButton.hidden = shouldHide;
+    self.crashLabel.hidden = shouldHide;
+    self.securityLabel.hidden = shouldHide;
+    self.sharingLabel.hidden = shouldHide;
+}
+
+- (void)fadeViews:(BOOL)shouldFade
+{
+    CGFloat alpha = shouldFade ? 0.0f:1.0f;
+    self.lockNameLabel.alpha = alpha;
+    self.batteryImageView.alpha = alpha;
+    self.wifiImageView.alpha = alpha;
+    self.crashButton.alpha = alpha;
+    self.securityButton.alpha = alpha;
+    self.sharingButton.alpha = alpha;
+    self.crashLabel.alpha = alpha;
+    self.securityLabel.alpha = alpha;
+    self.sharingLabel.alpha = alpha;
+    
+}
+
 - (void)crashButtonPressed:(UIButton *)button
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -515,9 +599,9 @@
     //[SLLockManager.manager toggleSharignForLock:self.lock];
 }
 
-#pragma mark - SLLockInfoBottomView Delegate Methods
 - (void)lockButtonPressed
 {
+    self.lockButton.selected = !self.lockButton.isSelected;
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
 }
 @end

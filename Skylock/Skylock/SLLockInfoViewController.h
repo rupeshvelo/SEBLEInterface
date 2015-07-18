@@ -15,12 +15,14 @@ typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
     SLLockInfoViewControllerActionNone,
     SLLockInfoViewControllerActionCrash,
     SLLockInfoViewControllerActionSecurity,
-    SLLockInfoViewControllerActionSharing
+    SLLockInfoViewControllerActionSharing,
+    SLLockInfoViewControllerActionChangeSize
 };
 
 @protocol SLLockInfoViewControllerDelegate <NSObject>
 
-- (void)lockInfoViewController:(SLLockInfoViewController *)livc action:(SLLockInfoViewControllerAction)action;
+- (void)lockInfoViewController:(SLLockInfoViewController *)livc
+            shouldIncreaseSize:(BOOL)shouldIncreaseSize;
 
 @end
 
@@ -28,6 +30,7 @@ typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
 
 @property (nonatomic, weak) id <SLLockInfoViewControllerDelegate> delegate;
 @property (nonatomic, strong) SLLock *lock;
+@property (nonatomic, assign)BOOL isUp;
 
 - (NSDictionary *)buttonFrames;
 

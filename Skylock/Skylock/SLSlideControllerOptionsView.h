@@ -10,15 +10,19 @@
 
 @class SLSlideControllerOptionsView;
 
+typedef NS_ENUM(NSUInteger, SLSlideOptionsViewAction) {
+    SLSlideOptionsViewActionNone,
+    SLSlideOptionsViewActionAddLock,
+    SLSlideOptionsViewActionStore,
+    SLSlideOptionsViewActionSettings,
+    SLSlideOptionsViewActionHelp
+};
+
 @protocol SLSlideControllerOptionsViewDelegate <NSObject>
 
-- (void)addLockPressedOnSlideControllerOptionsView:(SLSlideControllerOptionsView *)optionsView;
+- (void)slideOptionsView:(SLSlideControllerOptionsView *)optionsView
+                  action:(SLSlideOptionsViewAction)action;
 
-- (void)storePressedOnSlideControllerOptionsView:(SLSlideControllerOptionsView *)optionsView;
-
-- (void)settingsPressedOnSlideControllerOptionsView:(SLSlideControllerOptionsView *)optionsView;
-
-- (void)helpPressedOnSlideControllerOptionsView:(SLSlideControllerOptionsView *)optionsView;
 
 @end
 

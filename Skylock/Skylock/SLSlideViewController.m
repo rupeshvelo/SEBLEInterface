@@ -30,7 +30,6 @@
 @property (nonatomic, strong) UIButton *testButton;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *locks;
-@property (nonatomic, strong) NSArray *rowOptions;
 @property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
 @property (nonatomic, strong) UIView *dividerView;
 
@@ -64,27 +63,6 @@
     }
     
     return _locks;
-}
-
-- (NSArray *)rowOptions
-{
-    if (!_rowOptions) {
-        _rowOptions = @[@{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Add Lock", nil),
-                          kSLSlideViewControllerRowImageKey: @"add-icon"
-                          },
-                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Store", nil),
-                          kSLSlideViewControllerRowImageKey: @""
-                          },
-                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Settings", nil),
-                          kSLSlideViewControllerRowImageKey: @"settings-icon"
-                          },
-                        @{kSLSlideViewControllerRowTextKey: NSLocalizedString(@"Help & Feedback", nil),
-                          kSLSlideViewControllerRowImageKey: @"help-icon"
-                          }
-                        ];
-    }
-    
-    return _rowOptions;
 }
 
 - (SLSlideControllerOptionsView *)optionsView
@@ -227,30 +205,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
-            [self.delegate slideViewController:self
-                                  buttonPushed:[self buttonActionForIndexPath:indexPath]
-                                       options:[self optionsForIndexPath:indexPath]];
-        }
-    } else {
-        switch (indexPath.row) {
-            case 0:
-                NSLog(@"Add lock");
-                [self presentAddLockViewController];
-                break;
-            case 1:
-                NSLog(@"Store");
-                break;
-            case 2:
-                [self presentSettingsViewControllerWithIndexPath:indexPath];
-                break;
-            case 3:
-                NSLog(@"Health and Feedback");
-                break;
-            default:
-                break;
-        }
+    if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
+        [self.delegate slideViewController:self
+                              buttonPushed:[self buttonActionForIndexPath:indexPath]
+                                   options:[self optionsForIndexPath:indexPath]];
     }
 }
 
@@ -337,9 +295,32 @@
         [alvc removeFromParentViewController];
     }];
 }
+
 #pragma mark - Slide Tableview Header Delegate Methods
 - (void)addAccountPressedForSlideTableHeader:(SLSlideTableViewHeader *)header
 {
     NSLog(@"Add Account Pressed on slide header view");
 }
+
+#pragma mark - Slide Options View Delegate Methods
+- (void)slideOptionsView:(SLSlideControllerOptionsView *)optionsView action:(SLSlideOptionsViewAction)action
+{
+    switch (action) {
+        case SLSlideOptionsViewActionAddLock:
+        
+            break;
+        case SLSlideOptionsViewActionStore:
+            
+            break;
+        case SLSlideOptionsViewActionSettings:
+            
+            break;
+        case SLSlideOptionsViewActionHelp:
+            
+            break;
+        default:
+            break;
+    }
+}
+
 @end
