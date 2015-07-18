@@ -24,6 +24,9 @@
 
 #define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
+#define kSLMapViewControllerLockInfoViewWidth 295.0f
+#define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
+#define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
 
 @interface SLMapViewController ()
 
@@ -31,6 +34,8 @@
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) SLLocationManager *locationManager;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
+@property (nonatomic, assign) CGRect lockInfoSmallFrame;
+@property (nonatomic, assign) CGRect lockInfoLargeFrame;
 
 @end
 
@@ -80,6 +85,19 @@
     mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);
     mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:mapView];
+    
+    
+    CGFloat padding = .5*(self.view.bounds.size.width - kSLMapViewControllerLockInfoViewWidth);
+    
+    self.lockInfoLargeFrame =  CGRectMake(padding,
+                                          self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - padding,
+                                          kSLMapViewControllerLockInfoViewWidth,
+                                          kSLMapViewControllerLockInfoViewLargeHeight);
+    
+    self.lockInfoSmallFrame = CGRectMake(padding,
+                                         self.lockInfoLargeFrame.origin.y + kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewSmallHeight ,
+                                         kSLMapViewControllerLockInfoViewWidth,
+                                         kSLMapViewControllerLockInfoViewSmallHeight);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -183,14 +201,13 @@
         
     SLLockInfoViewController *livc = [SLLockInfoViewController new];
     livc.lock = lock;
+    livc.delegate = self;
     
-    static CGFloat width = 295.0f;
-    CGFloat padding = .5*(self.view.bounds.size.width - width);
-
-    livc.view.frame = CGRectMake(padding,
+    
+    livc.view.frame = CGRectMake(self.lockInfoLargeFrame.origin.x,
                                  self.view.bounds.size.height,
-                                 width,
-                                 217.0f);
+                                 self.lockInfoLargeFrame.size.width,
+                                 self.lockInfoLargeFrame.size.height);
     
     [self addChildViewController:livc];
     [self.view addSubview:livc.view];
@@ -198,10 +215,7 @@
     [livc didMoveToParentViewController:self];
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        livc.view.frame = CGRectMake(livc.view.frame.origin.x,
-                                     self.view.bounds.size.height - livc.view.bounds.size.height - padding,
-                                     livc.view.bounds.size.width,
-                                     livc.view.bounds.size.height);
+        livc.view.frame = self.lockInfoLargeFrame;
     } completion:^(BOOL finished) {
         if (finished) {
             [self presentCoachMarkViewController];
@@ -328,6 +342,14 @@
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
         [ud setObject:@(YES) forKey:SLUserDefaultsCoachMarksComplete];
         [ud synchronize];
+    }];
+}
+
+#pragma mark - SLInfoViewController Delegate Methods
+- (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        livc.view.frame = shouldIncreaseSize ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
     }];
 }
 @end

@@ -68,7 +68,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
         SLTutorialViewController *tvc4 = [SLTutorialViewController new];
         tvc4.pageIndex = 3;
-        tvc4.imageName = @"img_walkthrough3";
+        tvc4.imageName = @"img_walkthrough4";
         tvc4.mainText = self.tutorialText[@"4Main"];
         tvc4.detailText = self.tutorialText[@"4Detail"];
         tvc4.padding = kSLTutorialXPadding;
