@@ -15,4 +15,6 @@
 
 - (CGSize)sizeWithFont:(UIFont *)font maxSize:(CGSize)maxSize;
 
+- (NSString *)MD5String;
+
 @end

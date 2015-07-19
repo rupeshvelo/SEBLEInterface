@@ -21,6 +21,7 @@
 		DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */; };
 		DC0520BE1B4B9E8500FBAAB7 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */; };
 		DC0B36621B4DB7E0008E25F4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */; };
+		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
 		DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */; };
 		DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */; };
@@ -372,20 +373,6 @@
 			remoteGlobalIDString = DC04276E1B2DBC4F008F3DDE;
 			remoteInfo = SEBLEInterfaceTests;
 		};
-		DC1A1AE11B2910DD00AEC10B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 17F31EFA1331050A00122B16;
-			remoteInfo = MapView;
-		};
-		DC1A1AE31B2910DD00AEC10B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DD6A83751644A20C0097F31F;
-			remoteInfo = Resources;
-		};
 		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DCD82FCD1B1FCBBC00B38910 /* Project object */;
@@ -420,7 +407,8 @@
 		DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLDbLock+Methods.m"; sourceTree = "<group>"; };
 		DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = "facebook-ios-sdk/build/FBSDKLoginKit.framework"; sourceTree = "<group>"; };
-		DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
+		DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLPicManager.h; sourceTree = "<group>"; };
+		DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLPicManager.m; sourceTree = "<group>"; };
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
 		DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewController.m; sourceTree = "<group>"; };
@@ -948,17 +936,10 @@
 				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
 				DC43C71E1B2894B500CEA7CF /* SLLocationManager.h */,
 				DC43C71F1B2894B500CEA7CF /* SLLocationManager.m */,
+				DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */,
+				DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */,
 			);
 			name = managers;
-			sourceTree = "<group>";
-		};
-		DC1A1ADD1B2910DC00AEC10B /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DC1A1AE21B2910DD00AEC10B /* libMapbox.a */,
-				DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
@@ -1312,7 +1293,6 @@
 				DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */,
 				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
 				DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */,
-				DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */,
 				DC43C7161B27E5F900CEA7CF /* libz.dylib */,
 				DCD554401B27D65E0035B78C /* CoreLocation.framework */,
 				DCD554421B27D6650035B78C /* QuartzCore.framework */,
@@ -1446,6 +1426,11 @@
 				TargetAttributes = {
 					DCD82FD41B1FCBBC00B38910 = {
 						CreatedOnToolsVersion = 6.3.2;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					DCD82FF01B1FCBBC00B38910 = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -1466,10 +1451,6 @@
 			productRefGroup = DCD82FD61B1FCBBC00B38910 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
-				{
-					ProductGroup = DC1A1ADD1B2910DC00AEC10B /* Products */;
-					ProjectRef = DC1A1ADC1B2910DC00AEC10B /* MapView.xcodeproj */;
-				},
 				{
 					ProductGroup = DC0427971B2EF073008F3DDE /* Products */;
 					ProjectRef = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
@@ -1496,20 +1477,6 @@
 			fileType = wrapper.cfbundle;
 			path = SEBLEInterfaceTests.xctest;
 			remoteRef = DC04279D1B2EF073008F3DDE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DC1A1AE21B2910DD00AEC10B /* libMapbox.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libMapbox.a;
-			remoteRef = DC1A1AE11B2910DD00AEC10B /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DC1A1AE41B2910DD00AEC10B /* Mapbox.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Mapbox.bundle;
-			remoteRef = DC1A1AE31B2910DD00AEC10B /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1910,6 +1877,7 @@
 				DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */,
 				DC7A12F81B5762E900F3336E /* SLDbUser.m in Sources */,
 				DC7A12F51B57409700F3336E /* SLUser.m in Sources */,
+				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
 				DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */,
