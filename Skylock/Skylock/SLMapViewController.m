@@ -7,7 +7,6 @@
 //
 
 #import "SLMapViewController.h"
-#import "Mapbox.h"
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
 #import "SLLockInfoViewController.h"
@@ -19,10 +18,12 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
+#import <MapboxGL/MapboxGL.h>
+
+#import <CoreLocation/CoreLocation.h>
 
 
 
-#define kMapBoxAccessToken  @"pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3"
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
@@ -36,6 +37,7 @@
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
+@property (nonatomic, strong) MGLMapView *mapView;
 
 @end
 
@@ -71,24 +73,28 @@
     return _menuButton;
 }
 
+- (MGLMapView *)mapView
+{
+    if (!_mapView) {
+        NSURL *url = [NSURL URLWithString:@"mapbox://michalumni.l2bh1bee"];
+        _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
+        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake(37.761927, -122.421165)];
+        _mapView.zoomLevel = 9;
+        _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
+    
+    return _mapView;
+}
+
 - (void)viewDidLoad {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
     [SLDatabaseManager.manager setCurrentUser];
     
-    [[RMConfiguration sharedInstance] setAccessToken:kMapBoxAccessToken];
-    
-    RMMapboxSource *source = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
-    RMMapView *mapView = [[RMMapView alloc] initWithFrame:self.view.bounds andTilesource:source];
-    mapView.zoom = 5;
-    mapView.centerCoordinate = CLLocationCoordinate2DMake(37.761927, -122.421165);
-    mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:mapView];
-    
-    
+    [self.view addSubview:self.mapView];
+
     CGFloat padding = .5*(self.view.bounds.size.width - kSLMapViewControllerLockInfoViewWidth);
-    
     self.lockInfoLargeFrame =  CGRectMake(padding,
                                           self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - padding,
                                           kSLMapViewControllerLockInfoViewWidth,
@@ -98,6 +104,11 @@
                                          self.lockInfoLargeFrame.origin.y + kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewSmallHeight ,
                                          kSLMapViewControllerLockInfoViewWidth,
                                          kSLMapViewControllerLockInfoViewSmallHeight);
+    
+    self.menuButton.frame = CGRectMake(15.0f,
+                                       30.0f,
+                                       self.menuButton.bounds.size.width,
+                                       self.menuButton.bounds.size.height);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -110,10 +121,9 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewWillAppear:animated];
     
-    self.menuButton.frame = CGRectMake(15.0f,
-                                       30.0f,
-                                       self.menuButton.bounds.size.width,
-                                       self.menuButton.bounds.size.height);
+    if (![self.view.subviews containsObject:self.mapView]) {
+    }
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
