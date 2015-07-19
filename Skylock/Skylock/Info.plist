@@ -58,5 +58,9 @@
 	<string>pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3</string>
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<true/>
+	<key>NSLocationAlwaysWhenInDescription</key>
+	<string>I&apos;m the great Eye!!!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>I&apos;m a mini eye...but still nefarious</string>
 </dict>
 </plist>

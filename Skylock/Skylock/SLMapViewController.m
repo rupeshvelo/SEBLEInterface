@@ -39,6 +39,10 @@
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
 @property (nonatomic, strong) MGLMapView *mapView;
 
+@property (nonatomic, strong) MGLMapView *mapView;
+@property (nonatomic, strong) MGLPointAnnotation *userPoint;
+@property (nonatomic, strong) MGLPointAnnotation *lockPoint;
+
 @end
 
 @implementation SLMapViewController
@@ -76,11 +80,12 @@
 - (MGLMapView *)mapView
 {
     if (!_mapView) {
-        NSURL *url = [NSURL URLWithString:@"mapbox://michalumni.l2bh1bee"];
+       // NSURL *url = [NSURL URLWithString:@"mapbox://michalumni.l2bh1bee"];
         _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
         [_mapView setCenterCoordinate:CLLocationCoordinate2DMake(37.761927, -122.421165)];
         _mapView.zoomLevel = 9;
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _mapView.showsUserLocation = YES;
     }
     
     return _mapView;
@@ -362,4 +367,13 @@
         livc.view.frame = shouldIncreaseSize ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
     }];
 }
+
+#pragma mark - MGL map view delegate methods
+
+- (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
+{
+    
+}
+
+- (void)mapV
 @end
