@@ -12,5 +12,5 @@
 #define SLUserDefaultsSignedIn              @"SLUserDefaultsSignedIn"
 #define SLUserDefaultsTutorialComplete      @"SLUserDefaultsTutorialComplete"
 #define SLUserDefaultsCoachMarksComplete    @"SLUserDefaultsCoachMarksComplete"
-
+#define SLUserDefaultsProfilePicCacheDate   @"SLUserDefaultsProfilePicCacheDate"
 #endif

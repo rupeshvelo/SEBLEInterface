@@ -37,7 +37,6 @@
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
-@property (nonatomic, strong) MGLMapView *mapView;
 
 @property (nonatomic, strong) MGLMapView *mapView;
 @property (nonatomic, strong) MGLPointAnnotation *userPoint;
@@ -82,8 +81,7 @@
     if (!_mapView) {
        // NSURL *url = [NSURL URLWithString:@"mapbox://michalumni.l2bh1bee"];
         _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
-        [_mapView setCenterCoordinate:CLLocationCoordinate2DMake(37.761927, -122.421165)];
-        _mapView.zoomLevel = 9;
+        _mapView.zoomLevel = 12;
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _mapView.showsUserLocation = YES;
     }
@@ -121,19 +119,11 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [super viewWillAppear:animated];
-    
-    if (![self.view.subviews containsObject:self.mapView]) {
-    }
-    
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+    [self centerOnUser];
 }
 
 - (void)menuButtonPressed
@@ -368,6 +358,12 @@
     }];
 }
 
+#pragma mark - MGL map view helper methods
+- (void)centerOnUser
+{
+    [_mapView setCenterCoordinate:self.mapView.userLocation.coordinate animated:YES];
+}
+
 #pragma mark - MGL map view delegate methods
 
 - (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
@@ -375,5 +371,4 @@
     
 }
 
-- (void)mapV
 @end

@@ -178,17 +178,18 @@
     header.delegate = self;
     
     if (user.facebookId) {
-        [SLFacebookManger.manager getFacebookPicForUserId:user.facebookId withCompletion:^(UIImage *image) {
-            if (!image) {
-                image = [UIImage imageNamed:@"img_userav_small"];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [header.circleView setPicImage:image];
-            });
-        }];
+        [SLFacebookManger.manager getFacebookPicForUserId:user.facebookId
+                                                    email:user.email
+                                           withCompletion:^(UIImage *image) {
+                                               if (!image) {
+                                                   image = [UIImage imageNamed:@"img_userav_small"];
+                                               }
+                                               
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [header.circleView setPicImage:image];
+                                               });
+                                           }];
     }
-    
     
     return header;
 }

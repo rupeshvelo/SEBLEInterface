@@ -11,6 +11,7 @@
 #import "SLNotifications.h"
 #import "SLDatabaseManager.h"
 #import "SLRestManager.h"
+#import "SLPicManager.h"
 
 
 @interface SLFacebookManger()
@@ -117,19 +118,27 @@
                                                         object:nil];
 }
 
-- (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion
+- (void)getFacebookPicForUserId:(NSString *)userId  email:(NSString *)email withCompletion:(void (^)(UIImage *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
 
-    NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
-    [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
-        if (data) {
-            UIImage *image = [UIImage imageWithData:data];
+    [SLPicManager.manager getPicWithEmail:email withCompletion:^(UIImage *image) {
+        if (image) {
             completion(image);
             return;
         }
         
-        completion(nil);
+        NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
+        [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
+            if (data) {
+                UIImage *image = [UIImage imageWithData:data];
+                completion(image);
+                [SLPicManager.manager savePicture:image named:email];
+                return;
+            }
+            
+            completion(nil);
+        }];
     }];
 }
 @end
