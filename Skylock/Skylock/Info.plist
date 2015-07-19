@@ -37,8 +37,25 @@
 	<string>931235146941403</string>
 	<key>FacebookDisplayName</key>
 	<string>skylock</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MGLMapboxAccessToken</key>
+	<string>pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3</string>
+	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
+	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>I'm watching you...MUHAHA</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Roboto-Regular.ttf</string>
+		<string>ShadowsIntoLightTwo-Regular.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
