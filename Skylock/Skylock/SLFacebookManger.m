@@ -112,9 +112,8 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
-    
-    [SLPicManager.manager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
     [SLDatabaseManager.manager saveFacebookUserWithDictionary:info];
+    [SLPicManager.manager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
 }

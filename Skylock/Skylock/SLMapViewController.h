@@ -11,9 +11,9 @@
 #import "SLLocationManager.h"
 #import "SLCoachMarkViewController.h"
 #import "SLLockInfoViewController.h"
-#import <MapboxGL/MapboxGL.h>
+#import "Mapbox.h"
 
-@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, CLLocationManagerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
-    MGLMapViewDelegate>
+@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
+    RMMapViewDelegate>
 
 @end

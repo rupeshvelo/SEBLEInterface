@@ -18,11 +18,11 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
-#import <MapboxGL/MapboxGL.h>
 #import "SLPicManager.h"
 #import "SLDbUser+Methods.h"
 #import "SLLock.h"
 #import "UIImage+Skylock.h"
+#import "Mapbox.h"
 #import <CoreLocation/CoreLocation.h>
 
 
@@ -41,10 +41,8 @@
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
 
-@property (nonatomic, strong) MGLMapView *mapView;
-@property (nonatomic, strong) MGLPointAnnotation *userPoint;
-@property (nonatomic, strong) MGLPointAnnotation *lockPoint;
-@property (nonatomic, strong) MGLPointAnnotation *userAnnotation;
+@property (nonatomic, strong) RMMapView *mapView;
+@property (nonatomic, strong) RMAnnotation *userAnnotation;
 
 @property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
 
@@ -82,23 +80,24 @@
     return _menuButton;
 }
 
-- (MGLMapView *)mapView
+- (RMMapView *)mapView
 {
     if (!_mapView) {
-       // NSURL *url = [NSURL URLWithString:@"mapbox://michalumni.l2bh1bee"];
-        _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
-        _mapView.zoomLevel = 12;
+        RMMapboxSource *tileSource = [[RMMapboxSource alloc] initWithMapID:kMapBoxMapId];
+        _mapView = [[RMMapView alloc] initWithFrame:self.view.bounds andTilesource:tileSource];
+        _mapView.zoom = 12;
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _mapView.delegate = self;
+        _mapView.showsUserLocation = YES;
     }
     
     return _mapView;
 }
 
-- (MGLPointAnnotation *)userAnnotation
+- (RMAnnotation *)userAnnotation
 {
     if (!_userAnnotation) {
-        _userAnnotation = [MGLPointAnnotation new];
+        _userAnnotation = [RMAnnotation new];
         [self.mapView addAnnotation:_userAnnotation];
     }
     
@@ -381,16 +380,16 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    [_mapView setCenterCoordinate:self.mapView.userLocation.coordinate animated:YES];
+    [self.mapView setCenterCoordinate:self.mapView.userLocation.coordinate animated:YES];
 }
 
-- (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
+- (RMAnnotation *)annotationForLock:(SLLock *)lock
 {
     if (self.lockAnnotations[lock.name]) {
         return self.lockAnnotations[lock.name];
     }
     
-    MGLPointAnnotation *annotation = [[MGLPointAnnotation alloc] init];
+    RMAnnotation *annotation = [RMAnnotation new];
     annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
     annotation.title = lock.name;
     
@@ -402,44 +401,33 @@
 - (void)addLockToMap:(SLLock *)lock
 {
     [self.mapView addAnnotation:[self annotationForLock:lock]];
-    NSArray *annotations = self.mapView.annotations;
     
 }
 
 #pragma mark - MGL map view delegate methods
 
-- (void)mapViewDidFinishLoadingMap:(MGLMapView * __nonnull)mapView
-{
-    mapView.showsUserLocation = YES;
-}
 
-- (void)mapViewDidFinishRenderingMap:(MGLMapView * __nonnull)mapView fullyRendered:(BOOL)fullyRendered
+- (RMMapLayer *)mapView:(RMMapView *)mapView layerForAnnotation:(RMAnnotation *)annotation
 {
-    mapView.showsUserLocation = YES;
-}
-
-- (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    if (annotation == self.userAnnotation) {
+    //if (annotation == self.userAnnotation) {
         SLDbUser *user = [SLDatabaseManager.manager currentUser];
         UIImage *userPic = [SLPicManager.manager userImageForEmail:user.email];
         if (userPic) {
             UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
             UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
-            return [MGLAnnotationImage annotationImageWithImage:maskedImage
-                                                reuseIdentifier:user.email];
+            annotation.annotationIcon = maskedImage;
         }
-    }
+    //}
     
     return nil;
 }
 
-- (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
+- (void)mapView:(RMMapView *)mapView didUpdateUserLocation:(RMUserLocation *)userLocation
 {
     self.userAnnotation.coordinate = userLocation.location.coordinate;
 }
 
-- (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
+- (void)mapViewWillStartLocatingUser:(RMMapView *)mapView
 {
     NSLog(@"%@", mapView.userLocation);
 
