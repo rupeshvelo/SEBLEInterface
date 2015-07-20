@@ -334,6 +334,7 @@
 		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
 		DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */; };
 		DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */; };
+		DCA56F311B5CB6B8007D9134 /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA56F2D1B5CB67C007D9134 /* libMapbox.a */; };
 		DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */; };
 		DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */; };
 		DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */; };
@@ -373,6 +374,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = DC04276E1B2DBC4F008F3DDE;
 			remoteInfo = SEBLEInterfaceTests;
+		};
+		DCA56F2C1B5CB67C007D9134 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 17F31EFA1331050A00122B16;
+			remoteInfo = MapView;
+		};
+		DCA56F2E1B5CB67C007D9134 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DD6A83751644A20C0097F31F;
+			remoteInfo = Resources;
 		};
 		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -743,6 +758,7 @@
 		DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockTableViewCell.m; sourceTree = "<group>"; };
 		DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Skylock.h"; sourceTree = "<group>"; };
 		DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Skylock.m"; sourceTree = "<group>"; };
+		DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DCAB642A1B560FD60074BBF4 /* SLLockInfoViewBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewBase.h; sourceTree = "<group>"; };
 		DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewBase.m; sourceTree = "<group>"; };
 		DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBaseTableViewCell.h; sourceTree = "<group>"; };
@@ -797,6 +813,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCA56F311B5CB6B8007D9134 /* libMapbox.a in Frameworks */,
 				DC0520BE1B4B9E8500FBAAB7 /* libsqlite3.dylib in Frameworks */,
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
@@ -1276,9 +1293,19 @@
 			path = pagination;
 			sourceTree = "<group>";
 		};
+		DCA56F281B5CB67B007D9134 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DCA56F2D1B5CB67C007D9134 /* libMapbox.a */,
+				DCA56F2F1B5CB67C007D9134 /* Mapbox.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
+				DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */,
 				DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */,
 				DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */,
 				DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */,
@@ -1443,6 +1470,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = DCA56F281B5CB67B007D9134 /* Products */;
+					ProjectRef = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
+				},
+				{
 					ProductGroup = DC0427971B2EF073008F3DDE /* Products */;
 					ProjectRef = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
 				},
@@ -1468,6 +1499,20 @@
 			fileType = wrapper.cfbundle;
 			path = SEBLEInterfaceTests.xctest;
 			remoteRef = DC04279D1B2EF073008F3DDE /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DCA56F2D1B5CB67C007D9134 /* libMapbox.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libMapbox.a;
+			remoteRef = DCA56F2C1B5CB67C007D9134 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DCA56F2F1B5CB67C007D9134 /* Mapbox.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Mapbox.bundle;
+			remoteRef = DCA56F2E1B5CB67C007D9134 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

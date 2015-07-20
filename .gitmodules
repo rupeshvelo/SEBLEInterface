@@ -4,3 +4,6 @@
 [submodule "Skylock/facebook-ios-sdk"]
 	path = Skylock/facebook-ios-sdk
 	url = https://github.com/velolabs/facebook-ios-sdk.git
+[submodule "Skylock/mapbox-ios-sdk"]
+	path = Skylock/mapbox-ios-sdk
+	url = https://github.com/mapbox/mapbox-ios-sdk.git
