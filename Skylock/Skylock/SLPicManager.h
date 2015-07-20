@@ -14,7 +14,10 @@
 + (id)manager;
 
 - (void)getPicWithEmail:(NSString *)email withCompletion:(void(^)(UIImage *))completion;
-- (void)savePicture:(UIImage *)image named:(NSString *)name;
 - (void)refreshProfilePicCache;
+- (void)facebookPicForFBUserId:(NSString *)fbUserId
+                         email:(NSString *)email
+                    completion:(void(^)(UIImage *))completion;
+- (UIImage *)userImageForEmail:(NSString *)email;
 
 @end

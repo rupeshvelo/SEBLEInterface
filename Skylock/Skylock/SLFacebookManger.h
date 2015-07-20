@@ -21,6 +21,6 @@
          annotation:(id)annotation;
 - (BOOL)currentToken;
 - (void)loginWithCompletion:(void(^)(void))completion;
-- (void)getFacebookPicForUserId:(NSString *)userId email:(NSString *)email withCompletion:(void (^)(UIImage *image))completion;
+- (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *image))completion;
 
 @end

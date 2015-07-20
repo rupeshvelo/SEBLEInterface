@@ -16,10 +16,12 @@
 #import "SLCirclePicView.h"
 #import "SLDbUser+Methods.h"
 #import "SLDatabaseManager.h"
-#import "SLFacebookManger.h"
 #import "SLSlideControllerOptionsView.h"
 #import "UIColor+RGB.h"
 #import "SLSlideTableViewHeader.h"
+#import "SLPicManager.h"
+
+
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
 #define kSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
@@ -178,17 +180,16 @@
     header.delegate = self;
     
     if (user.facebookId) {
-        [SLFacebookManger.manager getFacebookPicForUserId:user.facebookId
-                                                    email:user.email
-                                           withCompletion:^(UIImage *image) {
-                                               if (!image) {
-                                                   image = [UIImage imageNamed:@"img_userav_small"];
-                                               }
-                                               
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [header.circleView setPicImage:image];
-                                               });
-                                           }];
+        [SLPicManager.manager facebookPicForFBUserId:user.facebookId email:user.email completion:^(UIImage *image) {
+            if (!image) {
+                image = [UIImage imageNamed:@"img_userav_small"];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [header.circleView setPicImage:image];
+            });
+            
+        }];
     }
     
     return header;

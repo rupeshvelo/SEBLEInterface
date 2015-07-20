@@ -112,33 +112,26 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
-
+    
+    [SLPicManager.manager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
     [SLDatabaseManager.manager saveFacebookUserWithDictionary:info];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
 }
 
-- (void)getFacebookPicForUserId:(NSString *)userId  email:(NSString *)email withCompletion:(void (^)(UIImage *))completion
+- (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
-    [SLPicManager.manager getPicWithEmail:email withCompletion:^(UIImage *image) {
-        if (image) {
-            completion(image);
+        
+    NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
+    [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
+        if (data) {
+            UIImage *image = [UIImage imageWithData:data];
+            if (completion) completion(image);
             return;
         }
         
-        NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
-        [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
-            if (data) {
-                UIImage *image = [UIImage imageWithData:data];
-                completion(image);
-                [SLPicManager.manager savePicture:image named:email];
-                return;
-            }
-            
-            completion(nil);
-        }];
+        if (completion) completion(nil);
     }];
 }
 @end

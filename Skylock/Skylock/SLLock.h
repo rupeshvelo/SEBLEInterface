@@ -89,5 +89,4 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)dictionaryRepresentation;
 - (NSDictionary *)asDbDictionary;
-
 @end
