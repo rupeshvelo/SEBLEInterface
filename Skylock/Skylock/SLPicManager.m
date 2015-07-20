@@ -9,6 +9,7 @@
 #import "SLPicManager.h"
 #import "NSString+Skylock.h"
 #import "SLUserDefaults.h"
+#import "SLFacebookManger.h"
 
 
 #define kSLProfilePicDirPath            @"profie_pics"
@@ -85,7 +86,7 @@
 {
     NSString *hash = [email MD5String];
     if ([self.profilePicCache objectForKey:hash]) {
-        completion([self.profilePicCache objectForKey:hash]);
+        if (completion) completion([self.profilePicCache objectForKey:hash]);
         return;
     }
 
@@ -96,16 +97,16 @@
         UIImage *pic = [UIImage imageWithData:data];
         
         [self.profilePicCache setObject:pic forKey:hash];
-        completion(pic);
+        if (completion) completion(pic);
         return;
     }
     
-    completion(nil);
+    if (completion) completion(nil);
 }
 
-- (void)savePicture:(UIImage *)image named:(NSString *)name
+- (void)savePicture:(UIImage *)image forEmail:(NSString *)email
 {
-    NSString *hash = [name MD5String];
+    NSString *hash = [email MD5String];
     if ([self.profilePicCache objectForKey:hash]) {
         [self.profilePicCache setObject:image forKey:hash];
         return;
@@ -135,6 +136,9 @@
         return differenceComps.day > kSLProfilePicCacheRefreshDays;
     }
     
+    [ud setObject:[NSDate date] forKey:SLUserDefaultsProfilePicCacheDate];
+    [ud synchronize];
+    
     return NO;
 }
 
@@ -160,8 +164,52 @@
                     error = nil;
                 }
             }
+            
+            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+            [ud setObject:[NSDate date] forKey:SLUserDefaultsProfilePicCacheDate];
+            [ud synchronize];
         }
     }
+}
+
+- (void)facebookPicForFBUserId:(NSString *)fbUserId email:(NSString *)email completion:(void (^)(UIImage *))completion
+{
+    [self getPicWithEmail:email withCompletion:^(UIImage *cacheImage) {
+        if (cacheImage) {
+            if (completion) completion(cacheImage);
+            return;
+        }
+        
+        [SLFacebookManger.manager getFacebookPicForUserId:fbUserId withCompletion:^(UIImage *image) {
+            if (image) {
+                [self savePicture:image forEmail:email];
+                if (completion) completion(image);
+                return;
+            }
+            
+            if (completion) completion(nil);
+        }];
+    }];
+}
+
+- (UIImage *)userImageForEmail:(NSString *)email
+{
+    NSString *hash = [email MD5String];
+    if ([self.profilePicCache objectForKey:hash]) {
+        return [self.profilePicCache objectForKey:hash];
+    }
+    
+    NSString *path = [self profilePicPathForFileWithHashedName:hash];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        UIImage *pic = [UIImage imageWithData:data];
+        
+        [self.profilePicCache setObject:pic forKey:hash];
+        return pic;
+    }
+    
+    return nil;
 }
 
 @end

@@ -19,7 +19,10 @@
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
 #import <MapboxGL/MapboxGL.h>
-
+#import "SLPicManager.h"
+#import "SLDbUser+Methods.h"
+#import "SLLock.h"
+#import "UIImage+Skylock.h"
 #import <CoreLocation/CoreLocation.h>
 
 
@@ -41,6 +44,9 @@
 @property (nonatomic, strong) MGLMapView *mapView;
 @property (nonatomic, strong) MGLPointAnnotation *userPoint;
 @property (nonatomic, strong) MGLPointAnnotation *lockPoint;
+@property (nonatomic, strong) MGLPointAnnotation *userAnnotation;
+
+@property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
 
 @end
 
@@ -83,10 +89,20 @@
         _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
         _mapView.zoomLevel = 12;
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        _mapView.showsUserLocation = YES;
+        _mapView.delegate = self;
     }
     
     return _mapView;
+}
+
+- (MGLPointAnnotation *)userAnnotation
+{
+    if (!_userAnnotation) {
+        _userAnnotation = [MGLPointAnnotation new];
+        [self.mapView addAnnotation:_userAnnotation];
+    }
+    
+    return _userAnnotation;
 }
 
 - (void)viewDidLoad {
@@ -94,6 +110,8 @@
     [super viewDidLoad];
     
     [SLDatabaseManager.manager setCurrentUser];
+    
+    self.lockAnnotations = [NSMutableDictionary new];
     
     [self.view addSubview:self.mapView];
 
@@ -330,7 +348,9 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
-        [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:options[@"lock"]];
+        SLLock *lock = options[@"lock"];
+        [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:lock];
+        [self addLockToMap:lock];
     }
 }
 
@@ -364,11 +384,65 @@
     [_mapView setCenterCoordinate:self.mapView.userLocation.coordinate animated:YES];
 }
 
+- (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
+{
+    if (self.lockAnnotations[lock.name]) {
+        return self.lockAnnotations[lock.name];
+    }
+    
+    MGLPointAnnotation *annotation = [[MGLPointAnnotation alloc] init];
+    annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
+    annotation.title = lock.name;
+    
+    self.lockAnnotations[lock.name] = annotation;
+    
+    return annotation;
+}
+
+- (void)addLockToMap:(SLLock *)lock
+{
+    [self.mapView addAnnotation:[self annotationForLock:lock]];
+    NSArray *annotations = self.mapView.annotations;
+    
+}
+
 #pragma mark - MGL map view delegate methods
+
+- (void)mapViewDidFinishLoadingMap:(MGLMapView * __nonnull)mapView
+{
+    mapView.showsUserLocation = YES;
+}
+
+- (void)mapViewDidFinishRenderingMap:(MGLMapView * __nonnull)mapView fullyRendered:(BOOL)fullyRendered
+{
+    mapView.showsUserLocation = YES;
+}
+
+- (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+{
+    if (annotation == self.userAnnotation) {
+        SLDbUser *user = [SLDatabaseManager.manager currentUser];
+        UIImage *userPic = [SLPicManager.manager userImageForEmail:user.email];
+        if (userPic) {
+            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
+            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
+            return [MGLAnnotationImage annotationImageWithImage:maskedImage
+                                                reuseIdentifier:user.email];
+        }
+    }
+    
+    return nil;
+}
+
+- (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
+{
+    self.userAnnotation.coordinate = userLocation.location.coordinate;
+}
 
 - (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
 {
-    
+    NSLog(@"%@", mapView.userLocation);
+
 }
 
 @end
