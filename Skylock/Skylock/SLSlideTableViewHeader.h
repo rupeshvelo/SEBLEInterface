@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SLCirclePicView;
+#import "SLCirclePicView.h"
+
 @class SLSlideTableViewHeader;
 
 @protocol SLSlideTableViewHeaderDelegate <NSObject>
@@ -16,12 +17,12 @@
 
 @end
 
-@interface SLSlideTableViewHeader : UIView
+@interface SLSlideTableViewHeader : UIView <SLCirclePicViewDelegate>
 
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) SLCirclePicView *circleView;
-@property (nonatomic, weak) id <SLSlideTableViewHeaderDelegate>delegate;
+@property (nonatomic, weak) id <SLSlideTableViewHeaderDelegate> delegate;
 
 
 @end

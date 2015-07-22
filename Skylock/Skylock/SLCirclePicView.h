@@ -7,11 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+@class SLCirclePicView;
+
+@protocol SLCirclePicViewDelegate <NSObject>
+
+- (void)circlePicViewPressed:(SLCirclePicView *)picView;
+
+@end
+
 
 @interface SLCirclePicView : UIView
 
+@property (nonatomic, weak) id <SLCirclePicViewDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius;
+- (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius labelColor:(UIColor *)labelColor;
 
 - (void)setPicImage:(UIImage *)image;
 

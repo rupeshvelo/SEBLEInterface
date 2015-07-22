@@ -14,5 +14,7 @@
 - (void)setPropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)setPropertiesWithFacebookDictionary:(NSDictionary *)dictionary;
 - (NSString *)fullName;
+- (NSString *)phoneNumber;
+- (NSString *)password;
 
 @end

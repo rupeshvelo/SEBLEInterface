@@ -10,8 +10,10 @@
 #import "SLAddLockViewController.h"
 #import "SLSlideControllerOptionsView.h"
 #import "SLSlideTableViewHeader.h"
+#import "SLCirclePicView.h"
 
 @class SLSlideViewController;
+@class SLDbUser;
 
 typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
     SLSlideViewControllerButtonActionNone,
@@ -26,6 +28,8 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 @protocol SLSlideViewControllerDelegate <NSObject>
 
 - (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action options:(NSDictionary *)options;
+
+- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLDbUser *)user;
 
 @end
 

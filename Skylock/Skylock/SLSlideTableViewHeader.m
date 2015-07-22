@@ -18,19 +18,6 @@
 @end
 
 @implementation SLSlideTableViewHeader
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        UITapGestureRecognizer *tgr = [UITapGestureRecognizer new];
-        [tgr addTarget:self action:@selector(addAccount)];
-        tgr.numberOfTapsRequired = 1;
-        
-        [self addGestureRecognizer:tgr];
-    }
-    
-    return self;
-}
 
 - (UIView *)seperatorView
 {
@@ -73,7 +60,9 @@
                                                                         self.bounds.size.width,
                                                                         height)
                                                         name:self.name
-                                                   picRadius:22.5f];
+                                                   picRadius:22.5f
+                                                  labelColor:nil];
+        _circleView.delegate = self;
         [self addSubview:_circleView];
     }
     
@@ -100,11 +89,11 @@
                                           self.seperatorView.bounds.size.height);
 }
 
-- (void)addAccount
+- (void)circlePicViewPressed:(SLCirclePicView *)picView
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self.delegate respondsToSelector:@selector(addAccountPressedForSlideTableHeader:)]) {
         [self.delegate addAccountPressedForSlideTableHeader:self];
     }
 }
-
 @end

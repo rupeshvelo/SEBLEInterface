@@ -16,18 +16,29 @@
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, assign) CGFloat picRadius;
 @property (nonatomic, strong) UIImageView *picView;
-
+@property (nonatomic, strong) UIColor *labelColor;
 @end
 
 
 @implementation SLCirclePicView
 
-- (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius
+- (id)initWithFrame:(CGRect)frame
+               name:(NSString *)name
+          picRadius:(CGFloat)picRadius
+         labelColor:(UIColor *)labelColor
 {
     self = [super initWithFrame:frame];
     if (self) {
         _name = name;
         _picRadius = picRadius;
+        _labelColor = labelColor;
+        
+        self.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(picViewTouched)];
+        tgr.numberOfTapsRequired = 1;
+        [self addGestureRecognizer:tgr];
+        
     }
     
     return self;
@@ -63,7 +74,9 @@
         _nameLabel.text = self.name;
         _nameLabel.textAlignment = NSTextAlignmentCenter;
         _nameLabel.font = font;
-        _nameLabel.textColor = [UIColor colorWithRed:146 green:148 blue:151];
+        _nameLabel.textColor = self.labelColor ? self.labelColor : [UIColor colorWithRed:146
+                                                                                   green:148
+                                                                                    blue:151];
         
         [self addSubview:_nameLabel];
     }
@@ -90,5 +103,13 @@
                                       CGRectGetMaxY(self.picView.frame) + 5.0f,
                                       self.nameLabel.bounds.size.width,
                                       self.nameLabel.bounds.size.height);
+}
+
+- (void)picViewTouched
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    if ([self.delegate respondsToSelector:@selector(circlePicViewPressed:)]) {
+        [self.delegate circlePicViewPressed:self];
+    }
 }
 @end
