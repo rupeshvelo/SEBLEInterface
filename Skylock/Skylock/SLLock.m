@@ -7,6 +7,8 @@
 //
 
 #import "SLLock.h"
+// stadlib.h just here for testing...remove when shipping app
+#include <stdlib.h>
 
 @implementation SLLock
 
@@ -44,38 +46,74 @@
     return self;
 }
 
+- (id)initTestWithName:(NSString *)name
+                  uuid:(NSString *)uuid
+      batteryRemaining:(NSNumber *)batteryRemaining
+          wifiStrength:(NSNumber *)wifiStrength
+          cellStrength:(NSNumber *)cellStrength
+              lastTime:(NSNumber *)lastTime
+          distanceAway:(NSNumber *)distanceAway
+              isLocked:(NSNumber *)isLocked
+             isCrashOn:(NSNumber *)isCrashOn
+           isSharingOn:(NSNumber *)isSharingOn
+          isSecurityOn:(NSNumber *)isSecurityOn
+              latitude:(NSNumber *)latitude
+             longitude:(NSNumber *)longitude
+{
+    self = [self  initWithName:name
+                          uuid:uuid
+              batteryRemaining:batteryRemaining
+                  wifiStrength:wifiStrength
+                  cellStrength:cellStrength
+                      lastTime:lastTime
+                  distanceAway:distanceAway
+                      isLocked:isLocked
+                     isCrashOn:isCrashOn
+                   isSharingOn:isSharingOn
+                  isSecurityOn:isSecurityOn
+                      latitude:latitude
+                     longitude:longitude];
+    if (self) {
+        NSDictionary *location = self.testLocation;
+        _latitude = location[@"latitude"];
+        _longitude = location[@"longitude"];
+    }
+    
+    return self;
+}
+
 + (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
 {
-    return [[self alloc] initWithName:name
-                                 uuid:uuid
-                     batteryRemaining:@(0)
-                         wifiStrength:@(0)
-                         cellStrength:@(0)
-                             lastTime:@(0)
-                         distanceAway:@(0)
-                             isLocked:@(NO)
-                            isCrashOn:@(NO)
-                          isSharingOn:@(NO)
-                         isSecurityOn:@(NO)
-                             latitude:@(37.761663)
-                            longitude:@(-122.422855)];
+    return  [[self alloc] initTestWithName:name
+                                      uuid:uuid
+                          batteryRemaining:@(67)
+                              wifiStrength:@(40)
+                              cellStrength:@(34)
+                                  lastTime:@(0)
+                              distanceAway:@(0)
+                                  isLocked:@(NO)
+                                 isCrashOn:@(NO)
+                               isSharingOn:@(NO)
+                              isSecurityOn:@(NO)
+                                  latitude:@(0)
+                                 longitude:@(0)];
 }
 
 + (id)lockWithDbDictionary:(NSDictionary *)dbDictionary
 {
-    return [[self alloc] initWithName:dbDictionary[@"name"]
-                                 uuid:dbDictionary[@"uuid"]
-                     batteryRemaining:@(87)
-                         wifiStrength:@(55)
-                         cellStrength:@(98)
-                             lastTime:@(0)
-                         distanceAway:@(0)
-                             isLocked:@(NO)
-                            isCrashOn:@(NO)
-                          isSharingOn:@(NO)
-                         isSecurityOn:@(NO)
-                             latitude:dbDictionary[@"latitude"]
-                            longitude:dbDictionary[@"longitude"]];
+    return [[self alloc] initTestWithName:dbDictionary[@"name"]
+                                     uuid:dbDictionary[@"uuid"]
+                         batteryRemaining:@(87)
+                             wifiStrength:@(55)
+                             cellStrength:@(98)
+                                 lastTime:@(0)
+                             distanceAway:@(0)
+                                 isLocked:@(NO)
+                                isCrashOn:@(NO)
+                              isSharingOn:@(NO)
+                             isSecurityOn:@(NO)
+                                 latitude:dbDictionary[@"latitude"]
+                                longitude:dbDictionary[@"longitude"]];
     
 }
 
@@ -230,5 +268,35 @@
              @(SLLockPropertyIsSharingOn),
              @(SLLockPropertyIsSecurityOn)
              ];
+}
+
+- (NSDictionary *)testLocation
+{
+    int target = arc4random() % 4;
+    NSNumber *latitude;
+    NSNumber *longitude;
+    
+    switch (target) {
+        case 0:
+            latitude = @(37.767895);
+            longitude = @(-122.453178);
+            break;
+        case 1:
+            latitude = @(37.794550);
+            longitude = @(-122.427877);
+            break;
+        case 2:
+            latitude = @(37.752481);
+            longitude = @(-122.427877);
+        case 3:
+            latitude = @(37.778368);
+            longitude = @(-122.485277);
+        default:
+            break;
+    }
+    
+    return @{@"latitude":latitude,
+             @"longitude":longitude
+             };
 }
 @end
