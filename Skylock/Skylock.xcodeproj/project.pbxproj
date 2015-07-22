@@ -348,6 +348,8 @@
 		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
 		DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */; };
 		DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */; };
+		DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */; };
+		DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE33ACB1B5F4DB600750813 /* SLAccountInfoFieldView.m */; };
 		DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */; };
 		DCEAD1061B4C59900065D9BE /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */; };
 		DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */; };
@@ -775,6 +777,10 @@
 		DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNavigationViewController.m; sourceTree = "<group>"; };
 		DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBackButton.h; sourceTree = "<group>"; };
 		DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBackButton.m; sourceTree = "<group>"; };
+		DCE33AC61B5F4CD300750813 /* SLAccountInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAccountInfoViewController.h; sourceTree = "<group>"; };
+		DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAccountInfoViewController.m; sourceTree = "<group>"; };
+		DCE33ACA1B5F4DB600750813 /* SLAccountInfoFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAccountInfoFieldView.h; sourceTree = "<group>"; };
+		DCE33ACB1B5F4DB600750813 /* SLAccountInfoFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAccountInfoFieldView.m; sourceTree = "<group>"; };
 		DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLFacebookManger.h; sourceTree = "<group>"; };
 		DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLFacebookManger.m; sourceTree = "<group>"; };
 		DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = "facebook-ios-sdk/build/FBSDKCoreKit.framework"; sourceTree = "<group>"; };
@@ -875,6 +881,8 @@
 				DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */,
 				DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */,
 				DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */,
+				DCE33ACA1B5F4DB600750813 /* SLAccountInfoFieldView.h */,
+				DCE33ACB1B5F4DB600750813 /* SLAccountInfoFieldView.m */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -904,6 +912,8 @@
 				DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */,
 				DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */,
 				DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */,
+				DCE33AC61B5F4CD300750813 /* SLAccountInfoViewController.h */,
+				DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1861,6 +1871,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC7818AA1B4F5C8000B59C11 /* SLTutorialViewController.m in Sources */,
+				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
 				DC7821B01B4FAEBC00B59C11 /* SLTutorial1ViewController.m in Sources */,
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
@@ -1883,6 +1894,7 @@
 				DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */,
+				DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */,
 				DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */,

@@ -18,7 +18,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationBar.barTintColor = SLConstantsMainTeal;
     self.navigationBar.translucent = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -27,12 +26,7 @@
                                  };
     
     self.navigationBar.titleTextAttributes = barOptions;
-    self.navigationBar.tintColor = [UIColor whiteColor];
-}
-
--(UIStatusBarStyle)preferredStatusBarStyle
-{
-    return UIStatusBarStyleLightContent;
+    self.navigationBar.tintColor = [UIColor blackColor];
 }
 
 

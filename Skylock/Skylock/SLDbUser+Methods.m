@@ -53,4 +53,14 @@
     
     return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
 }
+
+- (NSString *)phoneNumber
+{
+    return @"XXX-XXX-XXXX";
+}
+
+- (NSString *)password
+{
+    return @"*************";
+}
 @end

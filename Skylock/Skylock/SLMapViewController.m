@@ -22,6 +22,8 @@
 #import "SLDbUser+Methods.h"
 #import "SLLock.h"
 #import "UIImage+Skylock.h"
+#import "SLNavigationViewController.h"
+#import "SLAccountInfoViewController.h"
 #import <MapboxGL/MapboxGL.h>
 #import <CoreLocation/CoreLocation.h>
 
@@ -200,7 +202,8 @@
                                      slvc.view.bounds.size.height);
     } completion:nil];
 }
-- (void)removeSlideViewController:(SLSlideViewController *)slvc shouldPresentLockInfoVCWithLock:(SLLock *)lock
+
+- (void)removeSlideViewController:(SLSlideViewController *)slvc withCompletion:(void(^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
@@ -212,8 +215,8 @@
         [slvc.view removeFromSuperview];
         [slvc removeFromParentViewController];
         [self.touchStopperView removeFromSuperview];
-        if (lock) {
-            [self presentLockInfoViewControllerWithLock:lock];
+        if (completion) {
+            completion();
         }
     }];
 }
@@ -359,9 +362,22 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
         SLLock *lock = options[@"lock"];
-        [self removeSlideViewController:slvc shouldPresentLockInfoVCWithLock:lock];
+        [self removeSlideViewController:slvc withCompletion:^{
+            if (lock) {
+                [self presentLockInfoViewControllerWithLock:lock];
+            }
+        }];
         [self addLockToMap:lock];
     }
+}
+
+- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLDbUser *)user
+{
+    SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
+    aivc.user = user;
+    
+    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:aivc];
+    [self presentViewController:navController animated:YES completion:nil];
 }
 
 #pragma mark - SLCoachMarkViewController Delegate Methods

@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSArray *locks;
 @property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
 @property (nonatomic, strong) UIView *dividerView;
+@property (nonatomic, strong) SLDbUser *user;
 
 @end
 
@@ -97,6 +98,7 @@
 {
     [super viewDidLoad];
     
+    self.user = [SLDatabaseManager.manager currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
 }
 
@@ -170,17 +172,15 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    SLDbUser *user = [SLDatabaseManager.manager currentUser];
-    
     SLSlideTableViewHeader *header = [[SLSlideTableViewHeader alloc] initWithFrame:CGRectMake(0.0f,
                                                                                               0.0f,
                                                                                               self.view.bounds.size.width,
                                                                                               [self tableView:tableView heightForHeaderInSection:section])];
-    header.name = user.fullName;
+    header.name = self.user.fullName;
     header.delegate = self;
     
-    if (user.facebookId) {
-        [SLPicManager.manager facebookPicForFBUserId:user.facebookId email:user.email completion:^(UIImage *image) {
+    if (self.user.facebookId) {
+        [SLPicManager.manager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
             if (!image) {
                 image = [UIImage imageNamed:@"img_userav_small"];
             }
@@ -301,7 +301,10 @@
 #pragma mark - Slide Tableview Header Delegate Methods
 - (void)addAccountPressedForSlideTableHeader:(SLSlideTableViewHeader *)header
 {
-    NSLog(@"Add Account Pressed on slide header view");
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    if ([self.delegate respondsToSelector:@selector(slideViewControllerViewAccountPressed:forUser:)]) {
+        [self.delegate slideViewControllerViewAccountPressed:self forUser:self.user];
+    }
 }
 
 #pragma mark - Slide Options View Delegate Methods
