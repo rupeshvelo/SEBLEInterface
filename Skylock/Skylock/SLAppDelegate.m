@@ -15,7 +15,7 @@
 #import "SLMainTutorialViewController.h"
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
-#import "Mapbox.h"
+#import <MapboxGL/MapboxGL.h>
 
 @interface SLAppDelegate ()
 
@@ -28,8 +28,8 @@
     
     [SLDatabaseManager.manager setContext:self.managedObjectContext];
     
-    NSString *mapBoxKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
-    [[RMConfiguration sharedInstance] setAccessToken:mapBoxKey];
+    NSString *mapBoxToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
+    [MGLAccountManager setAccessToken:mapBoxToken];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         

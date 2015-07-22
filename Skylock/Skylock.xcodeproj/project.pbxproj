@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		89FADDD40CF09C644145B2C7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 926E81C4A41BD3F7D9FAA288 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DC0250761B59D539007D2D6A /* btn_crashalert_off.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250701B59D539007D2D6A /* btn_crashalert_off.png */; };
 		DC0250771B59D539007D2D6A /* btn_crashalert_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250711B59D539007D2D6A /* btn_crashalert_off@2x.png */; };
 		DC0250781B59D539007D2D6A /* btn_crashalert_off@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250721B59D539007D2D6A /* btn_crashalert_off@3x.png */; };
@@ -334,7 +335,6 @@
 		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
 		DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */; };
 		DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */; };
-		DCA56F311B5CB6B8007D9134 /* libMapbox.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA56F2D1B5CB67C007D9134 /* libMapbox.a */; };
 		DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */; };
 		DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */; };
 		DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */; };
@@ -375,20 +375,6 @@
 			remoteGlobalIDString = DC04276E1B2DBC4F008F3DDE;
 			remoteInfo = SEBLEInterfaceTests;
 		};
-		DCA56F2C1B5CB67C007D9134 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 17F31EFA1331050A00122B16;
-			remoteInfo = MapView;
-		};
-		DCA56F2E1B5CB67C007D9134 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DD6A83751644A20C0097F31F;
-			remoteInfo = Resources;
-		};
 		DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DCD82FCD1B1FCBBC00B38910 /* Project object */;
@@ -406,6 +392,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		59287DB3228046937B2692B6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		926E81C4A41BD3F7D9FAA288 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D075CA3426FCD5EB2C36DEE4 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		DC0250701B59D539007D2D6A /* btn_crashalert_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_crashalert_off.png; sourceTree = "<group>"; };
 		DC0250711B59D539007D2D6A /* btn_crashalert_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_crashalert_off@2x.png"; sourceTree = "<group>"; };
 		DC0250721B59D539007D2D6A /* btn_crashalert_off@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_crashalert_off@3x.png"; sourceTree = "<group>"; };
@@ -758,7 +747,6 @@
 		DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockTableViewCell.m; sourceTree = "<group>"; };
 		DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Skylock.h"; sourceTree = "<group>"; };
 		DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Skylock.m"; sourceTree = "<group>"; };
-		DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MapView.xcodeproj; path = "mapbox-ios-sdk/MapView/MapView.xcodeproj"; sourceTree = "<group>"; };
 		DCAB642A1B560FD60074BBF4 /* SLLockInfoViewBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewBase.h; sourceTree = "<group>"; };
 		DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewBase.m; sourceTree = "<group>"; };
 		DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBaseTableViewCell.h; sourceTree = "<group>"; };
@@ -813,7 +801,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCA56F311B5CB6B8007D9134 /* libMapbox.a in Frameworks */,
 				DC0520BE1B4B9E8500FBAAB7 /* libsqlite3.dylib in Frameworks */,
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
@@ -821,6 +808,7 @@
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
 				DC0B36621B4DB7E0008E25F4 /* FBSDKLoginKit.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
+				89FADDD40CF09C644145B2C7 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,8 +825,18 @@
 		667D2EEEACA41AF9E6822701 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				926E81C4A41BD3F7D9FAA288 /* Pods.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9249E5F1B7931F1EFAF06D1A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				59287DB3228046937B2692B6 /* Pods.debug.xcconfig */,
+				D075CA3426FCD5EB2C36DEE4 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		DC0427971B2EF073008F3DDE /* Products */ = {
@@ -1293,19 +1291,9 @@
 			path = pagination;
 			sourceTree = "<group>";
 		};
-		DCA56F281B5CB67B007D9134 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				DCA56F2D1B5CB67C007D9134 /* libMapbox.a */,
-				DCA56F2F1B5CB67C007D9134 /* Mapbox.bundle */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
-				DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */,
 				DC0B36611B4DB7E0008E25F4 /* FBSDKLoginKit.framework */,
 				DCEAD1051B4C59900065D9BE /* FBSDKCoreKit.framework */,
 				DC0520BD1B4B9E8500FBAAB7 /* libsqlite3.dylib */,
@@ -1318,6 +1306,7 @@
 				DCD82FF41B1FCBBC00B38910 /* SkylockTests */,
 				DCD82FD61B1FCBBC00B38910 /* Products */,
 				667D2EEEACA41AF9E6822701 /* Frameworks */,
+				9249E5F1B7931F1EFAF06D1A /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1401,9 +1390,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Skylock" */;
 			buildPhases = (
+				8E889C3D6A0207D3926A9A9A /* Check Pods Manifest.lock */,
 				DCD82FD11B1FCBBC00B38910 /* Sources */,
 				DCD82FD21B1FCBBC00B38910 /* Frameworks */,
 				DCD82FD31B1FCBBC00B38910 /* Resources */,
+				553DBC52FC7DE29119522CE5 /* Embed Pods Frameworks */,
+				B28DD57F34CEB76D762D8321 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1470,10 +1462,6 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DCA56F281B5CB67B007D9134 /* Products */;
-					ProjectRef = DCA56F271B5CB67B007D9134 /* MapView.xcodeproj */;
-				},
-				{
 					ProductGroup = DC0427971B2EF073008F3DDE /* Products */;
 					ProjectRef = DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */;
 				},
@@ -1499,20 +1487,6 @@
 			fileType = wrapper.cfbundle;
 			path = SEBLEInterfaceTests.xctest;
 			remoteRef = DC04279D1B2EF073008F3DDE /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DCA56F2D1B5CB67C007D9134 /* libMapbox.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libMapbox.a;
-			remoteRef = DCA56F2C1B5CB67C007D9134 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DCA56F2F1B5CB67C007D9134 /* Mapbox.bundle */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = Mapbox.bundle;
-			remoteRef = DCA56F2E1B5CB67C007D9134 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1833,6 +1807,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		553DBC52FC7DE29119522CE5 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8E889C3D6A0207D3926A9A9A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B28DD57F34CEB76D762D8321 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		DCD82FD11B1FCBBC00B38910 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -2001,6 +2023,7 @@
 		};
 		DCD82FFC1B1FCBBC00B38910 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 59287DB3228046937B2692B6 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -2016,7 +2039,7 @@
 				);
 				INFOPLIST_FILE = Skylock/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -2024,6 +2047,7 @@
 		};
 		DCD82FFD1B1FCBBC00B38910 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D075CA3426FCD5EB2C36DEE4 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -2039,7 +2063,7 @@
 				);
 				INFOPLIST_FILE = Skylock/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
