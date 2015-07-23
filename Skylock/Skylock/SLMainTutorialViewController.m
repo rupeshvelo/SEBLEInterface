@@ -42,6 +42,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 @implementation SLMainTutorialViewController
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (NSArray *)tutorialViewControllers
 {
     if (!_tutorialViewControllers) {
@@ -408,7 +413,13 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)searchButtonPressed
 {
     NSLog(@"search button search");
-    [SLLockManager.manager startScan];
+    NSArray *locks = [SLLockManager.manager orderedLocksByName];
+    if (locks.count == 0) {
+        [SLLockManager.manager enableBleScan:YES];
+        [SLLockManager.manager startScan];
+    } else {
+        [self nextButtonPressed];
+    }
 }
 
 - (void)foundLock:(NSNotification *)notification
@@ -418,7 +429,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         [SLLockManager.manager addLock:lock];
     }
     
-    [self doneButtonPressed];
+    [self nextButtonPressed];
 }
 
 #pragma mark UIPageViewController delegate and datasouce methods
