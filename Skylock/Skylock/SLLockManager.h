@@ -22,9 +22,11 @@
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
 - (NSArray *)unaddedLocks;
+- (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
 - (void)toggleSharingForLock:(SLLock *)lock;
 - (void)fetchLocks;
+- (void)startBlueToothManager;
 
 @end

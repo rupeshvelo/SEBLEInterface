@@ -14,6 +14,6 @@
 #import <MapboxGL/MapboxGL.h>
 
 @interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
-    MGLMapViewDelegate>
+    MGLMapViewDelegate, UIAlertViewDelegate>
 
 @end

@@ -12,9 +12,9 @@
 #import "SLConstants.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
-#import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SLLockManager.h"
 #import "SLNotifications.h"
-
+#import "SLLock.h"
 
 #define kSLTutorialXPadding 25.0f
 
@@ -157,6 +157,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     
     return _searchButton;
 }
+
 - (UIPageControl *)pageControl
 {
     if (!_pageControl) {
@@ -219,7 +220,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     [self.view bringSubviewToFront:self.pageControl];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(foundLock)
+                                             selector:@selector(foundLock:)
                                                  name:kSLNotificationLockManagerDiscoverdLock
                                                object:nil];
 }
@@ -407,11 +408,16 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)searchButtonPressed
 {
     NSLog(@"search button search");
-    [SEBLEInterfaceMangager.manager startScan];
+    [SLLockManager.manager startScan];
 }
 
-- (void)foundLock
+- (void)foundLock:(NSNotification *)notification
 {
+    if ([notification.object isMemberOfClass:[SLLock class]]) {
+        SLLock *lock = (SLLock *)notification.object;
+        [SLLockManager.manager addLock:lock];
+    }
+    
     [self doneButtonPressed];
 }
 
