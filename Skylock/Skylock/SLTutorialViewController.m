@@ -21,13 +21,8 @@
 {
     if (!_picView) {
         UIImage *image = [UIImage imageNamed:self.imageName];
-//        _picView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
-//                                                                 0.0f,
-//                                                                 270.0f,
-//                                                                 176.0f)];
         _picView = [[UIImageView alloc] initWithImage:image];
 
-        //_picView.image = image;
         [self.view addSubview:_picView];
     }
     
@@ -92,7 +87,7 @@
 {
     [super viewWillAppear:animated];
     
-    self.picView.frame = CGRectMake(self.padding,
+    self.picView.frame = CGRectMake(.5*(self.view.bounds.size.width - self.picView.bounds.size.width),
                                     self.padding,
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);

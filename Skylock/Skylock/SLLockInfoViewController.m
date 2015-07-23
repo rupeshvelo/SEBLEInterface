@@ -103,13 +103,12 @@
         UIImage *image = [UIImage imageNamed:@"icon_chevron_down"];
         _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                   0.0f,
-                                                                  2*image.size.width,
-                                                                  2*image.size.height)];
+                                                                  4*image.size.width,
+                                                                  5*image.size.height)];
         [_arrowButton addTarget:self
                          action:@selector(arrowButtonPressed)
                forControlEvents:UIControlEventTouchDown];
         [_arrowButton setImage:image forState:UIControlStateNormal];
-
         [self.view addSubview:_arrowButton];
     }
     
@@ -283,7 +282,8 @@
                                           self.wifiImageView.bounds.size.width,
                                           self.wifiImageView.bounds.size.height);
     
-    self.arrowButtonLeftOrigin = self.view.bounds.size.width - kSLLockInfoViewControllerPadding - self.arrowButton.bounds.size.width;
+    //CGSize arrowImageSize = self.arrowButton.imageView.image.size;
+    self.arrowButtonLeftOrigin = self.view.bounds.size.width - self.arrowButton.bounds.size.width;
     self.arrowButton.frame = CGRectMake(self.arrowButtonLeftOrigin,
                                         xCenter -.5*self.arrowButton.bounds.size.height,
                                         self.arrowButton.bounds.size.width,
@@ -489,8 +489,11 @@
 {
     self.isUp = !self.isUp;
     
-
-    CGFloat arrowDx = self.arrowButtonLeftOrigin - .5*self.view.bounds.size.width;
+    if (self.isUp) {
+        [self hideViews:NO];
+    }
+    
+    CGFloat arrowDx = self.arrowButtonLeftOrigin - .5*self.view.bounds.size.width + .5*self.arrowButton.bounds.size.width;
     
     void (^firstAnimation)(void);
     void (^secondAnimation)(void);
@@ -525,11 +528,6 @@
                                                   -arrowDx,
                                                   0.0f);
         };
-    }
-    
-    
-    if (self.isUp) {
-        [self hideViews:NO];
     }
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:firstAnimation

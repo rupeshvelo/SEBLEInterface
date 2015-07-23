@@ -12,6 +12,9 @@
 #import "SLConstants.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SLNotifications.h"
+
 
 #define kSLTutorialXPadding 25.0f
 
@@ -34,6 +37,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 @property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, strong) NSDictionary *tutorialText;
 @property (nonatomic, assign) BOOL isNextPage;
+
 @end
 
 @implementation SLMainTutorialViewController
@@ -44,7 +48,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         SLTutorial1ViewController *tvc1 = [SLTutorial1ViewController new];
         tvc1.pageIndex = 0;
         tvc1.imageName = @"img_walkthrough1";
-        tvc1.iconName = @"wifi-icon";
+        tvc1.iconName = @"icon_wifi";
         tvc1.mainText = self.tutorialText[@"1Main"];
         tvc1.detailText = self.tutorialText[@"1Detail"];
         tvc1.orderInfoText = self.tutorialText[@"1OrderInfo"];
@@ -54,7 +58,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         SLTutorialViewController *tvc2 = [SLTutorialViewController new];
         tvc2.pageIndex = 1;
         tvc2.imageName = @"img_walkthrough2";
-        tvc2.iconName = @"bluetooth-icon";
+        tvc2.iconName = @"icon_bt";
         tvc2.mainText = self.tutorialText[@"2Main"];
         tvc2.detailText = self.tutorialText[@"2Detail"];
         tvc2.padding = kSLTutorialXPadding;
@@ -213,6 +217,11 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     [self.pageViewController didMoveToParentViewController:self];
     
     [self.view bringSubviewToFront:self.pageControl];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(foundLock)
+                                                 name:kSLNotificationLockManagerDiscoverdLock
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -398,6 +407,12 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)searchButtonPressed
 {
     NSLog(@"search button search");
+    [SEBLEInterfaceMangager.manager startScan];
+}
+
+- (void)foundLock
+{
+    [self doneButtonPressed];
 }
 
 #pragma mark UIPageViewController delegate and datasouce methods
