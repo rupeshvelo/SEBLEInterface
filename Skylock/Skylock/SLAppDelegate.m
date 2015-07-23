@@ -16,6 +16,8 @@
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
 #import <MapboxGL/MapboxGL.h>
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+
 
 @interface SLAppDelegate ()
 
@@ -67,6 +69,7 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     [SLFacebookManger.manager applicationBecameActive];
+    [SEBLEInterfaceMangager.manager startScan];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

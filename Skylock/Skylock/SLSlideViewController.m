@@ -52,6 +52,7 @@
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.layoutMargins = UIEdgeInsetsZero;
+        _tableView.rowHeight = 56.0f;
         _tableView.scrollEnabled = NO;
     }
     

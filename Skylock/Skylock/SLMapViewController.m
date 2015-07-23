@@ -132,11 +132,6 @@
                                        self.menuButton.bounds.size.height);
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -169,13 +164,6 @@
     }
 }
 
-- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    
-}
-
 - (void)presentSlideViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -206,6 +194,7 @@
 - (void)removeSlideViewController:(SLSlideViewController *)slvc withCompletion:(void(^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
                                      0.0f,
@@ -215,6 +204,7 @@
         [slvc.view removeFromSuperview];
         [slvc removeFromParentViewController];
         [self.touchStopperView removeFromSuperview];
+        
         if (completion) {
             completion();
         }
@@ -363,10 +353,9 @@
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
         SLLock *lock = options[@"lock"];
         [self removeSlideViewController:slvc withCompletion:^{
-            if (lock) {
-                [self presentLockInfoViewControllerWithLock:lock];
-            }
+            [self presentLockInfoViewControllerWithLock:lock];
         }];
+        
         [self addLockToMap:lock];
     }
 }
@@ -473,7 +462,6 @@
     self.userAnnotation.coordinate = mapView.userLocation.location.coordinate;
     
     if (!hasAnnoation) {
-        
         [self.mapView addAnnotation:self.userAnnotation];
     }
 }
@@ -482,11 +470,6 @@
 {
     NSLog(@"%@", mapView.userLocation);
     [self centerOnUser];
-    
-    
-    
-    
-
 }
 
 @end

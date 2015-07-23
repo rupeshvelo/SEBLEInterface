@@ -133,7 +133,7 @@
                                                           toDate:currentDate
                                                          options:0];
         
-        return differenceComps.day > kSLProfilePicCacheRefreshDays;
+        return differenceComps.day >= kSLProfilePicCacheRefreshDays;
     }
     
     [ud setObject:[NSDate date] forKey:SLUserDefaultsProfilePicCacheDate];
