@@ -570,7 +570,6 @@
     self.crashLabel.alpha = alpha;
     self.securityLabel.alpha = alpha;
     self.sharingLabel.alpha = alpha;
-    
 }
 
 - (void)crashButtonPressed:(UIButton *)button
@@ -599,7 +598,10 @@
 
 - (void)lockButtonPressed
 {
-    self.lockButton.selected = !self.lockButton.isSelected;
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    self.lockButton.selected = !self.lockButton.isSelected;
+    self.lock.isLocked = @(!self.lockButton.isSelected);
+    [SLLockManager.manager setLockStateForLock:self.lock];
+    
 }
 @end

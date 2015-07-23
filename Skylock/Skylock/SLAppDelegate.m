@@ -16,7 +16,6 @@
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
 #import <MapboxGL/MapboxGL.h>
-#import "SEBLEInterface/SEBLEInterfaceManager.h"
 
 
 @interface SLAppDelegate ()
@@ -29,6 +28,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [SLDatabaseManager.manager setContext:self.managedObjectContext];
+    [SLLockManager.manager startBlueToothManager];
     
     NSString *mapBoxToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
     [MGLAccountManager setAccessToken:mapBoxToken];
@@ -69,7 +69,6 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     [SLFacebookManger.manager applicationBecameActive];
-    [SEBLEInterfaceMangager.manager startScan];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

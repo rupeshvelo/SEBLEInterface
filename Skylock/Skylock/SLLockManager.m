@@ -64,7 +64,6 @@ typedef enum {
         _bleManager     = [SEBLEInterfaceMangager manager];
         _bleManager.delegate = self;
         _databaseManger = [SLDatabaseManager manager];
-
     }
     
     return self;
@@ -197,9 +196,11 @@ typedef enum {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [locks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
-        if (![self containsLock:lock]) {
-            self.locks[lock.name] = lock;
-        }
+//        if (![self containsLock:lock]) {
+//            self.locks[lock.name] = lock;
+//        }
+        
+        [self addLock:lock];
     }];
 }
 
@@ -233,13 +234,13 @@ typedef enum {
     [self getLocksFromDatabase];
     
     // testing
-    if (self.locks.allKeys.count == 0) {
-        for (SLLock *lock in self.testLocks) {
-            [self saveLockToDatabase:lock];
-        }
-        
-        [self getLocksFromDatabase];
-    }
+//    if (self.locks.allKeys.count == 0) {
+//        for (SLLock *lock in self.testLocks) {
+//            [self saveLockToDatabase:lock];
+//        }
+//        
+//        [self getLocksFromDatabase];
+//    }
 }
 
 - (NSArray *)unaddedLocks
@@ -264,6 +265,19 @@ typedef enum {
     [self.bleManager startScan];
 }
 
+- (void)startBlueToothManager
+{
+    [self.bleManager powerOn];
+}
+
+- (void)setLockStateForLock:(SLLock *)lock
+{
+    [self writeToPeripheralForLockName:lock.name
+                               service:SLLockManagerServiceLockState
+                        characteristic:SLLockManagerCharacteristicLock
+                                turnOn:lock.isLocked.boolValue];
+}
+
 - (void)toggleCrashForLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -276,10 +290,7 @@ typedef enum {
 - (void)toggleSecurityForLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self writeToPeripheralForLockName:lock.name
-                               service:SLLockManagerServiceLockState
-                        characteristic:SLLockManagerCharacteristicLock
-                                turnOn:lock.isSecurityOn.boolValue];
+    
 }
 
 - (void)toggleSharingForLock:(SLLock *)lock
@@ -320,7 +331,6 @@ typedef enum {
             return SLLockManagerValueNone;
             break;
     }
-    
 }
 
 - (void)saveLockToDatabase:(SLLock *)lock
@@ -349,7 +359,7 @@ typedef enum {
         self.locksToAdd[lock.name] = lock;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                            object:nil];
+                                                            object:lock];
     }
     
     
@@ -368,6 +378,11 @@ typedef enum {
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager didUpdateDeviceValues:(NSDictionary *)values
 {
     
+}
+
+- (void)bleInterfaceManagerIsPoweredOn:(SEBLEInterfaceMangager *)interfaceManager
+{
+    [self.bleManager startScan];
 }
 
 @end
