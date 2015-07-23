@@ -64,6 +64,7 @@ typedef enum {
         _bleManager     = [SEBLEInterfaceMangager manager];
         _bleManager.delegate = self;
         _databaseManger = [SLDatabaseManager manager];
+        _hasBleControl  = YES;
     }
     
     return self;
@@ -270,6 +271,11 @@ typedef enum {
     [self.bleManager powerOn];
 }
 
+- (void)enableBleScan:(BOOL)shouldScan
+{
+    self.bleManager.shouldScan = shouldScan;
+}
+
 - (void)setLockStateForLock:(SLLock *)lock
 {
     [self writeToPeripheralForLockName:lock.name
@@ -358,6 +364,10 @@ typedef enum {
     if (!self.locksToAdd[lock.name]) {
         self.locksToAdd[lock.name] = lock;
         
+        if (self.hasBleControl) {
+            [self.bleManager addPeripheralNamed:lock.name];
+        }
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                             object:lock];
     }
@@ -365,9 +375,10 @@ typedef enum {
     
 }
 
-- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectPeripheral:(SEBLEPeripheral *)peripheral
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectedPeripheral:(SEBLEPeripheral *)peripheral
 {
-    
+    SLLock *lock = [self lockFromPeripheral:peripheral];
+    [self addLock:lock];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager removePeripheral:(SEBLEPeripheral *)peripheral

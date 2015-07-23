@@ -17,6 +17,8 @@
 
 + (id)manager;
 
+@property (nonatomic, assign) BOOL hasBleControl;
+
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
 - (NSArray *)orderedLocksByName;
@@ -28,5 +30,6 @@
 - (void)toggleSharingForLock:(SLLock *)lock;
 - (void)fetchLocks;
 - (void)startBlueToothManager;
+- (void)enableBleScan:(BOOL)shouldScan;
 
 @end

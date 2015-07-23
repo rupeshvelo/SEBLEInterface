@@ -15,8 +15,8 @@
 #import "SLMainTutorialViewController.h"
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
+#import "SLUserDefaults.h"
 #import <MapboxGL/MapboxGL.h>
-
 
 @interface SLAppDelegate ()
 
@@ -28,6 +28,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [SLDatabaseManager.manager setContext:self.managedObjectContext];
+    
+    BOOL bleShouldScan = NO;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SLUserDefaultsTutorialComplete]) {
+        NSNumber *tutorialComplete = [[NSUserDefaults standardUserDefaults] objectForKey:SLUserDefaultsTutorialComplete];
+        bleShouldScan = tutorialComplete.boolValue;
+    }
+    
+    [SLLockManager.manager setHasBleControl:bleShouldScan];
+    [SLLockManager.manager enableBleScan:bleShouldScan];
     [SLLockManager.manager startBlueToothManager];
     
     NSString *mapBoxToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
