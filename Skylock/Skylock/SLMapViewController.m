@@ -27,6 +27,7 @@
 #import <MapboxGL/MapboxGL.h>
 #import <CoreLocation/CoreLocation.h>
 
+@class MBDirectionsRequest;
 
 
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
@@ -138,7 +139,7 @@
     
     if ([CLLocationManager locationServicesEnabled]) {
         self.mapView.showsUserLocation = YES;
-    }
+    }    
 }
 
 - (void)menuButtonPressed
