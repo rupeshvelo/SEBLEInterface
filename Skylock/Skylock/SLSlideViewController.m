@@ -20,7 +20,7 @@
 #import "UIColor+RGB.h"
 #import "SLSlideTableViewHeader.h"
 #import "SLPicManager.h"
-
+#import "SLEditLockTableViewCell.h"
 
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
@@ -35,6 +35,7 @@
 @property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) SLDbUser *user;
+@property (nonatomic, assign) BOOL isEditMode;
 
 @end
 
@@ -49,6 +50,7 @@
                                                                    self.view.bounds.size.height - self.optionsView.bounds.size.height - self.dividerView.bounds.size.height)
                                                   style:UITableViewStylePlain];
         [_tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
+        [_tableView registerClass:[SLEditLockTableViewCell class] forCellReuseIdentifier:self.editLockTableViewCellIdentifier];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.layoutMargins = UIEdgeInsetsZero;
@@ -101,6 +103,7 @@
     
     self.user = [SLDatabaseManager.manager currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.isEditMode = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -135,6 +138,11 @@
     return NSStringFromClass([SLLockTableViewCell class]);
 }
 
+- (NSString *)editLockTableViewCellIdentifier
+{
+    return NSStringFromClass([SLEditLockTableViewCell class]);
+}
+
 #pragma mark UITableView delegate & datasource methods
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -148,11 +156,19 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    SLLock *lock = self.locks[indexPath.row];
-    SLLockTableViewCell *lockCell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
-    [lockCell updateCellWithLock:lock];
-    return lockCell;
-    
+    if (self.isEditMode) {
+        SLEditLockTableViewCell *cell = (SLEditLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.editLockTableViewCellIdentifier];
+        cell.delegate = self;
+        
+        return cell;
+    } else {
+        SLLock *lock = self.locks[indexPath.row];
+        SLLockTableViewCell *cell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
+        cell.delegate = self;
+        [cell updateCellWithLock:lock];
+        
+        return cell;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -279,7 +295,6 @@
                                      alvc.view.bounds.size.width,
                                      alvc.view.bounds.size.height);
     } completion:nil];
-    
 }
 
 #pragma mark - SLAddLockViewController Delegate Methods
@@ -313,20 +328,38 @@
 {
     switch (action) {
         case SLSlideOptionsViewActionAddLock:
-        
+            NSLog(@"add lock pressed");
             break;
         case SLSlideOptionsViewActionStore:
-            
+            NSLog(@"store pressed");
             break;
         case SLSlideOptionsViewActionSettings:
-            
+            NSLog(@"settings pressed");
             break;
         case SLSlideOptionsViewActionHelp:
-            
+            NSLog(@"help pressed");
             break;
         default:
             break;
     }
+}
+
+#pragma mark - SLLockTableViewCellDelegate methods
+- (void)lockTableViewCellLongPressOccured:(SLLockTableViewCell *)cell
+{
+    self.isEditMode = YES;
+    [self.tableView reloadData];
+}
+
+#pragma mark - SLLockEditTableViewCellDelgate methods
+- (void)editLockCellRenamePushed:(SLEditLockTableViewCell *)cell
+{
+    NSLog(@"rename pushed");
+}
+
+- (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell
+{
+    NSLog(@"remove pushed");
 }
 
 @end

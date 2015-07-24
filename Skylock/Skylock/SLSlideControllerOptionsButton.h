@@ -15,4 +15,5 @@
           imageName:(NSString *)imageName
                font:(UIFont *)font
          titleColor:(UIColor *)titleColor;
+
 @end

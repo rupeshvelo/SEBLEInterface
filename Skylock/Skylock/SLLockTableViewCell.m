@@ -30,6 +30,11 @@
         
         self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:8];
         self.detailTextLabel.textColor = [UIColor colorWithRed:191 green:191 blue:191];
+        
+        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(handleLongPress:)];
+        lpgr.minimumPressDuration = 1.0f;
+        [self addGestureRecognizer:lpgr];
     }
     
     return self;
@@ -40,8 +45,6 @@
 {
     [super prepareForReuse];
 }
-
-
 
 - (void)updateCellWithLock:(SLLock *)lock
 {
@@ -56,5 +59,11 @@
     // Configure the view for the selected state
 }
 
+- (void)handleLongPress:(UILongPressGestureRecognizer *)lpgr
+{
+    if ([self.delegate respondsToSelector:@selector(lockTableViewCellLongPressOccured:)]) {
+        [self.delegate lockTableViewCellLongPressOccured:self];
+    }
+}
 
 @end

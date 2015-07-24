@@ -42,7 +42,7 @@
                                                                           font:kSLSlideControllerOptionsLabelFont
                                                                     titleColor:kSLSlideControllerOptionsLabelColor];
         [_addLockButton addTarget:self
-                           action:@selector(addLockPressed)
+                           action:@selector(buttonPressed:)
                  forControlEvents:UIControlEventTouchDown];
         [self addSubview:_addLockButton];
     }
@@ -62,7 +62,7 @@
                                                                         font:kSLSlideControllerOptionsLabelFont
                                                                   titleColor:kSLSlideControllerOptionsLabelColor];
         [_storeButton addTarget:self
-                         action:@selector(storePressed)
+                         action:@selector(buttonPressed:)
                forControlEvents:UIControlEventTouchDown];
         [self addSubview:_storeButton];
     }
@@ -82,7 +82,7 @@
                                                                            font:kSLSlideControllerOptionsLabelFont
                                                                      titleColor:kSLSlideControllerOptionsLabelColor];
         [_settingsButton addTarget:self
-                            action:@selector(settingsPressed)
+                            action:@selector(buttonPressed:)
                   forControlEvents:UIControlEventTouchDown];
         [self addSubview:_settingsButton];
     }
@@ -102,7 +102,7 @@
                                                                        font:kSLSlideControllerOptionsLabelFont
                                                                  titleColor:kSLSlideControllerOptionsLabelColor];
         [_helpButton addTarget:self
-                        action:@selector(helpPressed)
+                        action:@selector(buttonPressed:)
               forControlEvents:UIControlEventTouchDown];
         [self addSubview:_helpButton];
     }

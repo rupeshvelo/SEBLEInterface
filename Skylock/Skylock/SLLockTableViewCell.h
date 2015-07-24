@@ -10,8 +10,17 @@
 #import "SLBaseTableViewCell.h"
 
 @class SLLock;
+@class SLLockTableViewCell;
+
+@protocol SLLockTableViewCellDelegate <NSObject>
+
+- (void)lockTableViewCellLongPressOccured:(SLLockTableViewCell *)cell;
+
+@end
 
 @interface SLLockTableViewCell : SLBaseTableViewCell
+
+@property (nonatomic, weak) id <SLLockTableViewCellDelegate> delegate;
 
 - (void)updateCellWithLock:(SLLock *)lock;
 

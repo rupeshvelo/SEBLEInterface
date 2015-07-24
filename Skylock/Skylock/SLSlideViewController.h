@@ -11,6 +11,8 @@
 #import "SLSlideControllerOptionsView.h"
 #import "SLSlideTableViewHeader.h"
 #import "SLCirclePicView.h"
+#import "SLLockTableViewCell.h"
+#import "SLEditLockTableViewCell.h"
 
 @class SLSlideViewController;
 @class SLDbUser;
@@ -34,7 +36,7 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 @end
 
 
-@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLAddLockViewControllerDelegate, SLSlideControllerOptionsViewDelegate, SLSlideTableViewHeaderDelegate>
+@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLAddLockViewControllerDelegate, SLSlideControllerOptionsViewDelegate, SLSlideTableViewHeaderDelegate, SLLockTableViewCellDelegate, SLEditLockTableViewCellDelegate>
 
 @property (nonatomic, weak) id <SLSlideViewControllerDelegate>delegate;
 
