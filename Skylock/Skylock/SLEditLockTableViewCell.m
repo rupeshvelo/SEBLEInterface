@@ -24,6 +24,19 @@
 
 @implementation SLEditLockTableViewCell
 
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(longPressActivated:)];
+        lpgr.minimumPressDuration = 1.0f;
+        [self addGestureRecognizer:lpgr];
+    }
+    
+    return self;
+}
+
 - (UIView *)verticalSeperator
 {
     if (!_verticalSeperator) {
@@ -54,7 +67,7 @@
                                                                    titleColor:kSLEditLockTableCellTitleColor];
         [_renameButton addTarget:self
                           action:@selector(renameButtonPressed)
-                forControlEvents:UIControlEventTouchDown];
+                forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_renameButton];
     }
     
@@ -77,7 +90,7 @@
                                                                    titleColor:kSLEditLockTableCellTitleColor];
         [_removeButton addTarget:self
                           action:@selector(removeButtonPressed)
-                forControlEvents:UIControlEventTouchDown];
+                forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_removeButton];
     }
     
@@ -125,6 +138,14 @@
     if ([self.delegate respondsToSelector:@selector(editLockCellRemovePushed:)]) {
         [self.delegate editLockCellRemovePushed:self];
     }
+}
+
+- (void)longPressActivated:(UILongPressGestureRecognizer *)lpgr
+{
+        if ([self.delegate respondsToSelector:@selector(editLockCellLongPressActivated:)] &&
+            lpgr.state == UIGestureRecognizerStateBegan) {
+            [self.delegate editLockCellLongPressActivated:self];
+        }
 }
 
 @end

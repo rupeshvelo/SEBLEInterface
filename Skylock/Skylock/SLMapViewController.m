@@ -26,6 +26,7 @@
 #import "SLAccountInfoViewController.h"
 #import <MapboxGL/MapboxGL.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Skylock-Swift.h"
 
 @class MBDirectionsRequest;
 
@@ -39,6 +40,8 @@
 
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *menuButton;
+@property (nonatomic, strong) UIButton *settingsButton;
+
 @property (nonatomic, strong) SLLocationManager *locationManager;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
@@ -49,6 +52,8 @@
 
 @property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
 @property (nonatomic, assign) BOOL isInitialLoad;
+
+@property (nonatomic, strong) SLLock *selectedLock;
 
 @end
 
@@ -82,6 +87,25 @@
     }
     
     return _menuButton;
+}
+
+- (UIButton *)settingsButton
+{
+    if (!_settingsButton) {
+        UIImage *image = [UIImage imageNamed:@"icon_settings_large"];
+        _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                     0.0f,
+                                                                     2*image.size.width,
+                                                                     2*image.size.height)];
+        [_settingsButton setImage:image forState:UIControlStateNormal];
+        [_settingsButton addTarget:self
+                            action:@selector(settingsButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+        //_settingsButton.enabled = NO;
+        [self.view addSubview:_settingsButton];
+    }
+    
+    return _settingsButton;
 }
 
 - (MGLMapView *)mapView
@@ -131,6 +155,11 @@
                                        30.0f,
                                        self.menuButton.bounds.size.width,
                                        self.menuButton.bounds.size.height);
+    
+    self.settingsButton.frame = CGRectMake(self.view.bounds.size.width - self.settingsButton.bounds.size.width - 15.0f,
+                                           30.0f,
+                                           self.settingsButton.bounds.size.width,
+                                           self.settingsButton.bounds.size.height);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -163,6 +192,11 @@
     if (!showingInfoVC) {
         [self presentSlideViewController];
     }
+}
+
+- (void)settingsButtonPressed
+{
+    [self presentSettingsViewController];
 }
 
 - (void)presentSlideViewController
@@ -212,6 +246,31 @@
     }];
 }
 
+- (void)presentSettingsViewController
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    [self.view addSubview:self.touchStopperView];
+    
+    static CGFloat width = 233.0f;
+    SLSettingsViewController *svc = [SLSettingsViewController new];
+    //slvc.delegate = self;
+    svc.view.frame = CGRectMake(self.view.bounds.size.width,
+                                0.0f,
+                                width,
+                                self.view.bounds.size.height);
+    
+    [self addChildViewController:svc];
+    [self.view addSubview:svc.view];
+    [self.view bringSubviewToFront:svc.view];
+    [svc didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        svc.view.frame = CGRectMake(self.view.bounds.size.width - svc.view.bounds.size.width,
+                                     0.0f,
+                                     width,
+                                     svc.view.bounds.size.height);
+    } completion:nil];
+}
 - (void)presentLockInfoViewControllerWithLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -353,6 +412,12 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected && options) {
         SLLock *lock = options[@"lock"];
+        
+        // this should be moved to the point where the lock's annotation is placed on the screen
+        self.selectedLock = lock;
+        self.settingsButton.enabled = YES;
+        // end move
+        
         [self removeSlideViewController:slvc withCompletion:^{
             [self presentLockInfoViewControllerWithLock:lock];
         }];

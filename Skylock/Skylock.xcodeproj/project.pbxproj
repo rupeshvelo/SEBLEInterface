@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		89FADDD40CF09C644145B2C7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 926E81C4A41BD3F7D9FAA288 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250761B59D539007D2D6A /* btn_crashalert_off.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250701B59D539007D2D6A /* btn_crashalert_off.png */; };
 		DC0250771B59D539007D2D6A /* btn_crashalert_off@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250711B59D539007D2D6A /* btn_crashalert_off@2x.png */; };
 		DC0250781B59D539007D2D6A /* btn_crashalert_off@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250721B59D539007D2D6A /* btn_crashalert_off@3x.png */; };
@@ -25,6 +26,7 @@
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
+		DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2B94711B63DD720047583D /* SLSettingsViewController.swift */; };
 		DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */; };
 		DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */; };
 		DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = DC39B2AE1B58859E0001973B /* SLSlideTableViewHeader.m */; };
@@ -397,6 +399,7 @@
 /* Begin PBXFileReference section */
 		59287DB3228046937B2692B6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		926E81C4A41BD3F7D9FAA288 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
 		D075CA3426FCD5EB2C36DEE4 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		DC0250701B59D539007D2D6A /* btn_crashalert_off.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_crashalert_off.png; sourceTree = "<group>"; };
 		DC0250711B59D539007D2D6A /* btn_crashalert_off@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_crashalert_off@2x.png"; sourceTree = "<group>"; };
@@ -421,6 +424,8 @@
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
 		DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewController.m; sourceTree = "<group>"; };
+		DC2B94701B63DD720047583D /* Skylock-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Skylock-Bridging-Header.h"; sourceTree = "<group>"; };
+		DC2B94711B63DD720047583D /* SLSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSettingsViewController.swift; sourceTree = "<group>"; };
 		DC2E04EF1B3EE24800B7D6F6 /* SLSharingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSharingViewController.h; sourceTree = "<group>"; };
 		DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSharingViewController.m; sourceTree = "<group>"; };
 		DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLContact.h; sourceTree = "<group>"; };
@@ -919,6 +924,7 @@
 				DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */,
 				DCE33AC61B5F4CD300750813 /* SLAccountInfoViewController.h */,
 				DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */,
+				DC2B94711B63DD720047583D /* SLSettingsViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1343,6 +1349,7 @@
 				DC0520C41B4C0E8D00FBAAB7 /* views */,
 				DC0520CA1B4C0F1B00FBAAB7 /* managers */,
 				DC0520C91B4C0EFE00FBAAB7 /* models */,
+				DC2B94701B63DD720047583D /* Skylock-Bridging-Header.h */,
 				DCEDDE3F1B478A2500E3A2EE /* SLNotifications.h */,
 				DCF36BB21B52F29D00070F11 /* SLUserDefaults.h */,
 				DCD82FDC1B1FCBBC00B38910 /* SLAppDelegate.h */,
@@ -1359,6 +1366,7 @@
 				DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */,
 				DC17ACB71B5C6C6F0090BE8A /* SLMapAnnotationImage.h */,
 				DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */,
+				AB66E177922F1A8561753E36 /* SkylockColors.swift */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -1887,6 +1895,7 @@
 				DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */,
 				DC7A12F21B573F9000F3336E /* SLDbUser+Methods.m in Sources */,
 				DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */,
+				DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */,
 				DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */,
 				DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */,
 				DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */,
@@ -1921,6 +1930,7 @@
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
+				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2045,6 +2055,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/facebook-ios-sdk/build",
@@ -2060,6 +2071,8 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				"OTHER_LDFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -2069,6 +2082,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/facebook-ios-sdk/build",
@@ -2083,6 +2097,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 			};
 			name = Release;
 		};

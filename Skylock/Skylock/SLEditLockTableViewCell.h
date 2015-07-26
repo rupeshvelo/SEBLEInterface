@@ -13,6 +13,7 @@
 
 - (void)editLockCellRenamePushed:(SLEditLockTableViewCell *)cell;
 - (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell;
+- (void)editLockCellLongPressActivated:(SLEditLockTableViewCell *)cell;
 
 @end
 

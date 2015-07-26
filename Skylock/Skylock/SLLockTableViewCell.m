@@ -61,7 +61,8 @@
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)lpgr
 {
-    if ([self.delegate respondsToSelector:@selector(lockTableViewCellLongPressOccured:)]) {
+    if ([self.delegate respondsToSelector:@selector(lockTableViewCellLongPressOccured:)] &&
+        lpgr.state == UIGestureRecognizerStateBegan) {
         [self.delegate lockTableViewCellLongPressOccured:self];
     }
 }

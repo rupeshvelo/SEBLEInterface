@@ -212,6 +212,16 @@
     return header;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
+                                                              0.0f,
+                                                              [self tableView:tableView heightForFooterInSection:section],
+                                                              tableView.bounds.size.width)];
+    footer.backgroundColor = [UIColor colorWithRed:191 green:191 blue:191];
+    return footer;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return 100.0f;
@@ -219,7 +229,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return .01;
+    return 1.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -297,6 +307,17 @@
     } completion:nil];
 }
 
+- (NSArray *)indexPathsForSection:(NSUInteger)section
+{
+    NSMutableArray *paths = [NSMutableArray new];
+    NSUInteger rows = [self.tableView numberOfRowsInSection:section];
+    for (NSUInteger i=0; i < rows; i++) {
+        [paths addObject:[NSIndexPath indexPathForRow:i inSection:section]];
+    }
+    
+    return paths;
+}
+
 #pragma mark - SLAddLockViewController Delegate Methods
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
 {
@@ -348,7 +369,8 @@
 - (void)lockTableViewCellLongPressOccured:(SLLockTableViewCell *)cell
 {
     self.isEditMode = YES;
-    [self.tableView reloadData];
+    NSArray *paths = [self indexPathsForSection:0];
+    [self.tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationLeft];
 }
 
 #pragma mark - SLLockEditTableViewCellDelgate methods
@@ -360,6 +382,13 @@
 - (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell
 {
     NSLog(@"remove pushed");
+}
+
+- (void)editLockCellLongPressActivated:(SLEditLockTableViewCell *)cell
+{
+    self.isEditMode = NO;
+    NSArray *paths = [self indexPathsForSection:0];
+    [self.tableView reloadRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationRight];
 }
 
 @end
