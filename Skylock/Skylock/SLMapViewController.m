@@ -115,6 +115,7 @@
         _mapView.zoomLevel = 12;
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _mapView.delegate = self;
+        _mapView.rotateEnabled = NO;
     }
     
     return _mapView;
