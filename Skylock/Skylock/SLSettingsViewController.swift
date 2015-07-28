@@ -10,6 +10,14 @@ import UIKit
 
 class SLSettingsViewController: UIViewController {
     
+    enum TouchPadLocation{
+        case top
+        case right
+        case bottom
+        case left
+        case center
+    }
+    
     let xPadding:CGFloat = 25.0
     let titleFont = UIFont(name:"HelveticaNeue", size:13)
     let infoFont = UIFont(name:"HelveticaNeue", size:9)
@@ -359,6 +367,10 @@ class SLSettingsViewController: UIViewController {
         return view
     }()
     
+    lazy var touchPadView:UIView = {
+        let view: UIView = UIView(frame: CGRectMake(0, 0, self.pinCodeView.bounds.size.width, <#height: CGFloat#>))
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -409,6 +421,6 @@ class SLSettingsViewController: UIViewController {
     }
     
     func autoUnlockSwitchFlipped(sender: UISwitch) {
-        println("auto unlock switch flipped")        
+        println("auto unlock switch flipped")
     }
 }
