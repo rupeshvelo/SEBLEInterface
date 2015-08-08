@@ -23,6 +23,7 @@
 - (void)removeLock:(SLLock *)lock;
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
+- (void)stopScan;
 - (NSArray *)unaddedLocks;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
@@ -30,6 +31,5 @@
 - (void)toggleSharingForLock:(SLLock *)lock;
 - (void)fetchLocks;
 - (void)startBlueToothManager;
-- (void)enableBleScan:(BOOL)shouldScan;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "SLTutorialViewController.h"
 #import "UIColor+RGB.h"
+#import "NSString+Skylock.h"
 
 @interface SLTutorialViewController ()
 
@@ -32,12 +33,15 @@
 - (UILabel *)mainInfoLabel
 {
     if (!_mainInfoLabel) {
+        UIFont *font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
+        CGSize size = [self.mainText sizeWithFont:font
+                                          maxSize:CGSizeMake(self.view.bounds.size.width - 2*self.padding, CGFLOAT_MAX)];
         _mainInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
-                                                                   self.view.bounds.size.width - 2*self.padding,
-                                                                   kSLTutorialVCLabelHeightScaler*self.view.bounds.size.height)];
+                                                                   size.width,
+                                                                   size.height)];
         _mainInfoLabel.text = self.mainText;
-        _mainInfoLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
+        _mainInfoLabel.font = font;
         _mainInfoLabel.textColor = [UIColor colorWithRed:97 green:97 blue:97];
         _mainInfoLabel.numberOfLines = 0;
         [self.view addSubview:_mainInfoLabel];
@@ -92,8 +96,11 @@
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     
+    CGFloat mainInfoY0 = self.iconView.image ? 40.0f : 97.0f;
+    CGFloat detailInfoY0 = self.iconView.image ? 80.0f : 18.0f;
+    
     self.mainInfoLabel.frame = CGRectMake(self.padding,
-                                          CGRectGetMaxY(self.picView.frame) + 40.0f,
+                                          CGRectGetMaxY(self.picView.frame) + mainInfoY0,
                                           self.mainInfoLabel.frame.size.width,
                                           self.mainInfoLabel.frame.size.height);
     
@@ -102,8 +109,11 @@
                                      self.iconView.frame.size.width,
                                      self.iconView.frame.size.height);
     
+    
+    
+    
     self.detailInfoLabel.frame = CGRectMake(self.padding,
-                                            CGRectGetMaxY(self.mainInfoLabel.frame) + 80.0f,
+                                            CGRectGetMaxY(self.mainInfoLabel.frame) + detailInfoY0,
                                             self.detailInfoLabel.bounds.size.width,
                                             self.detailInfoLabel.bounds.size.height);
 }

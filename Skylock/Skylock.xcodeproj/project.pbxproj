@@ -30,6 +30,7 @@
 		DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */; };
 		DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */; };
 		DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = DC39B2AE1B58859E0001973B /* SLSlideTableViewHeader.m */; };
+		DC3AE90B1B75838A009287DA /* SLSharingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3AE90A1B75838A009287DA /* SLSharingTableViewCell.m */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
@@ -432,6 +433,8 @@
 		DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLContact.m; sourceTree = "<group>"; };
 		DC39B2AD1B58859E0001973B /* SLSlideTableViewHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideTableViewHeader.h; sourceTree = "<group>"; };
 		DC39B2AE1B58859E0001973B /* SLSlideTableViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideTableViewHeader.m; sourceTree = "<group>"; };
+		DC3AE9091B75838A009287DA /* SLSharingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSharingTableViewCell.h; sourceTree = "<group>"; };
+		DC3AE90A1B75838A009287DA /* SLSharingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSharingTableViewCell.m; sourceTree = "<group>"; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
 		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
@@ -865,6 +868,8 @@
 		DC0520C41B4C0E8D00FBAAB7 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				DC3AE9091B75838A009287DA /* SLSharingTableViewCell.h */,
+				DC3AE90A1B75838A009287DA /* SLSharingTableViewCell.m */,
 				DCA07CE11B61F7ED0057AA26 /* SLEditLockTableViewCell.h */,
 				DCA07CE21B61F7ED0057AA26 /* SLEditLockTableViewCell.m */,
 				DC39B2AD1B58859E0001973B /* SLSlideTableViewHeader.h */,
@@ -1911,6 +1916,7 @@
 				DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */,
+				DC3AE90B1B75838A009287DA /* SLSharingTableViewCell.m in Sources */,
 				DCA07CE31B61F7ED0057AA26 /* SLEditLockTableViewCell.m in Sources */,
 				DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */,
 				DC7A12F81B5762E900F3336E /* SLDbUser.m in Sources */,

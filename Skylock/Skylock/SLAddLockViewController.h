@@ -16,11 +16,11 @@
 @protocol SLAddLockViewControllerDelegate <NSObject>
 
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock;
-
+- (void)addLockViewControllerWantsDismiss:(SLAddLockViewController *)alvc;
 @end
 
 @interface SLAddLockViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id <SLAddLockViewControllerDelegate> delegate;
-@property (nonatomic, assign) CGFloat headerHeight;
+
 @end

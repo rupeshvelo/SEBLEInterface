@@ -31,6 +31,8 @@
         self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:8];
         self.detailTextLabel.textColor = [UIColor colorWithRed:191 green:191 blue:191];
         
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                            action:@selector(handleLongPress:)];
         lpgr.minimumPressDuration = 1.0f;

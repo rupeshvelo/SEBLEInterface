@@ -45,8 +45,8 @@
 	<string>pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3</string>
 	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
 	<true/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>I'm watching you...MUHAHA</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>I'm a mini eye...but still nefarious</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Regular.ttf</string>
@@ -64,20 +64,5 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Roboto-Regular.ttf</string>
-		<string>ShadowsIntoLightTwo-Regular.ttf</string>
-	</array>
-	<key>MGLMapboxAccessToken</key>
-	<string>pk.eyJ1IjoibWljaGFsdW1uaSIsImEiOiJ0c2Npd05jIn0.XAWOLTQKEupL-bGoCSH4GA#3</string>
-	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
-	<true/>
-	<key>NSLocationAlwaysWhenInDescription</key>
-	<string>I&apos;m the great Eye!!!</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>I&apos;m a mini eye...but still nefarious</string>
 </dict>
 </plist>

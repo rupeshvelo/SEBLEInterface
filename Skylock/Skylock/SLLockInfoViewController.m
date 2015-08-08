@@ -602,6 +602,5 @@
     self.lockButton.selected = !self.lockButton.isSelected;
     self.lock.isLocked = @(!self.lockButton.isSelected);
     [SLLockManager.manager setLockStateForLock:self.lock];
-    
 }
 @end
