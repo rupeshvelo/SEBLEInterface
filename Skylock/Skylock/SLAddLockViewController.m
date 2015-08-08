@@ -11,11 +11,14 @@
 #import "SLLock.h"
 #import "SLConstants.h"
 #import "SLNotifications.h"
+#import "UIColor+RGB.h"
+#import "NSString+Skylock.h"
 
 @interface SLAddLockViewController ()
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *locks;
+
 @end
 
 @implementation SLAddLockViewController
@@ -26,7 +29,9 @@
         _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.dataSource = self;
         _tableView.delegate = self;
-        _tableView.rowHeight = 80.0f;
+        _tableView.rowHeight = 56.0f;
+        _tableView.scrollEnabled = NO;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
     
     return _tableView;
@@ -41,7 +46,12 @@
 {
     [super viewDidLoad];
     
-    self.locks = [NSArray new];
+    [SLLockManager.manager startScan];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockDiscovered)
+                                                 name:kSLNotificationLockManagerDiscoverdLock
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -51,23 +61,27 @@
     if (![self.view.subviews containsObject:self.tableView]) {
         [self.view addSubview:self.tableView];
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(lockDiscovered)
-                                                 name:kSLNotificationLockManagerDiscoverdLock
-                                               object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [SLLockManager.manager stopScan];
 }
 
 - (void)lockDiscovered
 {
     self.locks = [SLLockManager.manager unaddedLocks];
-    [self.tableView reloadData];
+    NSIndexSet *sections = [NSIndexSet indexSetWithIndex:0];
+    [self.tableView reloadSections:sections withRowAnimation:UITableViewRowAnimationTop];
 }
 
-- (void)headerButtonPressed
+- (void)backButtonPressed
 {
-    NSLog(@"header button pressed");
-    [SLLockManager.manager startScan];
+    NSLog(@"back button pressed");
+    if ([self.delegate respondsToSelector:@selector(addLockViewControllerWantsDismiss:)]) {
+        [self.delegate addLockViewControllerWantsDismiss:self];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -89,7 +103,9 @@
     }
     
     SLLock *lock = self.locks[indexPath.row];
-    cell.textLabel.text =lock.name;
+    cell.textLabel.text = lock.name;
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
+    cell.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
     
     return cell;
 }
@@ -97,7 +113,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (section == 0) {
-        return self.headerHeight;
+        return 70.0f;
     }
     
     return 0.0f;
@@ -105,20 +121,38 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        UIButton *headerButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                            0.0f,
-                                                                            self.tableView.bounds.size.width,
-                                                                            [self tableView:tableView heightForHeaderInSection:section])];
-        [headerButton addTarget:self action:@selector(headerButtonPressed) forControlEvents:UIControlEventTouchDown];
-        [headerButton setTitle:NSLocalizedString(@"Scan For Devices", nil) forState:UIControlStateNormal];
-        [headerButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [headerButton setBackgroundColor:SLConstantsMainTeal];
-        headerButton.titleLabel.font = SLConstantsDefaultFont;
-        return headerButton;
-    }
+    UILabel *header = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                                0.0f,
+                                                                tableView.bounds.size.width,
+                                                                [self tableView:tableView heightForHeaderInSection:section])];
+    header.backgroundColor = [UIColor colorWithRed:110 green:223 blue:158];
+    header.text = NSLocalizedString(@"Unadded Locks", nil);
+    header.textColor = [UIColor whiteColor];
+    header.font = [UIFont fontWithName:@"Helvetica" size:13.0f];
+    header.textAlignment = NSTextAlignmentCenter;
+    header.userInteractionEnabled = YES;
     
-    return nil;
+    UIImage *backImage = [UIImage imageNamed:@"icon_chevron_left_white"];
+    UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                      CGRectGetMidY(header.bounds) - 1.5*backImage.size.height,
+                                                                      6*backImage.size.width,
+                                                                      3*backImage.size.height)];
+    [backButton addTarget:self action:@selector(backButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [backButton setImage:backImage forState:UIControlStateNormal];
+    backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    backButton.contentEdgeInsets = UIEdgeInsetsMake(0, 12.0f, 0, 0);
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    spinner.frame = CGRectMake(header.bounds.size.width - spinner.bounds.size.width - 12.0f,
+                               CGRectGetMidY(header.bounds) - .5*spinner.bounds.size.height,
+                               spinner.bounds.size.width,
+                               spinner.bounds.size.height);
+    [spinner startAnimating];
+
+    [header addSubview:backButton];
+    [header addSubview:spinner];
+    
+    return header;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

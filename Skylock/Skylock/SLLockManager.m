@@ -16,28 +16,33 @@
 #import "SLDbLock+Methods.m"
 
 typedef NS_ENUM(NSUInteger, SLLockManagerService) {
-    SLLockManagerServiceLedService = 0,
-    SLLockManagerServiceLedState,
-    SLLockManagerServiceLedOn,
-    SLLockManagerServiceLedOff,
-    SLLockManagerServiceLockService,
-    SLLockManagerServiceLockShift,
-    SLLockManagerServiceLockState,
-    SLLockManagerServiceTxPwr,
-    SLLockManagerServiceTesting
+    SLLockManagerServiceSecurity,
+    SLLockManagerServiceHardware,
+    SLLockManagerServiceConfiguration,
+    SLLockManagerServiceTest,
+    SLLockManagerServiceBoot,
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
-    SLLockManagerCharacteristicLed = 100,
-    SLLockManagerCharacteristicLock
+    SLLockManagerCharacteristicLed = 0,
+    SLLockManagerCharacteristicLock,
+    SLLockManagerCharacteristicHardwareInfo,
+    SLLockManagerCharacteristicReserved,
+    SLLockManagerCharacteristicTXPowerControl
+};
+
+typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
+    SLLockManagerCharacteristicStateNone,
+    SLLockManagerCharacteristicStateLedOn,
+    SLLockManagerCharacteristicStateLedOff,
+    SLLockManagerCharacteristicStateOpenLock,
+    SLLockManagerCharacteristicStateCloseLock
 };
 
 typedef enum {
-    SLLockManagerValueNone      = 0xFF,
+    SLLockManagerValueOff       = 0x00,
     SLLockManagerValueLedOn     = 0x4F,
-    SLLockManagerValueLedOff    = 0x00,
-    SLLockManagerValueLock      = 0x01,
-    SLLockManagerValueUnlock    = 0x00
+    SLLockManagerValueLockOpen  = 0x01,
 } SLLockMangerValue;
 
 @interface SLLockManager()
@@ -45,9 +50,8 @@ typedef enum {
 @property (nonatomic, strong) NSMutableDictionary *locks;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, strong) NSMutableDictionary *locksToAdd;
-@property (nonatomic, strong) NSDictionary *services;
 @property (nonatomic, strong) SLDatabaseManager *databaseManger;
-
+@property (nonatomic, assign) BOOL bleIsPoweredOn;
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
 
@@ -64,7 +68,7 @@ typedef enum {
         _bleManager     = [SEBLEInterfaceMangager manager];
         _bleManager.delegate = self;
         _databaseManger = [SLDatabaseManager manager];
-        _hasBleControl  = YES;
+        _bleIsPoweredOn = NO;
     }
     
     return self;
@@ -80,25 +84,6 @@ typedef enum {
     });
     
     return lockManger;
-}
-
-- (NSDictionary *)services
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (!_services) {
-        _services = @{@(SLLockManagerServiceLedService): @"9c7d1523-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceLedOn): @"9c7d1525-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceLedOff): @"9c7d1526-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceLockState): @"9c7d1529-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerCharacteristicLock): @"9c7d152a-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceLockShift): @"9c7d152b-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerCharacteristicLed): @"9c7d1524-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceTxPwr): @"9c7d1528-ba74-0bac-bb4b-539d6a70eadd",
-                      @(SLLockManagerServiceTesting): @"9c7d152c-ba74-0bac-bb4b-539d6a70eadd"
-                      };
-    }
-    
-    return _services;
 }
 
 - (NSArray *)testLocks
@@ -266,20 +251,20 @@ typedef enum {
     [self.bleManager startScan];
 }
 
+- (void)stopScan
+{
+    [self.bleManager stopScan];
+}
+
 - (void)startBlueToothManager
 {
     [self.bleManager powerOn];
 }
 
-- (void)enableBleScan:(BOOL)shouldScan
-{
-    self.bleManager.shouldScan = shouldScan;
-}
-
 - (void)setLockStateForLock:(SLLock *)lock
 {
     [self writeToPeripheralForLockName:lock.name
-                               service:SLLockManagerServiceLockState
+                               service:SLLockManagerServiceHardware
                         characteristic:SLLockManagerCharacteristicLock
                                 turnOn:lock.isLocked.boolValue];
 }
@@ -288,7 +273,7 @@ typedef enum {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self writeToPeripheralForLockName:lock.name
-                               service:SLLockManagerServiceLedService
+                               service:SLLockManagerServiceHardware
                         characteristic:SLLockManagerCharacteristicLed
                                 turnOn:lock.isCrashOn.boolValue];
 }
@@ -310,31 +295,31 @@ typedef enum {
                               turnOn:(BOOL)turnOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSString *serviceUUID = self.services[@(service)];
-    NSString *characteristicUUID = self.services[@(characteristic)];
+    NSString *serviceUUID = [self uuidForService:service];
+    NSString *characteristicUUID = [self uuidForCharacteristic:characteristic];
     
     u_int8_t value = [self valueForCharacteristic:characteristic turnOn:turnOn];
     NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
     
     [self.bleManager writeToPeripheralWithName:lockName
-                                   serviceUUID:serviceUUID.uppercaseString
-                            characteristicUUID:characteristicUUID.uppercaseString
+                                   serviceUUID:serviceUUID
+                            characteristicUUID:characteristicUUID
                                           data:data];
 }
 
-- (SLLockMangerValue)valueForCharacteristic:(SLLockManagerCharacteristic)characteristic
+- (uint8_t)valueForCharacteristic:(SLLockManagerCharacteristic)characteristic
                                      turnOn:(BOOL)turnOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     switch (characteristic) {
         case SLLockManagerCharacteristicLed:
-            return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueLedOff;
+            return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueOff;
             break;
         case SLLockManagerCharacteristicLock:
-            return turnOn ? SLLockManagerValueLock : SLLockManagerValueUnlock;
+            return turnOn ? SLLockManagerValueLockOpen : SLLockManagerValueOff;
             break;
         default:
-            return SLLockManagerValueNone;
+            return SLLockManagerCharacteristicStateNone;
             break;
     }
 }
@@ -356,6 +341,71 @@ typedef enum {
     }
 }
 
+- (NSString *)uuidForCharacteristic:(SLLockManagerCharacteristic)characteristic
+{
+    NSString *characteristicString;
+    
+    switch (characteristic) {
+        case SLLockManagerCharacteristicLed:
+            characteristicString = @"5E41";
+            break;
+        case SLLockManagerCharacteristicLock:
+            characteristicString = @"5E42";
+            break;
+        case SLLockManagerCharacteristicHardwareInfo:
+            characteristicString = @"5E43";
+            break;
+        case SLLockManagerCharacteristicReserved:
+            characteristicString = @"5E44";
+            break;
+        case SLLockManagerCharacteristicTXPowerControl:
+            characteristicString = @"5E45";
+            break;
+        default:
+            break;
+    }
+    
+    return characteristicString ? [NSString stringWithFormat:@"%@%@%@",
+                                   [self uuidStringForFirstPart:YES],
+                                   characteristicString,
+                                   [self uuidStringForFirstPart:NO]] : nil;
+}
+
+- (NSString *)uuidForService:(SLLockManagerService)service
+{
+    NSString *serviceString;
+    
+    switch (service) {
+        case SLLockManagerServiceSecurity:
+            serviceString = @"5E00";
+            break;
+        case SLLockManagerServiceHardware:
+            serviceString = @"5E40";
+            break;
+        case SLLockManagerServiceConfiguration:
+            serviceString = @"5E80";
+            break;
+        case SLLockManagerServiceTest:
+            serviceString = @"5EC0";
+            break;
+        case SLLockManagerServiceBoot:
+            serviceString = @"5D00";
+            break;
+        default:
+            break;
+    }
+    
+    return serviceString ? [NSString stringWithFormat:@"%@%@%@",
+                            [self uuidStringForFirstPart:YES],
+                            serviceString,
+                            [self uuidStringForFirstPart:NO]] : nil;
+}
+
+- (NSString *)uuidStringForFirstPart:(BOOL)isFirstPart
+{
+    return isFirstPart ? @"D399" : @"-FA57-11E4-AE59-0002A5D5C51B";
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
@@ -364,15 +414,9 @@ typedef enum {
     if (!self.locksToAdd[lock.name]) {
         self.locksToAdd[lock.name] = lock;
         
-        if (self.hasBleControl) {
-            [self.bleManager addPeripheralNamed:lock.name];
-        }
-        
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                             object:lock];
     }
-    
-    
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager connectedPeripheral:(SEBLEPeripheral *)peripheral
@@ -393,7 +437,7 @@ typedef enum {
 
 - (void)bleInterfaceManagerIsPoweredOn:(SEBLEInterfaceMangager *)interfaceManager
 {
-    [self.bleManager startScan];
+    self.bleIsPoweredOn = YES;
 }
 
 @end

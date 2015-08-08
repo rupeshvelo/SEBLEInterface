@@ -15,12 +15,15 @@
 #import "SLUserDefaults.h"
 #import "SLMapViewController.h"
 #import "SLMainTutorialViewController.h"
+#import "NSString+Skylock.h"
+
 
 #define kSLLoginVCFontName      @"HelveticaNeue"
-#define kSLLoginVCFont          [UIFont fontWithName:kSLLoginVCFontName size:13.0f]
+#define kSLLoginVCFont          [UIFont fontWithName:kSLLoginVCFontName size:17.0f]
 #define KSLLoginVCDarkGrey      [UIColor colorWithRed:97 green:100 blue:100]
 #define KSLLoginVCLightGrey     [UIColor colorWithRed:146 green:148 blue:151]
 #define KSLLoginVCUnderlineGrey [UIColor colorWithRed:191 green:191 blue:191]
+
 
 @interface SLLoginViewController ()
 
@@ -95,11 +98,15 @@
 - (UILabel *)letsGetStartedLabel
 {
     if (!_letsGetStartedLabel) {
+        
+        NSString *text = NSLocalizedString(@"Let's get started!", nil);
+        CGSize size = [text sizeWithFont:kSLLoginVCFont
+                                 maxSize:CGSizeMake(self.view.bounds.size.width, CGFLOAT_MAX)];
         _letsGetStartedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                          0.0f,
-                                                                         self.view.bounds.size.width,
-                                                                         15.0f)];
-        _letsGetStartedLabel.text = NSLocalizedString(@"Let's get started!", nil);
+                                                                         size.width,
+                                                                         size.height)];
+        _letsGetStartedLabel.text = text;
         _letsGetStartedLabel.font = kSLLoginVCFont;
         _letsGetStartedLabel.textColor = KSLLoginVCDarkGrey;
         _letsGetStartedLabel.textAlignment = NSTextAlignmentCenter;
@@ -291,12 +298,12 @@
                                              self.getStartedButton.bounds.size.height);
     
     self.letsGetStartedLabel.frame = CGRectMake(-self.letsGetStartedLabel.bounds.size.width,
-                                                160.0f,
+                                                CGRectGetMaxY(self.skylockLogoView.frame) + 40.0f,
                                                 self.letsGetStartedLabel.bounds.size.width,
                                                 self.letsGetStartedLabel.bounds.size.height);
     
     self.facebookLabel.frame = CGRectMake(self.view.bounds.size.width,
-                                          CGRectGetMaxY(self.letsGetStartedLabel.frame) + 40.0f,
+                                          self.view.bounds.size.height - 200.0f,
                                           self.facebookLabel.bounds.size.width,
                                           self.facebookLabel.bounds.size.height);
     
@@ -305,35 +312,35 @@
                                            self.facebookButton.bounds.size.width,
                                            self.facebookButton.bounds.size.height);
     
-    self.alternateLabel.frame = CGRectMake(self.view.bounds.size.width,
-                                           CGRectGetMaxY(self.facebookButton.frame) + 40.0f,
-                                           self.alternateLabel.bounds.size.width,
-                                           self.alternateLabel.bounds.size.height);
-    
-    self.emailField.frame = CGRectMake(-self.emailField.bounds.size.width,
-                                       CGRectGetMaxY(self.alternateLabel.frame) + 40.0f,
-                                       self.emailField.bounds.size.width,
-                                       self.emailField.bounds.size.height);
-    
-    self.passwordField.frame = CGRectMake(self.view.bounds.size.width,
-                                          CGRectGetMaxY(self.emailField.frame) + 25.0f,
-                                          self.passwordField.bounds.size.width,
-                                          self.passwordField.bounds.size.height);
-    
-    self.loginButton.frame = CGRectMake(-self.loginButton.bounds.size.width,
-                                        CGRectGetMaxY(self.passwordField.frame) + 25.0f,
-                                        self.loginButton.bounds.size.width,
-                                        self.loginButton.bounds.size.height);
-    
-    self.signUpButton.frame = CGRectMake(self.view.bounds.size.width,
-                                         self.loginButton.frame.origin.y,
-                                         self.signUpButton.bounds.size.width,
-                                         self.loginButton.bounds.size.height);
-    
-    self.forgotPasswordButton.frame = CGRectMake(-self.forgotPasswordButton.bounds.size.width,
-                                                 CGRectGetMaxY(self.signUpButton.frame) + 20.0f,
-                                                 self.forgotPasswordButton.bounds.size.width,
-                                                 self.forgotPasswordButton.bounds.size.height);
+//    self.alternateLabel.frame = CGRectMake(self.view.bounds.size.width,
+//                                           CGRectGetMaxY(self.facebookButton.frame) + 40.0f,
+//                                           self.alternateLabel.bounds.size.width,
+//                                           self.alternateLabel.bounds.size.height);
+//    
+//    self.emailField.frame = CGRectMake(-self.emailField.bounds.size.width,
+//                                       CGRectGetMaxY(self.alternateLabel.frame) + 40.0f,
+//                                       self.emailField.bounds.size.width,
+//                                       self.emailField.bounds.size.height);
+//    
+//    self.passwordField.frame = CGRectMake(self.view.bounds.size.width,
+//                                          CGRectGetMaxY(self.emailField.frame) + 25.0f,
+//                                          self.passwordField.bounds.size.width,
+//                                          self.passwordField.bounds.size.height);
+//    
+//    self.loginButton.frame = CGRectMake(-self.loginButton.bounds.size.width,
+//                                        CGRectGetMaxY(self.passwordField.frame) + 25.0f,
+//                                        self.loginButton.bounds.size.width,
+//                                        self.loginButton.bounds.size.height);
+//    
+//    self.signUpButton.frame = CGRectMake(self.view.bounds.size.width,
+//                                         self.loginButton.frame.origin.y,
+//                                         self.signUpButton.bounds.size.width,
+//                                         self.loginButton.bounds.size.height);
+//    
+//    self.forgotPasswordButton.frame = CGRectMake(-self.forgotPasswordButton.bounds.size.width,
+//                                                 CGRectGetMaxY(self.signUpButton.frame) + 20.0f,
+//                                                 self.forgotPasswordButton.bounds.size.width,
+//                                                 self.forgotPasswordButton.bounds.size.height);
     
     [self setUpGetStartedViews];
 }
@@ -345,9 +352,9 @@
 - (void)transitionToLogin
 {
     [UIView animateWithDuration:SLConstantsAnimationDurration2 animations:^{
-        self.skylockLogoView.frame = CGRectOffset(self.skylockLogoView.frame,
-                                                  0.0f,
-                                                  50.0f - self.skylockLogoView.frame.origin.y);
+//        self.skylockLogoView.frame = CGRectOffset(self.skylockLogoView.frame,
+//                                                  0.0f,
+//                                                  50.0f - self.skylockLogoView.frame.origin.y);
         
         self.getStartedButton.frame = CGRectOffset(self.getStartedButton.frame,
                                                    0.0,
@@ -361,9 +368,11 @@
 - (void)animateLoginComponents
 {
     [UIView animateWithDuration:SLConstantsAnimationDurration2 animations:^{
-        self.letsGetStartedLabel.frame = CGRectOffset(self.letsGetStartedLabel.frame,
-                                                      self.letsGetStartedLabel.bounds.size.width,
-                                                      0.0f);
+        self.letsGetStartedLabel.frame = CGRectMake(.5*(self.view.bounds.size.width - self.letsGetStartedLabel.bounds.size.width),
+                                                    self.letsGetStartedLabel.frame.origin.y,
+                                                    self.letsGetStartedLabel.bounds.size.width,
+                                                    self.letsGetStartedLabel.bounds.size.height);
+        
         self.facebookLabel.frame = CGRectOffset(self.facebookLabel.frame,
                                                 -self.facebookLabel.frame.size.width,
                                                 0.0f);
@@ -372,30 +381,30 @@
                                                  self.facebookButton.bounds.size.width + self.xPadding,
                                                  0.0f);
         
-        self.alternateLabel.frame = CGRectOffset(self.alternateLabel.frame,
-                                                 -self.alternateLabel.bounds.size.width,
-                                                 0.0f);
+//        self.alternateLabel.frame = CGRectOffset(self.alternateLabel.frame,
+//                                                 -self.alternateLabel.bounds.size.width,
+//                                                 0.0f);
+//        
+//        self.emailField.frame = CGRectOffset(self.emailField.frame,
+//                                             self.emailField.bounds.size.width + self.xPadding,
+//                                             0.0f);
         
-        self.emailField.frame = CGRectOffset(self.emailField.frame,
-                                             self.emailField.bounds.size.width + self.xPadding,
-                                             0.0f);
-        
-        self.passwordField.frame = CGRectMake(self.emailField.frame.origin.x,
-                                              self.passwordField.frame.origin.y,
-                                              self.passwordField.bounds.size.width,
-                                              self.passwordField.bounds.size.height);
-        
-        self.loginButton.frame = CGRectOffset(self.loginButton.frame,
-                                              self.loginButton.bounds.size.width + self.xPadding,
-                                              0.0f);
-        
-        self.signUpButton.frame = CGRectOffset(self.signUpButton.frame,
-                                               -self.xPadding - self.loginButton.bounds.size.width,
-                                               0.0f);
-        
-        self.forgotPasswordButton.frame = CGRectOffset(self.forgotPasswordButton.frame,
-                                                       self.forgotPasswordButton.bounds.size.width,
-                                                       0.0f);
+//        self.passwordField.frame = CGRectMake(self.emailField.frame.origin.x,
+//                                              self.passwordField.frame.origin.y,
+//                                              self.passwordField.bounds.size.width,
+//                                              self.passwordField.bounds.size.height);
+//        
+//        self.loginButton.frame = CGRectOffset(self.loginButton.frame,
+//                                              self.loginButton.bounds.size.width + self.xPadding,
+//                                              0.0f);
+//        
+//        self.signUpButton.frame = CGRectOffset(self.signUpButton.frame,
+//                                               -self.xPadding - self.loginButton.bounds.size.width,
+//                                               0.0f);
+//        
+//        self.forgotPasswordButton.frame = CGRectOffset(self.forgotPasswordButton.frame,
+//                                                       self.forgotPasswordButton.bounds.size.width,
+//                                                       0.0f);
     }];
 }
 

@@ -9,6 +9,8 @@
 #import "SLCoachMarkViewController.h"
 #import "NSString+Skylock.h"
 #import "UIColor+RGB.h"
+#import "SLConstants.h"
+
 
 typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
     SLCoachMarkParamPaginationImage,
@@ -230,6 +232,13 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
             infoLabelText = NSLocalizedString(@"Share access to your bike with anyone in your trusted network. Create and set up your own bike share system.", nil);
             buttonLabelText = NSLocalizedString(@"Sharing", nil);
             break;
+        case SLCoachMarkPageDone:
+            paginationImageName = @"pagination_white4";
+            buttonImageName = @"";
+            titleLabelText = @"";
+            infoLabelText = @"";
+            buttonLabelText = @"";
+            break;
         default:
             break;
     }
@@ -238,7 +247,7 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
     UIImage *buttonImage = [UIImage imageNamed:[NSString stringWithFormat:@"%@", buttonImageName]];
     
     self.paramsForPage = @{@(SLCoachMarkParamPaginationImage):paginationImage,
-                           @(SLCoachMarkParamButtonImage):buttonImage,
+                           @(SLCoachMarkParamButtonImage):buttonImage ? buttonImage : [NSNull null],
                            @(SLCoachMarkParamTitleLabelText):titleLabelText,
                            @(SLCoachMarkParamInfoLabelText):infoLabelText,
                            @(SLCoachMarkParamButtonLabelText):buttonLabelText
@@ -254,26 +263,36 @@ typedef NS_ENUM(NSUInteger, SLCoachMarkParam) {
 
 - (void)buttonPressed
 {
-    BOOL shouldUpdate = YES;
     if (self.currentPage == SLCoachMarkPageCrash) {
         self.currentPage = SLCoachMarkPageTheft;
     } else if (self.currentPage == SLCoachMarkPageTheft) {
         self.currentPage = SLCoachMarkPageSharing;
-        self.doneButton.hidden = NO;
-    } else {
-        shouldUpdate = NO;
+    } else if (self.currentPage == SLCoachMarkPageSharing) {
+        self.currentPage = SLCoachMarkPageDone;
     }
     
-    if (shouldUpdate) {
-        [self updateParameters];
-        
-        self.paginationView.image = self.paramsForPage[@(SLCoachMarkParamPaginationImage)];
-        self.titleLabel.text = self.paramsForPage[@(SLCoachMarkParamTitleLabelText)];
-        self.infoLabel.text = self.paramsForPage[@(SLCoachMarkParamInfoLabelText)];
+    [self updateParameters];
+    
+    self.paginationView.image = self.paramsForPage[@(SLCoachMarkParamPaginationImage)];
+    self.titleLabel.text = self.paramsForPage[@(SLCoachMarkParamTitleLabelText)];
+    self.infoLabel.text = self.paramsForPage[@(SLCoachMarkParamInfoLabelText)];
+    self.buttonLabel.text = self.paramsForPage[@(SLCoachMarkParamButtonLabelText)];
+    if (self.paramsForPage[@(SLCoachMarkParamButtonImage)] == [NSNull null]) {
+        self.doneButton.alpha = 0.0f;
+        self.doneButton.hidden = NO;
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.doneButton.alpha = 1.0f;
+            self.button.alpha = 0.0f;
+            self.titleLabel.alpha = 0.0f;
+            self.handView.alpha = 0.0f;
+        } completion:^(BOOL finished) {
+            [self.button removeFromSuperview];
+            [self.titleLabel removeFromSuperview];
+            [self.handView removeFromSuperview];
+        }];
+    } else {
         [self.button setImage:self.paramsForPage[@(SLCoachMarkParamButtonImage)]
                      forState:UIControlStateNormal];
-        self.buttonLabel.text = self.paramsForPage[@(SLCoachMarkParamButtonLabelText)];
-        
         [self setLowerViewFrames];
     }
 }

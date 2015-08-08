@@ -413,13 +413,15 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)searchButtonPressed
 {
     NSLog(@"search button search");
-    NSArray *locks = [SLLockManager.manager orderedLocksByName];
-    if (locks.count == 0) {
-        [SLLockManager.manager enableBleScan:YES];
-        [SLLockManager.manager startScan];
-    } else {
-        [self nextButtonPressed];
-    }
+    [self nextButtonPressed];
+
+//    NSArray *locks = [SLLockManager.manager orderedLocksByName];
+//    if (locks.count == 0) {
+//        [SLLockManager.manager enableBleScan:YES];
+//        [SLLockManager.manager startScan];
+//    } else {
+//        [self nextButtonPressed];
+//    }
 }
 
 - (void)foundLock:(NSNotification *)notification

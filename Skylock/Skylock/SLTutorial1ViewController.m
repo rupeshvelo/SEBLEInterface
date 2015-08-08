@@ -7,6 +7,8 @@
 //
 
 #import "SLTutorial1ViewController.h"
+#import "NSString+Skylock.h"
+#import "UIColor+RGB.h"
 
 #define kSLTutorial1VCInfoFont [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
 
@@ -21,16 +23,15 @@
 - (UILabel *)orderInfoLabel
 {
     if (!_orderInfoLabel) {
+        CGSize size = [self.orderInfoText sizeWithFont:kSLTutorial1VCInfoFont
+                                               maxSize:CGSizeMake(self.view.bounds.size.width, CGFLOAT_MAX)];
         _orderInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                     0.0f,
-                                                                    .5*(self.view.bounds.size.width - 2*self.padding),
-                                                                    20.0f)];
+                                                                    size.width,
+                                                                    size.height)];
         _orderInfoLabel.text = self.orderInfoText;
         _orderInfoLabel.font = kSLTutorial1VCInfoFont;
-        _orderInfoLabel.textColor = [UIColor colorWithRed:146.0f/255.0f
-                                                    green:148.0f/255.0f
-                                                     blue:151.0f/255.0f
-                                                    alpha:1.0f];
+        _orderInfoLabel.textColor = [UIColor colorWithRed:146 green:148 blue:151];
         _orderInfoLabel.numberOfLines = 1;
         [self.view addSubview:_orderInfoLabel];
     }
@@ -44,14 +45,15 @@
         UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(infoLabelTouched)];
         tgr.numberOfTapsRequired = 1;
-        
+        CGSize size = [self.orderText sizeWithFont:kSLTutorial1VCInfoFont
+                                               maxSize:CGSizeMake(self.view.bounds.size.width, CGFLOAT_MAX)];
         _orderLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
                                                                 0.0f,
-                                                                self.orderInfoLabel.bounds.size.width,
-                                                                self.orderInfoLabel.bounds.size.height)];
+                                                                size.width,
+                                                                size.height)];
         _orderLabel.text = self.orderText;
         _orderLabel.font = kSLTutorial1VCInfoFont;
-        _orderLabel.textColor = [UIColor blueColor];
+        _orderLabel.textColor = [UIColor colorWithRed:43 green:132 blue:210];
         _orderLabel.numberOfLines = 1;
         _orderLabel.userInteractionEnabled = YES;
         [_orderLabel addGestureRecognizer:tgr];
@@ -75,7 +77,7 @@
                                            self.orderInfoLabel.bounds.size.width,
                                            self.orderInfoLabel.bounds.size.height);
     
-    self.orderLabel.frame = CGRectMake(CGRectGetMaxX(self.orderInfoLabel.frame),
+    self.orderLabel.frame = CGRectMake(CGRectGetMaxX(self.orderInfoLabel.frame) + 3.0f,
                                        self.orderInfoLabel.frame.origin.y,
                                        self.orderLabel.frame.size.width,
                                        self.orderLabel.frame.size.height);

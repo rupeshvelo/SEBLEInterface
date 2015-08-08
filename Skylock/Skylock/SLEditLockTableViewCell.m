@@ -16,7 +16,7 @@
 
 @interface SLEditLockTableViewCell()
 
-@property (nonatomic, strong) SLSlideControllerOptionsButton *renameButton;
+@property (nonatomic, strong) SLSlideControllerOptionsButton *shareButton;
 @property (nonatomic, strong) SLSlideControllerOptionsButton *removeButton;
 @property (nonatomic, strong) UIView *verticalSeperator;
 
@@ -28,6 +28,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                            action:@selector(longPressActivated:)];
         lpgr.minimumPressDuration = 1.0f;
@@ -51,13 +52,13 @@
     return _verticalSeperator;
 }
 
-- (SLSlideControllerOptionsButton *)renameButton
+- (SLSlideControllerOptionsButton *)shareButton
 {
-    if (!_renameButton) {
-        NSString *title = NSLocalizedString(@"Rename", nil);
-        NSString *imageName = @"icon_rename";
+    if (!_shareButton) {
+        NSString *title = NSLocalizedString(@"Share", nil);
+        NSString *imageName = @"icon_share";
         
-        _renameButton = [[SLSlideControllerOptionsButton alloc] initWithFrame:CGRectMake(0.0f,
+        _shareButton = [[SLSlideControllerOptionsButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                                          0.0f,
                                                                                          .5*(self.bounds.size.width - self.verticalSeperator.bounds.size.width),
                                                                                          self.bounds.size.height)
@@ -65,13 +66,13 @@
                                                                     imageName:imageName
                                                                          font:kSLEditLockTableCellFont
                                                                    titleColor:kSLEditLockTableCellTitleColor];
-        [_renameButton addTarget:self
-                          action:@selector(renameButtonPressed)
+        [_shareButton addTarget:self
+                          action:@selector(shareButtonPressed)
                 forControlEvents:UIControlEventTouchUpInside];
-        [self.contentView addSubview:_renameButton];
+        [self.contentView addSubview:_shareButton];
     }
     
-    return _renameButton;
+    return _shareButton;
 }
 
 - (SLSlideControllerOptionsButton *)removeButton
@@ -101,12 +102,12 @@
 {
     [super layoutSubviews];
     
-    self.renameButton.frame = CGRectMake(0.0f,
+    self.shareButton.frame = CGRectMake(0.0f,
                                          0.0f,
-                                         self.renameButton.bounds.size.width,
-                                         self.renameButton.bounds.size.height);
+                                         self.shareButton.bounds.size.width,
+                                         self.shareButton.bounds.size.height);
     
-    self.verticalSeperator.frame = CGRectMake(CGRectGetMaxX(self.renameButton.frame),
+    self.verticalSeperator.frame = CGRectMake(CGRectGetMaxX(self.shareButton.frame),
                                               0.0f,
                                               self.verticalSeperator.bounds.size.width,
                                               self.verticalSeperator.bounds.size.height);
@@ -126,10 +127,10 @@
     // Configure the view for the selected state
 }
 
-- (void)renameButtonPressed
+- (void)shareButtonPressed
 {
-    if ([self.delegate respondsToSelector:@selector(editLockCellRenamePushed:)]) {
-        [self.delegate editLockCellRenamePushed:self];
+    if ([self.delegate respondsToSelector:@selector(editLockCellSharePushed:)]) {
+        [self.delegate editLockCellSharePushed:self];
     }
 }
 

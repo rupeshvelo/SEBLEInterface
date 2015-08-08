@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <AddressBookUI/AddressBookUI.h>
 
+@class SLLock;
+
 @interface SLSharingViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) SLLock *lock;
 
 @end

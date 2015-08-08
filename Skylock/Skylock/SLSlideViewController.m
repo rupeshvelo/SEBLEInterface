@@ -26,12 +26,15 @@
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
 #define kSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
 #define kSLSlideViewControllerRowTextKey            @"SLSlideViewControllerRowTextKey"
+#define kSLSlideViewControllerCellHeight            56.0f
 
 @interface SLSlideViewController()
 
 @property (nonatomic, strong) UIButton *testButton;
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UITableView *optionsTableView;
 @property (nonatomic, strong) NSArray *locks;
+@property (nonatomic, strong) NSArray *options;
 @property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) SLDbUser *user;
@@ -47,20 +50,38 @@
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
                                                                    self.view.bounds.size.width,
-                                                                   self.view.bounds.size.height - self.optionsView.bounds.size.height - self.dividerView.bounds.size.height)
+                                                                   self.view.bounds.size.height - self.optionsTableView.bounds.size.height)
                                                   style:UITableViewStylePlain];
         [_tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
         [_tableView registerClass:[SLEditLockTableViewCell class] forCellReuseIdentifier:self.editLockTableViewCellIdentifier];
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.layoutMargins = UIEdgeInsetsZero;
-        _tableView.rowHeight = 56.0f;
+        _tableView.rowHeight = kSLSlideViewControllerCellHeight;
         _tableView.scrollEnabled = NO;
     }
     
     return _tableView;
 }
 
+- (UITableView *)optionsTableView
+{
+    if (!_optionsTableView) {
+        CGFloat height = self.options.count*kSLSlideViewControllerCellHeight;
+        _optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                          self.view.bounds.size.height - height,
+                                                                          self.view.bounds.size.width,
+                                                                          height)
+                                                         style:UITableViewStylePlain];
+        _optionsTableView.delegate = self;
+        _optionsTableView.dataSource = self;
+        _optionsTableView.layoutMargins = UIEdgeInsetsZero;
+        _optionsTableView.rowHeight = kSLSlideViewControllerCellHeight;
+        _optionsTableView.scrollEnabled = NO;
+    }
+    
+    return _optionsTableView;
+}
 
 - (NSArray *)locks
 {
@@ -69,6 +90,27 @@
     }
     
     return _locks;
+}
+
+- (NSArray *)options
+{
+    if (!_options) {
+        _options = @[@{@"title":NSLocalizedString(@"Add Lock", nil),
+                       @"imageName":@"icon_lock"
+                       },
+                     @{@"title":NSLocalizedString(@"Store", nil),
+                       @"imageName":@"icon_store"
+                       },
+                     @{@"title":NSLocalizedString(@"Settings", nil),
+                       @"imageName":@"icon_settings_small"
+                       },
+                     @{@"title":NSLocalizedString(@"Help", nil),
+                       @"imageName":@"icon_help"
+                       }
+                     ];
+    }
+    
+    return _options;
 }
 
 - (SLSlideControllerOptionsView *)optionsView
@@ -110,6 +152,10 @@
 {
     [super viewWillAppear:animated];
     
+    if (![self.view.subviews containsObject:self.optionsTableView]) {
+        [self.view addSubview:self.optionsTableView];
+    }
+    
     if (![self.view.subviews containsObject:self.tableView]) {
         [self.view addSubview:self.tableView];
     }
@@ -122,13 +168,13 @@
         [self.view addSubview:self.dividerView];
     }
     
-    if (![self.view.subviews containsObject:self.optionsView]) {
-        self.optionsView.frame = CGRectMake(0.0f,
-                                            CGRectGetMaxY(self.dividerView.frame),
-                                            self.optionsView.bounds.size.width,
-                                            self.optionsView.bounds.size.height);
-        [self.view addSubview:self.optionsView];
-    }
+//    if (![self.view.subviews containsObject:self.optionsView]) {
+//        self.optionsView.frame = CGRectMake(0.0f,
+//                                            CGRectGetMaxY(self.dividerView.frame),
+//                                            self.optionsView.bounds.size.width,
+//                                            self.optionsView.bounds.size.height);
+//        [self.view addSubview:self.optionsView];
+//    }
     
     
 }
@@ -151,24 +197,44 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.locks.count;
+    return tableView == self.tableView ? self.locks.count : self.options.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.isEditMode) {
-        SLEditLockTableViewCell *cell = (SLEditLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.editLockTableViewCellIdentifier];
-        cell.delegate = self;
-        
-        return cell;
-    } else {
-        SLLock *lock = self.locks[indexPath.row];
-        SLLockTableViewCell *cell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
-        cell.delegate = self;
-        [cell updateCellWithLock:lock];
-        
-        return cell;
+    if (tableView == self.tableView) {
+        if (self.isEditMode) {
+            SLEditLockTableViewCell *cell = (SLEditLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.editLockTableViewCellIdentifier];
+            cell.delegate = self;
+            
+            return cell;
+        } else {
+            SLLock *lock = self.locks[indexPath.row];
+            SLLockTableViewCell *cell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
+            cell.delegate = self;
+            [cell updateCellWithLock:lock];
+            
+            return cell;
+        }
     }
+    
+    static NSString *optionsCellId = @"optionsCellId";
+    UITableViewCell *optionsCell = [tableView dequeueReusableCellWithIdentifier:optionsCellId];
+    if (!optionsCell) {
+        optionsCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:optionsCellId];
+    }
+    
+    NSDictionary *option = self.options[indexPath.row];
+
+    UIImage *image = [UIImage imageNamed:option[@"imageName"]];
+    optionsCell.accessoryView = [[UIImageView alloc] initWithImage:image];
+    
+    optionsCell.textLabel.text = option[@"title"];
+    optionsCell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+    optionsCell.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
+    optionsCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    return optionsCell;
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -189,42 +255,54 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    SLSlideTableViewHeader *header = [[SLSlideTableViewHeader alloc] initWithFrame:CGRectMake(0.0f,
-                                                                                              0.0f,
-                                                                                              self.view.bounds.size.width,
-                                                                                              [self tableView:tableView heightForHeaderInSection:section])];
-    header.name = self.user.fullName;
-    header.delegate = self;
-    
-    if (self.user.facebookId) {
-        [SLPicManager.manager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
-            if (!image) {
-                image = [UIImage imageNamed:@"img_userav_small"];
-            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [header.circleView setPicImage:image];
-            });
-            
-        }];
+    if (tableView == self.tableView) {
+        SLSlideTableViewHeader *header = [[SLSlideTableViewHeader alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                                  0.0f,
+                                                                                                  self.view.bounds.size.width,
+                                                                                                  [self tableView:tableView heightForHeaderInSection:section])];
+        header.name = self.user.fullName;
+        header.delegate = self;
+        
+        if (self.user.facebookId) {
+            [SLPicManager.manager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
+                if (!image) {
+                    image = [UIImage imageNamed:@"img_userav_small"];
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [header.circleView setPicImage:image];
+                });
+                
+            }];
+        }
+        
+        return header;
     }
     
-    return header;
+    return nil;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
-                                                              0.0f,
-                                                              [self tableView:tableView heightForFooterInSection:section],
-                                                              tableView.bounds.size.width)];
-    footer.backgroundColor = [UIColor colorWithRed:191 green:191 blue:191];
-    return footer;
+    if (tableView == self.tableView) {
+        UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                  0.0f,
+                                                                  [self tableView:tableView heightForFooterInSection:section],
+                                                                  tableView.bounds.size.width)];
+        footer.backgroundColor = [UIColor colorWithRed:191 green:191 blue:191];
+        return footer;
+    }
+    
+    return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 100.0f;
+    if (tableView == self.tableView) {
+        return 100.0f;
+    }
+    
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
@@ -234,10 +312,29 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
-        [self.delegate slideViewController:self
-                              buttonPushed:[self buttonActionForIndexPath:indexPath]
-                                   options:[self optionsForIndexPath:indexPath]];
+    if (tableView == self.tableView) {
+        if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
+            [self.delegate slideViewController:self
+                                  buttonPushed:[self buttonActionForIndexPath:indexPath]
+                                       options:[self optionsForIndexPath:indexPath]];
+        }
+    } else {
+        switch (indexPath.row) {
+            case 0:
+                [self presentAddLockViewController];
+                break;
+            case 1:
+                NSLog(@"Store pressed");
+                break;
+            case 2:
+                NSLog(@"Settings pressed");
+                break;
+            case 3:
+                NSLog(@"Help pressed");
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -289,7 +386,7 @@
 {
     SLAddLockViewController *alvc = [SLAddLockViewController new];
     alvc.delegate = self;
-    alvc.headerHeight = [self tableView:self.tableView heightForHeaderInSection:0];
+    //alvc.headerHeight = [self tableView:self.tableView heightForHeaderInSection:0];
     alvc.view.frame = CGRectMake(-self.view.bounds.size.width,
                                  0.0f,
                                  self.view.bounds.size.width,
@@ -307,11 +404,27 @@
     } completion:nil];
 }
 
+- (void)dismissAddLockViewController:(SLAddLockViewController *)alvc withCompletion:(void(^)(void))completion
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        alvc.view.frame = CGRectMake(-alvc.view.bounds.size.width,
+                                     0.0f,
+                                     alvc.view.bounds.size.width,
+                                     alvc.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [alvc.view removeFromSuperview];
+        [alvc removeFromParentViewController];
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 - (NSArray *)indexPathsForSection:(NSUInteger)section
 {
     NSMutableArray *paths = [NSMutableArray new];
     NSUInteger rows = [self.tableView numberOfRowsInSection:section];
-    for (NSUInteger i=0; i < rows; i++) {
+    for (NSUInteger i = 0; i < rows; i++) {
         [paths addObject:[NSIndexPath indexPathForRow:i inSection:section]];
     }
     
@@ -321,18 +434,16 @@
 #pragma mark - SLAddLockViewController Delegate Methods
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
 {
-    self.locks = [SLLockManager.manager orderedLocksByName];
-    [self.tableView reloadData];
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        alvc.view.frame = CGRectMake(-alvc.view.bounds.size.width,
-                                     0.0f,
-                                     alvc.view.bounds.size.width,
-                                     alvc.view.bounds.size.height);
-    } completion:^(BOOL finished) {
-        [alvc.view removeFromSuperview];
-        [alvc removeFromParentViewController];
+    [self dismissAddLockViewController:alvc withCompletion:^{
+        self.locks = [SLLockManager.manager orderedLocksByName];
+        NSIndexSet *sections = [NSIndexSet indexSetWithIndex:0];
+        [self.tableView reloadSections:sections withRowAnimation:UITableViewRowAnimationLeft];
     }];
+}
+
+- (void)addLockViewControllerWantsDismiss:(SLAddLockViewController *)alvc
+{
+    [self dismissAddLockViewController:alvc withCompletion:nil];
 }
 
 #pragma mark - Slide Tableview Header Delegate Methods
@@ -374,9 +485,13 @@
 }
 
 #pragma mark - SLLockEditTableViewCellDelgate methods
-- (void)editLockCellRenamePushed:(SLEditLockTableViewCell *)cell
+- (void)editLockCellSharePushed:(SLEditLockTableViewCell *)cell
 {
-    NSLog(@"rename pushed");
+    if ([self.delegate respondsToSelector:@selector(slideViewControllerSharingPressed:withLock:)]) {
+        NSIndexPath *path = [self.tableView indexPathForCell:cell];
+        SLLock *lock = self.locks[path.row];
+        [self.delegate slideViewControllerSharingPressed:self withLock:lock];
+    }
 }
 
 - (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell

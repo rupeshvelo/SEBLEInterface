@@ -59,7 +59,6 @@ class SLSettingsViewController: UIViewController {
         return view
     }()
     
-    
     lazy var alertSettingsTitleLabel: UILabel = {
         var settingLabel:UILabel = UILabel(frame: CGRectMake(
             self.xPadding,
@@ -367,9 +366,9 @@ class SLSettingsViewController: UIViewController {
         return view
     }()
     
-    lazy var touchPadView:UIView = {
-        let view: UIView = UIView(frame: CGRectMake(0, 0, self.pinCodeView.bounds.size.width, <#height: CGFloat#>))
-    }()
+//    lazy var touchPadView:UIView = {
+//        let view: UIView = UIView(frame: CGRectMake(0, 0, self.pinCodeView.bounds.size.width, <#height: CGFloat#>))
+//    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -382,7 +381,7 @@ class SLSettingsViewController: UIViewController {
         
         self.view.addSubview(self.headerView)
         self.view.addSubview(self.alertSettingsTitleLabel)
-        self.view.addSubview((self.alertSettingsInfoLabel))
+        self.view.addSubview(self.alertSettingsInfoLabel)
         self.view.addSubview(self.sliderLabelView)
         self.view.addSubview(self.sensitivitySlider)
         self.view.addSubview(self.sensitivityInfoLabel)
@@ -402,6 +401,7 @@ class SLSettingsViewController: UIViewController {
     
     func backButtonPushed() {
         println("back button pushed")
+        self.dismissViewControllerAnimated(true, completion: nil);
     }
     
     func sharingButtonPushed() {

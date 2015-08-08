@@ -13,7 +13,8 @@
 typedef NS_ENUM(NSUInteger, SLCoachMarkPage) {
     SLCoachMarkPageCrash,
     SLCoachMarkPageTheft,
-    SLCoachMarkPageSharing
+    SLCoachMarkPageSharing,
+    SLCoachMarkPageDone
 };
 
 @protocol SLCoachMarkViewControllerDelegate <NSObject>

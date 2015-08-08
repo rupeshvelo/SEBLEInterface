@@ -27,6 +27,7 @@
 #import <MapboxGL/MapboxGL.h>
 #import <CoreLocation/CoreLocation.h>
 #import "Skylock-Swift.h"
+#import "SLSharingViewController.h"
 
 @class MBDirectionsRequest;
 
@@ -42,7 +43,6 @@
 @property (nonatomic, strong) UIButton *menuButton;
 @property (nonatomic, strong) UIButton *settingsButton;
 
-@property (nonatomic, strong) SLLocationManager *locationManager;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
@@ -54,6 +54,8 @@
 @property (nonatomic, assign) BOOL isInitialLoad;
 
 @property (nonatomic, strong) SLLock *selectedLock;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 
 @end
 
@@ -62,10 +64,15 @@
 - (UIView *)touchStopperView
 {
     if (!_touchStopperView) {
+        UITapGestureRecognizer *tgr = [UITapGestureRecognizer new];
+        tgr.numberOfTapsRequired = 1;
+        [tgr addTarget:self action:@selector(touchStopperViewTapped:)];
+        
         UIColor *color = [UIColor colorWithRed:51 green:51 blue:51];
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
         _touchStopperView.userInteractionEnabled = YES;
         _touchStopperView.backgroundColor = [color colorWithAlphaComponent:.8f];
+        [_touchStopperView addGestureRecognizer:tgr];
     }
     
     return _touchStopperView;
@@ -130,11 +137,24 @@
     return _userAnnotation;
 }
 
+- (CLLocationManager *)locationManager
+{
+    if (!_locationManager) {
+        _locationManager = [CLLocationManager new];
+        _locationManager.delegate = self;
+        
+    }
+    
+    return _locationManager;
+}
+
 - (void)viewDidLoad {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
     [SLDatabaseManager.manager setCurrentUser];
+    
+    [self.locationManager requestWhenInUseAuthorization];
     
     self.lockAnnotations = [NSMutableDictionary new];
     self.isInitialLoad = YES;
@@ -158,7 +178,7 @@
                                        self.menuButton.bounds.size.height);
     
     self.settingsButton.frame = CGRectMake(self.view.bounds.size.width - self.settingsButton.bounds.size.width - 15.0f,
-                                           30.0f,
+                                           CGRectGetMidY(self.menuButton.frame) - .5*self.settingsButton.bounds.size.height,
                                            self.settingsButton.bounds.size.width,
                                            self.settingsButton.bounds.size.height);
 }
@@ -167,9 +187,9 @@
 {
     [super viewDidAppear:animated];
     
-    if ([CLLocationManager locationServicesEnabled]) {
-        self.mapView.showsUserLocation = YES;
-    }    
+//    if ([CLLocationManager locationServicesEnabled]) {
+//        self.mapView.showsUserLocation = YES;
+//    }
 }
 
 - (void)menuButtonPressed
@@ -206,7 +226,7 @@
     [SLLockManager.manager fetchLocks];
     [self.view addSubview:self.touchStopperView];
     
-    static CGFloat width = 127.0f;
+    static CGFloat width = 220.0f;
     SLSlideViewController *slvc = [SLSlideViewController new];
     slvc.delegate = self;
     slvc.view.frame = CGRectMake(-width,
@@ -250,28 +270,32 @@
 - (void)presentSettingsViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self.view addSubview:self.touchStopperView];
+//    [self.view addSubview:self.touchStopperView];
+//    
+//    static CGFloat width = 233.0f;
+//    SLSettingsViewController *svc = [SLSettingsViewController new];
+//    //slvc.delegate = self;
+//    svc.view.frame = CGRectMake(self.view.bounds.size.width,
+//                                0.0f,
+//                                width,
+//                                self.view.bounds.size.height);
+//    
+//    [self addChildViewController:svc];
+//    [self.view addSubview:svc.view];
+//    [self.view bringSubviewToFront:svc.view];
+//    [svc didMoveToParentViewController:self];
+//    
+//    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+//        svc.view.frame = CGRectMake(self.view.bounds.size.width - svc.view.bounds.size.width,
+//                                     0.0f,
+//                                     width,
+//                                     svc.view.bounds.size.height);
+//    } completion:nil];
     
-    static CGFloat width = 233.0f;
     SLSettingsViewController *svc = [SLSettingsViewController new];
-    //slvc.delegate = self;
-    svc.view.frame = CGRectMake(self.view.bounds.size.width,
-                                0.0f,
-                                width,
-                                self.view.bounds.size.height);
-    
-    [self addChildViewController:svc];
-    [self.view addSubview:svc.view];
-    [self.view bringSubviewToFront:svc.view];
-    [svc didMoveToParentViewController:self];
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        svc.view.frame = CGRectMake(self.view.bounds.size.width - svc.view.bounds.size.width,
-                                     0.0f,
-                                     width,
-                                     svc.view.bounds.size.height);
-    } completion:nil];
+    [self presentViewController:svc animated:YES completion:nil];
 }
+
 - (void)presentLockInfoViewControllerWithLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -351,6 +375,16 @@
     }
 }
 
+- (void)presentSharingViewControllerWithLock:(SLLock *)lock
+{
+    SLSharingViewController *svc = [SLSharingViewController new];
+    svc.lock = lock;
+    
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
+    
+    [self presentViewController:nc animated:YES completion:nil];
+}
+
 - (NSDictionary *)coachMarkParameters
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -395,6 +429,22 @@
     return params;
 }
 
+- (void)touchStopperViewTapped:(UITapGestureRecognizer *)tgr
+{
+    NSLog(@"touch stopper view tapped");
+    SLSlideViewController *svc;
+    for (UIViewController *vc in self.childViewControllers) {
+        if ([vc isMemberOfClass:[SLSlideViewController class]]) {
+            svc = (SLSlideViewController *)vc;
+            break;
+        }
+    }
+    
+    if (svc) {
+        [self removeSlideViewController:svc withCompletion:nil];
+    }
+}
+
 #pragma mark - Alert view delegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -434,6 +484,11 @@
     
     SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:aivc];
     [self presentViewController:navController animated:YES completion:nil];
+}
+
+- (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock
+{
+    [self presentSharingViewControllerWithLock:lock];
 }
 
 #pragma mark - SLCoachMarkViewController Delegate Methods
@@ -489,7 +544,6 @@
 }
 
 #pragma mark - MGL map view delegate methods
-
 - (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
 {
     MGLAnnotationImage *image;
@@ -537,6 +591,34 @@
 {
     NSLog(@"%@", mapView.userLocation);
     [self centerOnUser];
+}
+
+#pragma mark - CLLocaiton manager delegate methods
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusAuthorizedAlways ||
+        status == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        
+        [manager startUpdatingLocation];
+    } else if (status == kCLAuthorizationStatusDenied) {
+        NSString *message = NSLocalizedString(@"You don't like apps that stalk you and drain your battery, and neither do we! "
+                                              "We've made a few tricks so Banter will only track your location when you're actually "
+                                              "looking at the app. On your home screen, go to Settings-Banter-Location and select "
+                                              "While Using the App. Unfortunately, we currently can't do this through the app, "
+                                              "but hopefully we'll be able to soon.\nLet's Banter!", nil);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WE'RE ON YOUR SIDE!", nil)
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
+{
+    CLLocation *location = locations[0];
+    self.userLocation = location.coordinate;
 }
 
 @end

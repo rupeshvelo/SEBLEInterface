@@ -33,6 +33,8 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 
 - (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLDbUser *)user;
 
+- (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock;
+
 @end
 
 
