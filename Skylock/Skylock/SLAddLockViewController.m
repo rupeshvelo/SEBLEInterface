@@ -31,7 +31,6 @@
         _tableView.delegate = self;
         _tableView.rowHeight = 56.0f;
         _tableView.scrollEnabled = NO;
-        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     }
     
     return _tableView;
@@ -66,14 +65,30 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [SLLockManager.manager stopScan];
+    //[SLLockManager.manager stopScan];
+    //[SLLockManager.manager removeUnconnectedLocks];
 }
 
 - (void)lockDiscovered
 {
-    self.locks = [SLLockManager.manager unaddedLocks];
-    NSIndexSet *sections = [NSIndexSet indexSetWithIndex:0];
-    [self.tableView reloadSections:sections withRowAnimation:UITableViewRowAnimationTop];
+    NSArray *unaddedLocks = [SLLockManager.manager unaddedLocks];
+    __block NSMutableArray *paths = [NSMutableArray new];
+    
+    [unaddedLocks enumerateObjectsUsingBlock:^(SLLock *unaddedLock, NSUInteger idx, BOOL *stop) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", unaddedLock.name];
+        NSArray *results = [self.locks filteredArrayUsingPredicate:predicate];
+        if (results.count == 0) {
+            NSIndexPath *path = [NSIndexPath indexPathForRow:idx inSection:0];
+            [paths addObject:path];
+        }
+    }];
+    
+    if (paths.count > 0) {
+        self.locks = [NSArray arrayWithArray:unaddedLocks];
+        [self.tableView beginUpdates];
+        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+        [self.tableView endUpdates];
+    }
 }
 
 - (void)backButtonPressed
@@ -112,11 +127,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 0) {
-        return 70.0f;
-    }
-    
-    return 0.0f;
+    return 100.0f;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 1.0f;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -125,14 +141,13 @@
                                                                 0.0f,
                                                                 tableView.bounds.size.width,
                                                                 [self tableView:tableView heightForHeaderInSection:section])];
-    header.backgroundColor = [UIColor colorWithRed:110 green:223 blue:158];
     header.text = NSLocalizedString(@"Unadded Locks", nil);
-    header.textColor = [UIColor whiteColor];
-    header.font = [UIFont fontWithName:@"Helvetica" size:13.0f];
+    header.textColor = [UIColor colorWithRed:97 green:100 blue:100];
+    header.font = [UIFont fontWithName:@"Helvetica" size:17.0f];
     header.textAlignment = NSTextAlignmentCenter;
     header.userInteractionEnabled = YES;
     
-    UIImage *backImage = [UIImage imageNamed:@"icon_chevron_left_white"];
+    UIImage *backImage = [UIImage imageNamed:@"icon_chevron_left"];
     UIButton *backButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                       CGRectGetMidY(header.bounds) - 1.5*backImage.size.height,
                                                                       6*backImage.size.width,
@@ -142,17 +157,48 @@
     backButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     backButton.contentEdgeInsets = UIEdgeInsetsMake(0, 12.0f, 0, 0);
     
-    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    spinner.frame = CGRectMake(header.bounds.size.width - spinner.bounds.size.width - 12.0f,
-                               CGRectGetMidY(header.bounds) - .5*spinner.bounds.size.height,
+    UIFont *searchFont = [UIFont fontWithName:@"HelveticaNeue" size:13.0f];
+    NSString *searchText = NSLocalizedString(@"Searching", nil);
+    CGSize searchSize = [searchText sizeWithFont:searchFont
+                                         maxSize:CGSizeMake(header.bounds.size.width, CGFLOAT_MAX)];
+    UILabel *searchingLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMidX(header.bounds) - .5*searchSize.width,
+                                                                        header.bounds.size.height - searchSize.height - 10.0f,
+                                                                        searchSize.width,
+                                                                        searchSize.height)];
+    searchingLabel.font = searchFont;
+    searchingLabel.text = searchText;
+    searchingLabel.textColor = [UIColor colorWithRed:191 green:191 blue:191];
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.frame = CGRectMake(searchingLabel.frame.origin.x - spinner.bounds.size.width - 3.0f,
+                               CGRectGetMidY(searchingLabel.frame) - .5*spinner.bounds.size.height,
                                spinner.bounds.size.width,
                                spinner.bounds.size.height);
     [spinner startAnimating];
-
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                header.bounds.size.height - 1.0f,
+                                                                header.bounds.size.width,
+                                                                1.0f)];
+    lineView.backgroundColor = [UIColor colorWithRed:191 green:191 blue:191];
+    
     [header addSubview:backButton];
+    [header addSubview:searchingLabel];
     [header addSubview:spinner];
+    [header addSubview:lineView];
     
     return header;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0.0f,
+                                                              0.0f,
+                                                              tableView.bounds.size.width,
+                                                              1.0f)];
+    footer.backgroundColor = tableView.backgroundColor;
+    
+    return footer;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

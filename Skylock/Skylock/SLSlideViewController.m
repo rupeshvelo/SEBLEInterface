@@ -21,6 +21,7 @@
 #import "SLSlideTableViewHeader.h"
 #import "SLPicManager.h"
 #import "SLEditLockTableViewCell.h"
+#import "SLLock.h"
 
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
@@ -213,7 +214,7 @@
             SLLockTableViewCell *cell = (SLLockTableViewCell *)[tableView dequeueReusableCellWithIdentifier:self.lockTableViewCellIdentifier];
             cell.delegate = self;
             [cell updateCellWithLock:lock];
-            
+
             return cell;
         }
     }
@@ -436,8 +437,22 @@
 {
     [self dismissAddLockViewController:alvc withCompletion:^{
         self.locks = [SLLockManager.manager orderedLocksByName];
-        NSIndexSet *sections = [NSIndexSet indexSetWithIndex:0];
-        [self.tableView reloadSections:sections withRowAnimation:UITableViewRowAnimationLeft];
+        NSUInteger target = NSUIntegerMax;
+        for (NSUInteger i=0; i < self.locks.count; i++) {
+            SLLock *aLock = self.locks[i];
+            if ([aLock.name isEqualToString:lock.name]) {
+                target = i;
+                break;
+            }
+        }
+        
+        if (target != NSUIntegerMax) {
+            NSIndexPath *path = [NSIndexPath indexPathForRow:target inSection:0];
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:@[path]
+                                  withRowAnimation:UITableViewRowAnimationTop];
+            [self.tableView endUpdates];
+        }
     }];
 }
 
