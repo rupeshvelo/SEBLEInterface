@@ -33,4 +33,5 @@
 - (void)startBlueToothManager;
 - (void)removeUnconnectedLocks;
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values;
+
 @end

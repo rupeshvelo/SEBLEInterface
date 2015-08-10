@@ -417,28 +417,32 @@ typedef enum {
         return;
     }
     
-    uint16_t xmav = 0;
-    uint16_t ymav = 0;
-    uint16_t zmav = 0;
-    uint16_t xvar = 0;
-    uint16_t yvar = 0;
-    uint16_t zvar = 0;
+    int16_t xmav = 0;
+    int16_t ymav = 0;
+    int16_t zmav = 0;
+    int16_t xvar = 0;
+    int16_t yvar = 0;
+    int16_t zvar = 0;
     
     uint8_t *bytes = (uint8_t *)data.bytes;
     
     for (int i=0; i < data.length; i++) {
+        NSLog(@"data at index: %@ = %@", @(i), @(bytes[i]));
+    }
+    
+    for (int i=0; i < data.length; i++) {
         if (i == 0 || i == 1) {
-            xmav += bytes[i] << (i*CHAR_BIT);
+            xmav += bytes[i] << ((i%2)*CHAR_BIT);
         } else if (i == 2 || i == 3) {
-            ymav += bytes[i] << (i*CHAR_BIT);
+            ymav += bytes[i] << ((i%2)*CHAR_BIT);
         } else if (i == 4 || i == 5) {
-            zmav += bytes[i] << (i*CHAR_BIT);
+            zmav += bytes[i] << ((i%2)*CHAR_BIT);
         } else if (i == 6 || i == 7) {
-            xvar += bytes[i] << (i*CHAR_BIT);
+            xvar += bytes[i] << ((i%2)*CHAR_BIT);
         } else if (i == 8 || i == 9) {
-            yvar += bytes[i] << (i*CHAR_BIT);
+            yvar += bytes[i] << ((i%2)*CHAR_BIT);
         } else if (i == 10 || i == 11) {
-            zvar += bytes[i] << (i*CHAR_BIT);
+            zvar += bytes[i] << ((i%2)*CHAR_BIT);
         }
     }
     
