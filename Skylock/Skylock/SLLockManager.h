@@ -25,6 +25,7 @@
 - (void)startScan;
 - (void)stopScan;
 - (NSArray *)unaddedLocks;
+- (void)setCurrentLock:(SLLock *)lock;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
@@ -33,5 +34,6 @@
 - (void)startBlueToothManager;
 - (void)removeUnconnectedLocks;
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values;
+- (void)startGettingHardwareData;
 
 @end
