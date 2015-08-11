@@ -314,6 +314,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
+        SLLock *selectedLock = self.locks[indexPath.row];
+        [SLLockManager.manager setCurrentLock:selectedLock];
+        
         if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
             [self.delegate slideViewController:self
                                   buttonPushed:[self buttonActionForIndexPath:indexPath]
@@ -450,7 +453,7 @@
             NSIndexPath *path = [NSIndexPath indexPathForRow:target inSection:0];
             [self.tableView beginUpdates];
             [self.tableView insertRowsAtIndexPaths:@[path]
-                                  withRowAnimation:UITableViewRowAnimationTop];
+                                  withRowAnimation:UITableViewRowAnimationLeft];
             [self.tableView endUpdates];
         }
     }];

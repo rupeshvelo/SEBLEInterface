@@ -86,7 +86,7 @@
     if (paths.count > 0) {
         self.locks = [NSArray arrayWithArray:unaddedLocks];
         [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationTop];
+        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationLeft];
         [self.tableView endUpdates];
     }
 }

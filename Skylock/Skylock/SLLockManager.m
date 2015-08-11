@@ -54,6 +54,9 @@ typedef enum {
 @property (nonatomic, strong) NSMutableDictionary *locksToAdd;
 @property (nonatomic, strong) SLDatabaseManager *databaseManger;
 @property (nonatomic, assign) BOOL bleIsPoweredOn;
+@property (nonatomic, strong) NSTimer *harwareTimer;
+@property (nonatomic, strong) SLLock *selectedLock;
+
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
 
@@ -98,6 +101,23 @@ typedef enum {
     return NO;
 }
 
+- (NSArray *)deviceNameFragmentsToConnect
+{
+    return @[@"skylock"];
+}
+
+- (NSSet *)servicesToSubcribeTo
+{
+    NSArray *services = @[[self uuidForService:SLLockManagerServiceSecurity],
+                          [self uuidForService:SLLockManagerServiceHardware],
+                          [self uuidForService:SLLockManagerServiceConfiguration],
+                          [self uuidForService:SLLockManagerServiceTest],
+                          [self uuidForService:SLLockManagerServiceBoot]
+                          ];
+    
+    return [NSSet setWithArray:services];
+}
+
 - (NSSet *)characteristicsToRead
 {
     NSArray *readChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo],
@@ -108,6 +128,20 @@ typedef enum {
                            ];
     
     return [NSSet setWithArray:readChars];
+}
+
+- (NSSet *)charcteristicsToNotify
+{
+    NSArray *notifyChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]
+                             ];
+    
+    return [NSSet setWithArray:notifyChars];
+}
+
+- (void)setCurrentLock:(SLLock *)lock
+{
+    self.selectedLock = lock;
 }
 
 - (void)addLock:(SLLock *)lock
@@ -203,6 +237,7 @@ typedef enum {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager startScan];
+    [self startGettingHardwareData];
 }
 
 - (void)stopScan
@@ -215,7 +250,28 @@ typedef enum {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager powerOn];
+    [self.bleManager setDeviceNamesToConnectTo:self.deviceNameFragmentsToConnect];
+    [self.bleManager setServiceToReadFrom:self.servicesToSubcribeTo];
     [self.bleManager setCharacteristicsToReadFrom:self.characteristicsToRead];
+    [self.bleManager setCharacteristicsToReceiveNotificationsFrom:self.charcteristicsToNotify];
+}
+
+- (void)startGettingHardwareData
+{
+    self.harwareTimer = [NSTimer scheduledTimerWithTimeInterval:30
+                                                         target:self
+                                                       selector:@selector(getHardwareData:)
+                                                       userInfo:nil
+                                                        repeats:YES];
+}
+
+- (void)getHardwareData:(NSTimer *)timer
+{
+    if (self.selectedLock) {
+        [self.bleManager readValueForPeripheralNamed:self.selectedLock.name
+                                      forServiceUUID:[self uuidForService:SLLockManagerServiceHardware]
+                               andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo]];
+    }
 }
 
 - (void)setLockStateForLock:(SLLock *)lock
@@ -374,7 +430,7 @@ typedef enum {
     return isFirstPart ? @"D399" : @"-FA57-11E4-AE59-0002A5D5C51B";
 }
 
-- (void)handleHardwareServiceForLockNameed:(NSString*)lockName data:(NSData *)data
+- (void)handleHardwareServiceForLockNamed:(NSString*)lockName data:(NSData *)data
 {
     if (data.length != 4) {
         NSLog(@"Error: data is not the right number of bytes for System Hardware Information");
@@ -390,12 +446,13 @@ typedef enum {
         if (i == 0 || i == 1) {
             batteryVoltage += bytes[i] << (i*CHAR_BIT);
         } else if (i == 2) {
-            temp = bytes[i] << (i*CHAR_BIT);
+            temp = bytes[i];
         } else {
-            rssi = bytes[i] << (i*CHAR_BIT);
+            rssi = bytes[i];
         }
     }
     
+    NSLog(@"hardware values -- voltage: %@, temp: %@, rssi: %@", @(batteryVoltage), @(temp), @(rssi));
     NSDictionary *values = @{@(SLLockPropertyBatteryVoltage):@(batteryVoltage),
                              @(SLLockPropertyTemperature):@(temp),
                              @(SLLockPropertyRSSIStrength):@(rssi)
@@ -417,18 +474,14 @@ typedef enum {
         return;
     }
     
-    int16_t xmav = 0;
-    int16_t ymav = 0;
-    int16_t zmav = 0;
-    int16_t xvar = 0;
-    int16_t yvar = 0;
-    int16_t zvar = 0;
+    uint16_t xmav = 0;
+    uint16_t ymav = 0;
+    uint16_t zmav = 0;
+    uint16_t xvar = 0;
+    uint16_t yvar = 0;
+    uint16_t zvar = 0;
     
     uint8_t *bytes = (uint8_t *)data.bytes;
-    
-    for (int i=0; i < data.length; i++) {
-        NSLog(@"data at index: %@ = %@", @(i), @(bytes[i]));
-    }
     
     for (int i=0; i < data.length; i++) {
         if (i == 0 || i == 1) {
@@ -454,8 +507,6 @@ typedef enum {
                                                                   @"zvar":@(zvar)
                                                                   }
                              };
-    
-    NSLog(@"updating accelerometer values: %@", values);
     
     SLLock *lock = self.locks[lockName];
     [self updateLock:lock withValues:values];
@@ -494,7 +545,7 @@ typedef enum {
                    withData:(NSData *)data
 {
     if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo]]) {
-        [self handleHardwareServiceForLockNameed:peripheral.peripheral.name data:data];
+        [self handleHardwareServiceForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet]]) {
         [self handleMagnetForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]]) {
@@ -507,4 +558,21 @@ typedef enum {
     self.bleIsPoweredOn = YES;
 }
 
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager disconnectedPeripheral:(SEBLEPeripheral *)peripheral
+{
+    if ([self.selectedLock.name isEqualToString:peripheral.peripheral.name]) {
+        self.selectedLock = nil;
+    }
+    
+    if (self.locks[peripheral.peripheral.name]) {
+        [self.locks removeObjectForKey:peripheral.peripheral.name];
+    }
+    
+    if (self.locksToAdd[peripheral.peripheral.name]) {
+        [self.locksToAdd removeObjectForKey:peripheral.peripheral.name];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
+                                                        object:@{@"lockName":peripheral.peripheral.name}];
+}
 @end
