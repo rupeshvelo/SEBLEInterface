@@ -518,7 +518,7 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    [self.mapView setCenterCoordinate:self.mapView.userLocation.coordinate animated:YES];
+    [self.mapView setCenterCoordinate:self.userLocation animated:YES];
 }
 
 - (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
@@ -541,6 +541,15 @@
 - (void)addLockToMap:(SLLock *)lock
 {
     [self.mapView addAnnotation:[self annotationForLock:lock]];
+}
+
+- (void)updateUsersLocation
+{
+    self.userAnnotation.coordinate = self.userLocation;
+
+    if (self.isInitialLoad) {
+        [self.mapView addAnnotation:self.userAnnotation];
+    }
 }
 
 #pragma mark - MGL map view delegate methods
@@ -566,25 +575,7 @@
 
 - (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
 {
-    if (self.isInitialLoad) {
-        [self centerOnUser];
-        self.isInitialLoad = NO;
-    }
-    
-    BOOL hasAnnoation = NO;
-    for (MGLPointAnnotation *annotation in mapView.annotations) {
-        if (annotation == self.userAnnotation) {
-            NSLog(@"setting user coordinate to %@", mapView.userLocation.location.description);
-            hasAnnoation = YES;
-            break;
-        }
-    }
-    
-    self.userAnnotation.coordinate = mapView.userLocation.location.coordinate;
-    
-    if (!hasAnnoation) {
-        [self.mapView addAnnotation:self.userAnnotation];
-    }
+
 }
 
 - (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
@@ -601,12 +592,8 @@
         
         [manager startUpdatingLocation];
     } else if (status == kCLAuthorizationStatusDenied) {
-        NSString *message = NSLocalizedString(@"You don't like apps that stalk you and drain your battery, and neither do we! "
-                                              "We've made a few tricks so Banter will only track your location when you're actually "
-                                              "looking at the app. On your home screen, go to Settings-Banter-Location and select "
-                                              "While Using the App. Unfortunately, we currently can't do this through the app, "
-                                              "but hopefully we'll be able to soon.\nLet's Banter!", nil);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"WE'RE ON YOUR SIDE!", nil)
+        NSString *message = NSLocalizedString(@"We use this stuff, man! It's important! Common--", nil);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"We really need this!", nil)
                                                         message:message
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
@@ -619,6 +606,12 @@
 {
     CLLocation *location = locations[0];
     self.userLocation = location.coordinate;
+    [self updateUsersLocation];
+
+    if (self.isInitialLoad) {
+        [self centerOnUser];
+        self.isInitialLoad = NO;
+    }
 }
 
 @end

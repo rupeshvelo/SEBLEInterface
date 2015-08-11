@@ -53,9 +53,7 @@
 		<string>ShadowsIntoLightTwo-Regular.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
+	<array/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
