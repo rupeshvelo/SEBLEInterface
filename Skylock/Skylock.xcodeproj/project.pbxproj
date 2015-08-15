@@ -334,6 +334,7 @@
 		DC7A12F81B5762E900F3336E /* SLDbUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7A12F71B5762E900F3336E /* SLDbUser.m */; };
 		DC7A12FF1B582B7900F3336E /* SLSlideControllerOptionsView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7A12FE1B582B7900F3336E /* SLSlideControllerOptionsView.m */; };
 		DC7A13051B5837E900F3336E /* SLSlideControllerOptionsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7A13041B5837E900F3336E /* SLSlideControllerOptionsButton.m */; };
+		DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */; };
 		DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */; };
 		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
 		DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADFE1B35013200DA1692 /* SLLockTableViewCell.m */; };
@@ -750,6 +751,7 @@
 		DC7A12FE1B582B7900F3336E /* SLSlideControllerOptionsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideControllerOptionsView.m; sourceTree = "<group>"; };
 		DC7A13031B5837E900F3336E /* SLSlideControllerOptionsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideControllerOptionsButton.h; sourceTree = "<group>"; };
 		DC7A13041B5837E900F3336E /* SLSlideControllerOptionsButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideControllerOptionsButton.m; sourceTree = "<group>"; };
+		DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash2_6_plus@3x.png"; sourceTree = "<group>"; };
 		DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDropDownLabel.h; sourceTree = "<group>"; };
 		DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDropDownLabel.m; sourceTree = "<group>"; };
 		DC9EADED1B34EFB100DA1692 /* SLLockManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockManager.h; sourceTree = "<group>"; };
@@ -997,6 +999,7 @@
 				DC7A10641B5714B100F3336E /* bg_splash2@3x.png */,
 				DC7A10651B5714B100F3336E /* bg_splash2_6@2x.png */,
 				DC7A10661B5714B100F3336E /* bg_splash2_6@3x.png */,
+				DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */,
 			);
 			path = bgs;
 			sourceTree = "<group>";
@@ -1819,6 +1822,7 @@
 				DC7A12091B5714B100F3336E /* icon_navigate_on@3x.png in Resources */,
 				DC7A11D71B5714B100F3336E /* icon_battery_50.png in Resources */,
 				DC7A11A31B5714B100F3336E /* btn_releasebike@3x.png in Resources */,
+				DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */,
 				DC7A122A1B5714B100F3336E /* icon_wifi_1@3x.png in Resources */,
 				DC7A11CF1B5714B100F3336E /* icon_battery_100@2x.png in Resources */,
 				DC7A122E1B5714B100F3336E /* icon_wifi_3.png in Resources */,

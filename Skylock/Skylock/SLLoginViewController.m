@@ -51,12 +51,8 @@
 - (UIImageView *)backgroundImageView
 {
     if (!_backgroundImageView) {
-        UIImage *image = [UIImage imageNamed:@"bg_splash2"];
-        _backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                             0.0f,
-                                                                             image.size.width,
-                                                                             image.size.height)];
-        _backgroundImageView.image = image;
+        UIImage *image = self.backgroundImage;
+        _backgroundImageView = [[UIImageView alloc] initWithImage:image];
         [self.view addSubview:_backgroundImageView];
     }
     return _backgroundImageView;
@@ -257,6 +253,27 @@
     
     return _forgotPasswordButton;
 
+}
+
+- (UIImage *)backgroundImage
+{
+    NSUInteger height =  (NSUInteger)[UIScreen mainScreen].bounds.size.height;
+    NSString *name;
+    switch (height) {
+        case 568:
+            name = @"bg_splash2";
+            break;
+        case 667:
+            name = @"bg_splash2_6";
+            break;
+        case 736:
+            name = @"bg_splash2_6_plus";
+            break;
+        default:
+            break;
+    }
+    
+    return [UIImage imageNamed:[NSString stringWithFormat:@"%@", name]];
 }
 
 - (void)dealloc
