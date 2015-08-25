@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    //[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSArray *)tutorialViewControllers
@@ -224,10 +224,10 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     
     [self.view bringSubviewToFront:self.pageControl];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(foundLock:)
-                                                 name:kSLNotificationLockManagerDiscoverdLock
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(foundLock:)
+//                                                 name:kSLNotificationLockManagerDiscoverdLock
+//                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated

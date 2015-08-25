@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SLLockValue.h"
+#import "SLLock.h"
 
-@class SLLock;
 
-
-
-@interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate>
+@interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate, SLLockValueDelegate, SLLockDelegate>
 
 + (id)manager;
 
