@@ -17,6 +17,7 @@
 #import "SLUserDefaults.h"
 #import "SLLockManager.h"
 #import <MapboxGL/MapboxGL.h>
+#import "SLNotifications.h"
 
 @interface SLAppDelegate ()
 
@@ -48,6 +49,11 @@
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88
                                                                 green:204
                                                                  blue:131];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCrashAndTheftAlerts:)
+                                                 name:kSLNotificationAlertOccured
+                                               object:nil];
     
     return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
 }
@@ -118,7 +124,7 @@
     return initialVC;
 }
 
-- (void)handleCrashAndTheftAlerts
+- (void)handleCrashAndTheftAlerts:(NSNotification *)notification
 {
     
 }
