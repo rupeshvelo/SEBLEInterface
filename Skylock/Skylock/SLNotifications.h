@@ -17,5 +17,7 @@
 #define kSLNotificationAlertOccured                 @"kSLNotificationAlertOccured"
 #define kSLNotificationAlertDismissed               @"kSLNotificationAlertDismissed"
 #define kSLNotificationTimerValueUpdated            @"kSLNotificationTimerValueUpdated"
+#define kSLNotificationTimeExpired                  @"kSLNotificationTimeExpired"
+
 
 #endif

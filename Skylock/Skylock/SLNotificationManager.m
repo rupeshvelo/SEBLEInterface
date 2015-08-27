@@ -10,6 +10,8 @@
 #import "NSString+Skylock.h"
 #import "SLNotification.h"
 #import "SLNotifications.h"
+#import "SLLock.h"
+#import "SLAccelerometerValues.h"
 
 @interface SLNotificationManager()
 
@@ -21,6 +23,15 @@
 
 @implementation SLNotificationManager
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        _notifications = [NSMutableArray new];
+    }
+    
+    return self;
+}
 
 + (id)manager
 {
@@ -72,13 +83,14 @@
 - (void)createNotificationOfType:(SLNotificationType)notficationType
 {
     SLNotification *notification = [[SLNotification alloc] initWithType:notficationType];
-    notification.displayDateString = [self formattedTimeForNotifciaton:notification];
+    notification.displayDateString = [self formattedDisplayTimeForNotificiaton:notification];
     notification.fullDateString = [self formattedFullTimeForNotfication:notification];
     notification.delegate = self;
     [self.notifications addObject:notification];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationAlertOccured
-                                                        object:nil];
+                                                        object:nil
+                                                      userInfo:@{@"notification":notification}];
 }
 
 - (NSArray *)getNotifications
@@ -100,9 +112,49 @@
     if (index < self.notifications.count) {
         SLNotification *notification = self.notifications[index];
         [self.notifications removeObjectAtIndex:index];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationAlertDismissed
+                                                            object:nil
+                                                          userInfo:@{@"notification":notification}];
     }
+}
+
+- (void)checkIfLockNeedsNotification:(SLLock *)lock
+{
+    BOOL sendAlert = YES;
+    SLNotificationType alert = SLNotificationTypeNone;
+    NSLog(@"Checking accelerometer values: %@", lock.accelerometerVales.asReadableDictionary);
     
-    
+//    if ((lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdCrashMAV &&
+//         lock.accelerometerVales.xvar.doubleValue <= SLLockValueThresholdCrashSD) ||
+//        (lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdCrashMAV &&
+//         lock.accelerometerVales.yvar.doubleValue <= SLLockValueThresholdCrashSD) ||
+//        (lock.accelerometerVales.zmav.doubleValue >= SLLockValueThresholdCrashMAV &&
+//         lock.accelerometerVales.zvar.doubleValue <= SLLockValueThresholdCrashSD)) {
+//        alert = SLNotificationTypeCrashPre;
+//    } else if ((lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
+//                lock.accelerometerVales.xvar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
+//               (lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
+//                lock.accelerometerVales.yvar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
+//               (lock.accelerometerVales.zmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
+//                lock.accelerometerVales.zvar.doubleValue <= SLLockValueThresholdTheftMediumSD)) {
+//        alert = SLNotificationTypeTheftMedium;
+//    } else {
+//        sendAlert = NO;
+//    }
+    if (lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdCrashSD ||
+        lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdCrashSD ||
+        lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdCrashSD) {
+            alert = SLNotificationTypeCrashPre;
+        } else if (lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
+                   lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
+                   lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdTheftMediumSD) {
+                       alert = SLNotificationTypeTheftMedium;
+                   } else {
+                       sendAlert = NO;
+                   }
+    if (sendAlert) {
+        [self createNotificationOfType:alert];
+    }
 }
 
 #pragma mark - SLNotification delegate methods
@@ -113,4 +165,16 @@
                                                       userInfo:@{@"notification":notfication,
                                                                  @"value":value}];
 }
+
+- (void)notificationTimerExpired:(SLNotification *)notification
+{
+    if (notification.type == SLNotificationTypeCrashPre) {
+        notification.type = SLNotificationTypeCrashPost;
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationTimeExpired
+                                                        object:nil
+                                                      userInfo:@{@"notification":notification}];
+}
+
 @end

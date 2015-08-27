@@ -10,6 +10,7 @@
 @class SLNotification;
 
 typedef NS_ENUM(NSUInteger, SLNotificationType) {
+    SLNotificationTypeNone,
     SLNotificationTypeTheftLow,
     SLNotificationTypeTheftMedium,
     SLNotificationTypeTheftHigh,
@@ -20,6 +21,7 @@ typedef NS_ENUM(NSUInteger, SLNotificationType) {
 @protocol SLNotficationDelegate <NSObject>
 
 - (void)notification:(SLNotification *)notfication timerValueUpdated:(NSNumber *)value;
+- (void)notificationTimerExpired:(SLNotification *)notification;
 
 @end
 
@@ -35,5 +37,6 @@ typedef NS_ENUM(NSUInteger, SLNotificationType) {
 @property (nonatomic, copy) NSString *identifier;
 
 - (id)initWithType:(SLNotificationType)notificaitonType;
+- (void)startCountdown;
 
 @end

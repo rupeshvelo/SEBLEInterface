@@ -7,7 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SL"
-@interface SLNotificationViewController : UIViewController <SLNotficationDelegate>
+#import "SLNotificationView.h"
+#import "SLNotificationEmergencyView.h"
+
+@class SLNotificationViewController;
+@class SLNotification;
+
+@protocol SLNotificationViewControllerDelegate <NSObject>
+
+- (void)notificationVCWantsDismiss:(SLNotificationViewController *)notificationVC;
+
+@end
+
+
+@interface SLNotificationViewController : UIViewController <SLNotficationViewDelegate, SLNotificationEmergencyViewDelegate>
+
+@property (nonatomic, weak) id <SLNotificationViewControllerDelegate> delegate;
+
+- (void)dismissNotification:(SLNotification *)notificaion;
+- (void)addNewNotficationViewForNotification:(SLNotification *)notification;
 
 @end

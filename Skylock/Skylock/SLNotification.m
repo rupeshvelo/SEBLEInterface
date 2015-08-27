@@ -25,6 +25,7 @@
     if (self) {
         _type = notificaitonType;
         _date = [NSDate date];
+        [self setText];
     }
     
     return self;
@@ -70,7 +71,7 @@
     }
 }
 
-- (void)startCountDown
+- (void)startCountdown
 {
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1
                                                       target:self
@@ -84,6 +85,10 @@
 {
     if (self.timerValue == 0) {
         [timer invalidate];
+        
+        if ([self.delegate respondsToSelector:@selector(notificationTimerExpired:)]) {
+            [self.delegate notificationTimerExpired:self];
+        }
     }
     
     if ([self.delegate respondsToSelector:@selector(notification:timerValueUpdated:)]) {

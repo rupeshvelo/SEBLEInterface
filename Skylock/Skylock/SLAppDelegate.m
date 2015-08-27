@@ -21,10 +21,11 @@
 
 @interface SLAppDelegate ()
 
+
+
 @end
 
 @implementation SLAppDelegate
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
@@ -49,11 +50,6 @@
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88
                                                                 green:204
                                                                  blue:131];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleCrashAndTheftAlerts:)
-                                                 name:kSLNotificationAlertOccured
-                                               object:nil];
     
     return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
 }
@@ -124,10 +120,6 @@
     return initialVC;
 }
 
-- (void)handleCrashAndTheftAlerts:(NSNotification *)notification
-{
-    
-}
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;

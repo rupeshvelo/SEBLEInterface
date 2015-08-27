@@ -15,6 +15,9 @@
 #import "SLDatabaseManager.h"
 #import "SLDbLock+Methods.m"
 #import "SLLockValue.h"
+#import "SLNotificationManager.h"
+#import "SLAccelerometerValues.h"
+
 
 typedef NS_ENUM(NSUInteger, SLLockManagerService) {
     SLLockManagerServiceSecurity,
@@ -168,7 +171,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         NSLog(@"Duplicate lock: %@", lock.name);
     } else {
         if (self.locksToAdd[lock.name]) {
-            lock.delegate = self;
             [self.locksToAdd removeObjectForKey:lock.name];
             self.locks[lock.name] = lock;
             [self.bleManager addPeripheralNamed:lock.name];
@@ -518,12 +520,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         }
     }
     
-    NSDictionary *values = @{@(SLLockAccerometerDataXMav):@(xmav),
-                             @(SLLockAccerometerDataYMav):@(ymav),
-                             @(SLLockAccerometerDataZMav):@(zmav),
-                             @(SLLockAccerometerDataXVar):@(xvar),
-                             @(SLLockAccerometerDataYVar):@(yvar),
-                             @(SLLockAccerometerDataZVar):@(zvar)
+    NSDictionary *values = @{@(SLAccerometerDataXMav):@(xmav),
+                             @(SLAccerometerDataYMav):@(ymav),
+                             @(SLAccerometerDataZMav):@(zmav),
+                             @(SLAccerometerDataXVar):@(xvar),
+                             @(SLAccerometerDataYVar):@(yvar),
+                             @(SLAccerometerDataZVar):@(zvar)
                              };
     
     [self updateValues:values forLock:lockName forValue:SLLockManagerValueServiceAccelerometer];
@@ -551,7 +553,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     SLLock *lock = [self lockFromPeripheral:peripheral];
     if (!self.locksToAdd[lock.name] && !self.locks[lock.name]) {
         self.locksToAdd[lock.name] = lock;
-        
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                             object:lock];
     }
@@ -614,18 +615,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSLog(@"%@ updated mean values: %@", lockValue.name, meanValues);
     SLLock *lock = self.locks[lockValue.name];
     if (lockValue == self.lockValues[@(SLLockManagerValueServiceAccelerometer)]) {
-        [lock updateAccelerometerData:meanValues];
+        [lock updateAccelerometerValues:meanValues];
+        [SLNotificationManager.manager checkIfLockNeedsNotification:lock];
     } else {
         [lock updatePropertiesWithDictionary:meanValues];
     }
     
 }
 
-#pragma mark - SLLock delegate methods
-- (void)accelerometerDataOutsideAcceptableRange:(SLLock *)lock alert:(SLLockAlert)alert
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerUpdatedLockAlert
-                                                        object:@(alert)];
-}
 @end

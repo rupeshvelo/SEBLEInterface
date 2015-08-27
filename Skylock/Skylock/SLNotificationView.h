@@ -20,8 +20,12 @@
 @interface SLNotificationView : UIView
 
 @property (nonatomic, weak) id <SLNotficationViewDelegate> delegate;
+@property (nonatomic, strong) SLNotification *notification;
+@property (nonatomic, strong) UILabel *countDownLabel;
+@property (nonatomic, strong) NSNumber *timerValue;
+
 
 - (id)initWithFrame:(CGRect)frame notification:(SLNotification *)notification;
-- (void)updateTimerValue:(NSNumber *)value;
+- (void)startCountdown;
 
 @end

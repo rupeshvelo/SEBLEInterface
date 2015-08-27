@@ -7,6 +7,7 @@
 //
 
 #import "SLLock.h"
+#import "SLAccelerometerValues.h"
 // stadlib.h just here for testing...remove when shipping app
 #include <stdlib.h>
 
@@ -358,39 +359,21 @@
         case SLLockPropertyTemperature:
             self.temperature = dictionary[property];
             break;
-        case SLLockPropertyAccelerometerData:
-            self.accelerometerData = dictionary[property];
+        case SLLockPropertyAccelerometerValues:
+            self.accelerometerVales = dictionary[property];
             break;
         default:
             break;
     }
 }
 
-- (void)updateAccelerometerData:(NSDictionary *)dictionary
+- (void)updateAccelerometerValues:(NSDictionary *)dictionary
 {
-    NSNumber *xMav = dictionary[@(SLLockAccerometerDataXMav)];
-    NSNumber *xVar = dictionary[@(SLLockAccerometerDataYMav)];
-    NSNumber *yMav = dictionary[@(SLLockAccerometerDataZMav)];
-    NSNumber *yVar = dictionary[@(SLLockAccerometerDataXVar)];
-    NSNumber *zMav = dictionary[@(SLLockAccerometerDataYVar)];
-    NSNumber *zVar = dictionary[@(SLLockAccerometerDataZVar)];
-    BOOL sendAlert = YES;
-    SLLockAlert alert = SLLockAlertNone;
-    
-    if ((xMav.doubleValue >= SLLockValueThresholdCrashMAV && xVar.doubleValue <= SLLockValueThresholdCrashSD) ||
-        (yMav.doubleValue >= SLLockValueThresholdCrashMAV && yVar.doubleValue <= SLLockValueThresholdCrashSD) ||
-        (zMav.doubleValue >= SLLockValueThresholdCrashMAV && zVar.doubleValue <= SLLockValueThresholdCrashSD)) {
-        alert = SLLockAlertCrash;
-    } else if ((xMav.doubleValue >= SLLockValueThresholdTheftMediumMAV && xVar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
-               (yMav.doubleValue >= SLLockValueThresholdTheftMediumMAV && yVar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
-               (zMav.doubleValue >= SLLockValueThresholdTheftMediumMAV && zVar.doubleValue <= SLLockValueThresholdTheftMediumSD)) {
-        alert = SLLockAlertMediumTheft;
+    if (!self.accelerometerVales) {
+        self.accelerometerVales = [SLAccelerometerValues accelerometerValuesWithValues:dictionary];
     } else {
-        sendAlert = NO;
-    }
-    
-    if (sendAlert && [self.delegate respondsToSelector:@selector(accelerometerDataOutsideAcceptableRange:alert:)]) {
-        [self.delegate accelerometerDataOutsideAcceptableRange:self alert:alert];
+        [self.accelerometerVales setValues:dictionary];
     }
 }
+
 @end

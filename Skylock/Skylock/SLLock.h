@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+
 @class SLLock;
+@class SLAccelerometerValues;
 
 typedef NS_ENUM(NSUInteger, SLLockBatteryState) {
     SLLockBatteryStateNone,
@@ -54,40 +56,13 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
     SLLockPropertyLatitude,
     SLLockPropertyLongitude,
     SLLockPropertyTemperature,
-    SLLockPropertyAccelerometerData
+    SLLockPropertyAccelerometerValues
 };
 
-typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
-    SLLockValueThresholdCrashMAV = 150,
-    SLLockValueThresholdCrashSD = 16900,
-    SLLockValueThresholdTheftMediumMAV = 150,
-    SLLockValueThresholdTheftMediumSD = 8100,
-};
 
-typedef NS_ENUM(NSUInteger, SLLockAlert) {
-    SLLockAlertNone,
-    SLLockAlertMediumTheft,
-    SLLockAlertCrash
-};
-
-typedef NS_ENUM(NSUInteger, SLLockAccerometerData) {
-    SLLockAccerometerDataXMav,
-    SLLockAccerometerDataYMav,
-    SLLockAccerometerDataZMav,
-    SLLockAccerometerDataXVar,
-    SLLockAccerometerDataYVar,
-    SLLockAccerometerDataZVar
-};
-
-@protocol SLLockDelegate <NSObject>
-
-- (void)accelerometerDataOutsideAcceptableRange:(SLLock* )lock alert:(SLLockAlert)alert;
-
-@end
 
 @interface SLLock : NSObject
 
-@property (nonatomic, weak) id <SLLockDelegate> delegate;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSNumber *batteryVoltage;
@@ -103,7 +78,7 @@ typedef NS_ENUM(NSUInteger, SLLockAccerometerData) {
 @property (nonatomic, copy) NSNumber *latitude;
 @property (nonatomic, copy) NSNumber *longitude;
 @property (nonatomic, copy) NSNumber *temperature;
-@property (nonatomic, strong) NSDictionary *accelerometerData;
+@property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
 - (id)initWithName:(NSString *)name
               uuid:(NSString *)uuid
@@ -128,6 +103,6 @@ typedef NS_ENUM(NSUInteger, SLLockAccerometerData) {
 - (NSDictionary *)dictionaryRepresentation;
 - (NSDictionary *)asDbDictionary;
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
-- (void)updateAccelerometerData:(NSDictionary *)dictionary;
+- (void)updateAccelerometerValues:(NSDictionary *)dictionary;
 
 @end

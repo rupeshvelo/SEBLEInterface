@@ -6,15 +6,20 @@
 //  Copyright (c) 2015 Andre Green. All rights reserved.
 //
 
-#import "SLNotificationView.m"
+#import "SLNotificationView.h"
+@class SLNotificationEmergencyView;
 
-@protocol SLNotificationEmergencyViewDelegate <SLNotificationViewDelegate>
+@protocol SLNotificationEmergencyViewDelegate <SLNotficationViewDelegate>
 
-- (void)notificationViewHelpButtonPressed:(SLNotificationEmergencyView *)notificationView;
-- (void)notificationViewIgnoreButtonPressed:(SLNotificationEmergencyView *)notificationView;
+- (void)notificationEmergencyViewHelpButtonPressed:(SLNotificationEmergencyView *)notificationView;
+- (void)notificationEmergencyViewIgnoreButtonPressed:(SLNotificationEmergencyView *)notificationView;
 
 @end
 
 @interface SLNotificationEmergencyView : SLNotificationView
+
+@property (nonatomic, weak) id <SLNotificationEmergencyViewDelegate> emergencyDelegate;
+
+- (void)updateTimerValue:(NSNumber *)value;
 
 @end

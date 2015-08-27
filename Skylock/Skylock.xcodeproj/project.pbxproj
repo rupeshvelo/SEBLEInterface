@@ -372,6 +372,7 @@
 		DCF36BC31B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCF36BC21B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf */; };
 		DCF36BC81B538CE100070F11 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCF36BC71B538CE100070F11 /* Roboto-Regular.ttf */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
+		DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */ = {isa = PBXBuildFile; fileRef = DCFFF31C1B8EB94D0076C167 /* SLAccelerometerValues.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -834,6 +835,8 @@
 		DCF36BC71B538CE100070F11 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
+		DCFFF31B1B8EB94D0076C167 /* SLAccelerometerValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAccelerometerValues.h; sourceTree = "<group>"; };
+		DCFFF31C1B8EB94D0076C167 /* SLAccelerometerValues.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAccelerometerValues.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -968,6 +971,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				DCFFF31B1B8EB94D0076C167 /* SLAccelerometerValues.h */,
+				DCFFF31C1B8EB94D0076C167 /* SLAccelerometerValues.m */,
 				DC7E70D11B8C34A6006E74DC /* SLNotification.h */,
 				DC7E70D21B8C34A6006E74DC /* SLNotification.m */,
 				DC7E70C11B8BC0F9006E74DC /* SLLockValue.h */,
@@ -1966,6 +1971,7 @@
 				DC7E70CA1B8C27C5006E74DC /* SLNotificationView.m in Sources */,
 				DC7A12F81B5762E900F3336E /* SLDbUser.m in Sources */,
 				DC7A12F51B57409700F3336E /* SLUser.m in Sources */,
+				DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */,
