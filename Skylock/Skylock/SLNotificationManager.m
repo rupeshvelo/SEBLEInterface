@@ -159,7 +159,7 @@
 
 - (void)sendEmergencyText
 {
-    NSArray *recipients = @[@"5107171635"];
+    NSArray *recipients = @[@"408717    3377"];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationSendEmergecyText
                                                         object:nil
                                                       userInfo:@{@"recipients": recipients}];
