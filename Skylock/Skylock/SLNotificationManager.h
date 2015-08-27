@@ -15,7 +15,7 @@ typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
     SLLockValueThresholdCrashMAV = 60,
     SLLockValueThresholdCrashSD = 1500,
     SLLockValueThresholdTheftMediumMAV = 60,
-    SLLockValueThresholdTheftMediumSD = 1100,
+    SLLockValueThresholdTheftMediumSD = 1000,
 };
 
 @interface SLNotificationManager : NSObject <SLNotficationDelegate>
@@ -26,5 +26,6 @@ typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
 - (NSArray *)getNotifications;
 - (void)dismissNotificationWithId:(NSString *)notificationId;
 - (void)checkIfLockNeedsNotification:(SLLock *)lock;
+- (void)sendEmergencyText;
 
 @end

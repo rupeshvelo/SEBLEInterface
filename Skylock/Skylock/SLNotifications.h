@@ -18,6 +18,6 @@
 #define kSLNotificationAlertDismissed               @"kSLNotificationAlertDismissed"
 #define kSLNotificationTimerValueUpdated            @"kSLNotificationTimerValueUpdated"
 #define kSLNotificationTimeExpired                  @"kSLNotificationTimeExpired"
-
+#define kSLNotificationSendEmergecyText             @"kSLNotificationSendEmergecyText"
 
 #endif

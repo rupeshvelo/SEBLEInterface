@@ -211,6 +211,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(dismissAlert:)
                                                  name:kSLNotificationAlertDismissed object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentEmergencyText:)
+                                                 name:kSLNotificationSendEmergecyText
+                                               object:nil];
 }
 
 - (void)menuButtonPressed
@@ -535,6 +540,21 @@
     }
 }
 
+- (void)presentEmergencyText:(NSNotification *)notification
+{
+    NSDictionary *info = notification.userInfo;
+    NSArray *recipients = info[@"recipients"];
+    SLDbUser *currentUser = [SLDatabaseManager.manager currentUser];
+    // temporay location for this message. It should be stored in a p-list or the database
+    NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock", currentUser.fullName, currentUser.fullName];
+    MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
+    cvc.messageComposeDelegate = self;
+    cvc.recipients = recipients;
+    cvc.body = message;
+    
+    [self presentViewController:cvc animated:YES completion:nil];
+}
+
 #pragma mark - Alert view delegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -710,4 +730,10 @@
     [self dismissNotificationViewControllerWithCompletion:nil];
 }
 
+#pragma mark - MFMailComposeViewController delegate methods
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
+{
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
 @end

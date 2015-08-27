@@ -61,7 +61,7 @@
             CGRect frame = CGRectMake(kSLNotificationsVCPadding,
                                       self.maxY,
                                       self.view.bounds.size.width - 2*kSLNotificationsVCPadding,
-                                      kSLNotificationsVCLargeViewHeight);
+                                      kSLNotificationsVCSmallViewHeight);
             SLNotificationView *notificationView = [[SLNotificationView alloc] initWithFrame:frame
                                                                                 notification:notification];
             notificationView.delegate = self;
@@ -94,11 +94,6 @@
             }
         }
     }
-}
-
-- (void)notificationsViewTapped:(SLNotificationView *)notificationView
-{
-    NSLog(@"notification view tapped");
 }
 
 - (void)dismissNotification:(SLNotification *)notificaion
@@ -157,7 +152,7 @@
         CGRect frame = CGRectMake(kSLNotificationsVCPadding,
                                   self.maxY,
                                   self.view.bounds.size.width - 2*kSLNotificationsVCPadding,
-                                  kSLNotificationsVCLargeViewHeight);
+                                  kSLNotificationsVCSmallViewHeight);
         SLNotificationView *notificationView = [[SLNotificationView alloc] initWithFrame:frame
                                                                             notification:notification];
         notificationView.delegate = self;
@@ -180,13 +175,7 @@
     }];
 }
 
-#pragma mark - SLNotificationEmergencyView delegate methods
-- (void)notificationEmergencyViewHelpButtonPressed:(SLNotificationEmergencyView *)notificationView
-{
-    
-}
-
-- (void)notificationEmergencyViewIgnoreButtonPressed:(SLNotificationEmergencyView *)notificationView
+- (void)dismissNotificationView:(SLNotificationView *)notificationView
 {
     [SLNotificationManager.manager dismissNotificationWithId:notificationView.notification.identifier];
     self.notifications = [SLNotificationManager.manager getNotifications];
@@ -197,4 +186,22 @@
     }
 }
 
+#pragma mark - SLNotificationEmergencyView delegate methods
+- (void)notificationEmergencyViewHelpButtonPressed:(SLNotificationEmergencyView *)notificationView
+{
+    [SLNotificationManager.manager sendEmergencyText];
+    [self dismissNotificationView:notificationView];
+}
+
+- (void)notificationEmergencyViewIgnoreButtonPressed:(SLNotificationEmergencyView *)notificationView
+{
+    [self dismissNotificationView:notificationView];
+}
+
+#pragma mark - SLNotificationView delegate methods
+- (void)notificationsViewTapped:(SLNotificationView *)notificationView
+{
+    [self dismissNotificationView:notificationView];
+}
+        
 @end

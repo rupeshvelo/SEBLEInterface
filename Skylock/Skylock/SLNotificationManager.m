@@ -157,6 +157,14 @@
     }
 }
 
+- (void)sendEmergencyText
+{
+    NSArray *recipients = @[@"5107171635"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationSendEmergecyText
+                                                        object:nil
+                                                      userInfo:@{@"recipients": recipients}];
+}
+
 #pragma mark - SLNotification delegate methods
 - (void)notification:(SLNotification *)notfication timerValueUpdated:(NSNumber *)value
 {

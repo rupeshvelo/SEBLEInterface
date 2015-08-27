@@ -18,6 +18,13 @@
 #import "SLLockManager.h"
 #import <MapboxGL/MapboxGL.h>
 #import "SLNotifications.h"
+#import "SLNotificationManager.h"
+
+
+#define kSLAppDelegateNotificationActionIgnore  @"kSLAppDelegateNotificationActionIgnore"
+#define kSLAppDelegateNotificationActionHelp    @"kSLAppDelegateNotificationActionHelp"
+#define kSLAppDelegateNotificationCategory      @"kSLAppDelegateNotificationCategory"
+
 
 @interface SLAppDelegate ()
 
@@ -50,6 +57,13 @@
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88
                                                                 green:204
                                                                  blue:131];
+    
+    [self setUpNotficationSettings:application];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleNotification:)
+                                                 name:kSLNotificationAlertOccured
+                                               object:nil];
     
     return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
 }
@@ -118,6 +132,71 @@
     }
     
     return initialVC;
+}
+
+- (void)setUpNotficationSettings:(UIApplication *)application
+{
+    UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
+    ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
+    ignoreAction.title = NSLocalizedString(@"Ignore", nil);
+    ignoreAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+    ignoreAction.destructive = NO;
+    ignoreAction.authenticationRequired = NO;
+    
+    UIMutableUserNotificationAction *helpAction = [UIMutableUserNotificationAction new];
+    helpAction.identifier = kSLAppDelegateNotificationActionHelp;
+    helpAction.title = NSLocalizedString(@"Help", nil);
+    helpAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+    helpAction.destructive = NO;
+    helpAction.authenticationRequired = NO;
+    
+    UIMutableUserNotificationCategory *notficationCategory = [UIMutableUserNotificationCategory new];
+    notficationCategory.identifier = kSLAppDelegateNotificationCategory;
+    [notficationCategory setActions:@[helpAction, ignoreAction]
+                         forContext:UIUserNotificationActionContextDefault];
+    [notficationCategory setActions:@[helpAction, ignoreAction]
+                         forContext:UIUserNotificationActionContextMinimal];
+    
+    UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+    
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes
+                                                                             categories:[NSSet setWithObject:notficationCategory]];
+    [application registerUserNotificationSettings:settings];
+}
+
+- (void)postNotification:(SLNotification *)notification
+{
+    NSArray *notifications = [SLNotificationManager.manager getNotifications];
+    UILocalNotification *localNotification = [UILocalNotification new];
+    localNotification.category = kSLAppDelegateNotificationCategory;
+    localNotification.alertBody = notification.detailText;
+    localNotification.alertAction = NSLocalizedString(@"Ignore", nil);
+    localNotification.alertTitle = notification.mainText;
+    localNotification.applicationIconBadgeNumber = notifications.count;
+    localNotification.userInfo = @{@"notificationId": notification.identifier};
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+- (void)handleNotification:(NSNotification *)notification
+{
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    NSDictionary *info = notification.userInfo;
+    if ((state == UIApplicationStateBackground || state == UIApplicationStateInactive) && info && info[@"notification"]) {
+        SLNotification *slNotification = info[@"notification"];
+        [self postNotification:slNotification];
+    }
+}
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void (^)())completionHandler
+{
+    NSDictionary *info = notification.userInfo;
+    NSString *notificationIdentifier = info[@"notificationId"];
+    if (kSLAppDelegateNotificationActionIgnore) {
+        [SLNotificationManager.manager dismissNotificationWithId:notificationIdentifier];
+    } else {
+        [SLNotificationManager.manager sendEmergencyText];
+    }
 }
 
 #pragma mark - Core Data stack
