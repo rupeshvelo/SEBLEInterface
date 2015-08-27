@@ -544,7 +544,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     [lockValue updateValuesWithValues:values];
 }
-                                                      
+
+- (void)autoUnlockLockWithLockValue:(SLLockValue *)lockValue
+{
+    
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
