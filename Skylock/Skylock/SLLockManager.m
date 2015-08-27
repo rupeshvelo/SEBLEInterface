@@ -545,9 +545,15 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [lockValue updateValuesWithValues:values];
 }
 
-- (void)autoUnlockLockWithLockValue:(SLLockValue *)lockValue
+- (void)checkAutoUnlockForLock:(SLLock *)lock
 {
+    if (lock.rssiStrength.integerValue < 50 && lock.isLocked.boolValue) {
+        lock.isLocked = @(NO)
+    } else if (lock.rssiStrength.integerValue > 50 && !lock.isLocked.boolValue) {
+        lock.isLocked = @(YES);
+    }
     
+    [self setLockStateForLock:lock];
 }
 
 #pragma mark - SEBLEInterfaceManager Delegate Methods
@@ -624,8 +630,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         [SLNotificationManager.manager checkIfLockNeedsNotification:lock];
     } else {
         [lock updatePropertiesWithDictionary:meanValues];
+        [self checkAutoUnlockForLock:lock];
     }
-    
 }
 
 @end
