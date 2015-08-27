@@ -28,6 +28,9 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Skylock-Swift.h"
 #import "SLSharingViewController.h"
+#import "SLNotifications.h"
+#import "SLNotificationViewController.h"
+
 
 @class MBDirectionsRequest;
 
@@ -56,7 +59,7 @@
 @property (nonatomic, strong) SLLock *selectedLock;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
-
+@property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 @end
 
 @implementation SLMapViewController
@@ -148,6 +151,11 @@
     return _locationManager;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
@@ -158,6 +166,7 @@
     
     self.lockAnnotations = [NSMutableDictionary new];
     self.isInitialLoad = YES;
+    [self registerAlertNotifications];
     
     [self.view addSubview:self.mapView];
 
@@ -190,6 +199,23 @@
 //    if ([CLLocationManager locationServicesEnabled]) {
 //        self.mapView.showsUserLocation = YES;
 //    }
+}
+
+- (void)registerAlertNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleCrashAndTheftAlerts:)
+                                                 name:kSLNotificationAlertOccured
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(dismissAlert:)
+                                                 name:kSLNotificationAlertDismissed object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(presentEmergencyText:)
+                                                 name:kSLNotificationSendEmergecyText
+                                               object:nil];
 }
 
 - (void)menuButtonPressed
@@ -343,6 +369,22 @@
     }];
 }
 
+- (void)dismissNotificationViewControllerWithCompletion:(void(^)(void))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.notificationViewController.view.alpha = 0.0;
+    } completion:^(BOOL finished) {
+        [self.notificationViewController.view removeFromSuperview];
+        [self.notificationViewController removeFromParentViewController];
+        self.notificationViewController = nil;
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
 - (void)presentCoachMarkViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -443,6 +485,74 @@
     if (svc) {
         [self removeSlideViewController:svc withCompletion:nil];
     }
+}
+
+- (void)handleCrashAndTheftAlerts:(NSNotification *)notification
+{
+    if (self.notificationViewController) {
+        NSDictionary *info = notification.userInfo;
+        if (info && info[@"notification"]) {
+            SLNotification *slNotification = info[@"notification"];
+            [self.notificationViewController addNewNotficationViewForNotification:slNotification];
+        }
+    } else {
+        self.notificationViewController = [SLNotificationViewController new];
+        self.notificationViewController.delegate = self;
+        self.notificationViewController.view.frame = self.view.bounds;
+        self.notificationViewController.view.alpha = 0.0f;
+        
+        [self addChildViewController:self.notificationViewController];
+        [self.view addSubview:self.notificationViewController.view];
+        [self.view bringSubviewToFront:self.notificationViewController.view];
+        [self.notificationViewController didMoveToParentViewController:self];
+        
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.notificationViewController.view.alpha = 1.0f;
+        }];
+    }
+    
+}
+
+- (void)removeCrashAndTheftViewController
+{
+    if (self.notificationViewController) {
+        [self.notificationViewController dismissViewControllerAnimated:YES completion:^{
+            self.notificationViewController = nil;
+        }];
+    }
+}
+
+- (void)dismissAlert:(NSNotification *)notification
+{
+    NSDictionary *info = notification.userInfo;
+    if (self.notificationViewController && info && info[@"notification"]) {
+        SLNotification *slNotification = info[@"notification"];
+        [self.notificationViewController dismissNotification:slNotification];
+    }
+}
+
+- (void)addAlertView:(NSNotification *)notification
+{
+    NSDictionary *info = notification.userInfo;
+    if (self.notificationViewController && info && info[@"notification"]) {
+        SLNotification *slNotification = info[@"notification"];
+        [self.notificationViewController addNewNotficationViewForNotification:slNotification];
+    }
+}
+
+- (void)presentEmergencyText:(NSNotification *)notification
+{
+    NSDictionary *info = notification.userInfo;
+    NSArray *recipients = info[@"recipients"];
+    SLDbUser *currentUser = [SLDatabaseManager.manager currentUser];
+    // temporay location for this message. It should be stored in a p-list or the database
+    NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock", currentUser.fullName, currentUser.fullName];
+    MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
+    cvc.messageComposeDelegate = self;
+    cvc.recipients = recipients;
+    cvc.body = message;
+    
+    [self presentViewController:cvc animated:YES completion:nil];
 }
 
 #pragma mark - Alert view delegate methods
@@ -614,4 +724,16 @@
     }
 }
 
+#pragma mark - SLNotificationViewController delegate methods
+- (void)notificationVCWantsDismiss:(SLNotificationViewController *)notificationVC
+{
+    [self dismissNotificationViewControllerWithCompletion:nil];
+}
+
+#pragma mark - MFMailComposeViewController delegate methods
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
+{
+    
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
 @end

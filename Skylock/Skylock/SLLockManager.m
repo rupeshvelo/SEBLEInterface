@@ -14,6 +14,10 @@
 #import "SLNotifications.h"
 #import "SLDatabaseManager.h"
 #import "SLDbLock+Methods.m"
+#import "SLLockValue.h"
+#import "SLNotificationManager.h"
+#import "SLAccelerometerValues.h"
+
 
 typedef NS_ENUM(NSUInteger, SLLockManagerService) {
     SLLockManagerServiceSecurity,
@@ -47,6 +51,11 @@ typedef enum {
     SLLockManagerValueLockOpen  = 0x01,
 } SLLockMangerValue;
 
+typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
+    SLLockManagerValueServiceAccelerometer,
+    SLLockManagerValueServiceHardware,
+};
+
 @interface SLLockManager()
 
 @property (nonatomic, strong) NSMutableDictionary *locks;
@@ -56,6 +65,7 @@ typedef enum {
 @property (nonatomic, assign) BOOL bleIsPoweredOn;
 @property (nonatomic, strong) NSTimer *harwareTimer;
 @property (nonatomic, strong) SLLock *selectedLock;
+@property (nonatomic, strong) NSMutableDictionary *lockValues;
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -70,6 +80,7 @@ typedef enum {
     if (self) {
         _locks                  = [NSMutableDictionary new];
         _locksToAdd             = [NSMutableDictionary new];
+        _lockValues             = [NSMutableDictionary new];
         _bleManager             = [SEBLEInterfaceMangager manager];
         _bleManager.delegate    = self;
         _databaseManger         = [SLDatabaseManager manager];
@@ -137,6 +148,15 @@ typedef enum {
                              ];
     
     return [NSSet setWithArray:notifyChars];
+}
+
+- (NSMutableDictionary *)lockValues
+{
+    if (!_lockValues) {
+        _lockValues = [NSMutableDictionary new];
+    }
+    
+    return _lockValues;
 }
 
 - (void)setCurrentLock:(SLLock *)lock
@@ -231,6 +251,8 @@ typedef enum {
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values
 {
     [lock updatePropertiesWithDictionary:values];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerUpdatedLock
+                                                        object:lock];
 }
 
 - (void)startScan
@@ -458,8 +480,7 @@ typedef enum {
                              @(SLLockPropertyRSSIStrength):@(rssi)
                              };
     
-    SLLock *lock = self.locks[lockName];
-    [self updateLock:lock withValues:values];
+    [self updateValues:values forLock:lockName forValue:SLLockManagerValueServiceHardware];
 }
 
 - (void)handleMagnetForLockNamed:(NSString *)lockName data:(NSData *)data
@@ -485,33 +506,45 @@ typedef enum {
     
     for (int i=0; i < data.length; i++) {
         if (i == 0 || i == 1) {
-            xmav += bytes[i] << ((i%2)*CHAR_BIT);
+            xmav += bytes[i] << ((i % 2)*CHAR_BIT);
         } else if (i == 2 || i == 3) {
-            ymav += bytes[i] << ((i%2)*CHAR_BIT);
+            ymav += bytes[i] << ((i % 2)*CHAR_BIT);
         } else if (i == 4 || i == 5) {
-            zmav += bytes[i] << ((i%2)*CHAR_BIT);
+            zmav += bytes[i] << ((i % 2)*CHAR_BIT);
         } else if (i == 6 || i == 7) {
-            xvar += bytes[i] << ((i%2)*CHAR_BIT);
+            xvar += bytes[i] << ((i % 2)*CHAR_BIT);
         } else if (i == 8 || i == 9) {
-            yvar += bytes[i] << ((i%2)*CHAR_BIT);
+            yvar += bytes[i] << ((i % 2)*CHAR_BIT);
         } else if (i == 10 || i == 11) {
-            zvar += bytes[i] << ((i%2)*CHAR_BIT);
+            zvar += bytes[i] << ((i % 2)*CHAR_BIT);
         }
     }
     
-    NSDictionary *values = @{@(SLLockPropertyAccelerometerData):@{@"xmav":@(xmav),
-                                                                  @"ymav":@(ymav),
-                                                                  @"zmav":@(zmav),
-                                                                  @"xvar":@(xvar),
-                                                                  @"yvar":@(yvar),
-                                                                  @"zvar":@(zvar)
-                                                                  }
+    NSDictionary *values = @{@(SLAccerometerDataXMav):@(xmav),
+                             @(SLAccerometerDataYMav):@(ymav),
+                             @(SLAccerometerDataZMav):@(zmav),
+                             @(SLAccerometerDataXVar):@(xvar),
+                             @(SLAccerometerDataYVar):@(yvar),
+                             @(SLAccerometerDataZVar):@(zvar)
                              };
     
-    SLLock *lock = self.locks[lockName];
-    [self updateLock:lock withValues:values];
+    [self updateValues:values forLock:lockName forValue:SLLockManagerValueServiceAccelerometer];
 }
 
+- (void)updateValues:(NSDictionary *)values forLock:(NSString *)lockName forValue:(SLLockManagerValueService)service
+{
+    SLLockValue *lockValue;
+    if (self.lockValues[@(service)]) {
+        lockValue = self.lockValues[@(service)];
+    } else {
+        lockValue = [[SLLockValue alloc] initWithMaxCount:3 andLockName:lockName];
+        lockValue.delegate = self;
+        self.lockValues[@(service)] = lockValue;
+    }
+    
+    [lockValue updateValuesWithValues:values];
+}
+                                                      
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
@@ -520,7 +553,6 @@ typedef enum {
     SLLock *lock = [self lockFromPeripheral:peripheral];
     if (!self.locksToAdd[lock.name] && !self.locks[lock.name]) {
         self.locksToAdd[lock.name] = lock;
-        
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                             object:lock];
     }
@@ -575,4 +607,20 @@ typedef enum {
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
                                                         object:@{@"lockName":peripheral.peripheral.name}];
 }
+
+#pragma mark - SLLockValue delegate methods
+- (void)lockValueMeanUpdated:(SLLockValue *)lockValue mean:(NSDictionary *)meanValues
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSLog(@"%@ updated mean values: %@", lockValue.name, meanValues);
+    SLLock *lock = self.locks[lockValue.name];
+    if (lockValue == self.lockValues[@(SLLockManagerValueServiceAccelerometer)]) {
+        [lock updateAccelerometerValues:meanValues];
+        [SLNotificationManager.manager checkIfLockNeedsNotification:lock];
+    } else {
+        [lock updatePropertiesWithDictionary:meanValues];
+    }
+    
+}
+
 @end

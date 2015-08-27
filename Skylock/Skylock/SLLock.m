@@ -7,6 +7,7 @@
 //
 
 #import "SLLock.h"
+#import "SLAccelerometerValues.h"
 // stadlib.h just here for testing...remove when shipping app
 #include <stdlib.h>
 
@@ -358,11 +359,21 @@
         case SLLockPropertyTemperature:
             self.temperature = dictionary[property];
             break;
-        case SLLockPropertyAccelerometerData:
-            self.accelerometerData = dictionary[property];
+        case SLLockPropertyAccelerometerValues:
+            self.accelerometerVales = dictionary[property];
             break;
         default:
             break;
     }
 }
+
+- (void)updateAccelerometerValues:(NSDictionary *)dictionary
+{
+    if (!self.accelerometerVales) {
+        self.accelerometerVales = [SLAccelerometerValues accelerometerValuesWithValues:dictionary];
+    } else {
+        [self.accelerometerVales setValues:dictionary];
+    }
+}
+
 @end

@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+@class SLLock;
+@class SLAccelerometerValues;
+
 typedef NS_ENUM(NSUInteger, SLLockBatteryState) {
     SLLockBatteryStateNone,
     SLLockBatteryState1,
@@ -53,8 +56,10 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
     SLLockPropertyLatitude,
     SLLockPropertyLongitude,
     SLLockPropertyTemperature,
-    SLLockPropertyAccelerometerData
+    SLLockPropertyAccelerometerValues
 };
+
+
 
 @interface SLLock : NSObject
 
@@ -73,7 +78,7 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *latitude;
 @property (nonatomic, copy) NSNumber *longitude;
 @property (nonatomic, copy) NSNumber *temperature;
-@property (nonatomic, strong) NSDictionary *accelerometerData;
+@property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
 - (id)initWithName:(NSString *)name
               uuid:(NSString *)uuid
@@ -98,5 +103,6 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (NSDictionary *)dictionaryRepresentation;
 - (NSDictionary *)asDbDictionary;
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
+- (void)updateAccelerometerValues:(NSDictionary *)dictionary;
 
 @end

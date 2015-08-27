@@ -17,6 +17,7 @@
 
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock;
 - (void)addLockViewControllerWantsDismiss:(SLAddLockViewController *)alvc;
+
 @end
 
 @interface SLAddLockViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
