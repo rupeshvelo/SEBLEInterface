@@ -39,6 +39,8 @@
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
 #define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
+#define kSLMapViewControllerLockInfoViewPadding     12.0f
+
 
 @interface SLMapViewController ()
 
@@ -170,15 +172,15 @@
     
     [self.view addSubview:self.mapView];
 
-    CGFloat padding = .5*(self.view.bounds.size.width - kSLMapViewControllerLockInfoViewWidth);
-    self.lockInfoLargeFrame =  CGRectMake(padding,
-                                          self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - padding,
-                                          kSLMapViewControllerLockInfoViewWidth,
+    CGFloat width = self.view.bounds.size.width - 2*kSLMapViewControllerLockInfoViewPadding;
+    self.lockInfoLargeFrame =  CGRectMake(kSLMapViewControllerLockInfoViewPadding,
+                                          self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewPadding,
+                                          width,
                                           kSLMapViewControllerLockInfoViewLargeHeight);
     
-    self.lockInfoSmallFrame = CGRectMake(padding,
+    self.lockInfoSmallFrame = CGRectMake(kSLMapViewControllerLockInfoViewPadding,
                                          self.lockInfoLargeFrame.origin.y + kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewSmallHeight ,
-                                         kSLMapViewControllerLockInfoViewWidth,
+                                         width,
                                          kSLMapViewControllerLockInfoViewSmallHeight);
     
     self.menuButton.frame = CGRectMake(15.0f,
@@ -639,7 +641,7 @@
     
     MGLPointAnnotation *annotation = [MGLPointAnnotation new];
     annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
-    annotation.title = lock.name;
+    annotation.title = lock.displayName;
     
     self.lockAnnotations[lock.name] = @{@"annotation":annotation,
                                         @"lock":lock

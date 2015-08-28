@@ -120,7 +120,11 @@
                                                 notificationView.bounds.size.height);
         } completion:^(BOOL finished) {
             [notificationView removeFromSuperview];
-            [self reorganizeViewsFromIndex:index withRemovedViewHeight:notificationViewHeight];
+            if (self.notifications.count == 0 && [self.delegate respondsToSelector:@selector(notificationVCWantsDismiss:)]) {
+                [self.delegate notificationVCWantsDismiss:self];
+            } else {
+                [self reorganizeViewsFromIndex:index withRemovedViewHeight:notificationViewHeight];
+            }
         }];
     }];
 }
@@ -179,11 +183,7 @@
 {
     [SLNotificationManager.manager dismissNotificationWithId:notificationView.notification.identifier];
     self.notifications = [SLNotificationManager.manager getNotifications];
-    if (self.notifications.count == 0 && [self.delegate respondsToSelector:@selector(notificationVCWantsDismiss:)]) {
-        [self.delegate notificationVCWantsDismiss:self];
-    } else {
-        [self removeNotificationView:notificationView];
-    }
+    [self removeNotificationView:notificationView];
 }
 
 #pragma mark - SLNotificationEmergencyView delegate methods

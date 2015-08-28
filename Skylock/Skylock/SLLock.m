@@ -376,4 +376,13 @@
     }
 }
 
+- (NSString *)displayName
+{
+    if (self.name.length <= 8) {
+        return self.name;
+    }
+    
+    return [self.name substringToIndex:8];
+}
+
 @end

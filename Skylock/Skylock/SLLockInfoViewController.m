@@ -55,7 +55,7 @@
                                                                    0.0f,
                                                                    size.width,
                                                                    size.height)];
-        _lockNameLabel.text = self.lock.name;
+        _lockNameLabel.text = self.lock.displayName;
         _lockNameLabel.font = font;
         _lockNameLabel.textColor = [UIColor colorWithRed:123 green:124 blue:124];
         [self.view addSubview:_lockNameLabel];
@@ -575,17 +575,21 @@
 - (void)crashButtonPressed:(UIButton *)button
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    button.selected = !button.selected;
-    self.lock.isCrashOn = @(button.isSelected);
-    [SLLockManager.manager toggleCrashForLock:self.lock];
+    if (!self.securityButton.isSelected) {
+        button.selected = !button.selected;
+        self.lock.isCrashOn = @(button.isSelected);
+        [SLLockManager.manager toggleCrashForLock:self.lock];
+    }
 }
 
 - (void)securityButtonPressed:(UIButton *)button
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    button.selected = !button.selected;
-    self.lock.isSecurityOn = @(button.isSelected);
-    [SLLockManager.manager toggleSecurityForLock:self.lock];
+    if (!self.crashButton.isSelected) {
+        button.selected = !button.selected;
+        self.lock.isSecurityOn = @(button.isSelected);
+        [SLLockManager.manager toggleSecurityForLock:self.lock];
+    }
 }
 
 - (void)sharingButtonPressed:(UIButton *)button

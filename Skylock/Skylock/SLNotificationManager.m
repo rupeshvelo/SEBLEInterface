@@ -82,15 +82,18 @@
 
 - (void)createNotificationOfType:(SLNotificationType)notficationType
 {
-    SLNotification *notification = [[SLNotification alloc] initWithType:notficationType];
-    notification.displayDateString = [self formattedDisplayTimeForNotificiaton:notification];
-    notification.fullDateString = [self formattedFullTimeForNotfication:notification];
-    notification.delegate = self;
-    [self.notifications addObject:notification];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationAlertOccured
-                                                        object:nil
-                                                      userInfo:@{@"notification":notification}];
+    // do this since only one notification can be displayed at a time
+    if (self.notifications.count == 0) {
+        SLNotification *notification = [[SLNotification alloc] initWithType:notficationType];
+        notification.displayDateString = [self formattedDisplayTimeForNotificiaton:notification];
+        notification.fullDateString = [self formattedFullTimeForNotfication:notification];
+        notification.delegate = self;
+        [self.notifications addObject:notification];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationAlertOccured
+                                                            object:nil
+                                                          userInfo:@{@"notification":notification}];
+    }
 }
 
 - (NSArray *)getNotifications
@@ -141,17 +144,21 @@
 //    } else {
 //        sendAlert = NO;
 //    }
-    if (lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdCrashSD ||
+    if ((lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdCrashSD ||
         lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdCrashSD ||
-        lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdCrashSD) {
+        lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdCrashSD) &&
+        lock.isCrashOn.boolValue) {
             alert = SLNotificationTypeCrashPre;
-        } else if (lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
+        } else if ((lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
                    lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
-                   lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdTheftMediumSD) {
-                       alert = SLNotificationTypeTheftMedium;
+                   lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdTheftMediumSD) &&
+                   lock.isSecurityOn.boolValue) {
+                    alert = SLNotificationTypeTheftMedium;
                    } else {
                        sendAlert = NO;
                    }
+    // this is kinda dumb imo, but only one notification can be displayed at a time,
+    
     if (sendAlert) {
         [self createNotificationOfType:alert];
     }
