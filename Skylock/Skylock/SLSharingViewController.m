@@ -147,7 +147,7 @@
     
     self.navigationController.navigationBar.barTintColor = [UIColor colorWithRed:110 green:223 blue:158];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    self.navigationItem.title = self.lock.name;
+    self.navigationItem.title = self.lock.displayName;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
     
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_chevron_left_white"]

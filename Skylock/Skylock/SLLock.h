@@ -104,5 +104,6 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (NSDictionary *)asDbDictionary;
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
+- (NSString *)displayName;
 
 @end

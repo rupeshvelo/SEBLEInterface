@@ -50,7 +50,7 @@
 
 - (void)updateCellWithLock:(SLLock *)lock
 {
-    self.textLabel.text = lock.name;
+    self.textLabel.text = lock.displayName;
     self.detailTextLabel.text = [[NSString alloc] stringWithDistance:lock.distanceAway];
 }
 
