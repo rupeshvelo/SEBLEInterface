@@ -319,7 +319,7 @@
                                           self.sharingLabel.bounds.size.width,
                                           self.sharingLabel.bounds.size.height);
     
-    self.lockButton.frame = CGRectMake(kSLLockInfoViewControllerPadding,
+    self.lockButton.frame = CGRectMake(CGRectGetMidX(self.view.bounds) - .5*self.lockButton.frame.size.width,
                                        self.view.bounds.size.height - self.lockButton.bounds.size.height - kSLLockInfoViewControllerPadding,
                                        self.lockButton.bounds.size.width,
                                        self.lockButton.bounds.size.height);
