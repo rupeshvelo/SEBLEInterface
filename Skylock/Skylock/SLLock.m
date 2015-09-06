@@ -27,6 +27,7 @@
       isSecurityOn:(NSNumber *)isSecurityOn
           latitude:(NSNumber *)latitude
          longitude:(NSNumber *)longitude
+     isCurrentLock:(NSNumber *)isCurrentLock
 {
     self = [super init];
     if (self) {
@@ -44,6 +45,7 @@
         _isSecurityOn       = isSecurityOn;
         _latitude           = latitude;
         _longitude          = longitude;
+        _isCurrentLock      = isCurrentLock;
     }
     
     return self;
@@ -62,6 +64,7 @@
           isSecurityOn:(NSNumber *)isSecurityOn
               latitude:(NSNumber *)latitude
              longitude:(NSNumber *)longitude
+         isCurrentLock:(NSNumber *)isCurrentLock
 {
     self = [self  initWithName:name
                           uuid:uuid
@@ -76,7 +79,8 @@
                    isSharingOn:isSharingOn
                   isSecurityOn:isSecurityOn
                       latitude:latitude
-                     longitude:longitude];
+                     longitude:longitude
+                 isCurrentLock:isCurrentLock];
     if (self) {
         NSDictionary *location = self.testLocation;
         _latitude = location[@"latitude"];
@@ -100,7 +104,8 @@
                                isSharingOn:@(NO)
                               isSecurityOn:@(NO)
                                   latitude:@(0)
-                                 longitude:@(0)];
+                                 longitude:@(0)
+                              isCurrentLock:@(NO)];
 }
 
 + (id)lockWithDbDictionary:(NSDictionary *)dbDictionary
@@ -117,7 +122,8 @@
                               isSharingOn:@(NO)
                              isSecurityOn:@(NO)
                                  latitude:dbDictionary[@"latitude"]
-                                longitude:dbDictionary[@"longitude"]];
+                                longitude:dbDictionary[@"longitude"]
+                            isCurrentLock:dbDictionary[@"isCurrentLock"]];
     
 }
 
@@ -197,7 +203,8 @@
     NSDictionary *db = @{@"name":self.name,
                          @"uuid":self.uuid,
                          @"latitude":self.latitude,
-                         @"longitude":self.longitude
+                         @"longitude":self.longitude,
+                         @"isCurrentLock":self.isCurrentLock
                          };
     return db;
 }
@@ -251,6 +258,9 @@
         case SLLockPropertyUUID:
             return @"UUID";
             break;
+        case SLLockPropertyIsCurrentLock:
+            return @"isCurrentLock";
+            break;
         default:
             return nil;
             break;
@@ -270,7 +280,8 @@
              @(SLLockPropertyIsLocked),
              @(SLLockPropertyIsCrashOn),
              @(SLLockPropertyIsSharingOn),
-             @(SLLockPropertyIsSecurityOn)
+             @(SLLockPropertyIsSecurityOn),
+             @(SLLockPropertyIsCurrentLock)
              ];
 }
 
@@ -362,6 +373,8 @@
         case SLLockPropertyAccelerometerValues:
             self.accelerometerVales = dictionary[property];
             break;
+        case SLLockPropertyIsCurrentLock:
+            self.isCurrentLock = dictionary[property];
         default:
             break;
     }
@@ -378,11 +391,12 @@
 
 - (NSString *)displayName
 {
-    if (self.name.length <= 8) {
+    static NSInteger length = 8;
+    if (self.name.length <= length) {
         return self.name;
     }
     
-    return [self.name substringToIndex:8];
+    return [self.name substringToIndex:length];
 }
 
 @end

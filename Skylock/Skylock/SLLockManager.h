@@ -16,9 +16,11 @@
 
 @interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate, SLLockValueDelegate>
 
-+ (id)manager;
+
 
 @property (nonatomic, assign) BOOL hasBleControl;
+
++ (id)manager;
 
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;
@@ -36,5 +38,9 @@
 - (void)removeUnconnectedLocks;
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values;
 - (void)startGettingHardwareData;
+- (void)shouldEnterSearchMode:(BOOL)shouldSearch;
+- (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks;
+- (BOOL)hasLocksForCurrentUser;
+- (void)deselectAllLocks;
 
 @end

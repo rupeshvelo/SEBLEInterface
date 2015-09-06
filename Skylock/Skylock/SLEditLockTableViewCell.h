@@ -11,7 +11,7 @@
 
 @protocol SLEditLockTableViewCellDelegate <NSObject>
 
-- (void)editLockCellSharePushed:(SLEditLockTableViewCell *)cell;
+- (void)editLockCellRenamePushed:(SLEditLockTableViewCell *)cell;
 - (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell;
 - (void)editLockCellLongPressActivated:(SLEditLockTableViewCell *)cell;
 

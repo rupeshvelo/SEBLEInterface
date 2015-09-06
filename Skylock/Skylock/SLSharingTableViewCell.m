@@ -8,6 +8,7 @@
 
 #import "SLSharingTableViewCell.h"
 #import "UIColor+RGB.h"
+#import "SLContact.h"
 
 @implementation SLSharingTableViewCell
 
@@ -24,4 +25,11 @@
     
     return self;
 }
+
+- (void)setPropertiesWithContact:(SLContact *)contact
+{
+    self.imageView.image = [UIImage imageWithData:contact.imageData];
+    self.textLabel.text = contact.fullName;
+}
+
 @end

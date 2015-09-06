@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)dealloc
 {
-    //[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSArray *)tutorialViewControllers
@@ -224,10 +224,10 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     
     [self.view bringSubviewToFront:self.pageControl];
 
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(foundLock:)
-//                                                 name:kSLNotificationLockManagerDiscoverdLock
-//                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(foundLock:)
+                                                 name:kSLNotificationLockManagerDiscoverdLock
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -367,7 +367,6 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)nextButtonPressed
 {
-    NSLog(@"next button pressed");
     SLTutorialViewController *nextVC = self.tutorialViewControllers[++self.currentIndex];
     __weak typeof (self)weakself = self;
     [self.pageViewController setViewControllers:@[nextVC]
@@ -383,7 +382,6 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)backButtonPressed
 {
-    NSLog(@"back button pressed");
     SLTutorialViewController *prevVC = self.tutorialViewControllers[--self.currentIndex];
     
     __weak typeof (self)weakself = self;
@@ -400,37 +398,32 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)doneButtonPressed
 {
-    NSLog(@"done button pressed");
-    
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:@(YES) forKey:SLUserDefaultsTutorialComplete];
     [ud synchronize];
     
-    SLMapViewController *mvc = [SLMapViewController new];
-    [self presentViewController:mvc animated:YES completion:nil];
+    if (self.shouldDismiss) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        SLMapViewController *mvc = [SLMapViewController new];
+        [self presentViewController:mvc animated:YES completion:nil];
+    }
 }
 
 - (void)searchButtonPressed
 {
-    NSLog(@"search button search");
-    [self nextButtonPressed];
-
-//    NSArray *locks = [SLLockManager.manager orderedLocksByName];
-//    if (locks.count == 0) {
-//        [SLLockManager.manager enableBleScan:YES];
-//        [SLLockManager.manager startScan];
-//    } else {
-//        [self nextButtonPressed];
-//    }
+    [SLLockManager.manager shouldEnterSearchMode:YES];
+    [SLLockManager.manager startScan];
 }
 
 - (void)foundLock:(NSNotification *)notification
 {
-    if ([notification.object isMemberOfClass:[SLLock class]]) {
+    if (notification.object && [notification.object isMemberOfClass:[SLLock class]]) {
         SLLock *lock = (SLLock *)notification.object;
         [SLLockManager.manager addLock:lock];
     }
     
+    [SLLockManager.manager shouldEnterSearchMode:NO];
     [self nextButtonPressed];
 }
 

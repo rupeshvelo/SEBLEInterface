@@ -29,11 +29,11 @@
 @property (nonatomic, assign) CGFloat bottomHeight;
 
 @property (nonatomic, strong) UIButton *crashButton;
-@property (nonatomic, strong) UIButton *securityButton;
+@property (nonatomic, strong) UIButton *theftButton;
 @property (nonatomic, strong) UIButton *sharingButton;
 
 @property (nonatomic, strong) UILabel *crashLabel;
-@property (nonatomic, strong) UILabel *securityLabel;
+@property (nonatomic, strong) UILabel *theftLabel;
 @property (nonatomic, strong) UILabel *sharingLabel;
 
 @property (nonatomic, strong) UIButton *lockButton;
@@ -109,6 +109,7 @@
                          action:@selector(arrowButtonPressed)
                forControlEvents:UIControlEventTouchDown];
         [_arrowButton setImage:image forState:UIControlStateNormal];
+        _arrowButton.enabled = !!self.lock;
         [self.view addSubview:_arrowButton];
     }
     
@@ -134,23 +135,23 @@
     return _crashButton;
 }
 
-- (UIButton *)securityButton
+- (UIButton *)theftButton
 {
-    if (!_securityButton) {
-        _securityButton = [[UIButton alloc] initWithFrame:self.initialButtonFrame];
-        [_securityButton addTarget:self
+    if (!_theftButton) {
+        _theftButton = [[UIButton alloc] initWithFrame:self.initialButtonFrame];
+        [_theftButton addTarget:self
                             action:@selector(securityButtonPressed:)
                   forControlEvents:UIControlEventTouchDown];
-        [_securityButton setImage:[UIImage imageNamed:@"btn_theftalert_on"]
+        [_theftButton setImage:[UIImage imageNamed:@"btn_theftalert_on"]
                          forState:UIControlStateSelected];
-        [_securityButton setImage:[UIImage imageNamed:@"btn_theftalert_off"]
+        [_theftButton setImage:[UIImage imageNamed:@"btn_theftalert_off"]
                          forState:UIControlStateNormal];
-        _securityButton.selected = self.lock.isSecurityOn.boolValue;
+        _theftButton.selected = self.lock.isSecurityOn.boolValue;
         
-        [self.view addSubview:_securityButton];
+        [self.view addSubview:_theftButton];
     }
     
-    return _securityButton;
+    return _theftButton;
 }
 
 - (UIButton *)sharingButton
@@ -190,22 +191,22 @@
     return _crashLabel;
 }
 
-- (UILabel *)securityLabel
+- (UILabel *)theftLabel
 {
-    if (!_securityLabel) {
+    if (!_theftLabel) {
         NSString *text = NSLocalizedString(@"Theft Alert", nil);
         CGSize maxSize = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX);
         CGSize size = [text sizeWithFont:kSLLockInfoViewControllerButtonLabelFont maxSize:maxSize];
-        _securityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
-        _securityLabel.text = text;
-        _securityLabel.textAlignment = NSTextAlignmentCenter;
-        _securityLabel.font = kSLLockInfoViewControllerButtonLabelFont;
-        _securityLabel.textColor = kSLLockInfoViewControllerLabelColor;
+        _theftLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, size.width, size.height)];
+        _theftLabel.text = text;
+        _theftLabel.textAlignment = NSTextAlignmentCenter;
+        _theftLabel.font = kSLLockInfoViewControllerButtonLabelFont;
+        _theftLabel.textColor = kSLLockInfoViewControllerLabelColor;
         
-        [self.view addSubview:_securityLabel];
+        [self.view addSubview:_theftLabel];
     }
     
-    return _securityLabel;
+    return _theftLabel;
 }
 
 - (UILabel *)sharingLabel
@@ -231,6 +232,8 @@
     if (!_lockButton) {
         UIImage *normalImage = [UIImage imageNamed:@"btn_lock"];
         UIImage *selectedImage = [UIImage imageNamed:@"btn_unlock"];
+        UIImage *disabledImage = [UIImage imageNamed:@"btn_lock_grey"];
+        
         _lockButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                  0.0f,
                                                                  normalImage.size.width,
@@ -241,7 +244,9 @@
         
         [_lockButton setImage:normalImage forState:UIControlStateNormal];
         [_lockButton setImage:selectedImage forState:UIControlStateSelected];
-        _lockButton.selected = NO;
+        [_lockButton setImage:disabledImage forState:UIControlStateDisabled];
+        _lockButton.selected = self.lock.isLocked.boolValue;
+        _lockButton.enabled = !!self.lock;
         
         [self.view addSubview:_lockButton];
     }
@@ -294,10 +299,10 @@
                                         self.crashButton.bounds.size.width,
                                         self.crashButton.bounds.size.height);
     
-    self.securityButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.securityButton.bounds.size.width),
+    self.theftButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.theftButton.bounds.size.width),
                                         53.0f,
-                                        self.securityButton.bounds.size.width,
-                                        self.securityButton.bounds.size.height);
+                                        self.theftButton.bounds.size.width,
+                                        self.theftButton.bounds.size.height);
     
     self.sharingButton.frame = CGRectMake(self.view.bounds.size.width - self.sharingButton.bounds.size.width - kSLLockInfoViewControllerPadding,
                                           53.0f,
@@ -309,10 +314,10 @@
                                        self.crashLabel.bounds.size.width,
                                        self.crashLabel.bounds.size.height);
     
-    self.securityLabel.frame = CGRectMake(CGRectGetMidX(self.securityButton.frame) - .5*self.securityLabel.bounds.size.width,
-                                       CGRectGetMaxY(self.securityButton.frame) + 10.0f,
-                                       self.securityLabel.bounds.size.width,
-                                       self.securityLabel.bounds.size.height);
+    self.theftLabel.frame = CGRectMake(CGRectGetMidX(self.theftButton.frame) - .5*self.theftLabel.bounds.size.width,
+                                       CGRectGetMaxY(self.theftButton.frame) + 10.0f,
+                                       self.theftLabel.bounds.size.width,
+                                       self.theftLabel.bounds.size.height);
     
     self.sharingLabel.frame = CGRectMake(CGRectGetMidX(self.sharingButton.frame) - .5*self.sharingLabel.bounds.size.width,
                                           CGRectGetMaxY(self.sharingButton.frame) + 10.0f,
@@ -450,14 +455,14 @@
     return self.crashLabel.frame;
 }
 
-- (CGRect)securityButtonFrame
+- (CGRect)theftButtonFram
 {
-    return self.securityButton.frame;
+    return self.theftButton.frame;
 }
 
-- (CGRect)securityLabelFrame
+- (CGRect)theftLabelFrame
 {
-    return self.securityLabel.frame;
+    return self.theftLabel.frame;
 }
 
 - (CGRect)sharingButtonFrame
@@ -469,21 +474,6 @@
 {
     return self.sharingLabel.frame;
 }
-
-//#pragma mark - SLLockInfoViewHeaderDelegate Methods
-//- (void)lockInfoViewHeaderSettingButtonPressed:(SLLockInfoViewHeader *)headerView
-//{
-//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-//    
-////    SLSettingsViewController *svc = [SLSettingsViewController new];
-////    svc.lock = self.lock;
-////    
-////    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
-////
-////    [self presentViewController:navController animated:YES completion:nil];
-//}
-
-
 
 - (void)arrowButtonPressed
 {
@@ -551,10 +541,10 @@
     self.batteryImageView.hidden = shouldHide;
     self.wifiImageView.hidden = shouldHide;
     self.crashButton.hidden = shouldHide;
-    self.securityButton.hidden = shouldHide;
+    self.theftButton.hidden = shouldHide;
     self.sharingButton.hidden = shouldHide;
     self.crashLabel.hidden = shouldHide;
-    self.securityLabel.hidden = shouldHide;
+    self.theftLabel.hidden = shouldHide;
     self.sharingLabel.hidden = shouldHide;
 }
 
@@ -565,17 +555,17 @@
     self.batteryImageView.alpha = alpha;
     self.wifiImageView.alpha = alpha;
     self.crashButton.alpha = alpha;
-    self.securityButton.alpha = alpha;
+    self.theftButton.alpha = alpha;
     self.sharingButton.alpha = alpha;
     self.crashLabel.alpha = alpha;
-    self.securityLabel.alpha = alpha;
+    self.theftLabel.alpha = alpha;
     self.sharingLabel.alpha = alpha;
 }
 
 - (void)crashButtonPressed:(UIButton *)button
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (!self.securityButton.isSelected) {
+    if (!self.theftButton.isSelected) {
         button.selected = !button.selected;
         self.lock.isCrashOn = @(button.isSelected);
         [SLLockManager.manager toggleCrashForLock:self.lock];

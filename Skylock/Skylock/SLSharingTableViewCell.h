@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class SLContact;
 
 @interface SLSharingTableViewCell : UITableViewCell
+
+- (void)setPropertiesWithContact:(SLContact *)contact;
 
 @end

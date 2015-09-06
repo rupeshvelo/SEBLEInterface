@@ -1,3 +1,4 @@
+
 //
 //  SLLockManager.m
 //  Skylock
@@ -66,6 +67,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 @property (nonatomic, strong) NSTimer *harwareTimer;
 @property (nonatomic, strong) SLLock *selectedLock;
 @property (nonatomic, strong) NSMutableDictionary *lockValues;
+@property (nonatomic, strong) NSMutableSet *namesToConnect;
+@property (nonatomic, assign) BOOL shouldSearch;
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -81,10 +84,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         _locks                  = [NSMutableDictionary new];
         _locksToAdd             = [NSMutableDictionary new];
         _lockValues             = [NSMutableDictionary new];
+        _namesToConnect         = [NSMutableSet new];
         _bleManager             = [SEBLEInterfaceMangager manager];
         _bleManager.delegate    = self;
         _databaseManger         = [SLDatabaseManager manager];
         _bleIsPoweredOn         = NO;
+        _shouldSearch           = NO;
     }
     
     return self;
@@ -161,7 +166,23 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)setCurrentLock:(SLLock *)lock
 {
+    [self.locks enumerateKeysAndObjectsUsingBlock:^(id key, SLLock *aLock, BOOL *stop) {
+        aLock.isCurrentLock = @(NO);
+    }];
+    
     self.selectedLock = lock;
+    self.selectedLock.isCurrentLock = @(YES);
+    [SLDatabaseManager.manager setCurrentLock:self.selectedLock];
+}
+
+- (void)deselectAllLocks
+{
+    [self.locks enumerateKeysAndObjectsUsingBlock:^(id key, SLLock *aLock, BOOL *stop) {
+        aLock.isCurrentLock = @(NO);
+    }];
+    
+    self.selectedLock = nil;
+    [SLDatabaseManager.manager deselectAllLocks];
 }
 
 - (void)addLock:(SLLock *)lock
@@ -175,6 +196,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             self.locks[lock.name] = lock;
             [self.bleManager addPeripheralNamed:lock.name];
             [self saveLockToDatabase:lock];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerConnectedLock
+                                                                object:nil];
         }
     }
 }
@@ -183,15 +207,24 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [locks enumerateObjectsUsingBlock:^(SLLock *lock, NSUInteger idx, BOOL *stop) {
-        [self addLock:lock];
+        [self.namesToConnect addObject:lock.name];
     }];
+    
+    [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
 }
 
 - (void)removeLock:(SLLock *)lock
 {
+    // Explicitly called by user to disconnect the lock
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self containsLock:lock]) {
         [self.locks removeObjectForKey:lock.name];
+    }
+    
+    if ([self.namesToConnect containsObject:lock.name]) {
+        [self.namesToConnect removeObject:lock.name];
+        [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
+        [self.bleManager removePeripheralNamed:lock.name];
     }
 }
 
@@ -211,10 +244,36 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     return locksByName;
 }
 
+- (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks
+{
+    NSMutableDictionary *prevLocksDict = [NSMutableDictionary new];
+    for (SLLock *lock in previousLocks) {
+        prevLocksDict[lock.name] = lock;
+    }
+    
+    NSMutableArray *newLocks = [NSMutableArray new];
+    [self.locks enumerateKeysAndObjectsUsingBlock:^(NSString *name, SLLock *lock, BOOL *stop) {
+        if (prevLocksDict[name]) {
+            [prevLocksDict removeObjectForKey:name];
+        } else {
+            [newLocks addObject:lock];
+        }
+    }];
+    
+    return @{@"new": newLocks,
+             @"removed": prevLocksDict.allValues
+             };
+}
+
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [SLLock lockWithName:blePeripheral.peripheral.name uuid:blePeripheral.CBUUIDAsString];
+}
+
+- (BOOL)hasLocksForCurrentUser
+{
+    return self.namesToConnect.allObjects.count != 0;
 }
 
 - (void)fetchLocks
@@ -272,7 +331,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager powerOn];
-    [self.bleManager setDeviceNamesToConnectTo:self.deviceNameFragmentsToConnect];
+    [self.bleManager setDeviceNameFragmentsToConnect:self.deviceNameFragmentsToConnect];
     [self.bleManager setServiceToReadFrom:self.servicesToSubcribeTo];
     [self.bleManager setCharacteristicsToReadFrom:self.characteristicsToRead];
     [self.bleManager setCharacteristicsToReceiveNotificationsFrom:self.charcteristicsToNotify];
@@ -294,6 +353,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                       forServiceUUID:[self uuidForService:SLLockManagerServiceHardware]
                                andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo]];
     }
+}
+
+- (void)shouldEnterSearchMode:(BOOL)shouldSearch
+{
+    self.shouldSearch = shouldSearch;
 }
 
 - (void)setLockStateForLock:(SLLock *)lock
@@ -378,7 +442,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSArray *locks = [self.databaseManger locksForCurrentUser];
-    if (locks) {
+    if (locks && locks.count > 0) {
         [self addLocksFromDb:locks];
     }
 }
@@ -548,9 +612,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)checkAutoUnlockForLock:(SLLock *)lock
 {
     BOOL updateLockState = YES;
-    if (lock.rssiStrength.integerValue < 50 && lock.isLocked.boolValue) {
+    static NSInteger rssiStrength = 50;
+    if (lock.rssiStrength.integerValue < rssiStrength && lock.isLocked.boolValue) {
         lock.isLocked = @(NO);
-    } else if (lock.rssiStrength.integerValue > 50 && !lock.isLocked.boolValue) {
+    } else if (lock.rssiStrength.integerValue > rssiStrength && !lock.isLocked.boolValue) {
         lock.isLocked = @(YES);
     } else {
         updateLockState = NO;
@@ -567,8 +632,20 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLLock *lock = [self lockFromPeripheral:peripheral];
-    if (!self.locksToAdd[lock.name] && !self.locks[lock.name]) {
+    if ((!self.locksToAdd[lock.name] &&
+        !self.locks[lock.name]) &&
+        ([self.namesToConnect containsObject:peripheral.peripheral.name] || self.shouldSearch)) {
+        
+        if (![self.namesToConnect containsObject:peripheral.peripheral.name]) {
+            [self.namesToConnect addObject:peripheral.peripheral.name];
+        }
+        
         self.locksToAdd[lock.name] = lock;
+        
+        if (self.shouldSearch) {
+            [self addLock:lock];
+        }
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                             object:lock];
     }
@@ -604,10 +681,15 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)bleInterfaceManagerIsPoweredOn:(SEBLEInterfaceMangager *)interfaceManager
 {
     self.bleIsPoweredOn = YES;
+    [self.bleManager startScan];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager disconnectedPeripheral:(SEBLEPeripheral *)peripheral
 {
+    if ([self.namesToConnect containsObject:peripheral.peripheral.name]) {
+        return;
+    }
+    
     if ([self.selectedLock.name isEqualToString:peripheral.peripheral.name]) {
         self.selectedLock = nil;
     }

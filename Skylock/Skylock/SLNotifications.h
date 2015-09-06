@@ -11,6 +11,7 @@
 
 #define kSLNotificationLockManagerDiscoverdLock     @"kSLNotificationLockManagerDiscoverdLock"
 #define kSLNotificationLockManagerDisconnectedLock  @"kSLNotificationLockManagerDisconnectedLock"
+#define kSLNotificationLockManagerConnectedLock     @"kSLNotificationLockManagerConnectedLock"
 #define kSLNotificationUserSignedInFacebook         @"kSLNotificationUserSignedInFacebook"
 #define kSLNotificationLockManagerUpdatedLock       @"kSLNotificationLockManagerUpdatedLock"
 #define kSLNotificationLockManagerUpdatedLockAlert  @"kSLNotificationLockManagerUpdatedLockAlert"
