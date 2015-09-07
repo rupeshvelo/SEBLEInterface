@@ -156,6 +156,16 @@
     return _locationManager;
 }
 
+- (SLLockInfoViewController *)lockInfoViewController
+{
+    if (!_lockInfoViewController) {
+        _lockInfoViewController = [SLLockInfoViewController new];
+        _lockInfoViewController.delegate = self;
+    }
+    
+    return _lockInfoViewController;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -195,6 +205,8 @@
                                            CGRectGetMidY(self.menuButton.frame) - .5*self.settingsButton.bounds.size.height,
                                            self.settingsButton.bounds.size.width,
                                            self.settingsButton.bounds.size.height);
+    
+    [self presentLockInfoViewController];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -225,27 +237,13 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    BOOL showingInfoVC = NO;
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass:[SLLockInfoViewController class]]) {
-            SLLockInfoViewController *livc = (SLLockInfoViewController *)vc;
-            __typeof(self) __weak weakSelf = self;
-            [self removeLockInfoViewController:livc withCompletion:^{
-                [weakSelf presentSlideViewController];
-            }];
-            
-            showingInfoVC = YES;
-            break;
-        }
-    }
-    
-    if (!showingInfoVC) {
-        [self presentSlideViewController];
-    }
+    [self presentSlideViewController];
 }
 
 - (void)settingsButtonPressed
 {
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+
     [self presentSettingsViewController];
 }
 
@@ -327,29 +325,15 @@
 - (void)presentLockInfoViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-        
-    SLLockInfoViewController *livc = [SLLockInfoViewController new];
-    livc.lock = self.selectedLock;
-    livc.delegate = self;
+    self.lockInfoViewController.lock = self.selectedLock;
     
-    CGSize viewSize = self.selectedLock ? self.lockInfoLargeFrame.size : self.lockInfoSmallFrame.size;
-    livc.view.frame = CGRectMake(self.lockInfoLargeFrame.origin.x,
-                                 self.view.bounds.size.height,
-                                 viewSize.width,
-                                 viewSize.height);
+    CGRect viewFrame = self.selectedLock ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
+    self.lockInfoViewController.view.frame = viewFrame;
     
-    [self addChildViewController:livc];
-    [self.view addSubview:livc.view];
-    [self.view bringSubviewToFront:livc.view];
-    [livc didMoveToParentViewController:self];
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        livc.view.frame = self.selectedLock ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-    } completion:^(BOOL finished) {
-        if (finished) {
-            [self presentCoachMarkViewController];
-        }
-    }];
+    [self addChildViewController:self.lockInfoViewController];
+    [self.view addSubview:self.lockInfoViewController.view];
+    [self.view bringSubviewToFront:self.lockInfoViewController.view];
+    [self.lockInfoViewController didMoveToParentViewController:self];
 }
 
 - (void)removeLockInfoViewController:(SLLockInfoViewController *)livc withCompletion:(void(^)(void))completion
@@ -432,31 +416,23 @@
 - (NSDictionary *)coachMarkParameters
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLLockInfoViewController *livc;
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass:[SLLockInfoViewController class]]) {
-            livc = (SLLockInfoViewController *)vc;
-            break;
-        }
-    }
-    
     NSDictionary *params;
-    if (livc) {
+    if (self.selectedLock && self.lockInfoViewController.isUp) {
         static NSString *button = @"button";
         static NSString *label = @"label";
         
-        CGRect crashButtonFrame = [self.view convertRect:livc.crashButtonFrame
-                                                fromView:livc.view];
-        CGRect crashLabelFrame = [self.view convertRect:livc.crashLabelFrame
-                                               fromView:livc.view];
-        CGRect theftButtonFrame = [self.view convertRect:livc.theftButtonFrame
-                                                   fromView:livc.view];
-        CGRect securityLabelFrame = [self.view convertRect:livc.theftLabelFrame
-                                                  fromView:livc.view];
-        CGRect sharingButtonFrame = [self.view convertRect:livc.sharingButtonFrame
-                                                  fromView:livc.view];
-        CGRect sharingLabelFrame = [self.view convertRect:livc.sharingLabelFrame
-                                                 fromView:livc.view];
+        CGRect crashButtonFrame = [self.view convertRect:self.lockInfoViewController.crashButtonFrame
+                                                fromView:self.lockInfoViewController.view];
+        CGRect crashLabelFrame = [self.view convertRect:self.lockInfoViewController.crashLabelFrame
+                                               fromView:self.lockInfoViewController.view];
+        CGRect theftButtonFrame = [self.view convertRect:self.lockInfoViewController.theftButtonFrame
+                                                   fromView:self.lockInfoViewController.view];
+        CGRect securityLabelFrame = [self.view convertRect:self.lockInfoViewController.theftLabelFrame
+                                                  fromView:self.lockInfoViewController.view];
+        CGRect sharingButtonFrame = [self.view convertRect:self.lockInfoViewController.sharingButtonFrame
+                                                  fromView:self.lockInfoViewController.view];
+        CGRect sharingLabelFrame = [self.view convertRect:self.lockInfoViewController.sharingLabelFrame
+                                                 fromView:self.lockInfoViewController.view];
         
         params = @{@(SLCoachMarkPageCrash):@{button:[NSValue valueWithCGRect:crashButtonFrame],
                                              label:[NSValue valueWithCGRect:crashLabelFrame]
@@ -485,10 +461,11 @@
     }
     
     if (svc) {
-        [self removeSlideViewController:svc withCompletion:^{
-            [self presentLockInfoViewController];
-        }];
+        [self removeSlideViewController:svc withCompletion:nil];
     }
+    
+    self.lockInfoViewController.lock = self.selectedLock;
+    [self.lockInfoViewController setUpView];
 }
 
 - (void)handleCrashAndTheftAlerts:(NSNotification *)notification
@@ -561,6 +538,7 @@
 
 - (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
 {
+    self.lockInfoViewController.lock = self.selectedLock;
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         self.lockInfoViewController.view.frame = shouldBeLarge ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
     }];
@@ -582,19 +560,14 @@
                     options:(NSDictionary *)options
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (action == SLSlideViewControllerButtonActionLockSelected && options) {
-        SLLock *lock = options[@"lock"];
-        
-        // this should be moved to the point where the lock's annotation is placed on the screen
-        self.selectedLock = lock;
+    if (action == SLSlideViewControllerButtonActionLockSelected) {
+        self.selectedLock = [SLLockManager.manager getCurrentLock];
         self.settingsButton.enabled = YES;
-        // end move
         
         // TODO - clear lock annotations that are no longer active
-        [self addLockToMap:lock];
+        [self addLockToMap:self.selectedLock];
     } else if (action == SLSlideViewControllerButtonActionLockDeselected){
         self.selectedLock = nil;
-        [self setupLockInfoViewControllerView:NO];
     } else if (action == SLSlideViewControllerButtonActionAddLock){
         SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
         tvc.shouldDismiss = YES;        
