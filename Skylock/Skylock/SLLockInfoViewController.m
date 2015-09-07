@@ -18,7 +18,7 @@
 #define kSLLockInfoViewControllerPadding            12.0f
 #define kSLLockInfoViewControllerButtonLabelFont    [UIFont fontWithName:@"Roboto-Regular" size:10.0f]
 #define kSLLockInfoViewControllerLabelColor         [UIColor colorWithRed:128 green:128 blue:128]
-
+#define kSLLockInfoViewControllerViewSizeDelta      107.0f
 @interface SLLockInfoViewController()
 
 @property (nonatomic, strong) UILabel *lockNameLabel;
@@ -38,6 +38,9 @@
 
 @property (nonatomic, strong) UIButton *lockButton;
 @property (nonatomic, assign) CGFloat arrowButtonLeftOrigin;
+
+@property (nonatomic, strong) NSArray *transientViews;
+@property (nonatomic, assign) CGFloat topViewsCenter;
 
 @end
 
@@ -100,7 +103,7 @@
 - (UIButton *)arrowButton
 {
     if (!_arrowButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_chevron_down"];
+        UIImage *image = [UIImage imageNamed:@"icon_chevron_up"];
         _arrowButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                   0.0f,
                                                                   4*image.size.width,
@@ -254,43 +257,50 @@
     return _lockButton;
 }
 
+- (NSArray *)transientViews
+{
+    if (!_transientViews) {
+        _transientViews = @[self.lockNameLabel,
+                            self.batteryImageView,
+                            self.wifiImageView,
+                            self.crashButton,
+                            self.theftButton,
+                            self.sharingButton,
+                            self.crashLabel,
+                            self.theftLabel,
+                            self.sharingLabel
+                            ];
+    }
+    
+    return _transientViews;
+}
+
 - (void)viewDidLoad
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
-    self.isUp = YES;
+    self.isUp = NO;
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.view.layer.cornerRadius = SLConstantsViewCornerRadius1;
     self.view.clipsToBounds = YES;
     
     self.bottomHeight = -1.0;
+    
+    [self hideViews:!self.lock];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    CGFloat xCenter = kSLLockInfoViewControllerPadding + .5*self.lockNameLabel.bounds.size.height;
-    self.lockNameLabel.frame = CGRectMake(kSLLockInfoViewControllerPadding,
-                                          xCenter -.5*self.lockNameLabel.bounds.size.height,
-                                          self.lockNameLabel.bounds.size.width,
-                                          self.lockNameLabel.bounds.size.height);
-    self.batteryImageView.frame = CGRectMake(97.0f,
-                                             xCenter -.5*self.batteryImageView.bounds.size.height,
-                                             self.batteryImageView.bounds.size.width,
-                                             self.batteryImageView.bounds.size.height);
+    self.topViewsCenter = kSLLockInfoViewControllerPadding + .5*self.lockNameLabel.bounds.size.height;
     
-    self.wifiImageView.frame = CGRectMake(self.view.bounds.size.width - 118.0f,
-                                          xCenter -.5*self.wifiImageView.bounds.size.height,
-                                          self.wifiImageView.bounds.size.width,
-                                          self.wifiImageView.bounds.size.height);
-    
-    //CGSize arrowImageSize = self.arrowButton.imageView.image.size;
     self.arrowButtonLeftOrigin = self.view.bounds.size.width - self.arrowButton.bounds.size.width;
-    self.arrowButton.frame = CGRectMake(self.arrowButtonLeftOrigin,
-                                        xCenter -.5*self.arrowButton.bounds.size.height,
+    
+    self.arrowButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.arrowButton.bounds.size.width),
+                                        self.topViewsCenter -.5*self.arrowButton.bounds.size.height,
                                         self.arrowButton.bounds.size.width,
                                         self.arrowButton.bounds.size.height);
     
@@ -328,6 +338,43 @@
                                        self.view.bounds.size.height - self.lockButton.bounds.size.height - kSLLockInfoViewControllerPadding,
                                        self.lockButton.bounds.size.width,
                                        self.lockButton.bounds.size.height);
+}
+
+- (void)setUpView
+{
+    self.arrowButton.enabled = !!self.lock;
+    self.lockButton.enabled = !!self.lock;
+    
+    if ((!self.isUp && self.lock) || (self.isUp && !self.lock)) {
+        [self arrowButtonPressed];
+    }
+}
+
+- (void)setLockRelatedViewFrames
+{
+    UIFont *font = [UIFont fontWithName:@"Helvetica" size:13.0f];
+    CGSize maxSize = CGSizeMake(.5*self.view.bounds.size.width, CGFLOAT_MAX);
+    CGSize size = [self.lock.displayName sizeWithFont:font maxSize:maxSize];
+    self.lockNameLabel.text = self.lock.displayName;
+    self.lockNameLabel.frame = CGRectMake(kSLLockInfoViewControllerPadding,
+                                          self.topViewsCenter - .5*size.height,
+                                          size.width,
+                                          size.height);
+    
+    UIImage *batteryImage = self.batteryImage;
+    self.batteryImageView.image = batteryImage;
+    self.batteryImageView.frame = CGRectMake(97.0f,
+                                             self.topViewsCenter -.5*batteryImage.size.height,
+                                             batteryImage.size.width,
+                                             batteryImage.size.height);
+    
+    UIImage *wifiImage = self.wifiImage;
+    self.wifiImageView.image = wifiImage;
+    self.wifiImageView.frame = CGRectMake(self.view.bounds.size.width - 118.0f,
+                                          self.topViewsCenter -.5*wifiImage.size.height,
+                                          wifiImage.size.width,
+                                          wifiImage.size.height);
+
 }
 
 - (void)addSubView:(UIView *)view
@@ -455,7 +502,7 @@
     return self.crashLabel.frame;
 }
 
-- (CGRect)theftButtonFram
+- (CGRect)theftButtonFrame
 {
     return self.theftButton.frame;
 }
@@ -480,6 +527,7 @@
     self.isUp = !self.isUp;
     
     if (self.isUp) {
+        [self setLockRelatedViewFrames];
         [self hideViews:NO];
     }
     
@@ -499,8 +547,8 @@
         secondAnimation = ^{
             self.lockButton.frame = CGRectOffset(self.lockButton.frame,
                                                  0.0f,
-                                                 107.0f);
-            // face views in
+                                                 kSLLockInfoViewControllerViewSizeDelta);
+            // fade views in
             [self fadeViews:NO];
         };
     } else {
@@ -537,29 +585,17 @@
 
 - (void)hideViews:(BOOL)shouldHide
 {
-    self.lockNameLabel.hidden = shouldHide;
-    self.batteryImageView.hidden = shouldHide;
-    self.wifiImageView.hidden = shouldHide;
-    self.crashButton.hidden = shouldHide;
-    self.theftButton.hidden = shouldHide;
-    self.sharingButton.hidden = shouldHide;
-    self.crashLabel.hidden = shouldHide;
-    self.theftLabel.hidden = shouldHide;
-    self.sharingLabel.hidden = shouldHide;
+    [self.transientViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
+        view.hidden = shouldHide;
+    }];
 }
 
 - (void)fadeViews:(BOOL)shouldFade
 {
-    CGFloat alpha = shouldFade ? 0.0f:1.0f;
-    self.lockNameLabel.alpha = alpha;
-    self.batteryImageView.alpha = alpha;
-    self.wifiImageView.alpha = alpha;
-    self.crashButton.alpha = alpha;
-    self.theftButton.alpha = alpha;
-    self.sharingButton.alpha = alpha;
-    self.crashLabel.alpha = alpha;
-    self.theftLabel.alpha = alpha;
-    self.sharingLabel.alpha = alpha;
+    CGFloat alpha = shouldFade ? 0.0f : 1.0f;
+    [self.transientViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
+        view.alpha = alpha;
+    }];
 }
 
 - (void)crashButtonPressed:(UIButton *)button
@@ -597,4 +633,5 @@
     self.lock.isLocked = @(!self.lockButton.isSelected);
     [SLLockManager.manager setLockStateForLock:self.lock];
 }
+
 @end

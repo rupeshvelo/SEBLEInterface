@@ -29,6 +29,7 @@
 - (void)stopScan;
 - (NSArray *)unaddedLocks;
 - (void)setCurrentLock:(SLLock *)lock;
+- (SLLock *)getCurrentLock;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;

@@ -175,6 +175,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [SLDatabaseManager.manager setCurrentLock:self.selectedLock];
 }
 
+- (SLLock *)getCurrentLock
+{
+    return self.selectedLock;
+}
+
 - (void)deselectAllLocks
 {
     [self.locks enumerateKeysAndObjectsUsingBlock:^(id key, SLLock *aLock, BOOL *stop) {
