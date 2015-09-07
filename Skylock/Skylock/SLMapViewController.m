@@ -30,6 +30,7 @@
 #import "SLSharingViewController.h"
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
+#import "SLMainTutorialViewController.h"
 
 
 @class MBDirectionsRequest;
@@ -62,6 +63,8 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
+
+@property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
 @end
 
 @implementation SLMapViewController
@@ -198,9 +201,7 @@
 {
     [super viewDidAppear:animated];
     
-//    if ([CLLocationManager locationServicesEnabled]) {
-//        self.mapView.showsUserLocation = YES;
-//    }
+
 }
 
 - (void)registerAlertNotifications
@@ -251,10 +252,9 @@
 - (void)presentSlideViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [SLLockManager.manager fetchLocks];
     [self.view addSubview:self.touchStopperView];
     
-    static CGFloat width = 220.0f;
+    static CGFloat width = 150;
     SLSlideViewController *slvc = [SLSlideViewController new];
     slvc.delegate = self;
     slvc.view.frame = CGRectMake(-width,
@@ -324,19 +324,19 @@
     [self presentViewController:svc animated:YES completion:nil];
 }
 
-- (void)presentLockInfoViewControllerWithLock:(SLLock *)lock
+- (void)presentLockInfoViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
         
     SLLockInfoViewController *livc = [SLLockInfoViewController new];
-    livc.lock = lock;
+    livc.lock = self.selectedLock;
     livc.delegate = self;
     
-    
+    CGSize viewSize = self.selectedLock ? self.lockInfoLargeFrame.size : self.lockInfoSmallFrame.size;
     livc.view.frame = CGRectMake(self.lockInfoLargeFrame.origin.x,
                                  self.view.bounds.size.height,
-                                 self.lockInfoLargeFrame.size.width,
-                                 self.lockInfoLargeFrame.size.height);
+                                 viewSize.width,
+                                 viewSize.height);
     
     [self addChildViewController:livc];
     [self.view addSubview:livc.view];
@@ -344,7 +344,7 @@
     [livc didMoveToParentViewController:self];
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        livc.view.frame = self.lockInfoLargeFrame;
+        livc.view.frame = self.selectedLock ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
     } completion:^(BOOL finished) {
         if (finished) {
             [self presentCoachMarkViewController];
@@ -449,9 +449,9 @@
                                                 fromView:livc.view];
         CGRect crashLabelFrame = [self.view convertRect:livc.crashLabelFrame
                                                fromView:livc.view];
-        CGRect securityButtonFrame = [self.view convertRect:livc.securityButtonFrame
+        CGRect theftButtonFrame = [self.view convertRect:livc.theftButtonFrame
                                                    fromView:livc.view];
-        CGRect securityLabelFrame = [self.view convertRect:livc.securityLabelFrame
+        CGRect securityLabelFrame = [self.view convertRect:livc.theftLabelFrame
                                                   fromView:livc.view];
         CGRect sharingButtonFrame = [self.view convertRect:livc.sharingButtonFrame
                                                   fromView:livc.view];
@@ -464,7 +464,7 @@
                    @(SLCoachMarkPageSharing):@{button:[NSValue valueWithCGRect:sharingButtonFrame],
                                                label:[NSValue valueWithCGRect:sharingLabelFrame]
                                                },
-                   @(SLCoachMarkPageTheft):@{button:[NSValue valueWithCGRect:securityButtonFrame],
+                   @(SLCoachMarkPageTheft):@{button:[NSValue valueWithCGRect:theftButtonFrame],
                                              label:[NSValue valueWithCGRect:securityLabelFrame]
                                              }
                    };
@@ -485,7 +485,9 @@
     }
     
     if (svc) {
-        [self removeSlideViewController:svc withCompletion:nil];
+        [self removeSlideViewController:svc withCompletion:^{
+            [self presentLockInfoViewController];
+        }];
     }
 }
 
@@ -557,6 +559,13 @@
     [self presentViewController:cvc animated:YES completion:nil];
 }
 
+- (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
+{
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.lockInfoViewController.view.frame = shouldBeLarge ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
+    }];
+    
+}
 #pragma mark - Alert view delegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -569,7 +578,7 @@
 }
 #pragma mark - SLSlideViewController Delegate Methods
 - (void)slideViewController:(SLSlideViewController *)slvc
-               buttonPushed:(SLSlideViewControllerButtonAction)action
+              actionOccured:(SLSlideViewControllerButtonAction)action
                     options:(NSDictionary *)options
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -581,11 +590,19 @@
         self.settingsButton.enabled = YES;
         // end move
         
-        [self removeSlideViewController:slvc withCompletion:^{
-            [self presentLockInfoViewControllerWithLock:lock];
-        }];
-        
+        // TODO - clear lock annotations that are no longer active
         [self addLockToMap:lock];
+    } else if (action == SLSlideViewControllerButtonActionLockDeselected){
+        self.selectedLock = nil;
+        [self setupLockInfoViewControllerView:NO];
+    } else if (action == SLSlideViewControllerButtonActionAddLock){
+        SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+        tvc.shouldDismiss = YES;        
+        [self presentViewController:tvc animated:YES completion:nil];
+    } else if (action == SLSlideViewControllerButtonActionSharing) {
+        SLSharingViewController *svc = [SLSharingViewController new];
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
+        [self presentViewController:nc animated:YES completion:nil];
     }
 }
 
@@ -619,12 +636,10 @@
     }];
 }
 
-#pragma mark - SLInfoViewController Delegate Methods
+#pragma mark - SLLockInfoViewController Delegate Methods
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
 {
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        livc.view.frame = shouldIncreaseSize ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-    }];
+    [self setupLockInfoViewControllerView:shouldIncreaseSize];
 }
 
 #pragma mark - MGL map view helper methods
@@ -735,7 +750,7 @@
 #pragma mark - MFMailComposeViewController delegate methods
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
 {
-    
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
+
 @end

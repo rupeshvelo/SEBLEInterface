@@ -25,8 +25,7 @@
         UIImage *image = [UIImage imageNamed:@"icon_chevron_right"];
         self.accessoryView = [[UIImageView alloc] initWithImage:image];
         
-        self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
-        self.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
+        [self setNormalLabelFont];
         
         self.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:8];
         self.detailTextLabel.textColor = [UIColor colorWithRed:191 green:191 blue:191];
@@ -48,10 +47,28 @@
     [super prepareForReuse];
 }
 
+- (void)setNormalLabelFont
+{
+    self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
+    self.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
+}
+
 - (void)updateCellWithLock:(SLLock *)lock
 {
     self.textLabel.text = lock.displayName;
     self.detailTextLabel.text = [[NSString alloc] stringWithDistance:lock.distanceAway];
+    
+    if (lock.isCurrentLock.boolValue) {
+        [self setSelectedLabelFont];
+    } else {
+        [self setNormalLabelFont];
+    }
+}
+
+- (void)setSelectedLabelFont
+{
+    self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
+    self.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated

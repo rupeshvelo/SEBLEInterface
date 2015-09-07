@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "SLAddLockViewController.h"
-#import "SLSlideControllerOptionsView.h"
 #import "SLSlideTableViewHeader.h"
 #import "SLCirclePicView.h"
 #import "SLLockTableViewCell.h"
@@ -20,25 +19,25 @@
 typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
     SLSlideViewControllerButtonActionNone,
     SLSlideViewControllerButtonActionExit,
-    SLSlideViewcontrollerButtonActionAddLock,
+    SLSlideViewControllerButtonActionAddLock,
     SLSlideViewControllerButtonActionStore,
-    SLSlideViewControllerButtonActionSettings,
     SLSlideViewControllerButtonActionHelp,
-    SLSlideViewControllerButtonActionLockSelected
+    SLSlideViewControllerButtonActionSharing,
+    SLSlideViewControllerButtonActionLockSelected,
+    SLSlideViewControllerButtonActionLockDeselected,
+    SLSlideViewControllerButtonActionRename,
+    SLSlideViewControllerButtonActionViewAccount
 };
 
 @protocol SLSlideViewControllerDelegate <NSObject>
 
-- (void)slideViewController:(SLSlideViewController *)slvc buttonPushed:(SLSlideViewControllerButtonAction)action options:(NSDictionary *)options;
+- (void)slideViewController:(SLSlideViewController *)slvc actionOccured:(SLSlideViewControllerButtonAction)action options:(NSDictionary *)options;
 
-- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLDbUser *)user;
-
-- (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock;
 
 @end
 
 
-@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLAddLockViewControllerDelegate, SLSlideControllerOptionsViewDelegate, SLSlideTableViewHeaderDelegate, SLLockTableViewCellDelegate, SLEditLockTableViewCellDelegate>
+@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLAddLockViewControllerDelegate, SLSlideTableViewHeaderDelegate, SLLockTableViewCellDelegate, SLEditLockTableViewCellDelegate>
 
 @property (nonatomic, weak) id <SLSlideViewControllerDelegate>delegate;
 

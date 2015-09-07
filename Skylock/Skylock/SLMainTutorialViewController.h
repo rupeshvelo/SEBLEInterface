@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+@class SLMainTutorialViewController;
 
 @interface SLMainTutorialViewController : UIViewController <UIPageViewControllerDelegate, UIPageViewControllerDataSource>
 
-
+@property (nonatomic, assign) BOOL shouldDismiss;
 
 @end

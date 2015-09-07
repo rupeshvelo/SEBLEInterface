@@ -56,7 +56,8 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
     SLLockPropertyLatitude,
     SLLockPropertyLongitude,
     SLLockPropertyTemperature,
-    SLLockPropertyAccelerometerValues
+    SLLockPropertyAccelerometerValues,
+    SLLockPropertyIsCurrentLock
 };
 
 
@@ -78,6 +79,8 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *latitude;
 @property (nonatomic, copy) NSNumber *longitude;
 @property (nonatomic, copy) NSNumber *temperature;
+@property (nonatomic, copy) NSNumber *isCurrentLock;
+
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
 - (id)initWithName:(NSString *)name
@@ -93,7 +96,8 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
        isSharingOn:(NSNumber *)isSharingOn
       isSecurityOn:(NSNumber *)isSecurityOn
           latitude:(NSNumber *)latitude
-         longitude:(NSNumber *)longitude;
+         longitude:(NSNumber *)longitude
+     isCurrentLock:(NSNumber *)isCurrentLock;
 
 + (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
 + (id)lockWithDbDictionary:(NSDictionary *)dbDictionary;

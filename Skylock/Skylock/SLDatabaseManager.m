@@ -59,6 +59,12 @@
     return locks;
 }
 
+- (NSArray *)sharedContactsForLock:(SLLock *)lock
+{
+    SLDbLock *dbLock = [self dbLockForLock:lock];
+    return dbLock.sharedContacts.allObjects;
+}
+
 - (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate forEnityNamed:(NSString *)enityName
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -107,6 +113,27 @@
     }
 }
 
+- (void)setCurrentLock:(SLLock *)lock
+{
+    NSArray *locks = self.currentUser.locks.allObjects;
+    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
+        BOOL isCurrent = [dbLock.name isEqualToString:lock.name];
+        dbLock.isCurrentLock = @(isCurrent);
+    }];
+    
+    [self saveUser:self.currentUser withCompletion:nil];
+}
+
+- (void)deselectAllLocks
+{
+    NSArray *locks = self.currentUser.locks.allObjects;
+    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
+        dbLock.isCurrentLock = @(NO);
+    }];
+    
+    [self saveUser:self.currentUser withCompletion:nil];
+}
+
 - (NSArray *)getAllLocksFromDb
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -124,7 +151,8 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSMutableArray *locks = [NSMutableArray new];
     for (SLDbLock *dbLock in self.currentUser.locks.allObjects) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
+        SLLock *lock = [SLLock lockWithDbDictionary:dbLock.asDictionary];
+        [locks addObject:lock];
     }
     
     return locks;
@@ -136,6 +164,11 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", uuid];
     NSArray *locks = [self getDbLocksWithPredicate:predicate];
     return (locks && locks.count > 0) ? locks[0] : nil;
+}
+
+- (SLDbLock *)dbLockForLock:(SLLock *)lock
+{
+    return [self getDbLockWithUUID:lock.uuid];
 }
 
 - (NSArray *)getDbLocksWithUUIDs:(NSArray *)uuids

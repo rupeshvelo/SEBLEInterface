@@ -16,18 +16,18 @@
 #import "SLCirclePicView.h"
 #import "SLDbUser+Methods.h"
 #import "SLDatabaseManager.h"
-#import "SLSlideControllerOptionsView.h"
 #import "UIColor+RGB.h"
 #import "SLSlideTableViewHeader.h"
 #import "SLPicManager.h"
 #import "SLEditLockTableViewCell.h"
 #import "SLLock.h"
-
+#import "SLNotifications.h"
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
 #define kSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
 #define kSLSlideViewControllerRowTextKey            @"SLSlideViewControllerRowTextKey"
 #define kSLSlideViewControllerCellHeight            56.0f
+#define kSLSlideViewControllerHeaderHeight          100.0
 
 @interface SLSlideViewController()
 
@@ -36,7 +36,6 @@
 @property (nonatomic, strong) UITableView *optionsTableView;
 @property (nonatomic, strong) NSArray *locks;
 @property (nonatomic, strong) NSArray *options;
-@property (nonatomic, strong) SLSlideControllerOptionsView *optionsView;
 @property (nonatomic, strong) UIView *dividerView;
 @property (nonatomic, strong) SLDbUser *user;
 @property (nonatomic, assign) BOOL isEditMode;
@@ -51,7 +50,7 @@
         _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f,
                                                                    0.0f,
                                                                    self.view.bounds.size.width,
-                                                                   self.view.bounds.size.height - self.optionsTableView.bounds.size.height)
+                                                                   self.tableHeight)
                                                   style:UITableViewStylePlain];
         [_tableView registerClass:[SLLockTableViewCell class] forCellReuseIdentifier:self.lockTableViewCellIdentifier];
         [_tableView registerClass:[SLEditLockTableViewCell class] forCellReuseIdentifier:self.editLockTableViewCellIdentifier];
@@ -70,7 +69,7 @@
     if (!_optionsTableView) {
         CGFloat height = self.options.count*kSLSlideViewControllerCellHeight;
         _optionsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                          self.view.bounds.size.height - height,
+                                                                          CGRectGetMaxY(self.tableView.frame),
                                                                           self.view.bounds.size.width,
                                                                           height)
                                                          style:UITableViewStylePlain];
@@ -96,14 +95,14 @@
 - (NSArray *)options
 {
     if (!_options) {
-        _options = @[@{@"title":NSLocalizedString(@"Add Lock", nil),
+        _options = @[@{@"title":NSLocalizedString(@"Sharing", nil),
+                       @"imageName":@"icon_chevron_right"
+                       },
+                     @{@"title":NSLocalizedString(@"Add Lock", nil),
                        @"imageName":@"icon_lock"
                        },
                      @{@"title":NSLocalizedString(@"Store", nil),
                        @"imageName":@"icon_store"
-                       },
-                     @{@"title":NSLocalizedString(@"Settings", nil),
-                       @"imageName":@"icon_settings_small"
                        },
                      @{@"title":NSLocalizedString(@"Help", nil),
                        @"imageName":@"icon_help"
@@ -112,19 +111,6 @@
     }
     
     return _options;
-}
-
-- (SLSlideControllerOptionsView *)optionsView
-{
-    if (!_optionsView) {
-        _optionsView = [[SLSlideControllerOptionsView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                                      0.0f,
-                                                                                      127.0f,
-                                                                                      125.0f)];
-        _optionsView.delegate = self;
-    }
-    
-    return _optionsView;
 }
 
 - (UIView *)dividerView
@@ -140,6 +126,11 @@
     return _dividerView;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -147,6 +138,11 @@
     self.user = [SLDatabaseManager.manager currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
     self.isEditMode = NO;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(resizeTables)
+                                                 name:kSLNotificationLockManagerConnectedLock
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -168,16 +164,6 @@
                                             self.dividerView.bounds.size.height);
         [self.view addSubview:self.dividerView];
     }
-    
-//    if (![self.view.subviews containsObject:self.optionsView]) {
-//        self.optionsView.frame = CGRectMake(0.0f,
-//                                            CGRectGetMaxY(self.dividerView.frame),
-//                                            self.optionsView.bounds.size.width,
-//                                            self.optionsView.bounds.size.height);
-//        [self.view addSubview:self.optionsView];
-//    }
-    
-    
 }
 
 - (NSString *)lockTableViewCellIdentifier
@@ -188,6 +174,32 @@
 - (NSString *)editLockTableViewCellIdentifier
 {
     return NSStringFromClass([SLEditLockTableViewCell class]);
+}
+
+- (CGFloat)tableHeight
+{
+    return self.locks.count*kSLSlideViewControllerCellHeight + kSLSlideViewControllerHeaderHeight;
+}
+
+- (void)setOptionsTableFrame
+{
+    
+    
+}
+
+- (void)resizeTables
+{
+    self.locks = [SLLockManager.manager orderedLocksByName];
+    self.tableView.frame = CGRectMake(0.0f,
+                                      0.0f,
+                                      self.tableView.frame.size.width,
+                                      self.tableHeight);
+    [self.tableView reloadData];
+    
+    self.optionsTableView.frame = CGRectMake(0.0f,
+                                             CGRectGetMaxY(self.tableView.frame),
+                                             self.optionsTableView.bounds.size.width,
+                                             self.optionsTableView.bounds.size.height);
 }
 
 #pragma mark UITableView delegate & datasource methods
@@ -229,7 +241,6 @@
 
     UIImage *image = [UIImage imageNamed:option[@"imageName"]];
     optionsCell.accessoryView = [[UIImageView alloc] initWithImage:image];
-    
     optionsCell.textLabel.text = option[@"title"];
     optionsCell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12];
     optionsCell.textLabel.textColor = [UIColor colorWithRed:97 green:100 blue:100];
@@ -300,7 +311,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if (tableView == self.tableView) {
-        return 100.0f;
+        return kSLSlideViewControllerHeaderHeight;
     }
     
     return 0;
@@ -308,73 +319,55 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 1.0f;
+    return 0.01f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (tableView == self.tableView) {
-        SLLock *selectedLock = self.locks[indexPath.row];
-        [SLLockManager.manager setCurrentLock:selectedLock];
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        if ([cell isMemberOfClass:[SLLockTableViewCell class]]) {
+            SLLock *selectedLock = self.locks[indexPath.row];
+            SLSlideViewControllerButtonAction action;
+            if (selectedLock.isCurrentLock.boolValue) {
+                [SLLockManager.manager deselectAllLocks];
+                action = SLSlideViewControllerButtonActionLockDeselected;
+            } else {
+                [SLLockManager.manager setCurrentLock:selectedLock];
+                action = SLSlideViewControllerButtonActionLockSelected;
+            }
+            
+            if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+                [self.delegate slideViewController:self actionOccured:action options:nil];
+            }
+            
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        }
+    } else {
+        SLSlideViewControllerButtonAction action;;
+        switch (indexPath.row) {
+            case 0:
+                action = SLSlideViewControllerButtonActionSharing;
+                break;
+            case 1:
+                action = SLSlideViewControllerButtonActionAddLock;
+                break;
+            case 2:
+                action = SLSlideViewControllerButtonActionNone;
+                break;
+            case 3:
+                action = SLSlideViewControllerButtonActionNone;
+                break;
+            default:
+                action = SLSlideViewControllerButtonActionNone;
+                break;
+        }
         
-        if ([self.delegate respondsToSelector:@selector(slideViewController:buttonPushed:options:)]) {
-            [self.delegate slideViewController:self
-                                  buttonPushed:[self buttonActionForIndexPath:indexPath]
-                                       options:[self optionsForIndexPath:indexPath]];
-        }
-    } else {
-        switch (indexPath.row) {
-            case 0:
-                [self presentAddLockViewController];
-                break;
-            case 1:
-                NSLog(@"Store pressed");
-                break;
-            case 2:
-                NSLog(@"Settings pressed");
-                break;
-            case 3:
-                NSLog(@"Help pressed");
-                break;
-            default:
-                break;
+        if (action != SLSlideViewControllerButtonActionNone &&
+            [self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+            [self.delegate slideViewController:self actionOccured:action options:nil];
         }
     }
-}
-
-- (SLSlideViewControllerButtonAction)buttonActionForIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.section == 0) {
-        return SLSlideViewControllerButtonActionLockSelected;
-    } else {
-        switch (indexPath.row) {
-            case 0:
-                return SLSlideViewcontrollerButtonActionAddLock;
-                break;
-            case 1:
-                return SLSlideViewControllerButtonActionStore;
-                break;
-            case 2:
-                return SLSlideViewControllerButtonActionSettings;
-                break;
-            case 3:
-                return SLSlideViewControllerButtonActionHelp;
-                break;
-            default:
-                return SLSlideViewControllerButtonActionNone;
-                break;
-        }
-    }
-}
-
-- (void)presentSettingsViewControllerWithIndexPath:(NSIndexPath *)indexPath
-{
-//    SLSettingsViewController *svc = [SLSettingsViewController new];
-//    svc.lock = self.locks[indexPath.row];
-//    
-//    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:svc];
-//    
-//    [self presentViewController:navController animated:YES completion:nil];
 }
 
 - (NSDictionary *)optionsForIndexPath:(NSIndexPath *)indexPath
@@ -388,24 +381,7 @@
 
 - (void)presentAddLockViewController
 {
-    SLAddLockViewController *alvc = [SLAddLockViewController new];
-    alvc.delegate = self;
-    //alvc.headerHeight = [self tableView:self.tableView heightForHeaderInSection:0];
-    alvc.view.frame = CGRectMake(-self.view.bounds.size.width,
-                                 0.0f,
-                                 self.view.bounds.size.width,
-                                 self.view.bounds.size.height);
-    [self addChildViewController:alvc];
-    [self.view addSubview:alvc.view];
-    [self.view bringSubviewToFront:alvc.view];
-    [alvc didMoveToParentViewController:self];
     
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        alvc.view.frame = CGRectMake(0.0f,
-                                     0.0f,
-                                     alvc.view.bounds.size.width,
-                                     alvc.view.bounds.size.height);
-    } completion:nil];
 }
 
 - (void)dismissAddLockViewController:(SLAddLockViewController *)alvc withCompletion:(void(^)(void))completion
@@ -468,29 +444,10 @@
 - (void)addAccountPressedForSlideTableHeader:(SLSlideTableViewHeader *)header
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if ([self.delegate respondsToSelector:@selector(slideViewControllerViewAccountPressed:forUser:)]) {
-        [self.delegate slideViewControllerViewAccountPressed:self forUser:self.user];
-    }
-}
-
-#pragma mark - Slide Options View Delegate Methods
-- (void)slideOptionsView:(SLSlideControllerOptionsView *)optionsView action:(SLSlideOptionsViewAction)action
-{
-    switch (action) {
-        case SLSlideOptionsViewActionAddLock:
-            NSLog(@"add lock pressed");
-            break;
-        case SLSlideOptionsViewActionStore:
-            NSLog(@"store pressed");
-            break;
-        case SLSlideOptionsViewActionSettings:
-            NSLog(@"settings pressed");
-            break;
-        case SLSlideOptionsViewActionHelp:
-            NSLog(@"help pressed");
-            break;
-        default:
-            break;
+    if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+        [self.delegate slideViewController:self
+                             actionOccured:SLSlideViewControllerButtonActionViewAccount
+                                   options:nil];
     }
 }
 
@@ -503,12 +460,14 @@
 }
 
 #pragma mark - SLLockEditTableViewCellDelgate methods
-- (void)editLockCellSharePushed:(SLEditLockTableViewCell *)cell
+- (void)editLockCellRenamePushed:(SLEditLockTableViewCell *)cell
 {
-    if ([self.delegate respondsToSelector:@selector(slideViewControllerSharingPressed:withLock:)]) {
-        NSIndexPath *path = [self.tableView indexPathForCell:cell];
-        SLLock *lock = self.locks[path.row];
-        [self.delegate slideViewControllerSharingPressed:self withLock:lock];
+    if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        SLLock *lock = self.locks[indexPath.row];
+        [self.delegate slideViewController:self
+                             actionOccured:SLSlideViewControllerButtonActionRename
+                                   options:@{@"lock":lock}];
     }
 }
 

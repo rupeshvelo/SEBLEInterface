@@ -13,10 +13,12 @@
 - (NSDictionary *)asDictionary
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSNumber *currentLock = self.isCurrentLock;
     return @{@"uuid":self.uuid,
              @"name":self.name,
              @"latitude":self.latitude,
-             @"longitude":self.longitude
+             @"longitude":self.longitude,
+             @"isCurrentLock":self.isCurrentLock
              };
 }
 
@@ -27,6 +29,7 @@
     self.name = dictionary[@"name"];
     self.latitude = dictionary[@"latitude"];
     self.longitude = dictionary[@"longitude"];
+    self.isCurrentLock = dictionary[@"isCurrentLock"];
 }
 
 @end

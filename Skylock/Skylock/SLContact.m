@@ -14,6 +14,7 @@
                lastName:(NSString *)lastName
                   email:(NSString *)email
             phoneNumber:(NSString *)phoneNumber
+              imageData:(NSData *)imageData
 {
     self = [super init];
     
@@ -22,6 +23,9 @@
         _lastName = lastName;
         _email = email;
         _phoneNumber = phoneNumber;
+        _imageData = imageData;
+        _hasBeenShared = NO;
+        _fullName = self.makeFullName;
     }
     
     return self;
@@ -31,14 +35,16 @@
                   lastName:(NSString *)lastName
                      email:(NSString *)email
                phoneNumber:(NSString *)phoneNumber
+                 imageData:(NSData *)imageData
 {
     return [[self alloc] initWithFirstName:firstName
                                   lastName:lastName
                                      email:email
-                               phoneNumber:phoneNumber];
+                               phoneNumber:phoneNumber
+                                 imageData:imageData];
 }
 
-- (NSString *)fullName
+- (NSString *)makeFullName
 {
     NSMutableString *name = [NSMutableString new];
     if (self.firstName) {

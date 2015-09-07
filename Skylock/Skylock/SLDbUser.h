@@ -2,7 +2,7 @@
 //  SLDbUser.h
 //  Skylock
 //
-//  Created by Andre Green on 7/15/15.
+//  Created by Andre Green on 9/5/15.
 //  Copyright (c) 2015 Andre Green. All rights reserved.
 //
 
@@ -13,13 +13,13 @@
 
 @interface SLDbUser : NSManagedObject
 
-@property (nonatomic, retain) NSString * firstName;
-@property (nonatomic, retain) NSString * lastName;
 @property (nonatomic, retain) NSString * email;
-@property (nonatomic, retain) NSString * gender;
 @property (nonatomic, retain) NSString * facebookId;
 @property (nonatomic, retain) NSString * facebookLink;
+@property (nonatomic, retain) NSString * firstName;
+@property (nonatomic, retain) NSString * gender;
 @property (nonatomic, retain) NSNumber * isCurrentUser;
+@property (nonatomic, retain) NSString * lastName;
 @property (nonatomic, retain) NSSet *locks;
 @end
 

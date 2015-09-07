@@ -35,10 +35,15 @@
 @implementation SLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
     [SLDatabaseManager.manager setContext:self.managedObjectContext];
-    
+    [SLDatabaseManager.manager setCurrentUser];
     [SLLockManager.manager startBlueToothManager];
+    [SLLockManager.manager fetchLocks];
+    [SLLockManager.manager startScan];
+
+    if ([SLLockManager.manager hasLocksForCurrentUser]) {
+        [SLLockManager.manager shouldEnterSearchMode:YES];
+    }
     
     NSString *mapBoxToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
     [MGLAccountManager setAccessToken:mapBoxToken];
@@ -119,6 +124,7 @@
                     initialVC = mvc;
                 } else {
                     SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+                    tvc.shouldDismiss = NO;
                     initialVC = tvc;
                 }
             }
