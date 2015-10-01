@@ -198,7 +198,8 @@
 {
     NSDictionary *info = notification.userInfo;
     NSString *notificationIdentifier = info[@"notificationId"];
-    if (kSLAppDelegateNotificationActionIgnore) {
+    
+    if ([notificationIdentifier isEqualToString:kSLAppDelegateNotificationActionIgnore]) {
         [SLNotificationManager.manager dismissNotificationWithId:notificationIdentifier];
     } else {
         [SLNotificationManager.manager sendEmergencyText];

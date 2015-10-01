@@ -14,8 +14,10 @@
 #import <MapboxGL/MapboxGL.h>
 #import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
+#import "SLAnnotationDirectionCalloutView.h"
+#import "SLDirectionsViewController.h"
 
 @interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
-    MGLMapViewDelegate, UIAlertViewDelegate, CLLocationManagerDelegate, SLNotificationViewControllerDelegate, MFMessageComposeViewControllerDelegate>
+    MGLMapViewDelegate, UIAlertViewDelegate, CLLocationManagerDelegate, SLNotificationViewControllerDelegate, MFMessageComposeViewControllerDelegate, SLDirectionsViewControllerDelegate>
 
 @end

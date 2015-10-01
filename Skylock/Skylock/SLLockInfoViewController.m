@@ -345,7 +345,7 @@
     self.arrowButton.enabled = !!self.lock;
     self.lockButton.enabled = !!self.lock;
     
-    if ((!self.isUp && self.lock) || (self.isUp && !self.lock)) {
+    if (self.lock) {
         [self arrowButtonPressed];
     }
 }

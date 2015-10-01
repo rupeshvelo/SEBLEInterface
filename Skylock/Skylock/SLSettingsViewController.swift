@@ -389,16 +389,16 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
     }
     
     func segmentPressed(sender: UISegmentedControl) {
-        println("segment index selected \(sender.selectedSegmentIndex)")
+        print("segment index selected \(sender.selectedSegmentIndex)")
     }
     
     func backButtonPushed() {
-        println("back button pushed")
+        print("back button pushed")
         self.dismissViewControllerAnimated(true, completion: nil);
     }
     
     func sharingButtonPushed() {
-        println("sharing button pushed")
+        print("sharing button pushed")
     }
     
     func resetPinButtonPushed() {
@@ -417,15 +417,15 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
     }
     
     func touchPadSwitchFlipped(sender: UISwitch) {
-        println("touch pad switch flipped")
+        print("touch pad switch flipped")
     }
     
     func autoLockSwitchFlipped(sender: UISwitch) {
-        println("auto lock switch flipped")
+        print("auto lock switch flipped")
     }
     
     func autoUnlockSwitchFlipped(sender: UISwitch) {
-        println("auto unlock switch flipped")
+        print("auto unlock switch flipped")
     }
     
     // SLTouchPadViewController Delegate

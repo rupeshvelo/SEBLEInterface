@@ -21,7 +21,7 @@
 
 @implementation SLRestManager
 
-+ (id)manager
++ (instancetype)sharedManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLRestManager *restManager = nil;
@@ -89,27 +89,26 @@
                                             completionHandler:^(NSData *data,
                                                                 NSURLResponse *response,
                                                                 NSError *error) {
-                                                        if (error) {
-                                                            // handle error
-                                                            return;
-                                                        }
-                                                            NSDictionary *serverReply = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                                        options:0
-                                                                                                                          error:&error];
-                                                        if (error) {
-                                                            //handle error
-                                                            return;
-                                                        } else {
-                                                            NSNumber *responseNumber = serverReply[@"response"];
-                                                            if (responseNumber.integerValue == SLRestManagerResponseOk) {
-                                                                completion(serverReply);
-                                                            }
-                                                            
-                                                            // need to handle any failures from the server
-                                                            // when the server detail are hammered out
-                                                        }
+                                                if (error) {
+                                                    // TODO -- add error handling
+                                                    NSLog(@"Error could not fetch request from: %@. Failed with error: %@", url.absoluteString, error);
+                                                    completion(nil);
+                                                    return;
+                                                }
                                                 
-                                                    }];
+                                                NSDictionary *serverReply = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                            options:0
+                                                                                                              error:&error];
+                                                if (error) {
+                                                    // TODO -- add error handling
+                                                    NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@", url.absoluteString, error);
+                                                    completion(nil);
+                                                    return;
+                                                }
+                                                
+                                                
+                                                completion(serverReply);
+                                            }];
     [task resume];
 }
 

@@ -110,7 +110,7 @@ class SLTouchPadView: UIView {
     }
     
     func touchPadButtonPressed(sender: UIButton) {
-        println("touch pad button pressed")
+        print("touch pad button pressed")
         
         var location: SLTouchPadLocation?
         switch sender {
