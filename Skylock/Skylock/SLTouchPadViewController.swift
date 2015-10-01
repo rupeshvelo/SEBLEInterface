@@ -141,6 +141,6 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     
     // SLTouchPadView delegate methods
     func touchPadViewLocationSelected(touchPadViewController: SLTouchPadView, location:SLTouchPadLocation) {
-        println("in touch pad view controller delegate")
+        print("in touch pad view controller delegate")
     }
 }

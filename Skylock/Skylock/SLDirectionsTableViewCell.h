@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class SLDirection;
 @interface SLDirectionsTableViewCell : UITableViewCell
+
+- (void)setPropertiesWithDirection:(SLDirection *)direction
+                  isFirstDirection:(BOOL)isFirst;
 
 @end

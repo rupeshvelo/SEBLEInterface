@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, SLRestManagerResponse) {
 
 @interface SLRestManager : NSObject
 
-+ (id)manager;
++ (instancetype)sharedManager;
 
 - (void)restGetRequestWithURL:(NSString *)urlString
                       options:(NSArray *)options

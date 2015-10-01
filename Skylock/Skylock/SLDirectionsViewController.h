@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+@class SLDirectionsViewController;
+@protocol SLDirectionsViewControllerDelegate <NSObject>
 
-@interface SLDirectionsViewController : UIViewController
+- (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController;
 
+@end
+
+@interface SLDirectionsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, strong) NSArray *directions;
+@property (nonatomic, weak) id <SLDirectionsViewControllerDelegate> delegate;
 @end

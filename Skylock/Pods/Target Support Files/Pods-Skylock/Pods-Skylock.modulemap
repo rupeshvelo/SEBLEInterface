@@ -1,0 +1,6 @@
+framework module Pods_Skylock {
+  umbrella header "Pods-Skylock-umbrella.h"
+
+  export *
+  module * { export * }
+}

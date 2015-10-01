@@ -31,10 +31,9 @@
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
 #import "SLMainTutorialViewController.h"
+#import "SLDirectionsViewController.h"
 
-
-@class MBDirectionsRequest;
-
+#import <MapKit/MapKit.h>
 
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
@@ -55,6 +54,7 @@
 
 @property (nonatomic, strong) MGLMapView *mapView;
 @property (nonatomic, strong) MGLPointAnnotation *userAnnotation;
+@property (nonatomic, strong) MGLPointAnnotation *selectedLockAnnotation;
 
 @property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
 @property (nonatomic, assign) BOOL isInitialLoad;
@@ -65,6 +65,15 @@
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
 @property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
+
+@property (nonatomic, strong) UIButton *leftCalloutButton;
+@property (nonatomic, strong) UIButton *rightCalloutButton;
+@property (nonatomic, strong) NSArray *directions;
+@property (nonatomic, strong) UIButton *locationButton;
+@property (nonatomic, strong) UIButton *directionsButton;
+
+@property (nonatomic, strong) SLDirectionsViewController *directionsViewController;
+
 @end
 
 @implementation SLMapViewController
@@ -150,7 +159,6 @@
     if (!_locationManager) {
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
-        
     }
     
     return _locationManager;
@@ -166,12 +174,100 @@
     return _lockInfoViewController;
 }
 
+- (UIButton *)leftCalloutButton
+{
+    if (!_leftCalloutButton) {
+        UIImage *image = [UIImage imageNamed:@"icon_mylock_off"];
+        _leftCalloutButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                        0.0f,
+                                                                        image.size.width,
+                                                                        image.size.height)];
+        [_leftCalloutButton addTarget:self
+                               action:@selector(leftCalloutViewButtonPressed)
+                     forControlEvents:UIControlEventTouchDown];
+        [_leftCalloutButton setImage:image forState:UIControlStateNormal];
+        [_leftCalloutButton setImage:[UIImage imageNamed:@"icon_mylock_on"]
+                            forState:UIControlStateSelected];
+    }
+    
+    return _leftCalloutButton;
+}
+
+- (UIButton *)rightCalloutButton
+{
+    if (!_rightCalloutButton) {
+        UIImage *image = [UIImage imageNamed:@"icon_navigate_off"];
+        _rightCalloutButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                  0.0f,
+                                                                  image.size.width,
+                                                                  image.size.height)];
+        [_rightCalloutButton addTarget:self
+                         action:@selector(rightCalloutViewButtonPressed)
+               forControlEvents:UIControlEventTouchDown];
+        [_rightCalloutButton setImage:image forState:UIControlStateNormal];
+        [_rightCalloutButton setImage:[UIImage imageNamed:@"icon_navigate_on"]
+                      forState:UIControlStateSelected];
+    }
+    
+    return _rightCalloutButton;
+}
+
+- (UIButton *)locationButton
+{
+    if (!_locationButton) {
+        UIImage *image = [UIImage imageNamed:@"icon_gps"];
+        _locationButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                     0.0f,
+                                                                     image.size.width,
+                                                                     image.size.height)];
+        [_locationButton addTarget:self
+                            action:@selector(locationButtonPressed)
+                  forControlEvents:UIControlEventTouchDown];
+        [_locationButton setImage:image forState:UIControlStateNormal];
+        [self.view addSubview:_locationButton];
+    }
+    
+    return _locationButton;
+}
+
+- (UIButton *)directionsButton
+{
+    if (!_directionsButton) {
+        UIImage *image = [UIImage imageNamed:@"icon_directions_expand"];
+        _directionsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
+                                                                       0.0f,
+                                                                       image.size.width,
+                                                                       image.size.height)];
+        [_directionsButton addTarget:self
+                              action:@selector(presentDirectionsViewController)
+                    forControlEvents:UIControlEventTouchDown];
+        [_directionsButton setImage:image forState:UIControlStateNormal];
+        _directionsButton.hidden = YES;
+        [self.view addSubview:_directionsButton];
+    }
+    
+    return _directionsButton;
+}
+
+- (SLDirectionsViewController *)directionsViewController
+{
+    if (!_directionsViewController) {
+        _directionsViewController = [SLDirectionsViewController new];
+        _directionsViewController.directions = self.directions;
+        _directionsViewController.delegate = self;
+        [self.view addSubview:_directionsButton];
+    }
+    
+    return _directionsViewController;
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
@@ -184,7 +280,7 @@
     [self registerAlertNotifications];
     
     [self.view addSubview:self.mapView];
-
+    
     CGFloat width = self.view.bounds.size.width - 2*kSLMapViewControllerLockInfoViewPadding;
     self.lockInfoLargeFrame =  CGRectMake(kSLMapViewControllerLockInfoViewPadding,
                                           self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewPadding,
@@ -206,14 +302,21 @@
                                            self.settingsButton.bounds.size.width,
                                            self.settingsButton.bounds.size.height);
     
-    [self presentLockInfoViewController];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
+    self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
+                                           self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
+                                           self.locationButton.bounds.size.width,
+                                           self.locationButton.bounds.size.height);
     
-
+    self.directionsButton.frame = CGRectMake(CGRectGetMaxX(self.lockInfoSmallFrame) - self.directionsButton.bounds.size.width,
+                                             self.locationButton.frame.origin.y,
+                                             self.directionsButton.bounds.size.width,
+                                             self.directionsButton.bounds.size.height);
+    
+    self.lockInfoViewController.view.frame = self.lockInfoSmallFrame;
+    [self addChildViewController:self.lockInfoViewController];
+    [self.view addSubview:self.lockInfoViewController.view];
+    [self.view bringSubviewToFront:self.lockInfoViewController.view];
+    [self.lockInfoViewController didMoveToParentViewController:self];
 }
 
 - (void)registerAlertNotifications
@@ -236,14 +339,12 @@
 - (void)menuButtonPressed
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
     [self presentSlideViewController];
 }
 
 - (void)settingsButtonPressed
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
     [self presentSettingsViewController];
 }
 
@@ -252,7 +353,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.view addSubview:self.touchStopperView];
     
-    static CGFloat width = 150;
+    static CGFloat width = 150.0f;
     SLSlideViewController *slvc = [SLSlideViewController new];
     slvc.delegate = self;
     slvc.view.frame = CGRectMake(-width,
@@ -293,66 +394,57 @@
     }];
 }
 
+- (void)presentDirectionsViewController
+{
+    self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width,
+                                                          0.0f,
+                                                          .4*self.view.bounds.size.width,
+                                                          self.view.bounds.size.height);
+    self.directionsViewController.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
+    
+    [self addChildViewController:self.directionsViewController];
+    [self.view addSubview:self.directionsViewController.view];
+    [self.view bringSubviewToFront:self.directionsViewController.view];
+    [self.directionsViewController didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width - self.directionsViewController.view.bounds.size.width,
+                                                              0.0f,
+                                                              self.directionsViewController.view.bounds.size.width,
+                                                              self.directionsViewController.view.bounds.size.height);
+    }];
+}
+
 - (void)presentSettingsViewController
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-//    [self.view addSubview:self.touchStopperView];
-//    
-//    static CGFloat width = 233.0f;
-//    SLSettingsViewController *svc = [SLSettingsViewController new];
-//    //slvc.delegate = self;
-//    svc.view.frame = CGRectMake(self.view.bounds.size.width,
-//                                0.0f,
-//                                width,
-//                                self.view.bounds.size.height);
-//    
-//    [self addChildViewController:svc];
-//    [self.view addSubview:svc.view];
-//    [self.view bringSubviewToFront:svc.view];
-//    [svc didMoveToParentViewController:self];
-//    
-//    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-//        svc.view.frame = CGRectMake(self.view.bounds.size.width - svc.view.bounds.size.width,
-//                                     0.0f,
-//                                     width,
-//                                     svc.view.bounds.size.height);
-//    } completion:nil];
-    
     SLSettingsViewController *svc = [SLSettingsViewController new];
     [self presentViewController:svc animated:YES completion:nil];
 }
 
-- (void)presentLockInfoViewController
+- (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self.lockInfoViewController.lock = self.selectedLock;
+    [self.lockInfoViewController setUpView];
     
-    CGRect viewFrame = self.selectedLock ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-    self.lockInfoViewController.view.frame = viewFrame;
+    CGRect viewFrame = self.lockInfoViewController.isUp ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
     
-    [self addChildViewController:self.lockInfoViewController];
-    [self.view addSubview:self.lockInfoViewController.view];
-    [self.view bringSubviewToFront:self.lockInfoViewController.view];
-    [self.lockInfoViewController didMoveToParentViewController:self];
-}
-
-- (void)removeLockInfoViewController:(SLLockInfoViewController *)livc withCompletion:(void(^)(void))completion
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        livc.view.frame = CGRectMake(0.0f,
-                                     self.view.bounds.size.height,
-                                     livc.view.bounds.size.width,
-                                     livc.view.bounds.size.height);
-    } completion:^(BOOL finished) {
-        [livc.view removeFromSuperview];
-        [livc removeFromParentViewController];
-        [self.touchStopperView removeFromSuperview];
-        
-        if (completion) {
-            completion();
-        }
-    }];
+    if ([self.childViewControllers containsObject:self.lockInfoViewController]) {
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.lockInfoViewController.view.frame = viewFrame;
+        } completion:^(BOOL finished) {
+            if (completion) {
+                completion();
+            }
+        }];
+    } else {
+        self.lockInfoViewController.view.frame = viewFrame;
+        [self addChildViewController:self.lockInfoViewController];
+        [self.view addSubview:self.lockInfoViewController.view];
+        [self.view bringSubviewToFront:self.lockInfoViewController.view];
+        [self.lockInfoViewController didMoveToParentViewController:self];
+    }
 }
 
 - (void)dismissNotificationViewControllerWithCompletion:(void(^)(void))completion
@@ -409,7 +501,6 @@
     svc.lock = lock;
     
     UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    
     [self presentViewController:nc animated:YES completion:nil];
 }
 
@@ -491,7 +582,6 @@
             self.notificationViewController.view.alpha = 1.0f;
         }];
     }
-    
 }
 
 - (void)removeCrashAndTheftViewController
@@ -539,11 +629,44 @@
 - (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
 {
     self.lockInfoViewController.lock = self.selectedLock;
+    
+    if (!shouldBeLarge) {
+        self.locationButton.hidden = NO;
+    }
+    
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
         self.lockInfoViewController.view.frame = shouldBeLarge ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
+        self.locationButton.alpha = shouldBeLarge ? 0.0f : 1.0f;
+    } completion:^(BOOL finished) {
+        if (shouldBeLarge) {
+            self.locationButton.hidden = NO;
+        }
     }];
+}
+
+- (void)locationButtonPressed
+{
+    [self centerOnUser];
+}
+
+- (void)directionsButtonPushed
+{
     
 }
+
+- (void)handleDirectionsMode
+{
+    if (!self.lockInfoViewController.isUp &&
+        self.selectedLockAnnotation &&
+        self.directions &&
+        self.directions.count > 0 &&
+        (self.leftCalloutButton.isSelected || self.rightCalloutButton.isSelected)) {
+        self.directionsButton.hidden = NO;
+    } else {
+        self.directionsButton.hidden = YES;
+    }
+}
+
 #pragma mark - Alert view delegate methods
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -554,6 +677,7 @@
         
     }
 }
+
 #pragma mark - SLSlideViewController Delegate Methods
 - (void)slideViewController:(SLSlideViewController *)slvc
               actionOccured:(SLSlideViewControllerButtonAction)action
@@ -623,18 +747,20 @@
 
 - (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
 {
-    if (self.lockAnnotations[lock.name]) {
-        return self.lockAnnotations[lock.name][@"annotation"];
+    if (self.lockAnnotations[lock.displayName]) {
+        return self.lockAnnotations[lock.displayName][@"annotation"];
     }
     
+    CLLocationCoordinate2D testPoint = CLLocationCoordinate2DMake(37.301508, -120.480166);
+    
     MGLPointAnnotation *annotation = [MGLPointAnnotation new];
-    annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
+    //annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
+    annotation.coordinate = testPoint;
     annotation.title = lock.displayName;
-    
-    self.lockAnnotations[lock.name] = @{@"annotation":annotation,
-                                        @"lock":lock
-                                        };
-    
+
+    self.lockAnnotations[lock.displayName] = @{@"annotation":annotation,
+                                               @"lock":lock
+                                               };
     return annotation;
 }
 
@@ -650,6 +776,72 @@
     if (self.isInitialLoad) {
         [self.mapView addAnnotation:self.userAnnotation];
     }
+}
+
+- (void)getDirectionsToLocation:(CLLocationCoordinate2D)location transportType:(MKDirectionsTransportType)transportType
+{
+    MKPlacemark *userPlacemark = [[MKPlacemark alloc] initWithCoordinate:self.userLocation addressDictionary:nil];
+    MKPlacemark *lockPlacemark = [[MKPlacemark alloc] initWithCoordinate:location addressDictionary:nil];
+    
+    MKDirectionsRequest *directionRequest = [[MKDirectionsRequest alloc] init];
+    directionRequest.source = [[MKMapItem alloc] initWithPlacemark:userPlacemark];
+    directionRequest.destination = [[MKMapItem alloc] initWithPlacemark:lockPlacemark];
+    directionRequest.transportType = transportType;
+    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
+    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+        if (error) {
+            NSLog(@"error getting directions");
+            // TODO -- check and see what should happen when we can't get dirctions...popup?
+            return;
+        }
+        
+        if (!response.routes || response.routes.count == 0) {
+            NSLog(@"no routes in directions");
+            // TODO -- check and see what should happen when there aren't any routes
+            return;
+        }
+        
+        MKRoute *route = response.routes[0];
+        NSMutableArray *routeDirections = [NSMutableArray new];
+        for (MKRouteStep *routeStep in route.steps) {
+            SLDirection *direction = [[SLDirection alloc] initWithCoordinate:routeStep.polyline.coordinate
+                                                                  directions:routeStep.instructions
+                                                                    distance:routeStep.distance];
+            [routeDirections addObject:direction];
+        }
+        
+        [self enterDirectionModeWithDirections:routeDirections];
+    }];
+}
+
+- (void)leftCalloutViewButtonPressed
+{
+    self.leftCalloutButton.selected = !self.leftCalloutButton.isSelected;
+    if (self.selectedLockAnnotation) {
+        [self getDirectionsToLocation:self.selectedLockAnnotation.coordinate
+                        transportType:MKDirectionsTransportTypeWalking];
+    }
+}
+
+- (void)rightCalloutViewButtonPressed
+{
+    self.rightCalloutButton.selected = !self.rightCalloutButton.isSelected;
+    if (self.selectedLockAnnotation) {
+        [self getDirectionsToLocation:self.selectedLockAnnotation.coordinate
+                        transportType:MKDirectionsTransportTypeWalking];
+    }
+    
+}
+
+- (void)enterDirectionModeWithDirections:(NSArray *)directions
+{
+    self.directions = directions;
+    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
+                                                                                     directions:self.directions];
+    [drawingHelper drawDirections:^{
+        self.directionsButton.hidden = NO;
+        [self.lockInfoViewController setUpView];
+    }];
 }
 
 #pragma mark - MGL map view delegate methods
@@ -680,8 +872,44 @@
 
 - (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
 {
-    NSLog(@"%@", mapView.userLocation);
+    NSLog(@"user location: %@", mapView.userLocation);
     [self centerOnUser];
+}
+
+- (BOOL)mapView:(MGLMapView *)mapView annotationCanShowCallout:(id <MGLAnnotation>)annotation
+{
+    return YES;
+}
+
+- (void)mapView:(MGLMapView * __nonnull)mapView didSelectAnnotation:(id<MGLAnnotation> __nonnull)annotation
+{
+    self.directionsButton.hidden = NO;
+    self.selectedLockAnnotation = annotation;
+}
+
+- (void)mapView:(MGLMapView * __nonnull)mapView didDeselectAnnotation:(id<MGLAnnotation> __nonnull)annotation
+{
+    self.selectedLockAnnotation = nil;
+}
+
+- (UIView *)mapView:(MGLMapView * __nonnull)mapView leftCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+{
+    return self.leftCalloutButton;
+}
+
+- (UIView *)mapView:(MGLMapView * __nonnull)mapView rightCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+{
+    return self.rightCalloutButton;
+}
+
+- (CGFloat)mapView:(MGLMapView * __nonnull)mapView lineWidthForPolylineAnnotation:(MGLPolyline * __nonnull)annotation
+{
+    return 6.0f;
+}
+
+- (UIColor *)mapView:(MGLMapView * __nonnull)mapView strokeColorForShapeAnnotation:(MGLShape * __nonnull)annotation
+{
+    return [annotation isKindOfClass:[MGLPolyline class]] ? [UIColor colorWithRed:110 green:223 blue:158] : nil;
 }
 
 #pragma mark - CLLocaiton manager delegate methods

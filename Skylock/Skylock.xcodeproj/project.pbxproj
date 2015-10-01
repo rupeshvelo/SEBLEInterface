@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D4BF4A744581D2300B4F92D /* Pods_Skylock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1240ECA2D19C1624B1A1D2AD /* Pods_Skylock.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		89FADDD40CF09C644145B2C7 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 926E81C4A41BD3F7D9FAA288 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250761B59D539007D2D6A /* btn_crashalert_off.png in Resources */ = {isa = PBXBuildFile; fileRef = DC0250701B59D539007D2D6A /* btn_crashalert_off.png */; };
@@ -32,6 +33,34 @@
 		DC3141211B93849E00492C4D /* SLTouchPadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */; };
 		DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = DC39B2AE1B58859E0001973B /* SLSlideTableViewHeader.m */; };
 		DC3AE90B1B75838A009287DA /* SLSharingTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3AE90A1B75838A009287DA /* SLSharingTableViewCell.m */; };
+		DC3CCDFE1BA2F3E200528992 /* SLDirections.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCDFD1BA2F3E200528992 /* SLDirections.swift */; };
+		DC3CCDFF1BA2F3E200528992 /* SLDirections.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCDFD1BA2F3E200528992 /* SLDirections.swift */; };
+		DC3CCE021BA306FD00528992 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC3CCE011BA306FD00528992 /* MapKit.framework */; };
+		DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE031BA30ED000528992 /* SLDirection.swift */; };
+		DC3CCE051BA30ED000528992 /* SLDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE031BA30ED000528992 /* SLDirection.swift */; };
+		DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */; };
+		DC3CCE081BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */; };
+		DC3CCE121BA3436A00528992 /* icon_directions_collapse.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE091BA3436A00528992 /* icon_directions_collapse.png */; };
+		DC3CCE131BA3436A00528992 /* icon_directions_collapse.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE091BA3436A00528992 /* icon_directions_collapse.png */; };
+		DC3CCE141BA3436A00528992 /* icon_directions_collapse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0A1BA3436A00528992 /* icon_directions_collapse@2x.png */; };
+		DC3CCE151BA3436A00528992 /* icon_directions_collapse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0A1BA3436A00528992 /* icon_directions_collapse@2x.png */; };
+		DC3CCE161BA3436A00528992 /* icon_directions_collapse@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0B1BA3436A00528992 /* icon_directions_collapse@3x.png */; };
+		DC3CCE171BA3436A00528992 /* icon_directions_collapse@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0B1BA3436A00528992 /* icon_directions_collapse@3x.png */; };
+		DC3CCE181BA3436A00528992 /* icon_directions_expand.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0C1BA3436A00528992 /* icon_directions_expand.png */; };
+		DC3CCE191BA3436A00528992 /* icon_directions_expand.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0C1BA3436A00528992 /* icon_directions_expand.png */; };
+		DC3CCE1A1BA3436A00528992 /* icon_directions_expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0D1BA3436A00528992 /* icon_directions_expand@2x.png */; };
+		DC3CCE1B1BA3436A00528992 /* icon_directions_expand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0D1BA3436A00528992 /* icon_directions_expand@2x.png */; };
+		DC3CCE1C1BA3436A00528992 /* icon_directions_expand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0E1BA3436A00528992 /* icon_directions_expand@3x.png */; };
+		DC3CCE1D1BA3436A00528992 /* icon_directions_expand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0E1BA3436A00528992 /* icon_directions_expand@3x.png */; };
+		DC3CCE1E1BA3436A00528992 /* icon_gps.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0F1BA3436A00528992 /* icon_gps.png */; };
+		DC3CCE1F1BA3436A00528992 /* icon_gps.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE0F1BA3436A00528992 /* icon_gps.png */; };
+		DC3CCE201BA3436A00528992 /* icon_gps@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE101BA3436A00528992 /* icon_gps@2x.png */; };
+		DC3CCE211BA3436A00528992 /* icon_gps@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE101BA3436A00528992 /* icon_gps@2x.png */; };
+		DC3CCE221BA3436A00528992 /* icon_gps@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE111BA3436A00528992 /* icon_gps@3x.png */; };
+		DC3CCE231BA3436A00528992 /* icon_gps@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC3CCE111BA3436A00528992 /* icon_gps@3x.png */; };
+		DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */; };
+		DC3CCE271BA34EF000528992 /* SLDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */; };
+		DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC43C7161B27E5F900CEA7CF /* libz.dylib */; };
@@ -365,6 +394,12 @@
 		DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D21B8C34A6006E74DC /* SLNotification.m */; };
 		DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */; };
 		DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */; };
+		DC85F3B21BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
+		DC85F3B31BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
+		DC85F3B81BA240700089BF08 /* MapboxDirections.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B61BA240700089BF08 /* MapboxDirections.swift */; };
+		DC85F3B91BA240700089BF08 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B71BA240700089BF08 /* SwiftyJSON.swift */; };
+		DC85F3BA1BA240790089BF08 /* MapboxDirections.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B61BA240700089BF08 /* MapboxDirections.swift */; };
+		DC85F3BB1BA240790089BF08 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B71BA240700089BF08 /* SwiftyJSON.swift */; };
 		DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */; };
 		DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */; };
 		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
@@ -382,6 +417,13 @@
 		DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */; };
 		DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCD82FE81B1FCBBC00B38910 /* Images.xcassets */; };
 		DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */; };
+		DCD893331BA3AE2800262C14 /* direction_pin_white.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD8932D1BA3AE2800262C14 /* direction_pin_white.png */; };
+		DCD893341BA3AE2800262C14 /* direction_pin_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD8932E1BA3AE2800262C14 /* direction_pin_white@2x.png */; };
+		DCD893351BA3AE2800262C14 /* direction_pin_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD8932F1BA3AE2800262C14 /* direction_pin_white@3x.png */; };
+		DCD893361BA3AE2800262C14 /* directions_dot_white.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD893301BA3AE2800262C14 /* directions_dot_white.png */; };
+		DCD893371BA3AE2800262C14 /* directions_dot_white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD893311BA3AE2800262C14 /* directions_dot_white@2x.png */; };
+		DCD893381BA3AE2800262C14 /* directions_dot_white@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD893321BA3AE2800262C14 /* directions_dot_white@3x.png */; };
+		DCDAC22E1BA9FE8400396951 /* SLDirectionAPIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDAC22D1BA9FE8400396951 /* SLDirectionAPIHelper.swift */; };
 		DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */; };
 		DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */; };
 		DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */; };
@@ -431,6 +473,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1240ECA2D19C1624B1A1D2AD /* Pods_Skylock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skylock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59287DB3228046937B2692B6 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		926E81C4A41BD3F7D9FAA288 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
@@ -469,6 +512,23 @@
 		DC39B2AE1B58859E0001973B /* SLSlideTableViewHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideTableViewHeader.m; sourceTree = "<group>"; };
 		DC3AE9091B75838A009287DA /* SLSharingTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSharingTableViewCell.h; sourceTree = "<group>"; };
 		DC3AE90A1B75838A009287DA /* SLSharingTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSharingTableViewCell.m; sourceTree = "<group>"; };
+		DC3CCDFD1BA2F3E200528992 /* SLDirections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLDirections.swift; sourceTree = "<group>"; };
+		DC3CCE011BA306FD00528992 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		DC3CCE031BA30ED000528992 /* SLDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLDirection.swift; sourceTree = "<group>"; };
+		DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLDirectionDrawingHelper.swift; sourceTree = "<group>"; };
+		DC3CCE091BA3436A00528992 /* icon_directions_collapse.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_directions_collapse.png; sourceTree = "<group>"; };
+		DC3CCE0A1BA3436A00528992 /* icon_directions_collapse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_collapse@2x.png"; sourceTree = "<group>"; };
+		DC3CCE0B1BA3436A00528992 /* icon_directions_collapse@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_collapse@3x.png"; sourceTree = "<group>"; };
+		DC3CCE0C1BA3436A00528992 /* icon_directions_expand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_directions_expand.png; sourceTree = "<group>"; };
+		DC3CCE0D1BA3436A00528992 /* icon_directions_expand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_expand@2x.png"; sourceTree = "<group>"; };
+		DC3CCE0E1BA3436A00528992 /* icon_directions_expand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_expand@3x.png"; sourceTree = "<group>"; };
+		DC3CCE0F1BA3436A00528992 /* icon_gps.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_gps.png; sourceTree = "<group>"; };
+		DC3CCE101BA3436A00528992 /* icon_gps@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_gps@2x.png"; sourceTree = "<group>"; };
+		DC3CCE111BA3436A00528992 /* icon_gps@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_gps@3x.png"; sourceTree = "<group>"; };
+		DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDirectionsViewController.h; sourceTree = "<group>"; };
+		DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDirectionsViewController.m; sourceTree = "<group>"; };
+		DC3CCE281BA3534000528992 /* SLDirectionsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDirectionsTableViewCell.h; sourceTree = "<group>"; };
+		DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDirectionsTableViewCell.m; sourceTree = "<group>"; };
 		DC43C7161B27E5F900CEA7CF /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DC43C71B1B27E6E200CEA7CF /* SLSlideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSlideViewController.h; sourceTree = "<group>"; };
 		DC43C71C1B27E6E200CEA7CF /* SLSlideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSlideViewController.m; sourceTree = "<group>"; };
@@ -811,6 +871,10 @@
 		DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationEmergencyView.m; sourceTree = "<group>"; };
 		DC7E70D71B8D1DC9006E74DC /* SLNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNotificationViewController.h; sourceTree = "<group>"; };
 		DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationViewController.m; sourceTree = "<group>"; };
+		DC85F3B01BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAnnotationDirectionCalloutView.h; sourceTree = "<group>"; };
+		DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAnnotationDirectionCalloutView.m; sourceTree = "<group>"; };
+		DC85F3B61BA240700089BF08 /* MapboxDirections.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapboxDirections.swift; sourceTree = "<group>"; };
+		DC85F3B71BA240700089BF08 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyJSON.swift; sourceTree = "<group>"; };
 		DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash2_6_plus@3x.png"; sourceTree = "<group>"; };
 		DC9EADDC1B34C20900DA1692 /* SLDropDownLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDropDownLabel.h; sourceTree = "<group>"; };
 		DC9EADDD1B34C20900DA1692 /* SLDropDownLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDropDownLabel.m; sourceTree = "<group>"; };
@@ -846,6 +910,13 @@
 		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
+		DCD8932D1BA3AE2800262C14 /* direction_pin_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = direction_pin_white.png; sourceTree = "<group>"; };
+		DCD8932E1BA3AE2800262C14 /* direction_pin_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "direction_pin_white@2x.png"; sourceTree = "<group>"; };
+		DCD8932F1BA3AE2800262C14 /* direction_pin_white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "direction_pin_white@3x.png"; sourceTree = "<group>"; };
+		DCD893301BA3AE2800262C14 /* directions_dot_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = directions_dot_white.png; sourceTree = "<group>"; };
+		DCD893311BA3AE2800262C14 /* directions_dot_white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "directions_dot_white@2x.png"; sourceTree = "<group>"; };
+		DCD893321BA3AE2800262C14 /* directions_dot_white@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "directions_dot_white@3x.png"; sourceTree = "<group>"; };
+		DCDAC22D1BA9FE8400396951 /* SLDirectionAPIHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLDirectionAPIHelper.swift; sourceTree = "<group>"; };
 		DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNavigationViewController.h; sourceTree = "<group>"; };
 		DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNavigationViewController.m; sourceTree = "<group>"; };
 		DCE2CE101B37AE10007C4AC5 /* SLBackButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBackButton.h; sourceTree = "<group>"; };
@@ -882,6 +953,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3CCE021BA306FD00528992 /* MapKit.framework in Frameworks */,
 				DC0520BE1B4B9E8500FBAAB7 /* libsqlite3.dylib in Frameworks */,
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC43C7171B27E5F900CEA7CF /* libz.dylib in Frameworks */,
@@ -890,6 +962,7 @@
 				DC0B36621B4DB7E0008E25F4 /* FBSDKLoginKit.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
 				89FADDD40CF09C644145B2C7 /* Pods.framework in Frameworks */,
+				1D4BF4A744581D2300B4F92D /* Pods_Skylock.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -906,7 +979,9 @@
 		667D2EEEACA41AF9E6822701 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DC3CCE011BA306FD00528992 /* MapKit.framework */,
 				926E81C4A41BD3F7D9FAA288 /* Pods.framework */,
+				1240ECA2D19C1624B1A1D2AD /* Pods_Skylock.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -932,6 +1007,10 @@
 		DC0520C41B4C0E8D00FBAAB7 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				DC3CCE281BA3534000528992 /* SLDirectionsTableViewCell.h */,
+				DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */,
+				DC85F3B01BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.h */,
+				DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */,
 				DC4402781B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.h */,
 				DC4402791B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m */,
 				DC4402581B98EEB300D1C2B9 /* SLTouchPadView.swift */,
@@ -976,6 +1055,8 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */,
+				DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */,
 				DC4402741B9BC31300D1C2B9 /* SLAddContactViewController.h */,
 				DC4402751B9BC31300D1C2B9 /* SLAddContactViewController.m */,
 				DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */,
@@ -1013,6 +1094,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				DCDAC22D1BA9FE8400396951 /* SLDirectionAPIHelper.swift */,
+				DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */,
 				DC44028E1B9C934000D1C2B9 /* SLDbLock.h */,
 				DC44028F1B9C934000D1C2B9 /* SLDbLock.m */,
 				DC4402701B9BAE5900D1C2B9 /* SLDbLockSharedContact.h */,
@@ -1035,6 +1118,7 @@
 				DC6147791B3233460077484B /* SLLock.m */,
 				DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */,
 				DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */,
+				DC3CCE031BA30ED000528992 /* SLDirection.swift */,
 			);
 			name = models;
 			sourceTree = "<group>";
@@ -1211,6 +1295,21 @@
 		DC7A10BF1B5714B100F3336E /* icons */ = {
 			isa = PBXGroup;
 			children = (
+				DCD8932D1BA3AE2800262C14 /* direction_pin_white.png */,
+				DCD8932E1BA3AE2800262C14 /* direction_pin_white@2x.png */,
+				DCD8932F1BA3AE2800262C14 /* direction_pin_white@3x.png */,
+				DCD893301BA3AE2800262C14 /* directions_dot_white.png */,
+				DCD893311BA3AE2800262C14 /* directions_dot_white@2x.png */,
+				DCD893321BA3AE2800262C14 /* directions_dot_white@3x.png */,
+				DC3CCE091BA3436A00528992 /* icon_directions_collapse.png */,
+				DC3CCE0A1BA3436A00528992 /* icon_directions_collapse@2x.png */,
+				DC3CCE0B1BA3436A00528992 /* icon_directions_collapse@3x.png */,
+				DC3CCE0C1BA3436A00528992 /* icon_directions_expand.png */,
+				DC3CCE0D1BA3436A00528992 /* icon_directions_expand@2x.png */,
+				DC3CCE0E1BA3436A00528992 /* icon_directions_expand@3x.png */,
+				DC3CCE0F1BA3436A00528992 /* icon_gps.png */,
+				DC3CCE101BA3436A00528992 /* icon_gps@2x.png */,
+				DC3CCE111BA3436A00528992 /* icon_gps@3x.png */,
 				DC7A10C01B5714B100F3336E /* icon_battery_0.png */,
 				DC7A10C11B5714B100F3336E /* icon_battery_0@2x.png */,
 				DC7A10C21B5714B100F3336E /* icon_battery_0@3x.png */,
@@ -1427,6 +1526,16 @@
 			path = pagination;
 			sourceTree = "<group>";
 		};
+		DC85F3B51BA240590089BF08 /* Directions */ = {
+			isa = PBXGroup;
+			children = (
+				DC85F3B61BA240700089BF08 /* MapboxDirections.swift */,
+				DC85F3B71BA240700089BF08 /* SwiftyJSON.swift */,
+				DC3CCDFD1BA2F3E200528992 /* SLDirections.swift */,
+			);
+			name = Directions;
+			sourceTree = "<group>";
+		};
 		DCD82FCC1B1FCBBC00B38910 = {
 			isa = PBXGroup;
 			children = (
@@ -1458,6 +1567,7 @@
 		DCD82FD71B1FCBBC00B38910 /* Skylock */ = {
 			isa = PBXGroup;
 			children = (
+				DC85F3B51BA240590089BF08 /* Directions */,
 				DC4402531B98D18800D1C2B9 /* extenstions */,
 				DC44024F1B98A65D00D1C2B9 /* utils */,
 				DC7A105D1B5714B100F3336E /* skylock_assets */,
@@ -1570,6 +1680,8 @@
 		DCD82FCD1B1FCBBC00B38910 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Andre Green";
 				TargetAttributes = {
@@ -1641,6 +1753,7 @@
 				DC7A12381B5714B100F3336E /* img_bike@2x.png in Resources */,
 				DC7A119B1B5714B100F3336E /* btn_next.png in Resources */,
 				DC7A12601B5714B100F3336E /* img_theftalert_yelllow@3x.png in Resources */,
+				DC3CCE141BA3436A00528992 /* icon_directions_collapse@2x.png in Resources */,
 				DC7A12C31B572B3D00F3336E /* pagination_green1.png in Resources */,
 				DC7A11B51B5714B100F3336E /* btn_sharing_on@3x.png in Resources */,
 				DC7A117F1B5714B100F3336E /* btn_cancel@3x.png in Resources */,
@@ -1653,6 +1766,7 @@
 				DC7A11C41B5714B100F3336E /* btn_toggle_on@3x.png in Resources */,
 				DC7A118E1B5714B100F3336E /* btn_help@3x.png in Resources */,
 				DC7A11991B5714B100F3336E /* btn_login@2x.png in Resources */,
+				DC3CCE1E1BA3436A00528992 /* icon_gps.png in Resources */,
 				DC7A12141B5714B100F3336E /* icon_settings_small@2x.png in Resources */,
 				DC7A11D01B5714B100F3336E /* icon_battery_100@3x.png in Resources */,
 				DC7A12461B5714B100F3336E /* img_logo1.png in Resources */,
@@ -1683,6 +1797,7 @@
 				DC7A11741B5714B100F3336E /* btn_back.png in Resources */,
 				DC7A12491B5714B100F3336E /* img_logo2.png in Resources */,
 				DC7A11AE1B5714B100F3336E /* btn_search@2x.png in Resources */,
+				DCD893361BA3AE2800262C14 /* directions_dot_white.png in Resources */,
 				DC7A11CA1B5714B100F3336E /* btn_unlock_borrow@3x.png in Resources */,
 				DC7A12C91B572B3D00F3336E /* pagination_green3.png in Resources */,
 				DC7A12121B5714B100F3336E /* icon_settings_large@3x.png in Resources */,
@@ -1696,6 +1811,7 @@
 				DC7A124D1B5714B100F3336E /* img_theft_high@2x.png in Resources */,
 				DC7A11951B5714B100F3336E /* btn_lock.png in Resources */,
 				DC7A125B1B5714B100F3336E /* img_theftalert_white.png in Resources */,
+				DC3CCE1C1BA3436A00528992 /* icon_directions_expand@3x.png in Resources */,
 				DC7A120F1B5714B100F3336E /* icon_rename@3x.png in Resources */,
 				DC7A12C71B572B3D00F3336E /* pagination_green2@2x.png in Resources */,
 				DC7A11C11B5714B100F3336E /* btn_toggle_off@3x.png in Resources */,
@@ -1727,6 +1843,7 @@
 				DC7A12671B5714B100F3336E /* img_userav_big.png in Resources */,
 				DC7A11F31B5714B100F3336E /* icon_hand@2x.png in Resources */,
 				DC7A117B1B5714B100F3336E /* btn_borrow_lock@2x.png in Resources */,
+				DC3CCE1A1BA3436A00528992 /* icon_directions_expand@2x.png in Resources */,
 				DC7A12351B5714B100F3336E /* icon_wifi_5@2x.png in Resources */,
 				DC7A11FE1B5714B100F3336E /* icon_mylock_off.png in Resources */,
 				DC7A11C81B5714B100F3336E /* btn_unlock_borrow.png in Resources */,
@@ -1764,6 +1881,7 @@
 				DC7A11DB1B5714B100F3336E /* icon_battery_66@2x.png in Resources */,
 				DC7A12CF1B572B3D00F3336E /* pagination_white1.png in Resources */,
 				DC7A11F01B5714B100F3336E /* icon_chevron_up@2x.png in Resources */,
+				DC3CCE161BA3436A00528992 /* icon_directions_collapse@3x.png in Resources */,
 				DC7A12511B5714B100F3336E /* img_theft_low@3x.png in Resources */,
 				DC7A122B1B5714B100F3336E /* icon_wifi_2.png in Resources */,
 				DC7A120A1B5714B100F3336E /* icon_remove.png in Resources */,
@@ -1776,6 +1894,7 @@
 				DC0250761B59D539007D2D6A /* btn_crashalert_off.png in Resources */,
 				DC7A124C1B5714B100F3336E /* img_theft_high.png in Resources */,
 				DC7A11F91B5714B100F3336E /* icon_lock@2x.png in Resources */,
+				DCD893381BA3AE2800262C14 /* directions_dot_white@3x.png in Resources */,
 				DC7A125E1B5714B100F3336E /* img_theftalert_yelllow.png in Resources */,
 				DC7A12D91B572B3D00F3336E /* pagination_white4@2x.png in Resources */,
 				DC7A11EC1B5714B100F3336E /* icon_chevron_right.png in Resources */,
@@ -1803,6 +1922,7 @@
 				DC7A123D1B5714B100F3336E /* img_crashalert_white.png in Resources */,
 				DC7A12701B5714B100F3336E /* img_walkthrough2.png in Resources */,
 				DC02507F1B59D5FD007D2D6A /* img_walkthrough1.png in Resources */,
+				DCD893351BA3AE2800262C14 /* direction_pin_white@3x.png in Resources */,
 				DC7A12451B5714B100F3336E /* img_lock@3x.png in Resources */,
 				DC7A116E1B5714B100F3336E /* bg_splash1@3x.png in Resources */,
 				DC7A12201B5714B100F3336E /* icon_timer@2x.png in Resources */,
@@ -1810,6 +1930,7 @@
 				DC7A11A61B5714B100F3336E /* btn_resetpin@3x.png in Resources */,
 				DC7A11831B5714B100F3336E /* btn_done.png in Resources */,
 				DC7A125D1B5714B100F3336E /* img_theftalert_white@3x.png in Resources */,
+				DCD893341BA3AE2800262C14 /* direction_pin_white@2x.png in Resources */,
 				DC7A11F21B5714B100F3336E /* icon_hand.png in Resources */,
 				DC7A11851B5714B100F3336E /* btn_done@3x.png in Resources */,
 				DC7A11C31B5714B100F3336E /* btn_toggle_on@2x.png in Resources */,
@@ -1822,6 +1943,7 @@
 				DC7A12111B5714B100F3336E /* icon_settings_large@2x.png in Resources */,
 				DC7A11AB1B5714B100F3336E /* btn_savepin@2x.png in Resources */,
 				DC7A12241B5714B100F3336E /* icon_timer_white@3x.png in Resources */,
+				DC3CCE201BA3436A00528992 /* icon_gps@2x.png in Resources */,
 				DC0250801B59D5FD007D2D6A /* img_walkthrough1@2x.png in Resources */,
 				DC7A12CA1B572B3D00F3336E /* pagination_green3@2x.png in Resources */,
 				DC7A12751B5714B100F3336E /* img_walkthrough3@3x.png in Resources */,
@@ -1848,6 +1970,7 @@
 				DC7A11A81B5714B100F3336E /* btn_retry@2x.png in Resources */,
 				DC7A11E21B5714B100F3336E /* icon_bt@3x.png in Resources */,
 				DC7A11751B5714B100F3336E /* btn_back@2x.png in Resources */,
+				DC3CCE121BA3436A00528992 /* icon_directions_collapse.png in Resources */,
 				DC7A11DF1B5714B100F3336E /* icon_battery_75@3x.png in Resources */,
 				DC7A11ED1B5714B100F3336E /* icon_chevron_right@2x.png in Resources */,
 				DC7A12191B5714B100F3336E /* icon_store.png in Resources */,
@@ -1874,6 +1997,7 @@
 				DC7A11B81B5714B100F3336E /* btn_signup@3x.png in Resources */,
 				DC7A11CE1B5714B100F3336E /* icon_battery_100.png in Resources */,
 				DC7A11701B5714B100F3336E /* bg_splash2@2x.png in Resources */,
+				DC3CCE181BA3436A00528992 /* icon_directions_expand.png in Resources */,
 				DC7A12531B5714B100F3336E /* img_theft_medium@2x.png in Resources */,
 				DC7A12D31B572B3D00F3336E /* pagination_white2@2x.png in Resources */,
 				DC7A12031B5714B100F3336E /* icon_mylock_on@3x.png in Resources */,
@@ -1883,6 +2007,7 @@
 				DC7A11B31B5714B100F3336E /* btn_sharing_on.png in Resources */,
 				DC7A11BB1B5714B100F3336E /* btn_theftalert_off@3x.png in Resources */,
 				DC7A12221B5714B100F3336E /* icon_timer_white.png in Resources */,
+				DC3CCE221BA3436A00528992 /* icon_gps@3x.png in Resources */,
 				DC7A11A41B5714B100F3336E /* btn_resetpin.png in Resources */,
 				DC7A11EB1B5714B100F3336E /* icon_chevron_left_white@3x.png in Resources */,
 				DC7A11891B5714B100F3336E /* btn_facebooklogout.png in Resources */,
@@ -1897,6 +2022,7 @@
 				DC7A12DA1B572B3D00F3336E /* pagination_white4@3x.png in Resources */,
 				DC7A119D1B5714B100F3336E /* btn_next@3x.png in Resources */,
 				DC7A11801B5714B100F3336E /* btn_crashalert_on.png in Resources */,
+				DCD893371BA3AE2800262C14 /* directions_dot_white@2x.png in Resources */,
 				DC7A12D11B572B3D00F3336E /* pagination_white1@3x.png in Resources */,
 				DC7A119A1B5714B100F3336E /* btn_login@3x.png in Resources */,
 				DC7A120C1B5714B100F3336E /* icon_remove@3x.png in Resources */,
@@ -1939,6 +2065,7 @@
 				DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */,
 				DC7A122A1B5714B100F3336E /* icon_wifi_1@3x.png in Resources */,
 				DC7A11CF1B5714B100F3336E /* icon_battery_100@2x.png in Resources */,
+				DCD893331BA3AE2800262C14 /* direction_pin_white.png in Resources */,
 				DC7A122E1B5714B100F3336E /* icon_wifi_3.png in Resources */,
 				DC7A12101B5714B100F3336E /* icon_settings_large.png in Resources */,
 			);
@@ -1948,11 +2075,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3CCE1F1BA3436A00528992 /* icon_gps.png in Resources */,
+				DC3CCE231BA3436A00528992 /* icon_gps@3x.png in Resources */,
+				DC3CCE1B1BA3436A00528992 /* icon_directions_expand@2x.png in Resources */,
 				DC4402871B9C8E1100D1C2B9 /* btn_lock_grey@2x.png in Resources */,
+				DC3CCE1D1BA3436A00528992 /* icon_directions_expand@3x.png in Resources */,
+				DC3CCE171BA3436A00528992 /* icon_directions_collapse@3x.png in Resources */,
+				DC3CCE191BA3436A00528992 /* icon_directions_expand.png in Resources */,
 				DC44028D1B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png in Resources */,
+				DC3CCE151BA3436A00528992 /* icon_directions_collapse@2x.png in Resources */,
 				DC4402851B9C8E1100D1C2B9 /* btn_lock_grey@1x.png in Resources */,
+				DC3CCE131BA3436A00528992 /* icon_directions_collapse.png in Resources */,
 				DC44028B1B9C8E1100D1C2B9 /* btn_unlock_grey@1.5x.png in Resources */,
 				DC4402831B9C8E1100D1C2B9 /* btn_lock_grey@0.5x.png in Resources */,
+				DC3CCE211BA3436A00528992 /* icon_gps@2x.png in Resources */,
 				DC4402891B9C8E1100D1C2B9 /* btn_unlock_grey@0.5x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1972,7 +2108,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8E889C3D6A0207D3926A9A9A /* Check Pods Manifest.lock */ = {
@@ -2002,7 +2138,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2013,6 +2149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC7818AA1B4F5C8000B59C11 /* SLTutorialViewController.m in Sources */,
+				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
 				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
 				DC7821B01B4FAEBC00B59C11 /* SLTutorial1ViewController.m in Sources */,
@@ -2029,6 +2166,7 @@
 				DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */,
 				DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */,
 				DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */,
+				DCDAC22E1BA9FE8400396951 /* SLDirectionAPIHelper.swift in Sources */,
 				DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */,
 				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
 				DC61477A1B3233460077484B /* SLLock.m in Sources */,
@@ -2039,6 +2177,7 @@
 				DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */,
 				DC7E70D01B8C3382006E74DC /* SLNotificationManager.m in Sources */,
 				DCC1E73F1B49800B0083A665 /* SLDatabaseManager.m in Sources */,
+				DC85F3B21BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */,
 				DC7A13051B5837E900F3336E /* SLSlideControllerOptionsButton.m in Sources */,
 				DC4402721B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
 				DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */,
@@ -2055,6 +2194,7 @@
 				DC7E70CA1B8C27C5006E74DC /* SLNotificationView.m in Sources */,
 				DC7A12F51B57409700F3336E /* SLUser.m in Sources */,
 				DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */,
+				DC85F3B81BA240700089BF08 /* MapboxDirections.swift in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */,
@@ -2064,15 +2204,20 @@
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DC7818A41B4F5C5400B59C11 /* SLMainTutorialViewController.m in Sources */,
 				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
+				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
+				DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */,
 				DC4402591B98EEB300D1C2B9 /* SLTouchPadView.swift in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
+				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
 				DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */,
 				DC44026E1B9BAE5900D1C2B9 /* SLDbUser.m in Sources */,
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
+				DC3CCDFE1BA2F3E200528992 /* SLDirections.swift in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
 				DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */,
+				DC85F3B91BA240700089BF08 /* SwiftyJSON.swift in Sources */,
 				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2081,11 +2226,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3CCDFF1BA2F3E200528992 /* SLDirections.swift in Sources */,
+				DC85F3B31BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */,
 				DC44025A1B98EEB300D1C2B9 /* SLTouchPadView.swift in Sources */,
+				DC3CCE081BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
+				DC85F3BA1BA240790089BF08 /* MapboxDirections.swift in Sources */,
+				DC85F3BB1BA240790089BF08 /* SwiftyJSON.swift in Sources */,
 				DC44025B1B991FEA00D1C2B9 /* SkylockColors.swift in Sources */,
+				DC3CCE271BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
 				DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */,
 				DC4402911B9C934000D1C2B9 /* SLDbLock.m in Sources */,
 				DC4402731B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
+				DC3CCE051BA30ED000528992 /* SLDirection.swift in Sources */,
 				DC44027B1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */,
 				DC44026F1B9BAE5900D1C2B9 /* SLDbUser.m in Sources */,
 				DC4402771B9BC31300D1C2B9 /* SLAddContactViewController.m in Sources */,

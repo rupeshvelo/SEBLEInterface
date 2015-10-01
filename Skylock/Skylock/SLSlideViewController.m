@@ -340,7 +340,7 @@
             if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
                 [self.delegate slideViewController:self actionOccured:action options:nil];
             }
-            
+                
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         }
     } else {
