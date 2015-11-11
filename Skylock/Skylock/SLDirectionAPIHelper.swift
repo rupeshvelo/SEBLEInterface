@@ -30,7 +30,7 @@ class SLDirectionAPIHelper: NSObject {
         let url = mainUrl + transportUrl + positionUrl + tokenUrl
         SLRestManager.sharedManager().restGetRequestWithURL(url, options: nil) { (_: [NSObject : AnyObject]!) -> Void in
             
-            if completion
+            //if completion
         }
     }
 }

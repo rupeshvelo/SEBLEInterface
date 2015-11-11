@@ -24,7 +24,7 @@
 
 @implementation SLDatabaseManager
 
-+ (id)manager
++ (id)sharedManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLDatabaseManager *dbManager = nil;

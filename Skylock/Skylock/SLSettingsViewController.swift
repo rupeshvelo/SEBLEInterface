@@ -10,16 +10,16 @@ import UIKit
 
 class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelegate {
     
-    let xPadding:CGFloat = 25.0
-    let titleFont = UIFont(name:"HelveticaNeue", size:14)
-    let infoFont = UIFont(name:"HelveticaNeue", size:12)
-    let titleColor = UIColor.color(97, green: 100, blue: 100)
-    let infoColor = UIColor.color(128, green: 128, blue: 128)
-    let dividerColor = UIColor.color(191, green: 191, blue: 191)
-    let settingGreenColor = UIColor.color(30, green: 221, blue: 128)
+    private let xPadding:CGFloat = 25.0
+    private let titleFont = UIFont(name:"HelveticaNeue", size:14)
+    private let infoFont = UIFont(name:"HelveticaNeue", size:12)
+    private let titleColor = UIColor.color(97, green: 100, blue: 100)
+    private let infoColor = UIColor.color(128, green: 128, blue: 128)
+    private let dividerColor = UIColor.color(191, green: 191, blue: 191)
+    private let settingGreenColor = UIColor.color(30, green: 221, blue: 128)
     var lock: SLLock?
-    var resetPinButton: UIButton?
-    var pinLabel: UILabel?
+    private var resetPinButton: UIButton?
+    private var pinLabel: UILabel?
 
     lazy var headerView: UIView = {
         var view: UIView = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, 53))

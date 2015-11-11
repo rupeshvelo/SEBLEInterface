@@ -12,7 +12,7 @@
 
 @interface SLFacebookManger : NSObject
 
-+ (id)manager;
++ (id)sharedManager;
 - (void)applicationBecameActive;
 - (BOOL)application:(UIApplication *)application finishedLauchingWithOptions:(NSDictionary *)options;
 - (BOOL)application:(UIApplication *)application

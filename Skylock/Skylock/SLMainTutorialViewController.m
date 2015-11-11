@@ -412,18 +412,18 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)searchButtonPressed
 {
-    [SLLockManager.manager shouldEnterSearchMode:YES];
-    [SLLockManager.manager startScan];
+    [SLLockManager.sharedManager shouldEnterSearchMode:YES];
+    [SLLockManager.sharedManager startScan];
 }
 
 - (void)foundLock:(NSNotification *)notification
 {
     if (notification.object && [notification.object isMemberOfClass:[SLLock class]]) {
         SLLock *lock = (SLLock *)notification.object;
-        [SLLockManager.manager addLock:lock];
+        [SLLockManager.sharedManager addLock:lock];
     }
     
-    [SLLockManager.manager shouldEnterSearchMode:NO];
+    [SLLockManager.sharedManager shouldEnterSearchMode:NO];
     [self nextButtonPressed];
 }
 

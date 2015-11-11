@@ -24,7 +24,6 @@
 #import "UIImage+Skylock.h"
 #import "SLNavigationViewController.h"
 #import "SLAccountInfoViewController.h"
-#import <MapboxGL/MapboxGL.h>
 #import <CoreLocation/CoreLocation.h>
 #import "Skylock-Swift.h"
 #import "SLSharingViewController.h"
@@ -32,8 +31,6 @@
 #import "SLNotificationViewController.h"
 #import "SLMainTutorialViewController.h"
 #import "SLDirectionsViewController.h"
-
-#import <MapKit/MapKit.h>
 
 #define kMapBoxMapId        @"michalumni.l2bh1bee"
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
@@ -52,9 +49,9 @@
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
 
-@property (nonatomic, strong) MGLMapView *mapView;
-@property (nonatomic, strong) MGLPointAnnotation *userAnnotation;
-@property (nonatomic, strong) MGLPointAnnotation *selectedLockAnnotation;
+@property (nonatomic, strong) GMSMapView *mapView;
+@property (nonatomic, strong) GMSMarker *userMarker;
+@property (nonatomic, strong) GMSMarker *selectedLockMarker;
 
 @property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
 @property (nonatomic, assign) BOOL isInitialLoad;
@@ -132,26 +129,25 @@
     return _settingsButton;
 }
 
-- (MGLMapView *)mapView
+- (GMSMapView *)mapView
 {
     if (!_mapView) {
-        _mapView = [[MGLMapView alloc] initWithFrame:self.view.bounds];
-        _mapView.zoomLevel = 12;
+        GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:5];
+        _mapView = [GMSMapView mapWithFrame:self.view.bounds camera:cameraPosition];
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         _mapView.delegate = self;
-        _mapView.rotateEnabled = NO;
     }
     
     return _mapView;
 }
 
-- (MGLPointAnnotation *)userAnnotation
+- (GMSMarker *)userMarker
 {
-    if (!_userAnnotation) {
-        _userAnnotation = [MGLPointAnnotation new];
+    if (!_userMarker) {
+        _userMarker = [GMSMarker new];
     }
     
-    return _userAnnotation;
+    return _userMarker;
 }
 
 - (CLLocationManager *)locationManager
@@ -271,7 +267,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [super viewDidLoad];
     
-    [SLDatabaseManager.manager setCurrentUser];
+    [SLDatabaseManager.sharedManager setCurrentUser];
     
     [self.locationManager requestWhenInUseAuthorization];
     
@@ -615,7 +611,7 @@
 {
     NSDictionary *info = notification.userInfo;
     NSArray *recipients = info[@"recipients"];
-    SLDbUser *currentUser = [SLDatabaseManager.manager currentUser];
+    SLDbUser *currentUser = [SLDatabaseManager.sharedManager currentUser];
     // temporay location for this message. It should be stored in a p-list or the database
     NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock", currentUser.fullName, currentUser.fullName];
     MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
@@ -646,7 +642,7 @@
 
 - (void)locationButtonPressed
 {
-    [self centerOnUser];
+    //[self centerOnUser];
 }
 
 - (void)directionsButtonPushed
@@ -657,7 +653,7 @@
 - (void)handleDirectionsMode
 {
     if (!self.lockInfoViewController.isUp &&
-        self.selectedLockAnnotation &&
+        //self.selectedLockAnnotation &&
         self.directions &&
         self.directions.count > 0 &&
         (self.leftCalloutButton.isSelected || self.rightCalloutButton.isSelected)) {
@@ -685,7 +681,7 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected) {
-        self.selectedLock = [SLLockManager.manager getCurrentLock];
+        self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
         self.settingsButton.enabled = YES;
         
         // TODO - clear lock annotations that are no longer active
@@ -742,175 +738,175 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    [self.mapView setCenterCoordinate:self.userLocation animated:YES];
-}
+//    [self.mapView setCenterCoordinate:self.userLocation animated:YES];
+//}
 
-- (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
-{
-    if (self.lockAnnotations[lock.displayName]) {
-        return self.lockAnnotations[lock.displayName][@"annotation"];
-    }
-    
-    CLLocationCoordinate2D testPoint = CLLocationCoordinate2DMake(37.301508, -120.480166);
-    
-    MGLPointAnnotation *annotation = [MGLPointAnnotation new];
-    //annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
-    annotation.coordinate = testPoint;
-    annotation.title = lock.displayName;
-
-    self.lockAnnotations[lock.displayName] = @{@"annotation":annotation,
-                                               @"lock":lock
-                                               };
-    return annotation;
+//- (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
+//{
+//    if (self.lockAnnotations[lock.displayName]) {
+//        return self.lockAnnotations[lock.displayName][@"annotation"];
+//    }
+//    
+//    CLLocationCoordinate2D testPoint = CLLocationCoordinate2DMake(37.301508, -120.480166);
+//    
+//    MGLPointAnnotation *annotation = [MGLPointAnnotation new];
+//    //annotation.coordinate = CLLocationCoordinate2DMake(lock.latitude.doubleValue, lock.longitude.doubleValue);
+//    annotation.coordinate = testPoint;
+//    annotation.title = lock.displayName;
+//
+//    self.lockAnnotations[lock.displayName] = @{@"annotation":annotation,
+//                                               @"lock":lock
+//                                               };
+//    return annotation;
 }
 
 - (void)addLockToMap:(SLLock *)lock
 {
-    [self.mapView addAnnotation:[self annotationForLock:lock]];
+    //[self.mapView addAnnotation:[self annotationForLock:lock]];
 }
 
 - (void)updateUsersLocation
 {
-    self.userAnnotation.coordinate = self.userLocation;
-
-    if (self.isInitialLoad) {
-        [self.mapView addAnnotation:self.userAnnotation];
-    }
+//    self.userAnnotation.coordinate = self.userLocation;
+//
+//    if (self.isInitialLoad) {
+//        [self.mapView addAnnotation:self.userAnnotation];
+//    }
 }
 
-- (void)getDirectionsToLocation:(CLLocationCoordinate2D)location transportType:(MKDirectionsTransportType)transportType
-{
-    MKPlacemark *userPlacemark = [[MKPlacemark alloc] initWithCoordinate:self.userLocation addressDictionary:nil];
-    MKPlacemark *lockPlacemark = [[MKPlacemark alloc] initWithCoordinate:location addressDictionary:nil];
-    
-    MKDirectionsRequest *directionRequest = [[MKDirectionsRequest alloc] init];
-    directionRequest.source = [[MKMapItem alloc] initWithPlacemark:userPlacemark];
-    directionRequest.destination = [[MKMapItem alloc] initWithPlacemark:lockPlacemark];
-    directionRequest.transportType = transportType;
-    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
-    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
-        if (error) {
-            NSLog(@"error getting directions");
-            // TODO -- check and see what should happen when we can't get dirctions...popup?
-            return;
-        }
-        
-        if (!response.routes || response.routes.count == 0) {
-            NSLog(@"no routes in directions");
-            // TODO -- check and see what should happen when there aren't any routes
-            return;
-        }
-        
-        MKRoute *route = response.routes[0];
-        NSMutableArray *routeDirections = [NSMutableArray new];
-        for (MKRouteStep *routeStep in route.steps) {
-            SLDirection *direction = [[SLDirection alloc] initWithCoordinate:routeStep.polyline.coordinate
-                                                                  directions:routeStep.instructions
-                                                                    distance:routeStep.distance];
-            [routeDirections addObject:direction];
-        }
-        
-        [self enterDirectionModeWithDirections:routeDirections];
-    }];
-}
-
-- (void)leftCalloutViewButtonPressed
-{
-    self.leftCalloutButton.selected = !self.leftCalloutButton.isSelected;
-    if (self.selectedLockAnnotation) {
-        [self getDirectionsToLocation:self.selectedLockAnnotation.coordinate
-                        transportType:MKDirectionsTransportTypeWalking];
-    }
-}
-
-- (void)rightCalloutViewButtonPressed
-{
-    self.rightCalloutButton.selected = !self.rightCalloutButton.isSelected;
-    if (self.selectedLockAnnotation) {
-        [self getDirectionsToLocation:self.selectedLockAnnotation.coordinate
-                        transportType:MKDirectionsTransportTypeWalking];
-    }
-    
-}
+//- (void)getDirectionsToLocation:(CLLocationCoordinate2D)location transportType:(MKDirectionsTransportType)transportType
+//{
+//    MKPlacemark *userPlacemark = [[MKPlacemark alloc] initWithCoordinate:self.userLocation addressDictionary:nil];
+//    MKPlacemark *lockPlacemark = [[MKPlacemark alloc] initWithCoordinate:location addressDictionary:nil];
+//    
+//    MKDirectionsRequest *directionRequest = [[MKDirectionsRequest alloc] init];
+//    directionRequest.source = [[MKMapItem alloc] initWithPlacemark:userPlacemark];
+//    directionRequest.destination = [[MKMapItem alloc] initWithPlacemark:lockPlacemark];
+//    directionRequest.transportType = transportType;
+//    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
+//    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
+//        if (error) {
+//            NSLog(@"error getting directions");
+//            // TODO -- check and see what should happen when we can't get dirctions...popup?
+//            return;
+//        }
+//        
+//        if (!response.routes || response.routes.count == 0) {
+//            NSLog(@"no routes in directions");
+//            // TODO -- check and see what should happen when there aren't any routes
+//            return;
+//        }
+//        
+//        MKRoute *route = response.routes[0];
+//        NSMutableArray *routeDirections = [NSMutableArray new];
+//        for (MKRouteStep *routeStep in route.steps) {
+//            SLDirection *direction = [[SLDirection alloc] initWithCoordinate:routeStep.polyline.coordinate
+//                                                                  directions:routeStep.instructions
+//                                                                    distance:routeStep.distance];
+//            [routeDirections addObject:direction];
+//        }
+//        
+//        [self enterDirectionModeWithDirections:routeDirections];
+//    }];
+//}
+//
+//- (void)leftCalloutViewButtonPressed
+//{
+//    self.leftCalloutButton.selected = !self.leftCalloutButton.isSelected;
+//    if (self.selectedLockMarker) {
+//        [self getDirectionsToLocation:self.selectedLockMarker.position
+//                        transportType:MKDirectionsTransportTypeWalking];
+//    }
+//}
+//
+//- (void)rightCalloutViewButtonPressed
+//{
+//    self.rightCalloutButton.selected = !self.rightCalloutButton.isSelected;
+//    if (self.selectedLockMarker) {
+//        [self getDirectionsToLocation:self.selectedLockMarker.position
+//                        transportType:MKDirectionsTransportTypeWalking];
+//    }
+//    
+//}
 
 - (void)enterDirectionModeWithDirections:(NSArray *)directions
 {
-    self.directions = directions;
-    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
-                                                                                     directions:self.directions];
-    [drawingHelper drawDirections:^{
-        self.directionsButton.hidden = NO;
-        [self.lockInfoViewController setUpView];
-    }];
+//    self.directions = directions;
+//    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
+//                                                                                     directions:self.directions];
+//    [drawingHelper drawDirections:^{
+//        self.directionsButton.hidden = NO;
+//        [self.lockInfoViewController setUpView];
+//    }];
 }
 
 #pragma mark - MGL map view delegate methods
-- (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    MGLAnnotationImage *image;
-    if (annotation == self.userAnnotation) {
-        SLDbUser *user = [SLDatabaseManager.manager currentUser];
-        UIImage *userPic = [SLPicManager.manager userImageForEmail:user.email];
-        if (userPic) {
-            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
-            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
-            image = [MGLAnnotationImage annotationImageWithImage:maskedImage
-                                                 reuseIdentifier:user.email];
-        }
-    } else {
-        image = [MGLAnnotationImage annotationImageWithImage:[UIImage imageNamed:@"img_lock"]
-                                             reuseIdentifier:@"img_lock"];
-    }
-    
-    return image;
-}
+//- (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+//{
+//    MGLAnnotationImage *image;
+//    if (annotation == self.userAnnotation) {
+//        SLDbUser *user = [SLDatabaseManager.manager currentUser];
+//        UIImage *userPic = [SLPicManager.manager userImageForEmail:user.email];
+//        if (userPic) {
+//            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
+//            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
+//            image = [MGLAnnotationImage annotationImageWithImage:maskedImage
+//                                                 reuseIdentifier:user.email];
+//        }
+//    } else {
+//        image = [MGLAnnotationImage annotationImageWithImage:[UIImage imageNamed:@"img_lock"]
+//                                             reuseIdentifier:@"img_lock"];
+//    }
+//    
+//    return image;
+//}
 
-- (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
-{
+//- (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
+//{
+//
+//}
+//
+//- (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
+//{
+//    NSLog(@"user location: %@", mapView.userLocation);
+//    [self centerOnUser];
+//}
+//
+//- (BOOL)mapView:(MGLMapView *)mapView annotationCanShowCallout:(id <MGLAnnotation>)annotation
+//{
+//    return YES;
+//}
+//
+//- (void)mapView:(MGLMapView * __nonnull)mapView didSelectAnnotation:(id<MGLAnnotation> __nonnull)annotation
+//{
+//    self.directionsButton.hidden = NO;
+//    self.selectedLockAnnotation = annotation;
+//}
 
-}
-
-- (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
-{
-    NSLog(@"user location: %@", mapView.userLocation);
-    [self centerOnUser];
-}
-
-- (BOOL)mapView:(MGLMapView *)mapView annotationCanShowCallout:(id <MGLAnnotation>)annotation
-{
-    return YES;
-}
-
-- (void)mapView:(MGLMapView * __nonnull)mapView didSelectAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    self.directionsButton.hidden = NO;
-    self.selectedLockAnnotation = annotation;
-}
-
-- (void)mapView:(MGLMapView * __nonnull)mapView didDeselectAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    self.selectedLockAnnotation = nil;
-}
-
-- (UIView *)mapView:(MGLMapView * __nonnull)mapView leftCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    return self.leftCalloutButton;
-}
-
-- (UIView *)mapView:(MGLMapView * __nonnull)mapView rightCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-{
-    return self.rightCalloutButton;
-}
-
-- (CGFloat)mapView:(MGLMapView * __nonnull)mapView lineWidthForPolylineAnnotation:(MGLPolyline * __nonnull)annotation
-{
-    return 6.0f;
-}
-
-- (UIColor *)mapView:(MGLMapView * __nonnull)mapView strokeColorForShapeAnnotation:(MGLShape * __nonnull)annotation
-{
-    return [annotation isKindOfClass:[MGLPolyline class]] ? [UIColor colorWithRed:110 green:223 blue:158] : nil;
-}
+//- (void)mapView:(MGLMapView * __nonnull)mapView didDeselectAnnotation:(id<MGLAnnotation> __nonnull)annotation
+//{
+//    self.selectedLockAnnotation = nil;
+//}
+//
+//- (UIView *)mapView:(MGLMapView * __nonnull)mapView leftCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+//{
+//    return self.leftCalloutButton;
+//}
+//
+//- (UIView *)mapView:(MGLMapView * __nonnull)mapView rightCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
+//{
+//    return self.rightCalloutButton;
+//}
+//
+//- (CGFloat)mapView:(MGLMapView * __nonnull)mapView lineWidthForPolylineAnnotation:(MGLPolyline * __nonnull)annotation
+//{
+//    return 6.0f;
+//}
+//
+//- (UIColor *)mapView:(MGLMapView * __nonnull)mapView strokeColorForShapeAnnotation:(MGLShape * __nonnull)annotation
+//{
+//    return [annotation isKindOfClass:[MGLPolyline class]] ? [UIColor colorWithRed:110 green:223 blue:158] : nil;
+//}
 
 #pragma mark - CLLocaiton manager delegate methods
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status

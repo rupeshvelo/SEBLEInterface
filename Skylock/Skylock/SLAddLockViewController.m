@@ -45,7 +45,7 @@
 {
     [super viewDidLoad];
     
-    [SLLockManager.manager startScan];
+    [SLLockManager.sharedManager startScan];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(lockDiscovered)
@@ -71,7 +71,7 @@
 
 - (void)lockDiscovered
 {
-    NSArray *unaddedLocks = [SLLockManager.manager unaddedLocks];
+    NSArray *unaddedLocks = [SLLockManager.sharedManager unaddedLocks];
     __block NSMutableArray *paths = [NSMutableArray new];
     
     [unaddedLocks enumerateObjectsUsingBlock:^(SLLock *unaddedLock, NSUInteger idx, BOOL *stop) {
@@ -204,7 +204,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SLLock *lock = self.locks[indexPath.row];
-    [SLLockManager.manager addLock:lock];
+    [SLLockManager.sharedManager addLock:lock];
     
     if ([self.delegate respondsToSelector:@selector(addLockViewController:didAddLock:)]) {
         [self.delegate addLockViewController:self didAddLock:lock];

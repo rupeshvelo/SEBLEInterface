@@ -18,7 +18,7 @@
 @property (strong) SLDbUser *currentUser;
 
 
-+(id)manager;
++(id)sharedManager;
 
 - (void)setContext:(NSManagedObjectContext *)context;
 

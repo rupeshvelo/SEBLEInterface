@@ -86,7 +86,7 @@
 - (NSArray *)locks
 {
     if (!_locks) {
-        _locks = [SLLockManager.manager orderedLocksByName];
+        _locks = [SLLockManager.sharedManager orderedLocksByName];
     }
     
     return _locks;
@@ -135,7 +135,7 @@
 {
     [super viewDidLoad];
     
-    self.user = [SLDatabaseManager.manager currentUser];
+    self.user = [SLDatabaseManager.sharedManager currentUser];
     self.view.backgroundColor = [UIColor whiteColor];
     self.isEditMode = NO;
     
@@ -189,7 +189,7 @@
 
 - (void)resizeTables
 {
-    self.locks = [SLLockManager.manager orderedLocksByName];
+    self.locks = [SLLockManager.sharedManager orderedLocksByName];
     self.tableView.frame = CGRectMake(0.0f,
                                       0.0f,
                                       self.tableView.frame.size.width,
@@ -276,7 +276,7 @@
         header.delegate = self;
         
         if (self.user.facebookId) {
-            [SLPicManager.manager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
+            [SLPicManager.sharedManager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
                 if (!image) {
                     image = [UIImage imageNamed:@"img_userav_small"];
                 }
@@ -330,10 +330,10 @@
             SLLock *selectedLock = self.locks[indexPath.row];
             SLSlideViewControllerButtonAction action;
             if (selectedLock.isCurrentLock.boolValue) {
-                [SLLockManager.manager deselectAllLocks];
+                [SLLockManager.sharedManager deselectAllLocks];
                 action = SLSlideViewControllerButtonActionLockDeselected;
             } else {
-                [SLLockManager.manager setCurrentLock:selectedLock];
+                [SLLockManager.sharedManager setCurrentLock:selectedLock];
                 action = SLSlideViewControllerButtonActionLockSelected;
             }
             
@@ -415,7 +415,7 @@
 - (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
 {
     [self dismissAddLockViewController:alvc withCompletion:^{
-        self.locks = [SLLockManager.manager orderedLocksByName];
+        self.locks = [SLLockManager.sharedManager orderedLocksByName];
         NSUInteger target = NSUIntegerMax;
         for (NSUInteger i=0; i < self.locks.count; i++) {
             SLLock *aLock = self.locks[i];

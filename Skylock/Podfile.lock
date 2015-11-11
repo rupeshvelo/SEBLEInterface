@@ -1,22 +1,32 @@
 PODS:
-  - MapboxGL (0.5.1)
-  - SwiftyJSON (2.2.1)
+  - Bolts (1.4.0):
+    - Bolts/AppLinks (= 1.4.0)
+    - Bolts/Tasks (= 1.4.0)
+  - Bolts/AppLinks (1.4.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.4.0)
+  - FBSDKCoreKit (4.7.1):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc (= 4.7.1)
+    - FBSDKCoreKit/no-arc (= 4.7.1)
+  - FBSDKCoreKit/arc (4.7.1):
+    - Bolts (~> 1.1)
+  - FBSDKCoreKit/no-arc (4.7.1):
+    - Bolts (~> 1.1)
+    - FBSDKCoreKit/arc
+  - FBSDKLoginKit (4.7.1):
+    - FBSDKCoreKit
+  - GoogleMaps (1.10.5)
 
 DEPENDENCIES:
-  - MapboxGL
-  - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
-
-EXTERNAL SOURCES:
-  SwiftyJSON:
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
-
-CHECKOUT OPTIONS:
-  SwiftyJSON:
-    :commit: 50583adf21de1f84a4a06f6dff1b2bb09fe0b03b
-    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
+  - FBSDKCoreKit
+  - FBSDKLoginKit
+  - GoogleMaps (~> 1.10)
 
 SPEC CHECKSUMS:
-  MapboxGL: 4198dd3100fa012d3df5fc26ad13b69f6834473c
-  SwiftyJSON: ae2d0a3d68025d136602a33c4ee215091ced3e33
+  Bolts: 0e9bce58b9b9f5e8a7a4d47b16d2fabec289072b
+  FBSDKCoreKit: 9141b70960a37930850370495fe565f4a27ac141
+  FBSDKLoginKit: c11ed3c2833472db3bb4a4aecf27af4a6f69b173
+  GoogleMaps: da51c62c338c2d9c47cdad470a0d1e0e4b8544e4
 
-COCOAPODS: 0.38.0
+COCOAPODS: 0.39.0

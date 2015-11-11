@@ -11,13 +11,13 @@
 #import "SLLocationManager.h"
 #import "SLCoachMarkViewController.h"
 #import "SLLockInfoViewController.h"
-#import <MapboxGL/MapboxGL.h>
 #import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "SLAnnotationDirectionCalloutView.h"
 #import "SLDirectionsViewController.h"
+@import GoogleMaps;
 
 @interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
-    MGLMapViewDelegate, UIAlertViewDelegate, CLLocationManagerDelegate, SLNotificationViewControllerDelegate, MFMessageComposeViewControllerDelegate, SLDirectionsViewControllerDelegate>
+    UIAlertViewDelegate, CLLocationManagerDelegate, SLNotificationViewControllerDelegate, MFMessageComposeViewControllerDelegate, SLDirectionsViewControllerDelegate, GMSMapViewDelegate>
 
 @end

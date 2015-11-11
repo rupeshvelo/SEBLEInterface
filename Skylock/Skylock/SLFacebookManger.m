@@ -13,6 +13,8 @@
 #import "SLRestManager.h"
 #import "SLPicManager.h"
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface SLFacebookManger()
 
@@ -26,7 +28,7 @@
 
 @implementation SLFacebookManger
 
-+(id)manager
++(id)sharedManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLFacebookManger *facebookManager = nil;
@@ -112,8 +114,8 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
-    [SLDatabaseManager.manager saveFacebookUserWithDictionary:info];
-    [SLPicManager.manager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
+    [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:info];
+    [SLPicManager.sharedManager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
 }
@@ -123,7 +125,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
         
     NSString *url = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", userId];
-    [SLRestManager.manager getPictureFromUrl:url withCompletion:^(NSData *data) {
+    [SLRestManager.sharedManager getPictureFromUrl:url withCompletion:^(NSData *data) {
         if (data) {
             UIImage *image = [UIImage imageWithData:data];
             if (completion) completion(image);
