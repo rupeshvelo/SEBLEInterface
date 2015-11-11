@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         _namesToConnect         = [NSMutableSet new];
         _bleManager             = [SEBLEInterfaceMangager manager];
         _bleManager.delegate    = self;
-        _databaseManger         = [SLDatabaseManager manager];
+        _databaseManger         = [SLDatabaseManager sharedManager];
         _bleIsPoweredOn         = NO;
         _shouldSearch           = NO;
     }
@@ -95,7 +95,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     return self;
 }
 
-+ (id)manager
++ (id)sharedManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLLockManager *lockManger = nil;
@@ -172,7 +172,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     self.selectedLock = lock;
     self.selectedLock.isCurrentLock = @(YES);
-    [SLDatabaseManager.manager setCurrentLock:self.selectedLock];
+    [SLDatabaseManager.sharedManager setCurrentLock:self.selectedLock];
 }
 
 - (SLLock *)getCurrentLock
@@ -187,7 +187,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }];
     
     self.selectedLock = nil;
-    [SLDatabaseManager.manager deselectAllLocks];
+    [SLDatabaseManager.sharedManager deselectAllLocks];
 }
 
 - (void)addLock:(SLLock *)lock
@@ -719,7 +719,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     SLLock *lock = self.locks[lockValue.name];
     if (lockValue == self.lockValues[@(SLLockManagerValueServiceAccelerometer)]) {
         [lock updateAccelerometerValues:meanValues];
-        [SLNotificationManager.manager checkIfLockNeedsNotification:lock];
+        [SLNotificationManager.sharedManager checkIfLockNeedsNotification:lock];
     } else {
         [lock updatePropertiesWithDictionary:meanValues];
         [self checkAutoUnlockForLock:lock];

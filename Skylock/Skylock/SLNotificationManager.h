@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
 
 @interface SLNotificationManager : NSObject <SLNotficationDelegate>
 
-+ (id)manager;
++ (id)sharedManager;
 - (NSString *)formattedDisplayTimeForNotifciaton:(SLNotification *)notification;
 - (void)createNotificationOfType:(SLNotificationType)notficationType;
 - (NSArray *)getNotifications;

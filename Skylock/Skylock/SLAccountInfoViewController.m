@@ -188,7 +188,7 @@
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     
-    [SLPicManager.manager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
+    [SLPicManager.sharedManager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.picView setPicImage:image];
         });

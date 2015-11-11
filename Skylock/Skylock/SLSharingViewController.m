@@ -138,7 +138,7 @@
     
     self.view.backgroundColor = [UIColor colorWithWhite:1.0f alpha:1.0f];
 
-    self.sharedContacts = [SLDatabaseManager.manager sharedContactsForLock:self.lock];
+    self.sharedContacts = [SLDatabaseManager.sharedManager sharedContactsForLock:self.lock];
     
     [self.tableView reloadData];
 }

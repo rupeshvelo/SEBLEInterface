@@ -11,7 +11,7 @@
 
 @interface SLPicManager : NSObject
 
-+ (id)manager;
++ (id)sharedManager;
 
 - (void)getPicWithEmail:(NSString *)email withCompletion:(void(^)(UIImage *))completion;
 - (void)refreshProfilePicCache;

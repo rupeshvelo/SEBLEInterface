@@ -41,7 +41,7 @@
     self.notificationViews = [NSMutableArray new];
     
     self.view.backgroundColor = [[UIColor colorWithRed:0 green:0 blue:0] colorWithAlphaComponent:.8f];
-    self.notifications = [SLNotificationManager.manager getNotifications];
+    self.notifications = [SLNotificationManager.sharedManager getNotifications];
     self.maxY = kSLNotificationsVCPadding + [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat viewHeight = 0.0f;
     
@@ -181,15 +181,15 @@
 
 - (void)dismissNotificationView:(SLNotificationView *)notificationView
 {
-    [SLNotificationManager.manager dismissNotificationWithId:notificationView.notification.identifier];
-    self.notifications = [SLNotificationManager.manager getNotifications];
+    [SLNotificationManager.sharedManager dismissNotificationWithId:notificationView.notification.identifier];
+    self.notifications = [SLNotificationManager.sharedManager getNotifications];
     [self removeNotificationView:notificationView];
 }
 
 #pragma mark - SLNotificationEmergencyView delegate methods
 - (void)notificationEmergencyViewHelpButtonPressed:(SLNotificationEmergencyView *)notificationView
 {
-    [SLNotificationManager.manager sendEmergencyText];
+    [SLNotificationManager.sharedManager sendEmergencyText];
     [self dismissNotificationView:notificationView];
 }
 

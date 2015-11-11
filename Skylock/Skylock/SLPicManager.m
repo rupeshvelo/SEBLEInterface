@@ -37,7 +37,7 @@
     return self;
 }
 
-+ (id)manager
++ (id)sharedManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLPicManager *picManager = nil;
@@ -180,7 +180,7 @@
             return;
         }
         
-        [SLFacebookManger.manager getFacebookPicForUserId:fbUserId withCompletion:^(UIImage *image) {
+        [SLFacebookManger.sharedManager getFacebookPicForUserId:fbUserId withCompletion:^(UIImage *image) {
             if (image) {
                 [self savePicture:image forEmail:email];
                 if (completion) completion(image);

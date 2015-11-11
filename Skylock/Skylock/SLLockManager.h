@@ -20,7 +20,7 @@
 
 @property (nonatomic, assign) BOOL hasBleControl;
 
-+ (id)manager;
++ (id)sharedManager;
 
 - (void)addLock:(SLLock *)lock;
 - (void)removeLock:(SLLock *)lock;

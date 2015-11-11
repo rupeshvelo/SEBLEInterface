@@ -16,7 +16,6 @@
 #import "UIColor+RGB.h"
 #import "SLUserDefaults.h"
 #import "SLLockManager.h"
-#import <MapboxGL/MapboxGL.h>
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
 
@@ -28,25 +27,23 @@
 
 @interface SLAppDelegate ()
 
-
-
 @end
 
 @implementation SLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [SLDatabaseManager.manager setContext:self.managedObjectContext];
-    [SLDatabaseManager.manager setCurrentUser];
-    [SLLockManager.manager startBlueToothManager];
-    [SLLockManager.manager fetchLocks];
-    [SLLockManager.manager startScan];
+    [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
+    [SLDatabaseManager.sharedManager setCurrentUser];
+    [SLLockManager.sharedManager startBlueToothManager];
+    [SLLockManager.sharedManager fetchLocks];
+    [SLLockManager.sharedManager startScan];
 
-    if ([SLLockManager.manager hasLocksForCurrentUser]) {
-        [SLLockManager.manager shouldEnterSearchMode:YES];
+    if ([SLLockManager.sharedManager hasLocksForCurrentUser]) {
+        [SLLockManager.sharedManager shouldEnterSearchMode:YES];
     }
     
-    NSString *mapBoxToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"MGLMapboxAccessToken"];
-    [MGLAccountManager setAccessToken:mapBoxToken];
+    NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglMapsApiKey"];
+    [GMSServices provideAPIKey:googleMapApiKey];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         
@@ -70,7 +67,7 @@
                                                  name:kSLNotificationAlertOccured
                                                object:nil];
     
-    return [SLFacebookManger.manager application:application finishedLauchingWithOptions:launchOptions];
+    return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -90,7 +87,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    [SLFacebookManger.manager applicationBecameActive];
+    [SLFacebookManger.sharedManager applicationBecameActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -104,7 +101,7 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation
 {
-    return [SLFacebookManger.manager application:application
+    return [SLFacebookManger.sharedManager application:application
                                          openURL:url
                                sourceApplication:sourceApplication
                                       annotation:annotation];
@@ -127,6 +124,10 @@
                     tvc.shouldDismiss = NO;
                     initialVC = tvc;
                 }
+            } else {
+                SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+                tvc.shouldDismiss = NO;
+                initialVC = tvc;
             }
         } else {
             SLLoginViewController *lvc = [SLLoginViewController new];
@@ -172,7 +173,7 @@
 
 - (void)postNotification:(SLNotification *)notification
 {
-    NSArray *notifications = [SLNotificationManager.manager getNotifications];
+    NSArray *notifications = [SLNotificationManager.sharedManager getNotifications];
     UILocalNotification *localNotification = [UILocalNotification new];
     localNotification.category = kSLAppDelegateNotificationCategory;
     localNotification.alertBody = notification.detailText;
@@ -200,9 +201,9 @@
     NSString *notificationIdentifier = info[@"notificationId"];
     
     if ([notificationIdentifier isEqualToString:kSLAppDelegateNotificationActionIgnore]) {
-        [SLNotificationManager.manager dismissNotificationWithId:notificationIdentifier];
+        [SLNotificationManager.sharedManager dismissNotificationWithId:notificationIdentifier];
     } else {
-        [SLNotificationManager.manager sendEmergencyText];
+        [SLNotificationManager.sharedManager sendEmergencyText];
     }
 }
 
