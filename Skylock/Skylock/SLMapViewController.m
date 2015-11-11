@@ -32,7 +32,6 @@
 #import "SLMainTutorialViewController.h"
 #import "SLDirectionsViewController.h"
 
-#define kMapBoxMapId        @"michalumni.l2bh1bee"
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
 #define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
@@ -144,7 +143,8 @@
 - (GMSMarker *)userMarker
 {
     if (!_userMarker) {
-        _userMarker = [GMSMarker new];
+        _userMarker = [GMSMarker markerWithPosition:self.userLocation];
+        _userMarker.map = self.mapView;
     }
     
     return _userMarker;
@@ -738,8 +738,9 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-//    [self.mapView setCenterCoordinate:self.userLocation animated:YES];
-//}
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:16];
+    [self.mapView animateToCameraPosition:cameraPosition];
+}
 
 //- (MGLPointAnnotation *)annotationForLock:(SLLock *)lock
 //{
@@ -758,7 +759,7 @@
 //                                               @"lock":lock
 //                                               };
 //    return annotation;
-}
+//}
 
 - (void)addLockToMap:(SLLock *)lock
 {
@@ -767,11 +768,17 @@
 
 - (void)updateUsersLocation
 {
-//    self.userAnnotation.coordinate = self.userLocation;
-//
-//    if (self.isInitialLoad) {
-//        [self.mapView addAnnotation:self.userAnnotation];
-//    }
+    self.userMarker.position = self.userLocation;
+
+    if (self.isInitialLoad) {
+        SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+        UIImage *userPic = [SLPicManager.sharedManager userImageForEmail:user.email];
+        if (userPic) {
+            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
+            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
+            self.userMarker.icon = maskedImage;
+        }
+    }
 }
 
 //- (void)getDirectionsToLocation:(CLLocationCoordinate2D)location transportType:(MKDirectionsTransportType)transportType
@@ -861,52 +868,20 @@
 //    return image;
 //}
 
-//- (void)mapView:(MGLMapView * __nonnull)mapView didUpdateUserLocation:(nullable MGLUserLocation *)userLocation
-//{
-//
-//}
-//
-//- (void)mapViewWillStartLocatingUser:(MGLMapView * __nonnull)mapView
-//{
-//    NSLog(@"user location: %@", mapView.userLocation);
-//    [self centerOnUser];
-//}
-//
-//- (BOOL)mapView:(MGLMapView *)mapView annotationCanShowCallout:(id <MGLAnnotation>)annotation
-//{
-//    return YES;
-//}
-//
-//- (void)mapView:(MGLMapView * __nonnull)mapView didSelectAnnotation:(id<MGLAnnotation> __nonnull)annotation
-//{
-//    self.directionsButton.hidden = NO;
-//    self.selectedLockAnnotation = annotation;
-//}
+- (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker
+{
+    self.directionsButton.hidden = NO;
+    if (marker != self.userMarker) {
+        self.selectedLockMarker = marker;
+    }
+    
+    return YES;
+}
 
-//- (void)mapView:(MGLMapView * __nonnull)mapView didDeselectAnnotation:(id<MGLAnnotation> __nonnull)annotation
-//{
-//    self.selectedLockAnnotation = nil;
-//}
-//
-//- (UIView *)mapView:(MGLMapView * __nonnull)mapView leftCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-//{
-//    return self.leftCalloutButton;
-//}
-//
-//- (UIView *)mapView:(MGLMapView * __nonnull)mapView rightCalloutAccessoryViewForAnnotation:(id<MGLAnnotation> __nonnull)annotation
-//{
-//    return self.rightCalloutButton;
-//}
-//
-//- (CGFloat)mapView:(MGLMapView * __nonnull)mapView lineWidthForPolylineAnnotation:(MGLPolyline * __nonnull)annotation
-//{
-//    return 6.0f;
-//}
-//
-//- (UIColor *)mapView:(MGLMapView * __nonnull)mapView strokeColorForShapeAnnotation:(MGLShape * __nonnull)annotation
-//{
-//    return [annotation isKindOfClass:[MGLPolyline class]] ? [UIColor colorWithRed:110 green:223 blue:158] : nil;
-//}
+- (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
+{
+    self.selectedLockMarker = nil;
+}
 
 #pragma mark - CLLocaiton manager delegate methods
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
@@ -916,13 +891,18 @@
         
         [manager startUpdatingLocation];
     } else if (status == kCLAuthorizationStatusDenied) {
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction * _Nonnull action) {
+                                                                 
+                                                             }];
+        
         NSString *message = NSLocalizedString(@"We use this stuff, man! It's important! Common--", nil);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"We really need this!", nil)
-                                                        message:message
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"We really need this!", nil)
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:cancelAction];
+        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
