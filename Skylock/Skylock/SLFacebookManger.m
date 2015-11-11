@@ -45,7 +45,10 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     self = [super init];
     if (self) {
-        _permissions = @[@"public_profile", @"email", @"user_friends"];
+        _permissions = @[@"public_profile",
+                         @"email",
+                         @"user_friends"
+                         ];
     }
     return self;
 }
@@ -81,16 +84,15 @@
     return [FBSDKAccessToken currentAccessToken];
 }
 
-- (void)loginWithCompletion:(void (^)(void))completion
+- (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-    [login logInWithReadPermissions:self.permissions
-                            handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+    [login logInWithReadPermissions:self.permissions fromViewController:fromViewController handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
         if (error) {
-
+            NSLog(@"Error logging into facebook %@", error.description);
         } else if (result.isCancelled) {
-
+            NSLog(@"Canceled login to facebook");
         } else {
             [self getFBUserInfo];
         }
@@ -101,7 +103,8 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([FBSDKAccessToken currentAccessToken]) {
-        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil]
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me"
+                                           parameters:@{@"fields": @"id, name, link, first_name, last_name, picture.type(large), email"}]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
              if (!error) {
                  [self userInfoRecieved:result];
