@@ -435,7 +435,7 @@
 - (void)facebookButtonPressed
 {
     NSLog(@"facebook login button pressed");
-    [SLFacebookManger.sharedManager loginWithCompletion:^{
+    [SLFacebookManger.sharedManager loginFromViewController:self withCompletion:^{
         NSLog(@"user loging completed!!! Yay!!");
     }];
 }

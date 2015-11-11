@@ -183,7 +183,9 @@
         [SLFacebookManger.sharedManager getFacebookPicForUserId:fbUserId withCompletion:^(UIImage *image) {
             if (image) {
                 [self savePicture:image forEmail:email];
-                if (completion) completion(image);
+                if (completion) {
+                    completion(image);
+                }
                 return;
             }
             
