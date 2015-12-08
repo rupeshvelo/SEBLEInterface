@@ -28,9 +28,9 @@ class SLDirectionAPIHelper: NSObject {
         let positionUrl: String = "\(self.startPoint.longitude),\(self.startPoint.latitude);\(self.endPoint.longitude),\(self.endPoint.latitude)"
         let tokenUrl: String = ".json?access_token=" + self.token
         let url = mainUrl + transportUrl + positionUrl + tokenUrl
-        SLRestManager.sharedManager().restGetRequestWithURL(url, options: nil) { (_: [NSObject : AnyObject]!) -> Void in
-            
-            //if completion
-        }
+//        SLRestManager.sharedManager().restGetRequestWithURL(url, options: nil) { (_: [NSObject : AnyObject]!) -> Void in
+//            
+//            //if completion
+//        }
     }
 }

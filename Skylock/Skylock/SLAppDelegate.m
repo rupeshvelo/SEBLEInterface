@@ -42,7 +42,7 @@
         [SLLockManager.sharedManager shouldEnterSearchMode:YES];
     }
     
-    NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglMapsApiKey"];
+    NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];

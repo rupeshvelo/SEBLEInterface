@@ -31,6 +31,7 @@
 #import "SLNotificationViewController.h"
 #import "SLMainTutorialViewController.h"
 #import "SLDirectionsViewController.h"
+#import "SLRestManager.h"
 
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
@@ -312,7 +313,7 @@
     [self addChildViewController:self.lockInfoViewController];
     [self.view addSubview:self.lockInfoViewController.view];
     [self.view bringSubviewToFront:self.lockInfoViewController.view];
-    [self.lockInfoViewController didMoveToParentViewController:self];
+    [self.lockInfoViewController didMoveToParentViewController:self];    
 }
 
 - (void)registerAlertNotifications

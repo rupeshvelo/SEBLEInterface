@@ -24,6 +24,7 @@
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
+		DC20E2A81C165C0F00E098D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC20E2A71C165C0F00E098D4 /* Security.framework */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
 		DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2B94711B63DD720047583D /* SLSettingsViewController.swift */; };
 		DC2E04F11B3EE24800B7D6F6 /* SLSharingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F01B3EE24800B7D6F6 /* SLSharingViewController.m */; };
@@ -489,6 +490,7 @@
 		DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Skylock.m"; sourceTree = "<group>"; };
 		DC17ACB71B5C6C6F0090BE8A /* SLMapAnnotationImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLMapAnnotationImage.h; sourceTree = "<group>"; };
 		DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLMapAnnotationImage.m; sourceTree = "<group>"; };
+		DC20E2A71C165C0F00E098D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
 		DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewController.m; sourceTree = "<group>"; };
@@ -942,6 +944,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC20E2A81C165C0F00E098D4 /* Security.framework in Frameworks */,
 				DCDF19121BBDFFAA005BA5A6 /* SystemConfiguration.framework in Frameworks */,
 				DCDF19101BBDFF8C005BA5A6 /* OpenGLES.framework in Frameworks */,
 				DCDF19041BBDFF1D005BA5A6 /* CoreData.framework in Frameworks */,
@@ -976,6 +979,7 @@
 		667D2EEEACA41AF9E6822701 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DC20E2A71C165C0F00E098D4 /* Security.framework */,
 				DCD554421B27D6650035B78C /* QuartzCore.framework */,
 				DCD554401B27D65E0035B78C /* CoreLocation.framework */,
 				DC61477E1B32801E0077484B /* CoreGraphics.framework */,
