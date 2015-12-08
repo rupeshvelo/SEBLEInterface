@@ -109,5 +109,7 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
 - (NSString *)displayName;
+- (NSString *)macAddress;
+- (BOOL)isInFactoryMode;
 
 @end

@@ -399,4 +399,21 @@
     return [self.name substringToIndex:length];
 }
 
+- (NSString *)macAddress
+{
+    NSArray *parts;
+    if (self.isInFactoryMode) {
+        parts = [self.name componentsSeparatedByString:@"-"];
+    } else {
+        parts = [self.name componentsSeparatedByString:@" "];
+    }
+    
+    return parts[1];
+}
+
+- (BOOL)isInFactoryMode
+{
+    return [self.name rangeOfString:@"-"].location != NSNotFound;
+}
+
 @end

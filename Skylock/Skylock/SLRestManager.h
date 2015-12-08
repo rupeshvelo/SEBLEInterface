@@ -14,12 +14,22 @@ typedef NS_ENUM(NSUInteger, SLRestManagerResponse) {
     SLRestManagerResponseOk = 800
 };
 
+typedef NS_ENUM(NSUInteger, SLRestManagerServerKey) {
+    SLRestManagerServerKeyMain
+};
+
+typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
+    SLRestManagerPathKeyChallengeKey,
+    SLRestManagerPathKeyChallengeData
+};
+
+
 @interface SLRestManager : NSObject
 
 + (instancetype)sharedManager;
 
-- (void)restGetRequestWithServerKey:(NSString *)serverKey
-                            pathKey:(NSString *)pathKey
+- (void)restGetRequestWithServerKey:(SLRestManagerServerKey)serverKey
+                            pathKey:(SLRestManagerPathKey)pathKey
                             options:(NSArray *)options
                          completion:(void (^)(NSDictionary *responseDict))completion;
 

@@ -36,7 +36,7 @@
 - (NSDictionary *)serverUrls
 {
     if (!_serverUrls) {
-        _serverUrls = @{@"server0":@"http://skylock-beta.herokuapp.com/"};
+        _serverUrls = @{@(SLRestManagerServerKeyMain):@"http://skylock-beta.herokuapp.com/"};
     }
     
     return _serverUrls;
@@ -46,22 +46,22 @@
 {
     if (!_pathUrls) {
         _pathUrls = @{
-                      @"challengeKey": @"users/11111/challenge_key/",
-                      @"challengeData": @"users/11111/challenge_data/"
+                      @(SLRestManagerPathKeyChallengeKey): @"users/11111/challenge_key/",
+                      @(SLRestManagerPathKeyChallengeData): @"users/11111/challenge_data/"
                       };
     }
     
     return _pathUrls;
 }
 
-- (NSURL *)urlWithServerKey:(NSString *)serverKey
-                    pathKey:(NSString *)pathKey
+- (NSURL *)urlWithServerKey:(SLRestManagerServerKey)serverKey
+                    pathKey:(SLRestManagerPathKey)pathKey
                     options:(NSArray *)options
 {
     NSUInteger counter = 0;
     NSString *serverUrl = [NSString stringWithFormat:@"%@%@",
-                           self.serverUrls[serverKey],
-                           self.pathUrls[pathKey]
+                           self.serverUrls[@(serverKey)],
+                           self.pathUrls[@(pathKey)]
                            ];
     NSMutableString *url = [NSMutableString stringWithString:serverUrl];
     
@@ -79,8 +79,8 @@
     return [NSURL URLWithString:url];
 }
 
-- (void)restGetRequestWithServerKey:(NSString *)serverKey
-                            pathKey:(NSString *)pathKey
+- (void)restGetRequestWithServerKey:(SLRestManagerServerKey)serverKey
+                            pathKey:(SLRestManagerPathKey)pathKey
                             options:(NSArray *)options
                          completion:(void (^)(NSDictionary *responseDict))completion
 {
@@ -99,37 +99,49 @@
                                             completionHandler:^(NSData *data,
                                                                 NSURLResponse *response,
                                                                 NSError *error) {
-                                                if (error) {
-                                                    // TODO -- add error handling
-                                                    NSLog(@"Error could not fetch request from: %@. Failed with error: %@",
-                                                          url.absoluteString,
-                                                          error
-                                                          );
-                                                    completion(nil);
-                                                    return;
-                                                }
-                                                
-                                                NSDictionary *serverReply = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                            options:0
-                                                                                                              error:&error];
-                                                if (error) {
-                                                    NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
-                                                          url.absoluteString,
-                                                          error
-                                                          );
-                                                    completion(nil);
-                                                    return;
-                                                }
-                                                
-                                                NSString *status = serverReply[@"status"];
-                                                if ([status isEqualToString:@"error"]) {
-                                                    completion(nil);
-                                                    return;
-                                                }
-                                                
-                                                completion(serverReply);
+                                                [self handleServerReply:data
+                                                               response:response
+                                                                  error:error
+                                                            originalUrl:url
+                                                             completion:completion];
                                             }];
     [task resume];
+}
+
+- (void)postObject:(NSDictionary *)object
+         serverKey:(SLRestManagerServerKey)serverKey
+           pathKey:(SLRestManagerPathKey)pathKey
+        completion:(void (^)(NSDictionary *responseDict))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
+    
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    [sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey options:nil];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"POST"];
+    [request setValue:@"applcations/json" forHTTPHeaderField:@"Content-Type"];
+    [request setHTTPBody:jsonData];
+    [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
+                                                               fromData:jsonData
+                                                      completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                          [self handleServerReply:data
+                                                                         response:response
+                                                                            error:error
+                                                                      originalUrl:url
+                                                                       completion:completion];
+                                                      }];
+    
+    [uploadTask resume];
 }
 
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void (^)(NSData *))completion
@@ -159,6 +171,43 @@
                                                             }];
     [downloadTask resume];
 }
-// add Post and Put
+
+- (void)handleServerReply:(NSData *)data
+                 response:(NSURLResponse *)response
+                    error:(NSError *)error
+              originalUrl:(NSURL *)originalUrl
+               completion:(void (^)(NSDictionary *responseDict))completion
+{
+    if (error) {
+        // TODO -- add error handling
+        NSLog(@"Error could not fetch request from: %@. Failed with error: %@",
+              originalUrl.absoluteString,
+              error
+              );
+        completion(nil);
+        return;
+    }
+    
+    NSDictionary *serverReply = [NSJSONSerialization JSONObjectWithData:data
+                                                                options:0
+                                                                  error:&error];
+    
+    if (error) {
+        NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
+              originalUrl.absoluteString,
+              error
+              );
+        completion(nil);
+        return;
+    }
+    
+    NSString *status = serverReply[@"status"];
+    if ([status isEqualToString:@"error"]) {
+        completion(nil);
+        return;
+    }
+    
+    completion(serverReply);
+}
 
 @end
