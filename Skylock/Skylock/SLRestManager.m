@@ -36,7 +36,7 @@
 - (NSDictionary *)serverUrls
 {
     if (!_serverUrls) {
-        _serverUrls = @{@"server1Url":@"path/to/server"};
+        _serverUrls = @{@"server0":@"http://skylock-beta.herokuapp.com/"};
     }
     
     return _serverUrls;
@@ -46,35 +46,45 @@
 {
     if (!_pathUrls) {
         _pathUrls = @{
-                      @"moduleName": @"path/to/module"
+                      @"challengeKey": @"users/11111/challenge_key/",
+                      @"challengeData": @"users/11111/challenge_data/"
                       };
     }
     
     return _pathUrls;
 }
 
-- (NSURL *)urlWithServer:(NSString *)server withOptions:(NSArray *)options
+- (NSURL *)urlWithServerKey:(NSString *)serverKey
+                    pathKey:(NSString *)pathKey
+                    options:(NSArray *)options
 {
     NSUInteger counter = 0;
-    NSString *serverUrl = [NSString stringWithFormat:@"%@/", self.serverUrls[server]];
+    NSString *serverUrl = [NSString stringWithFormat:@"%@%@",
+                           self.serverUrls[serverKey],
+                           self.pathUrls[pathKey]
+                           ];
     NSMutableString *url = [NSMutableString stringWithString:serverUrl];
-    for (NSString *option in options) {
-        [url appendString:self.pathUrls[option]];
-        if (counter < self.pathUrls.count - 1) {
-            [url appendString:@"/"];
+    
+    if (options && options.count > 0) {
+        for (NSString *option in options) {
+            [url appendString:self.pathUrls[option]];
+            if (counter < self.pathUrls.count - 1) {
+                [url appendString:@"/"];
+            }
+            
+            counter++;
         }
-        
-        counter++;
     }
     
     return [NSURL URLWithString:url];
 }
 
-- (void)restGetRequestWithServer:(NSString *)server
-                      options:(NSArray *)options
-                   completion:(void (^)(NSDictionary *responseDict))completion
+- (void)restGetRequestWithServerKey:(NSString *)serverKey
+                            pathKey:(NSString *)pathKey
+                            options:(NSArray *)options
+                         completion:(void (^)(NSDictionary *responseDict))completion
 {
-    NSURL *url = [self urlWithServer:server withOptions:options];
+    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey options:options];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"GET"];
@@ -91,7 +101,10 @@
                                                                 NSError *error) {
                                                 if (error) {
                                                     // TODO -- add error handling
-                                                    NSLog(@"Error could not fetch request from: %@. Failed with error: %@", url.absoluteString, error);
+                                                    NSLog(@"Error could not fetch request from: %@. Failed with error: %@",
+                                                          url.absoluteString,
+                                                          error
+                                                          );
                                                     completion(nil);
                                                     return;
                                                 }
@@ -100,12 +113,19 @@
                                                                                                             options:0
                                                                                                               error:&error];
                                                 if (error) {
-                                                    // TODO -- add error handling
-                                                    NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@", url.absoluteString, error);
+                                                    NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
+                                                          url.absoluteString,
+                                                          error
+                                                          );
                                                     completion(nil);
                                                     return;
                                                 }
                                                 
+                                                NSString *status = serverReply[@"status"];
+                                                if ([status isEqualToString:@"error"]) {
+                                                    completion(nil);
+                                                    return;
+                                                }
                                                 
                                                 completion(serverReply);
                                             }];

@@ -41,7 +41,7 @@
 	<string>931235146941403</string>
 	<key>FacebookDisplayName</key>
 	<string>skylock</string>
-	<key>GooglMapsApiKey</key>
+	<key>GoogleMapsApiKey</key>
 	<string>AIzaSyBi4-ALZ-IDkLTW9wtzAQNlE2RoYY-xvlI</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
@@ -66,5 +66,41 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>facebook.com</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>fbcdn.net</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>akamaihd.net</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+			<key>herokuapp.com</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+      			<true/>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
