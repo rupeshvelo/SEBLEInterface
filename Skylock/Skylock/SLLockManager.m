@@ -18,7 +18,8 @@
 #import "SLLockValue.h"
 #import "SLNotificationManager.h"
 #import "SLAccelerometerValues.h"
-#import <Security.framework>
+#import <Security/Security.h>
+
 
 typedef NS_ENUM(NSUInteger, SLLockManagerService) {
     SLLockManagerServiceSecurity,
@@ -50,6 +51,7 @@ typedef enum {
     SLLockManagerValueOff       = 0x00,
     SLLockManagerValueLedOn     = 0x4F,
     SLLockManagerValueLockOpen  = 0x01,
+    
 } SLLockMangerValue;
 
 typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
