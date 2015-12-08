@@ -36,7 +36,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicReserved,
     SLLockManagerCharacteristicTXPowerControl,
     SLLockManagerCharacteristicMagnet,
-    SLLockManagerCharacteristicAccelerometer
+    SLLockManagerCharacteristicAccelerometer,
+    SLLockManagerCharacteristicStateSecurity
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
@@ -479,6 +480,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         case SLLockManagerCharacteristicAccelerometer:
             characteristicString = @"5EC4";
             break;
+        case SLLockManagerCharacteristicStateSecurity:
+            characteristicString = @"5E05";
         default:
             break;
     }
