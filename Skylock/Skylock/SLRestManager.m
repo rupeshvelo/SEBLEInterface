@@ -13,9 +13,6 @@
 
 @interface SLRestManager()
 
-@property (nonatomic, strong) NSDictionary *serverUrls;
-@property (nonatomic, strong) NSDictionary *pathUrls;
-
 @end
 
 
@@ -33,25 +30,34 @@
     return restManager;
 }
 
-- (NSDictionary *)serverUrls
+- (NSString *)serverUrl:(SLRestManagerServerKey)serverKey
 {
-    if (!_serverUrls) {
-        _serverUrls = @{@(SLRestManagerServerKeyMain):@"http://skylock-beta.herokuapp.com/"};
+    NSString *url;
+    switch (serverKey) {
+        case SLRestManagerServerKeyMain:
+            url = @"http://skylock-beta.herokuapp.com/";
+            break;
+        default:
+            break;
     }
     
-    return _serverUrls;
+    return url;
 }
 
-- (NSDictionary *)pathUrls
+- (NSString *)pathUrl:(SLRestManagerPathKey)pathKey
 {
-    if (!_pathUrls) {
-        _pathUrls = @{
-                      @(SLRestManagerPathKeyChallengeKey): @"users/11111/challenge_key/",
-                      @(SLRestManagerPathKeyChallengeData): @"users/11111/challenge_data/"
-                      };
+    NSString *url;
+    switch (pathKey) {
+        case SLRestManagerPathKeyChallengeData:
+            url = @"users/11111/challenge_data/";
+            break;
+        case SLRestManagerPathKeyChallengeKey:
+            url = @"users/11111/challenge_key/";
+        default:
+            break;
     }
     
-    return _pathUrls;
+    return url;
 }
 
 - (NSURL *)urlWithServerKey:(SLRestManagerServerKey)serverKey
@@ -60,15 +66,15 @@
 {
     NSUInteger counter = 0;
     NSString *serverUrl = [NSString stringWithFormat:@"%@%@",
-                           self.serverUrls[@(serverKey)],
-                           self.pathUrls[@(pathKey)]
+                           [self serverUrl:serverKey],
+                           [self pathUrl:pathKey]
                            ];
     NSMutableString *url = [NSMutableString stringWithString:serverUrl];
     
     if (options && options.count > 0) {
         for (NSString *option in options) {
-            [url appendString:self.pathUrls[option]];
-            if (counter < self.pathUrls.count - 1) {
+            [url appendString:option];
+            if (counter < options.count - 1) {
                 [url appendString:@"/"];
             }
             
@@ -153,7 +159,6 @@
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     [request setHTTPMethod:@"GET"];
-    
     [request setTimeoutInterval:kSLRestManagerTimeout];
     
     NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:request
@@ -202,7 +207,8 @@
     }
     
     NSString *status = serverReply[@"status"];
-    if ([status isEqualToString:@"error"]) {
+    if (![status isEqualToString:@"success"]) {
+        NSLog(@"Error in response from server: %@", serverReply[@"message"]);
         completion(nil);
         return;
     }
