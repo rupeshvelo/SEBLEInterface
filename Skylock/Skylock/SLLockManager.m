@@ -18,6 +18,8 @@
 #import "SLLockValue.h"
 #import "SLNotificationManager.h"
 #import "SLAccelerometerValues.h"
+#import "SLRestManager.h"
+#import "NSString+Skylock.h"
 #import <Security/Security.h>
 
 
@@ -37,7 +39,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicTXPowerControl,
     SLLockManagerCharacteristicMagnet,
     SLLockManagerCharacteristicAccelerometer,
-    SLLockManagerCharacteristicStateSecurity
+    SLLockManagerCharacteristicSecurityState,
+    SLLockManagerCharacteristicPublicKey,
+    SLLockManagerCharacteristicSignedMessage
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
@@ -48,10 +52,17 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
     SLLockManagerCharacteristicStateCloseLock,
 };
 
+typedef NS_ENUM(NSUInteger, SLLockManagerConnectionPhase) {
+    SLLockManagerConnectionPhaseNone,
+    SLLockManagerConnectionPhasePublicKey,
+    SLLockManagerConnectionPhaseChallengeKey,
+    SLLockManagerConnectionPhaseSignedMessage
+};
+
 typedef enum {
     SLLockManagerValueOff       = 0x00,
     SLLockManagerValueLedOn     = 0x4F,
-    SLLockManagerValueLockOpen  = 0x01,
+    SLLockManagerValueOn  = 0x01,
     
 } SLLockMangerValue;
 
@@ -71,6 +82,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 @property (nonatomic, strong) SLLock *selectedLock;
 @property (nonatomic, strong) NSMutableDictionary *lockValues;
 @property (nonatomic, strong) NSMutableSet *namesToConnect;
+@property (nonatomic, strong) NSMutableDictionary *lockConnectionPhases;
 @property (nonatomic, assign) BOOL shouldSearch;
 
 // testing
@@ -87,6 +99,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         _locks                  = [NSMutableDictionary new];
         _locksToAdd             = [NSMutableDictionary new];
         _lockValues             = [NSMutableDictionary new];
+        _lockConnectionPhases   = [NSMutableDictionary new];
+        
         _namesToConnect         = [NSMutableSet new];
         _bleManager             = [SEBLEInterfaceMangager manager];
         _bleManager.delegate    = self;
@@ -131,7 +145,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                           [self uuidForService:SLLockManagerServiceHardware],
                           [self uuidForService:SLLockManagerServiceConfiguration],
                           [self uuidForService:SLLockManagerServiceTest],
-                          [self uuidForService:SLLockManagerServiceBoot]
+                          [self uuidForService:SLLockManagerServiceBoot],
+                          [self uuidForService:SLLockManagerServiceSecurity],
+                          [self uuidForCharacteristic:SLLockManagerCharacteristicSignedMessage]
                           ];
     
     return [NSSet setWithArray:services];
@@ -143,7 +159,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                            [self uuidForCharacteristic:SLLockManagerCharacteristicLed],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicLock],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
-                           [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicPublicKey],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicSignedMessage]
                            ];
     
     return [NSSet setWithArray:readChars];
@@ -152,10 +171,18 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (NSSet *)charcteristicsToNotify
 {
     NSArray *notifyChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
-                             [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer],
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState],
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicPublicKey]
                              ];
     
     return [NSSet setWithArray:notifyChars];
+}
+
+- (NSSet *)servicesToBeNotifedOfWhenFound
+{
+    NSArray *services = @[[self uuidForService:SLLockManagerServiceSecurity]];
+    return [NSSet setWithArray:services];
 }
 
 - (NSMutableDictionary *)lockValues
@@ -165,6 +192,16 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
     
     return _lockValues;
+}
+
+- (NSDictionary *)connectionPhases
+{
+    NSDictionary *phases = @{@(SLLockManagerConnectionPhasePublicKey): @(NO),
+                             @(SLLockManagerConnectionPhaseChallengeKey): @(NO),
+                             @(SLLockManagerConnectionPhaseSignedMessage): @(NO)
+                             };
+    
+    return phases;
 }
 
 - (void)setCurrentLock:(SLLock *)lock
@@ -200,11 +237,13 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         NSLog(@"Duplicate lock: %@", lock.name);
     } else {
         if (self.locksToAdd[lock.name]) {
+            SLLockManagerConnectionPhase phase = lock.isInFactoryMode ?
+                SLLockManagerConnectionPhasePublicKey : SLLockManagerConnectionPhaseSignedMessage;
+            self.lockConnectionPhases[lock.name] = @(phase);
             [self.locksToAdd removeObjectForKey:lock.name];
             self.locks[lock.name] = lock;
             [self.bleManager addPeripheralNamed:lock.name];
             [self saveLockToDatabase:lock];
-            
             [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerConnectedLock
                                                                 object:nil];
         }
@@ -251,7 +290,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     return locksByName;
 }
-
+             
 - (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks
 {
     NSMutableDictionary *prevLocksDict = [NSMutableDictionary new];
@@ -261,11 +300,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     NSMutableArray *newLocks = [NSMutableArray new];
     [self.locks enumerateKeysAndObjectsUsingBlock:^(NSString *name, SLLock *lock, BOOL *stop) {
-        if (prevLocksDict[name]) {
-            [prevLocksDict removeObjectForKey:name];
-        } else {
-            [newLocks addObject:lock];
-        }
+        prevLocksDict[name] ? [prevLocksDict removeObjectForKey:name] : [newLocks addObject:lock];
     }];
     
     return @{@"new": newLocks,
@@ -343,6 +378,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [self.bleManager setServiceToReadFrom:self.servicesToSubcribeTo];
     [self.bleManager setCharacteristicsToReadFrom:self.characteristicsToRead];
     [self.bleManager setCharacteristicsToReceiveNotificationsFrom:self.charcteristicsToNotify];
+    [self.bleManager setServicesToNotifyWhenTheyAreDiscoverd:self.servicesToBeNotifedOfWhenFound];
 }
 
 - (void)startGettingHardwareData
@@ -414,6 +450,21 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                           data:data];
 }
 
+- (void)writeToPeripheralForLockName:(NSString *)lockName
+                             service:(SLLockManagerService)service
+                      characteristic:(SLLockManagerCharacteristic)characteristic
+                                data:(NSData *)data
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSString *serviceUUID = [self uuidForService:service];
+    NSString *characteristicUUID = [self uuidForCharacteristic:characteristic];
+
+    [self.bleManager writeToPeripheralWithName:lockName
+                                   serviceUUID:serviceUUID
+                            characteristicUUID:characteristicUUID
+                                          data:data];
+}
+
 - (void)readValueFromPeripheralForLockName:(NSString *)lockName
                                    service:(SLLockManagerService)service
                             characteristic:(SLLockManagerCharacteristic)characteristic
@@ -430,8 +481,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueOff;
             break;
         case SLLockManagerCharacteristicLock:
-            return turnOn ? SLLockManagerValueLockOpen : SLLockManagerValueOff;
+            return turnOn ? SLLockManagerValueOn: SLLockManagerValueOff;
             break;
+        case SLLockManagerCharacteristicSecurityState:
+            return turnOn ? SLLockManagerValueOn : SLLockManagerValueOff;
         default:
             return SLLockManagerCharacteristicStateNone;
             break;
@@ -480,8 +533,14 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         case SLLockManagerCharacteristicAccelerometer:
             characteristicString = @"5EC4";
             break;
-        case SLLockManagerCharacteristicStateSecurity:
+        case SLLockManagerCharacteristicSecurityState:
             characteristicString = @"5E05";
+            break;
+        case SLLockManagerCharacteristicPublicKey:
+            characteristicString = @"5E02";
+            break;
+        case SLLockManagerCharacteristicSignedMessage:
+            characteristicString = @"5E01";
         default:
             break;
     }
@@ -605,6 +664,19 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [self updateValues:values forLock:lockName forValue:SLLockManagerValueServiceAccelerometer];
 }
 
+- (void)handleSecurityStateUpdateForLockNamed:(NSString *)lockName data:(NSData *)data
+{
+    if (data.length > 1) {
+        NSLog(@"Error reading security state data. The data should contain 1 bytes but has: %lul",
+              (unsigned long)data.length);
+        return;
+    }
+    
+    u_int8_t *bytes = (u_int8_t *)data.bytes;
+    u_int8_t value = bytes[0];
+    
+}
+
 - (void)updateValues:(NSDictionary *)values forLock:(NSString *)lockName forValue:(SLLockManagerValueService)service
 {
     SLLockValue *lockValue;
@@ -636,6 +708,39 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
 }
 
+- (void)handlePublicKeyConnectionPhase:(SLLock *)lock
+{
+    NSData *data = [lock.publicKey bytesString];
+    [self writeToPeripheralForLockName:lock.name
+                               service:SLLockManagerServiceSecurity
+                        characteristic:SLLockManagerCharacteristicPublicKey
+                                  data:data];
+    
+    self.lockConnectionPhases[lock.name] = @(SLLockManagerConnectionPhaseChallengeKey);
+}
+
+- (void)handleChallengeKeyConnectionPhase:(SLLock *)lock
+{
+    [SLRestManager.sharedManager getRequestWithServerKey:SLRestManagerServerKeyMain
+                                                 pathKey:SLRestManagerPathKeyChallengeKey
+                                                 options:nil
+                                              completion:^(NSDictionary *responseDict) {
+                                                  if (!responseDict) {
+                                                      // TODO figure out how to handle this
+                                                      NSLog(@"Error could not retrieve challenge key from server.");
+                                                      return;
+                                                  }
+                                                  
+                                                  NSString *challengeKey = responseDict[@"challenge_key"];
+                                                  [self writeToPeripheralForLockName:lock.name
+                                                                             service:SLLockManagerServiceSecurity
+                                                                      characteristic:SLLockManagerCharacteristicPublicKey
+                                                                                data:[challengeKey bytesString]];
+                                                
+                                                  self.lockConnectionPhases[lock.name] = @(SLLockManagerConnectionPhaseSignedMessage);
+                                              }];
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
@@ -653,11 +758,30 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         self.locksToAdd[lock.name] = lock;
         
         if (self.shouldSearch) {
-            [self addLock:lock];
+            //[self addLock:lock];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                            object:lock];
+        if (lock.isInFactoryMode) {
+            NSDictionary *lockData = @{@"mac_id":lock.macAddress};
+            [SLRestManager.sharedManager postObject:lockData
+                                          serverKey:SLRestManagerServerKeyMain
+                                            pathKey:SLRestManagerPathKeyKeys
+                                         completion:^(NSDictionary *responseDict) {
+                if (responseDict) {
+                    lock.signedMessage = responseDict[@"signed_message"];
+                    lock.publicKey = responseDict[@"public_key"];
+                    NSLog(@"public key: %@, signed message: %@", lock.publicKey, lock.signedMessage);
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                                        object:lock];
+                }
+                
+                // TODO handle error when getting keys from server fails
+            }];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                                object:lock];
+        }
+        
     }
 }
 
@@ -685,6 +809,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         [self handleMagnetForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]]) {
         [self handleAccelerometerForLockNamed:peripheral.peripheral.name data:data];
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState]]) {
+        [self handleSecurityStateUpdateForLockNamed:peripheral.peripheral.name data:data];
     }
 }
 
@@ -716,6 +842,28 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                         object:@{@"lockName":peripheral.peripheral.name}];
 }
 
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager
+                 peripheral:(SEBLEPeripheral *)peripheral
+changedUpdateStateForCharacteristic:(NSString *)characteristicUUID
+{
+    if ([characteristicUUID isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState]]) {
+        SLLock *lock = self.locks[peripheral.peripheral.name];
+        if (self.lockConnectionPhases[lock.name]) {
+            NSNumber *phaseNumber = self.lockConnectionPhases[lock.name];
+            SLLockManagerConnectionPhase phase = (SLLockManagerConnectionPhase)phaseNumber.unsignedIntegerValue;
+            switch (phase) {
+                case SLLockManagerConnectionPhasePublicKey:
+                    [self handlePublicKeyConnectionPhase:lock];
+                    break;
+                case SLLockManagerConnectionPhaseChallengeKey:
+                    [self handleChallengeKeyConnectionPhase:lock];
+                default:
+                    break;
+            }
+        }
+        
+    }
+}
 #pragma mark - SLLockValue delegate methods
 - (void)lockValueMeanUpdated:(SLLockValue *)lockValue mean:(NSDictionary *)meanValues
 {

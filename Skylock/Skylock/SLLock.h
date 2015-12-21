@@ -80,6 +80,8 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *longitude;
 @property (nonatomic, copy) NSNumber *temperature;
 @property (nonatomic, copy) NSNumber *isCurrentLock;
+@property (nonatomic, copy) NSString *publicKey;
+@property (nonatomic, copy) NSString *signedMessage;
 
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 

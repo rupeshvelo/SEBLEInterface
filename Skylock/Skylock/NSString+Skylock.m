@@ -48,4 +48,18 @@
             ];  
 }
 
+- (NSData *)bytesString
+{
+    NSMutableData *data = [NSMutableData new];
+    const char *publicKeyChars = [self UTF8String];
+    for (int i=0; i < self.length; i += 2) {
+        char firstChar = publicKeyChars[i];
+        char secondChar = publicKeyChars[i+1];
+        char chars[2] = {firstChar, secondChar};
+        unsigned long bytes = strtoul(chars, NULL, 16);
+        [data appendBytes:&bytes length:1];
+    }
+    
+    return data;
+}
 @end
