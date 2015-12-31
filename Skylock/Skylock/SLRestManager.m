@@ -191,9 +191,10 @@
 {
     if (error) {
         // TODO -- add error handling
-        NSLog(@"Error could not fetch request from: %@. Failed with error: %@",
+        NSLog(@"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
               originalUrl.absoluteString,
-              error
+              error,
+              response
               );
         completion(nil);
         return;
@@ -212,7 +213,7 @@
         return;
     }
     
-    NSLog(@"server repley: %@", serverReply.description);
+    NSLog(@"server reply: %@", serverReply.description);
     NSString *status = serverReply[@"status"];
     if (![status isEqualToString:@"success"]) {
         NSLog(@"Error in response from server: %@", serverReply[@"message"]);

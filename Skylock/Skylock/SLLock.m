@@ -391,12 +391,12 @@
 
 - (NSString *)displayName
 {
-    static NSInteger length = 8;
-    if (self.name.length <= length) {
+    static NSInteger maxLength = 8;
+    if (self.name.length <= maxLength) {
         return self.name;
     }
     
-    return [self.name substringToIndex:length];
+    return [self.name substringToIndex:maxLength];
 }
 
 - (NSString *)macAddress

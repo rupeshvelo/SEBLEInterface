@@ -82,7 +82,10 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         tvc4.detailText = self.tutorialText[@"4Detail"];
         tvc4.padding = kSLTutorialXPadding;
 
-        _tutorialViewControllers = @[tvc1, tvc2, tvc3, tvc4];
+        _tutorialViewControllers = @[tvc1,
+                                     tvc2,
+                                     tvc3,
+                                     tvc4];
     }
     
     return _tutorialViewControllers;
@@ -217,6 +220,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     self.currentIndex = 0;
     
     self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor grayColor];
     
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
@@ -383,7 +387,6 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 - (void)backButtonPressed
 {
     SLTutorialViewController *prevVC = self.tutorialViewControllers[--self.currentIndex];
-    
     __weak typeof (self)weakself = self;
     [self.pageViewController setViewControllers:@[prevVC]
                                       direction:UIPageViewControllerNavigationDirectionReverse
@@ -418,17 +421,18 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
 
 - (void)foundLock:(NSNotification *)notification
 {
-    if (notification.object && [notification.object isMemberOfClass:[SLLock class]]) {
-        SLLock *lock = (SLLock *)notification.object;
-        [SLLockManager.sharedManager addLock:lock];
-    }
+//    if (notification.object && [notification.object isMemberOfClass:[SLLock class]]) {
+//        SLLock *lock = (SLLock *)notification.object;
+//        [SLLockManager.sharedManager addLock:lock];
+//    }
     
     [SLLockManager.sharedManager shouldEnterSearchMode:NO];
     [self nextButtonPressed];
 }
 
 #pragma mark UIPageViewController delegate and datasouce methods
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController
+       viewControllerAfterViewController:(UIViewController *)viewController
 {
     SLTutorialViewController *tutorialController = (SLTutorialViewController *)viewController;
     NSUInteger nextPageIndex = tutorialController.pageIndex + 1;
@@ -439,7 +443,8 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     return self.tutorialViewControllers[nextPageIndex];
 }
 
-- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController
+      viewControllerBeforeViewController:(UIViewController *)viewController
 {
     SLTutorialViewController *tutorialController = (SLTutorialViewController *)viewController;
     NSInteger previousPageIndex = tutorialController.pageIndex - 1;
@@ -461,7 +466,7 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
     return self.currentIndex;
 }
 
-- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+- (void)pageViewController:(UIPageViewController *)pageViewControllerwillTransitionToViewControllers:(NSArray *)pendingViewControllers
 {
     UIViewController *tutorialViewController = [pendingViewControllers firstObject];
     NSUInteger pageIndex = NSUIntegerMax;
@@ -470,11 +475,14 @@ typedef NS_ENUM(NSUInteger, SLMainTutorialButtonPosition) {
         pageIndex = tvc.pageIndex;
     }
     
-    self.isNextPage = pageIndex > self.currentIndex ;
+    self.isNextPage = pageIndex > self.currentIndex;
     self.currentIndex = pageIndex;
 }
 
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
+- (void)pageViewController:(UIPageViewController *)pageViewController
+        didFinishAnimating:(BOOL)finished
+   previousViewControllers:(NSArray *)previousViewControllers
+       transitionCompleted:(BOOL)completed
 {
     if (completed) {
         self.pageControl.currentPage = self.currentIndex;
