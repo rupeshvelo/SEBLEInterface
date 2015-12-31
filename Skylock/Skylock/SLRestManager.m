@@ -53,6 +53,10 @@
             break;
         case SLRestManagerPathKeyChallengeKey:
             url = @"users/11111/challenge_key/";
+            break;
+        case SLRestManagerPathKeyKeys:
+            url = @"users/11111/keys/";
+            break;
         default:
             break;
     }
@@ -85,7 +89,7 @@
     return [NSURL URLWithString:url];
 }
 
-- (void)restGetRequestWithServerKey:(SLRestManagerServerKey)serverKey
+- (void)getRequestWithServerKey:(SLRestManagerServerKey)serverKey
                             pathKey:(SLRestManagerPathKey)pathKey
                             options:(NSArray *)options
                          completion:(void (^)(NSDictionary *responseDict))completion
@@ -125,7 +129,7 @@
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-    [sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
+    //[sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     
@@ -133,7 +137,9 @@
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
-    [request setValue:@"applcations/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    //[request setValue:@(jsonData.length).stringValue forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setHTTPBody:jsonData];
     [request setTimeoutInterval:kSLRestManagerTimeout];
     
@@ -185,9 +191,10 @@
 {
     if (error) {
         // TODO -- add error handling
-        NSLog(@"Error could not fetch request from: %@. Failed with error: %@",
+        NSLog(@"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
               originalUrl.absoluteString,
-              error
+              error,
+              response
               );
         completion(nil);
         return;
@@ -206,6 +213,7 @@
         return;
     }
     
+    NSLog(@"server reply: %@", serverReply.description);
     NSString *status = serverReply[@"status"];
     if (![status isEqualToString:@"success"]) {
         NSLog(@"Error in response from server: %@", serverReply[@"message"]);
@@ -213,7 +221,7 @@
         return;
     }
     
-    completion(serverReply);
+    completion(serverReply[@"payload"]);
 }
 
 @end

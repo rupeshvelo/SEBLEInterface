@@ -17,4 +17,5 @@
 
 - (NSString *)MD5String;
 
+- (NSData *)bytesString;
 @end
