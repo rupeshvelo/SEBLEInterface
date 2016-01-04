@@ -224,7 +224,7 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *message = NSLocalizedString(@"To invite friends please go to your phone's settings and enable contacts under privacy", nil);
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Banter! can't invite friends"
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Skylock¡™ can't invite friends"
                                                             message:message
                                                            delegate:self
                                                   cancelButtonTitle:@"OK"

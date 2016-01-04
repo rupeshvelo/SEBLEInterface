@@ -154,13 +154,13 @@
         batState = SLLockBatteryState1;
     } else if (self.batteryVoltage.floatValue > 25.0 && self.batteryVoltage.floatValue <= 33.0) {
         batState = SLLockBatteryState2;
-    } else if (self.batteryVoltage.floatValue > 33.0 && self.batteryVoltage.floatValue <= 50.0f) {
+    } else if (self.batteryVoltage.floatValue > 33.0 && self.batteryVoltage.floatValue <= 50.0) {
         batState = SLLockBatteryState3;
-    } else if (self.batteryVoltage.floatValue > 50.0 && self.batteryVoltage.floatValue <= 66.0f) {
+    } else if (self.batteryVoltage.floatValue > 50.0 && self.batteryVoltage.floatValue <= 66.0) {
         batState = SLLockBatteryState4;
-    } else if (self.batteryVoltage.floatValue > 66.0 && self.batteryVoltage.floatValue <= 75.0f) {
+    } else if (self.batteryVoltage.floatValue > 66.0 && self.batteryVoltage.floatValue <= 75.0) {
         batState = SLLockBatteryState5;
-    } else if (self.batteryVoltage.floatValue > 75.0 && self.batteryVoltage.floatValue <= 100.0f) {
+    } else if (self.batteryVoltage.floatValue > 75.0 && self.batteryVoltage.floatValue <= 100.0) {
         batState = SLLockBatteryState6;
     }
     
