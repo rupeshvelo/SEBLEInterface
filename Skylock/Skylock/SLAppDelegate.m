@@ -18,7 +18,7 @@
 #import "SLLockManager.h"
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
-
+#import "Skylock-Swift.h"
 
 #define kSLAppDelegateNotificationActionIgnore  @"kSLAppDelegateNotificationActionIgnore"
 #define kSLAppDelegateNotificationActionHelp    @"kSLAppDelegateNotificationActionHelp"
@@ -34,13 +34,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
     [SLDatabaseManager.sharedManager setCurrentUser];
-    [SLLockManager.sharedManager startBlueToothManager];
-    [SLLockManager.sharedManager fetchLocks];
-    [SLLockManager.sharedManager startScan];
-
-    if ([SLLockManager.sharedManager hasLocksForCurrentUser]) {
-        [SLLockManager.sharedManager shouldEnterSearchMode:YES];
-    }
+//    [SLLockManager.sharedManager startBlueToothManager];
+//    [SLLockManager.sharedManager fetchLocks];
+//    [SLLockManager.sharedManager startScan];
+//
+//    if ([SLLockManager.sharedManager hasLocksForCurrentUser]) {
+//        [SLLockManager.sharedManager shouldEnterSearchMode:YES];
+//    }
     
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
@@ -120,14 +120,16 @@
                     SLMapViewController *mvc = [SLMapViewController new];
                     initialVC = mvc;
                 } else {
-                    SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-                    tvc.shouldDismiss = NO;
-                    initialVC = tvc;
+//                    SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+//                    tvc.shouldDismiss = NO;
+                    SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+                    initialVC = wtvc;
                 }
             } else {
-                SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-                tvc.shouldDismiss = NO;
-                initialVC = tvc;
+//                SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+//                tvc.shouldDismiss = NO;
+                SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+                initialVC = wtvc;
             }
         } else {
             SLLoginViewController *lvc = [SLLoginViewController new];

@@ -16,6 +16,7 @@
 #import "SLMapViewController.h"
 #import "SLMainTutorialViewController.h"
 #import "NSString+Skylock.h"
+#import "Skylock-Swift.h"
 
 
 #define kSLLoginVCFontName      @"HelveticaNeue"
@@ -466,13 +467,15 @@
             SLMapViewController *mvc = [SLMapViewController new];
             [self presentViewController:mvc animated:YES completion:nil];
         } else {
-            SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-            [self presentViewController:tvc animated:YES completion:nil];
+            //SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+            SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+            [self presentViewController:wtvc animated:YES completion:nil];
         }
     } else {
         [ud setObject:@(NO) forKey:SLUserDefaultsTutorialComplete];
-        SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-        [self presentViewController:tvc animated:YES completion:nil];
+        //SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
+        SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+        [self presentViewController:wtvc animated:YES completion:nil];
     }
     
     [ud synchronize];
