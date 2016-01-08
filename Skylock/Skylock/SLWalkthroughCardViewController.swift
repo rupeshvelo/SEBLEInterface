@@ -11,18 +11,22 @@ import UIKit
 protocol SLWalkthroughCardViewControllerDelegate {
     func cardViewControllerViewOffscreenLeft(wcvc:SLWalkthroughCardViewController)
     func cardViewControllerViewOffscreenRight(wcvc:SLWalkthroughCardViewController)
+    func cardViewControllerViewMovingLeft(wcvc:SLWalkthroughCardViewController)
+    func cardViewControllerViewMovingRight(wcvc:SLWalkthroughCardViewController)
 }
 
 class SLWalkthroughCardViewController: UIViewController {
     let viewSize: CGSize
-    var xPosition:CGFloat = 0.0
+    var xPosition: CGFloat = 0.0
     var initialFrame = CGRectZero
     let animationDurration = 0.5
     var isCardMovingOffscreen = false
     var delegate: SLWalkthroughCardViewControllerDelegate?
     var isActiveController = false
-    var scaleFactor:CGFloat
-    let xPadding:CGFloat = 30
+    var scaleFactor: CGFloat
+    let xPadding: CGFloat = 30
+    var isCardMoving = false
+    var previousX: CGFloat?
     
     init(viewSize: CGSize, scaleFactor: CGFloat) {
         self.viewSize = viewSize
@@ -35,26 +39,24 @@ class SLWalkthroughCardViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view = self.newCardView()
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.view = self.newCardView()
+        //self.view = self.newCardView()
         self.initialFrame = self.view.frame
         print("initial frame: \(self.initialFrame)")
     }
     
     func newCardView() -> SLWalkthroughCardView {
         let pgr = UIPanGestureRecognizer(target: self, action: "cardViewDragged:")
-        let rect = CGRectMake(0, 0, self.viewSize.width, self.viewSize.height)
-        if (self.isActiveController) {
-            let cardView = SLWalkthoughCardView1(frame: rect, scaleFactor:self.scaleFactor)
-            cardView.userInteractionEnabled = true
-            cardView.addGestureRecognizer(pgr)
-            
-            return cardView
-        }
-        
-        let cardView = SLWalkthroughCardView(frame: rect, scaleFactor: self.scaleFactor)
+        let cardView = SLWalkthroughCardView(
+            frame: CGRectMake(0, 0, self.viewSize.width, self.viewSize.height),
+            scaleFactor: self.scaleFactor
+        )
         cardView.userInteractionEnabled = true
         cardView.addGestureRecognizer(pgr)
         
@@ -62,15 +64,13 @@ class SLWalkthroughCardViewController: UIViewController {
     }
     
     func cardViewDragged(pgr: UIPanGestureRecognizer) {
-        if (!self.isActiveController) {
+        if (!self.isActiveController || pgr.view == nil) {
             return
         }
         
         let translation = pgr.translationInView(self.view)
         pgr.view!.center = CGPointMake(pgr.view!.center.x + translation.x, pgr.view!.center.y)
         pgr.setTranslation(CGPointZero, inView: self.view)
-        print("translation \(translation)")
-        print("new frame: \(self.view.frame)")
         
         if (self.view.frame.origin.x < self.initialFrame.origin.x - 0.5*self.initialFrame.size.width
             && !self.isCardMovingOffscreen) {
@@ -82,6 +82,20 @@ class SLWalkthroughCardViewController: UIViewController {
             self.moveCardViewRight()
         }
         
+        if self.previousX == nil {
+            self.previousX = self.view.center.x
+        } else {
+            if self.view.center.x > self.previousX && self.delegate != nil && !self.isCardMoving {
+                self.isCardMoving = true
+                self.delegate!.cardViewControllerViewMovingRight(self)
+            } else if self.view.center.x < self.previousX && self.delegate != nil && !self.isCardMoving {
+                self.isCardMoving = true
+                self.delegate!.cardViewControllerViewMovingLeft(self)
+            } else {
+                self.previousX = self.view.center.x
+            }
+        }
+        
         if (pgr.state == UIGestureRecognizerState.Ended && !self.isCardMovingOffscreen) {
             self.moveCardToOrginalPosition()
         }
@@ -91,12 +105,12 @@ class SLWalkthroughCardViewController: UIViewController {
         self.isCardMovingOffscreen = true
         self.view.userInteractionEnabled = false
         UIView.animateWithDuration(self.animationDurration, animations: { () -> Void in
-                self.view.frame = CGRectMake(
-                    -2*self.view.bounds.size.width,
-                    self.view.frame.origin.x,
-                    self.view.bounds.size.width,
-                    self.view.bounds.size.height
-                )
+            self.view.frame = CGRectMake(
+                -2*self.view.bounds.size.width,
+                self.view.frame.origin.x,
+                self.view.bounds.size.width,
+                self.view.bounds.size.height
+            )
             }) { (completion) -> Void in
                 if let delegate = self.delegate {
                     delegate.cardViewControllerViewOffscreenLeft(self)
@@ -108,12 +122,12 @@ class SLWalkthroughCardViewController: UIViewController {
         self.isCardMovingOffscreen = true
         self.view.userInteractionEnabled = false
         UIView.animateWithDuration(self.animationDurration, animations: { () -> Void in
-                self.view.frame = CGRectMake(
-                    2*self.view.bounds.size.width,
-                    self.view.frame.origin.x,
-                    self.view.bounds.size.width,
-                    self.view.bounds.size.height
-                )
+            self.view.frame = CGRectMake(
+                2*self.view.bounds.size.width,
+                self.view.frame.origin.x,
+                self.view.bounds.size.width,
+                self.view.bounds.size.height
+            )
             }) { (complete) -> Void in
                 if let delegate = self.delegate {
                     delegate.cardViewControllerViewOffscreenRight(self)
@@ -124,9 +138,11 @@ class SLWalkthroughCardViewController: UIViewController {
     func moveCardToOrginalPosition() {
         self.view.userInteractionEnabled = false
         UIView.animateWithDuration(self.animationDurration, animations: { () -> Void in
-                self.view.frame = self.initialFrame
+            self.view.frame = self.initialFrame
             }) { (finished) -> Void in
-               self.view.userInteractionEnabled = true
+                self.view.userInteractionEnabled = true
+                self.previousX = nil
+                self.isCardMoving = false
         }
     }
 }

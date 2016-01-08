@@ -67,4 +67,8 @@ class SLPageViewController: UIViewController {
     func viewRect() -> CGRect {
         return CGRectMake(0.0, 0.0, self.viewWidth, self.dotDiameter)
     }
+    
+    func increaseActiveDot(index: Int) {
+        
+    }
 }
