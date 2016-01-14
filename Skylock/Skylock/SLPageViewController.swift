@@ -16,6 +16,7 @@ class SLPageViewController: UIViewController {
     let dotDiameter:CGFloat = 8.0
     let viewWidth: CGFloat
     let xPadding: CGFloat
+    var currentDotIndex = 0
     var dotViews:[UIView] = []
     
     init(numberOfDots: Int, width: CGFloat) {
@@ -68,7 +69,27 @@ class SLPageViewController: UIViewController {
         return CGRectMake(0.0, 0.0, self.viewWidth, self.dotDiameter)
     }
     
-    func increaseActiveDot(index: Int) {
+    func increaseActiveDot() {
+        if (self.currentDotIndex >= self.numberOfDots - 1 || self.currentDotIndex < 0) {
+            return
+        }
         
+        let currentDotView = self.dotViews[self.currentDotIndex++]
+        currentDotView.backgroundColor = self.nonActiveColor
+        
+        let nextDotView = self.dotViews[self.currentDotIndex]
+        nextDotView.backgroundColor = self.activeColor
+    }
+    
+    func decreaseActiveDot() {
+        if (self.currentDotIndex > self.numberOfDots - 1 || self.currentDotIndex <=  0) {
+            return
+        }
+        
+        let currentDotView = self.dotViews[self.currentDotIndex--]
+        currentDotView.backgroundColor = self.nonActiveColor
+        
+        let nextDotView = self.dotViews[self.currentDotIndex]
+        nextDotView.backgroundColor = self.activeColor
     }
 }

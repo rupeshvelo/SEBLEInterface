@@ -8,13 +8,29 @@
 
 import UIKit
 
+
+
 class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewControllerDelegate {
+    private enum SwipeText {
+        case FirstPage
+        case LastPage
+        case MiddlePage
+    }
+    
+    private enum Page:Int {
+        case One = 0
+        case Two = 1
+        case Three = 2
+        case Four = 3
+        case Five = 4
+    }
+    
     let cardDelta:CGFloat = 5.0
     let pageViewController = SLPageViewController(numberOfDots: 5, width: 100)
-    var cardViewControllers = [SLWalkthroughCardViewController]()
+    private var cardViewControllers = [Page:SLWalkthroughCardViewController]()
     var dummyCardViewControllers = [SLWalkthroughCardViewController]()
     var baseFrame:CGRect = CGRectZero
-    var currentCardIndex:Int = 0
+    private var currentPage:Page = Page.One
     let numberOfCards = 5
     let numberOfDummyCards = 4
     let animationDurration = 0.5
@@ -60,7 +76,6 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             13
         )
         let label = UILabel(frame: frame)
-        label.text = NSLocalizedString("Swipe to go to next step", comment: "")
         label.font = UIFont(name:"Helvetica", size:12)
         label.textColor = UIColor(red: 155, green: 155, blue: 155)
         label.textAlignment = NSTextAlignment.Center
@@ -77,19 +92,20 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             18,
             21,
             self.view.bounds.size.width - 40,
-            self.view.bounds.size.height - 50
+            self.view.bounds.size.height - 40
         )
         
         self.addCardViewControllers()
         self.addPageViewController()
         
         self.view.addSubview(self.swipeLabel)
+        self.setSwipeLabelText(.FirstPage)
         self.view.addSubview(self.nextButton)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        self.bringSubviewsToFont()
+        self.bringSubviewsToFront()
     }
     
     func addCardViewControllers() {
@@ -126,10 +142,37 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
         cardVC2.view.frame = topCardFrame
         cardVC2.isActiveController = false
         
-        self.cardViewControllers.append(cardVC1)
-        self.cardViewControllers.append(cardVC2)
+        let cardVC3 = SLWalkthroughThreeViewController(
+            viewSize: topCardFrame.size,
+            scaleFactor: 1
+        )
+        cardVC3.delegate = self
+        cardVC3.view.frame = topCardFrame
+        cardVC3.isActiveController = false
         
-        self.topCardViewController = self.cardViewControllers[0]
+        let cardVC4 = SLWalkthoughFourViewController(
+            viewSize: topCardFrame.size,
+            scaleFactor: 1
+        )
+        cardVC4.delegate = self
+        cardVC4.view.frame = topCardFrame
+        cardVC4.isActiveController = false
+        
+        let cardVC5 = SLWalkthroughFiveViewController(
+            viewSize: topCardFrame.size,
+            scaleFactor: 1
+        )
+        cardVC5.delegate = self
+        cardVC5.view.frame = topCardFrame
+        cardVC5.isActiveController = false
+        
+        self.cardViewControllers[.One] = cardVC1
+        self.cardViewControllers[.Two] = cardVC2
+        self.cardViewControllers[.Three] = cardVC3
+        self.cardViewControllers[.Four] = cardVC4
+        self.cardViewControllers[.Five] = cardVC5
+        
+        self.topCardViewController = cardVC1
         self.addChildViewController(self.topCardViewController!)
         self.view.addSubview(self.topCardViewController!.view)
         self.topCardViewController!.didMoveToParentViewController(self)
@@ -159,18 +202,83 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
         )
     }
     
-    func bringSubviewsToFont() {
+    func bringSubviewsToFront() {
         self.view.bringSubviewToFront(self.topCardViewController!.view)
         self.view.bringSubviewToFront(self.nextButton)
         self.view.bringSubviewToFront(self.pageViewController.view)
         self.view.bringSubviewToFront(self.swipeLabel)
     }
-    func shrinkBottomCard() {
+    
+    private func setSwipeLabelText(swipeCase:SwipeText) {
+        let text: String
+        switch swipeCase {
+        case .FirstPage:
+            text = NSLocalizedString("Swipe left to go to next step", comment: "")
+        case .LastPage:
+            text = NSLocalizedString("Swipe right to go to the previous step", comment: "")
+        case .MiddlePage:
+            text = NSLocalizedString("Swift to go back & forward", comment: "")
+        }
         
+        self.swipeLabel.text = text
     }
     
-    func moveBottomCardToTop() {
+    func placeButtons() {
+        let nextImage = UIImage(named: "Next_Button")
+        let nextBaseFrame = CGRectMake(
+            0.5*(self.view.bounds.size.width - nextImage!.size.width),
+            self.pageViewController.view.frame.origin.y - 10 - nextImage!.size.height,
+            nextImage!.size.width,
+            nextImage!.size.height
+        )
         
+        let previousImage = UIImage(named: "Previous_Button")
+        let previousBaseFrame =  CGRectMake(
+            0.5*(self.view.bounds.size.width - previousImage!.size.width),
+            self.pageViewController.view.frame.origin.y - 10 - previousImage!.size.height,
+            previousImage!.size.width,
+            previousImage!.size.height
+        )
+    }
+    
+    func increaseCurrentPage() {
+        self.currentPage = self.nextPage()
+    }
+    
+    func decreaseCurrentPage() {
+        self.currentPage = self.previousPage()
+    }
+    
+    private func nextPage() -> Page {
+        let page:Page
+        switch self.currentPage {
+        case .One:
+            page = .Two
+        case .Two:
+            page = .Three
+        case .Three:
+            page = .Four
+        case .Four, .Five:
+            page = .Five
+        }
+        
+        return page
+    }
+    
+    private func previousPage() -> Page {
+        let page:Page
+        switch self.currentPage {
+        case .One, .Two:
+            page = .One
+        case .Three:
+            page = .Two
+        case .Four:
+            page = .Three
+        case .Five:
+            page = .Four
+        }
+        
+        return page
     }
     
     func nextButtonPressed() {
@@ -183,35 +291,32 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     
     // pragma-mark SLWalkthroughCardViewControllerDelegate methods
     func cardViewControllerViewOffscreenLeft(wcvc: SLWalkthroughCardViewController) {
-        if (self.currentCardIndex + 1 < self.cardViewControllers.count) {
+        self.increaseCurrentPage()
+        if let nextWcvc = self.cardViewControllers[self.currentPage] where nextWcvc != wcvc {
             wcvc.isActiveController = false
             wcvc.view.removeFromSuperview()
-            let nextWcvc = self.cardViewControllers[++self.currentCardIndex]
             nextWcvc.isActiveController = true
+            let swipeTextCase:SwipeText = self.currentPage == .Five ? .LastPage : .MiddlePage
             UIView .animateWithDuration(self.animationDurration, animations: { () -> Void in
+                self.pageViewController.increaseActiveDot()
                 nextWcvc.view.frame = self.cardFrameWithIndex(0)
                 }, completion: { (finished) -> Void in
                     self.topCardViewController = nextWcvc
                     self.bottomCardViewController = nil
-                    self.bringSubviewsToFont()
+                    self.bringSubviewsToFront()
+                    self.setSwipeLabelText(swipeTextCase)
             })
         }
     }
     
     func cardViewControllerViewOffscreenRight(wcvc: SLWalkthroughCardViewController) {
-        if (self.currentCardIndex > 0) {
-            wcvc.isActiveController = false
-            wcvc.view.removeFromSuperview()
-            let previousWcvc = self.cardViewControllers[--self.currentCardIndex]
-            previousWcvc.isActiveController = true
-            self.view.bringSubviewToFront(previousWcvc.view)
-        }
+        
     }
     
     func cardViewControllerViewMovingLeft(wcvc: SLWalkthroughCardViewController) {
         print("card moving left")
-        if let dummyVC = self.dummyCardViewControllers.last where self.currentCardIndex + 1 < self.cardViewControllers.count {
-            self.bottomCardViewController = self.cardViewControllers[self.currentCardIndex + 1]
+        if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .Five {
+            self.bottomCardViewController = self.cardViewControllers[self.nextPage()]
             self.bottomCardViewController!.view.frame = self.cardFrameWithIndex(0)
             self.addChildViewController(self.bottomCardViewController!)
             self.view.insertSubview(
@@ -221,12 +326,6 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             self.bottomCardViewController!.view.autoresizesSubviews = true
             self.bottomCardViewController!.view.frame = dummyVC.view.frame
             self.bottomCardViewController!.didMoveToParentViewController(self)
-            
-//            let test = UIView(frame: self.bottomCardViewController!.view.frame)
-//            test.backgroundColor = UIColor.blueColor()
-//            self.view.addSubview(test)
-            
-            print("frame: \(self.bottomCardViewController!.view.frame)")
         }
     }
     
