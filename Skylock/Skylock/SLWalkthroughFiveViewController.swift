@@ -30,10 +30,10 @@ class SLWalkthroughFiveViewController: SLWalkthroughCardViewController {
             text: headingText,
             maxWidth: cardView.bounds.size.width - 2*self.xPadding,
             maxHeight: CGFloat.max,
-            numberOfLines: 0
+            numberOfLines: 1
         )
         let headingFrame = CGRectMake(
-            self.xPadding,
+            0.5*(cardView.bounds.size.width - headingSize.width),
             CGRectGetMaxY(bikeView.frame) + 50,
             headingSize.width,
             headingSize.height
@@ -41,7 +41,7 @@ class SLWalkthroughFiveViewController: SLWalkthroughCardViewController {
         let headingLabel = UILabel(frame: headingFrame)
         headingLabel.text = headingText
         headingLabel.font = headingFont
-        headingLabel.numberOfLines = 0
+        headingLabel.numberOfLines = 1
         headingLabel.textAlignment = NSTextAlignment.Center
         cardView.addSubview(headingLabel)
         
@@ -55,7 +55,7 @@ class SLWalkthroughFiveViewController: SLWalkthroughCardViewController {
             numberOfLines: 0
         )
         let detailFrame = CGRectMake(
-            self.xPadding,
+            0.5*(cardView.bounds.size.width - detailSize.width),
             CGRectGetMaxY(headingLabel.frame) + 10,
             detailSize.width,
             detailSize.height

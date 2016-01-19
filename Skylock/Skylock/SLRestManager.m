@@ -190,7 +190,7 @@
                completion:(void (^)(NSDictionary *responseDict))completion
 {
     if (error) {
-        // TODO -- add error handling
+    // TODO -- add error handling
         NSLog(@"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
               originalUrl.absoluteString,
               error,

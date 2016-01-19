@@ -14,7 +14,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         
         let middleButtonView = UIImageView(image: UIImage(named: "middle_button"))
         middleButtonView.frame = CGRectMake(
-            self.view.bounds.size.width - self.xPadding - middleButtonView.bounds.size.width,
+            cardView.bounds.size.width - self.xPadding - middleButtonView.bounds.size.width,
             60,
             middleButtonView.bounds.size.width,
             middleButtonView.bounds.size.height
@@ -23,7 +23,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         
         let handView = UIImageView(image: UIImage(named: "walkthrough3_hand"))
         handView.frame = CGRectMake(
-            self.view.bounds.size.width - self.xPadding - handView.bounds.size.width - 15,
+            cardView.bounds.size.width - self.xPadding - handView.bounds.size.width - 15,
             CGRectGetMidY(middleButtonView.frame) - 5,
             handView.bounds.size.width,
             handView.bounds.size.height
@@ -37,7 +37,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         let headerSize = utility.sizeForLabel(
             headerFont!,
             text: headerText,
-            maxWidth: self.view.bounds.size.width - 2*self.xPadding,
+            maxWidth: cardView.bounds.size.width - 2*self.xPadding,
             maxHeight: CGFloat.max,
             numberOfLines: 0
         )
@@ -58,7 +58,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         let detailSize = utility.sizeForLabel(
             detailFont!,
             text: detailText,
-            maxWidth: self.view.bounds.size.width - 2*self.xPadding,
+            maxWidth: cardView.bounds.size.width - 2*self.xPadding,
             maxHeight: CGFloat.max,
             numberOfLines: 0
         )
@@ -77,7 +77,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         
         let blueToothImage = UIImage(named: "walkthrough3_Bluetooth")
         let blueToothButtonFrame = CGRectMake(
-            0.5*(self.view.bounds.size.width - blueToothImage!.size.width),
+            0.5*(cardView.bounds.size.width - blueToothImage!.size.width),
             CGRectGetMaxY(detailLabel.frame) + 15,
             blueToothImage!.size.width,
             blueToothImage!.size.height
@@ -92,5 +92,9 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
     
     func blueToothButtonPressed() {
         print("blue tooth button pressed")
+        
+        let lockManager = SLLockManager.sharedManager()
+        lockManager.shouldEnterSearchMode(true)
+        lockManager.startScan()
     }
 }

@@ -5,3 +5,6 @@
 #import "SLLock.h"
 #import "SLRestManager.h"
 #import "KeychainWrapper.h"
+#import "SLMapViewController.h"
+#import "SLUserDefaults.h"
+#import "SLLockManager.h"

@@ -20,7 +20,7 @@ class SLPageViewController: UIViewController {
     var dotViews:[UIView] = []
     
     init(numberOfDots: Int, width: CGFloat) {
-        self.numberOfDots = numberOfDots - 1
+        self.numberOfDots = numberOfDots
         self.viewWidth = width
         self.xPadding = 0.5*(width - CGFloat(numberOfDots - 1)*self.horizontalSpacer)
         
@@ -41,7 +41,7 @@ class SLPageViewController: UIViewController {
     }
     
     func setUpDots() {
-        for i in 0...self.numberOfDots {
+        for i in 0...self.numberOfDots - 1 {
             let rect = CGRectMake(
                 self.xPadding + CGFloat(i)*self.horizontalSpacer - 0.5*self.dotDiameter,
                 0.5*(self.view.bounds.size.height - self.dotDiameter),

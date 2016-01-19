@@ -55,12 +55,12 @@ class SLWalkthroughOneViewController: SLWalkthroughCardViewController {
         let getStartedSize = utility.sizeForLabel(
             getStartedFont!,
             text: getStartedText,
-            maxWidth: self.view.bounds.size.width - 2*lockView.frame.origin.x,
+            maxWidth: cardView.bounds.size.width - 2*self.xPadding,
             maxHeight: CGFloat.max,
             numberOfLines: 0
         )
         let getStartedFrame = CGRectMake(
-            lockView.frame.origin.x,
+            self.xPadding,
             CGRectGetMaxY(logo.frame) + 10,
             getStartedSize.width,
             getStartedSize.height

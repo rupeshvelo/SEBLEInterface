@@ -13,9 +13,17 @@ protocol SLWalkthroughCardViewControllerDelegate {
     func cardViewControllerViewOffscreenRight(wcvc:SLWalkthroughCardViewController)
     func cardViewControllerViewMovingLeft(wcvc:SLWalkthroughCardViewController)
     func cardViewControllerViewMovingRight(wcvc:SLWalkthroughCardViewController)
+    func cardViewControllerViewMovedBackToCenter(wcvc:SLWalkthroughCardViewController)
 }
 
 class SLWalkthroughCardViewController: UIViewController {
+    
+    enum CardMovementDirection {
+        case Left
+        case Right
+        case None
+    }
+    
     let viewSize: CGSize
     var xPosition: CGFloat = 0.0
     var initialFrame = CGRectZero
@@ -27,10 +35,16 @@ class SLWalkthroughCardViewController: UIViewController {
     let xPadding: CGFloat = 30
     var isCardMoving = false
     var previousX: CGFloat?
+    let shouldMoveLeft: Bool
+    let shouldMoveRight: Bool
+    var movementDirection = CardMovementDirection.None
+    var tag: String?
     
-    init(viewSize: CGSize, scaleFactor: CGFloat) {
+    init(viewSize: CGSize, scaleFactor: CGFloat, shouldMoveLeft: Bool, shouldMoveRight: Bool) {
         self.viewSize = viewSize
         self.scaleFactor = scaleFactor
+        self.shouldMoveLeft = shouldMoveLeft
+        self.shouldMoveRight = shouldMoveRight
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -46,9 +60,10 @@ class SLWalkthroughCardViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        //self.view = self.newCardView()
-        self.initialFrame = self.view.frame
-        print("initial frame: \(self.initialFrame)")
+        if self.initialFrame == CGRectZero {
+            self.initialFrame = self.view.frame
+            self.previousX = self.view.center.x
+        }
     }
     
     func newCardView() -> SLWalkthroughCardView {
@@ -64,22 +79,34 @@ class SLWalkthroughCardViewController: UIViewController {
     }
     
     func cardViewDragged(pgr: UIPanGestureRecognizer) {
-        if (!self.isActiveController || pgr.view == nil) {
+        if !self.isActiveController || pgr.view == nil {
             return
         }
         
         let translation = pgr.translationInView(self.view)
+        if self.movementDirection == .None && translation.x > 0.0 && !self.shouldMoveRight {
+            print("Current card is not allowed to move right")
+            return
+        }
+        
+        if self.movementDirection == .None && translation.x < 0.0 && !self.shouldMoveLeft {
+            print("Current card is not allowed to move left")
+            return
+        }
+        
         pgr.view!.center = CGPointMake(pgr.view!.center.x + translation.x, pgr.view!.center.y)
         pgr.setTranslation(CGPointZero, inView: self.view)
         
-        if (self.view.frame.origin.x < self.initialFrame.origin.x - 0.5*self.initialFrame.size.width
-            && !self.isCardMovingOffscreen) {
+        if self.view.frame.origin.x < self.initialFrame.origin.x - 0.5*self.initialFrame.size.width
+            && !self.isCardMovingOffscreen {
             print("should move card off screen to the left")
             self.moveCardViewLeft()
+            return
         } else if (self.view.frame.origin.x > self.initialFrame.origin.x + 0.5*self.initialFrame.size.width
             && !self.isCardMovingOffscreen) {
             print("should move card off screen to the right")
             self.moveCardViewRight()
+            return
         }
         
         if self.previousX == nil {
@@ -87,16 +114,19 @@ class SLWalkthroughCardViewController: UIViewController {
         } else {
             if self.view.center.x > self.previousX && self.delegate != nil && !self.isCardMoving {
                 self.isCardMoving = true
+                self.movementDirection = .Right
                 self.delegate!.cardViewControllerViewMovingRight(self)
             } else if self.view.center.x < self.previousX && self.delegate != nil && !self.isCardMoving {
                 self.isCardMoving = true
+                self.movementDirection = .Left
                 self.delegate!.cardViewControllerViewMovingLeft(self)
             } else {
                 self.previousX = self.view.center.x
             }
         }
         
-        if (pgr.state == UIGestureRecognizerState.Ended && !self.isCardMovingOffscreen) {
+        if pgr.state == UIGestureRecognizerState.Ended && !self.isCardMovingOffscreen {
+            self.movementDirection = .None
             self.moveCardToOrginalPosition()
         }
     }
@@ -115,6 +145,10 @@ class SLWalkthroughCardViewController: UIViewController {
                 if let delegate = self.delegate {
                     delegate.cardViewControllerViewOffscreenLeft(self)
                 }
+                
+                self.isCardMovingOffscreen = false
+                self.isCardMoving = false
+                self.view.userInteractionEnabled = true
         }
     }
     
@@ -132,6 +166,10 @@ class SLWalkthroughCardViewController: UIViewController {
                 if let delegate = self.delegate {
                     delegate.cardViewControllerViewOffscreenRight(self)
                 }
+                
+                self.isCardMovingOffscreen = false
+                self.isCardMoving = false
+                self.view.userInteractionEnabled = true
         }
     }
     
@@ -143,6 +181,9 @@ class SLWalkthroughCardViewController: UIViewController {
                 self.view.userInteractionEnabled = true
                 self.previousX = nil
                 self.isCardMoving = false
+                if let delegate = self.delegate {
+                    delegate.cardViewControllerViewMovedBackToCenter(self)
+                }
         }
     }
 }
