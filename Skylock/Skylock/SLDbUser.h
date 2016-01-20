@@ -2,8 +2,8 @@
 //  SLDbUser.h
 //  Skylock
 //
-//  Created by Andre Green on 9/5/15.
-//  Copyright (c) 2015 Andre Green. All rights reserved.
+//  Created by Andre Green on 1/19/16.
+//  Copyright © 2016 Andre Green. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,23 +11,18 @@
 
 @class SLDbLock;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SLDbUser : NSManagedObject
 
-@property (nonatomic, retain) NSString * email;
-@property (nonatomic, retain) NSString * facebookId;
-@property (nonatomic, retain) NSString * facebookLink;
-@property (nonatomic, retain) NSString * firstName;
-@property (nonatomic, retain) NSString * gender;
-@property (nonatomic, retain) NSNumber * isCurrentUser;
-@property (nonatomic, retain) NSString * lastName;
-@property (nonatomic, retain) NSSet *locks;
-@end
-
-@interface SLDbUser (CoreDataGeneratedAccessors)
-
-- (void)addLocksObject:(SLDbLock *)value;
-- (void)removeLocksObject:(SLDbLock *)value;
-- (void)addLocks:(NSSet *)values;
-- (void)removeLocks:(NSSet *)values;
+- (id)initWithFacebookDictionary:(NSDictionary *)dictionary;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+- (NSDictionary *)asDictionary;
+- (void)setPropertiesWithFBDictionary:(NSDictionary *)dictionary;
+- (NSString *)fullName;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "SLDbUser+CoreDataProperties.h"

@@ -117,8 +117,17 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
-    [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:info];
-    [SLPicManager.sharedManager facebookPicForFBUserId:info[@"id"] email:info[@"email"] completion:nil];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
+        NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
+        modifiedInfo[@"googlePushId"] = [ud objectForKey:SLUserDefaultsPushNotificationToken];
+        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
+    } else {
+        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:info];
+    }
+
+    [SLPicManager.sharedManager facebookPicForFBUserId:info[@"id"] completion:nil];
+ 
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
 }
@@ -135,7 +144,11 @@
             return;
         }
         
-        if (completion) completion(nil);
+        if (completion) {
+           completion(nil); 
+        }
     }];
 }
+
+
 @end

@@ -847,39 +847,31 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         
         self.locksToAdd[lock.name] = lock;
         
-        if (lock.isInFactoryMode) {
-            NSDictionary *lockData = @{@"mac_id":lock.macAddress};
-            [SLRestManager.sharedManager postObject:lockData
-                                          serverKey:SLRestManagerServerKeyMain
-                                            pathKey:SLRestManagerPathKeyKeys
-                                         completion:^(NSDictionary *responseDict) {
-                if (responseDict && responseDict[@"signed_message"] && responseDict[@"public_key"] && responseDict[@"message"]) {
-                    [self.keychainHandler setItem:responseDict[@"signed_message"]
-                                      handlerCase:SLKeychainHandlerCaseSignedMessage
-                                         lockName:lock.name];
-                    
-                    [self.keychainHandler setItem:responseDict[@"public_key"]
-                                      handlerCase:SLKeychainHandlerCasePublicKey
-                                         lockName:lock.name];
-                    
-                    [self.keychainHandler setItem:responseDict[@"message"]
-                                      handlerCase:SLKeychainHandlerCaseChallengeKey
-                                         lockName:lock.name];
-                    
-                    [self addLock:lock];
-                    
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                                        object:lock];
-                }
+        NSDictionary *lockData = @{@"mac_id":lock.macAddress};
+        [SLRestManager.sharedManager postObject:lockData
+                                      serverKey:SLRestManagerServerKeyMain
+                                        pathKey:SLRestManagerPathKeyKeys
+                                     completion:^(NSDictionary *responseDict) {
+            if (responseDict && responseDict[@"signed_message"] && responseDict[@"public_key"] && responseDict[@"message"]) {
+                [self.keychainHandler setItem:responseDict[@"signed_message"]
+                                  handlerCase:SLKeychainHandlerCaseSignedMessage
+                                     lockName:lock.name];
                 
-                // TODO handle error when getting keys from server fails
-            }];
-        } else {
-            [self addLock:lock];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                                object:lock];
-        }
-        
+                [self.keychainHandler setItem:responseDict[@"public_key"]
+                                  handlerCase:SLKeychainHandlerCasePublicKey
+                                     lockName:lock.name];
+                
+                [self.keychainHandler setItem:responseDict[@"message"]
+                                  handlerCase:SLKeychainHandlerCaseChallengeKey
+                                     lockName:lock.name];
+                
+                [self addLock:lock];
+                
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+//                                                                        object:lock];
+            }
+        }];
+    
     }
 }
 
@@ -915,8 +907,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)bleInterfaceManagerIsPoweredOn:(SEBLEInterfaceMangager *)interfaceManager
 {
+    NSLog(@"blue tooth manager powered on");
     self.bleIsPoweredOn = YES;
-    [self.bleManager startScan];
+    //[self.bleManager startScan];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager

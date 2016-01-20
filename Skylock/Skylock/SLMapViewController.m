@@ -19,7 +19,6 @@
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
 #import "SLPicManager.h"
-#import "SLDbUser+Methods.h"
 #import "SLLock.h"
 #import "UIImage+Skylock.h"
 #import "SLNavigationViewController.h"
@@ -32,6 +31,8 @@
 #import "SLMainTutorialViewController.h"
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
+#import "SLDbUser+CoreDataProperties.h"
+
 
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
@@ -773,7 +774,8 @@
 
     if (self.isInitialLoad) {
         SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
-        UIImage *userPic = [SLPicManager.sharedManager userImageForEmail:user.email];
+        
+        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
         if (userPic) {
             UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
             UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];

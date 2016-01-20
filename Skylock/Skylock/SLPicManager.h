@@ -13,11 +13,10 @@
 
 + (id)sharedManager;
 
-- (void)getPicWithEmail:(NSString *)email withCompletion:(void(^)(UIImage *))completion;
+- (void)getPicWithUserId:(NSString *)userId withCompletion:(void(^)(UIImage *))completion;
 - (void)refreshProfilePicCache;
 - (void)facebookPicForFBUserId:(NSString *)fbUserId
-                         email:(NSString *)email
                     completion:(void(^)(UIImage *))completion;
-- (UIImage *)userImageForEmail:(NSString *)email;
+- (UIImage *)userImageForUserId:(NSString *)userId;
 
 @end

@@ -2,23 +2,91 @@
 //  SLDbUser.m
 //  Skylock
 //
-//  Created by Andre Green on 9/5/15.
-//  Copyright (c) 2015 Andre Green. All rights reserved.
+//  Created by Andre Green on 1/19/16.
+//  Copyright © 2016 Andre Green. All rights reserved.
 //
 
 #import "SLDbUser.h"
 #import "SLDbLock.h"
 
+#define kSLUserTypeFacebook @"facebook"
+#define kSLUserTypePhone    @"phone"
+
 
 @implementation SLDbUser
 
-@dynamic email;
-@dynamic facebookId;
-@dynamic facebookLink;
-@dynamic firstName;
-@dynamic gender;
-@dynamic isCurrentUser;
-@dynamic lastName;
-@dynamic locks;
+- (id)initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super init];
+    if (self) {
+        self.firstName      = [self valueOrNullForDictionary:dictionary key:@"firstName"];
+        self.lastName       = [self valueOrNullForDictionary:dictionary key:@"lastName"];
+        self.userId         = [self valueOrNullForDictionary:dictionary key:@"userId"];
+        self.googlePushId   = [self valueOrNullForDictionary:dictionary key:@"googlePushId"];
+        self.userType       = [self valueOrNullForDictionary:dictionary key:@"userType"];
+    }
+    
+    return self;
+}
+- (id)initWithFacebookDictionary:(NSDictionary *)dictionary
+{
+    self = [super init];
+    if (self) {
+        self.firstName      = [self valueOrNullForDictionary:dictionary key:@"first_name"];
+        self.lastName       = [self valueOrNullForDictionary:dictionary key:@"last_name"];
+        self.userId         = [self valueOrNullForDictionary:dictionary key:@"id"];
+        self.googlePushId   = [self valueOrNullForDictionary:dictionary key:@"googlePushId"];
+        self.userType       = kSLUserTypeFacebook;
+    }
+    
+    return self;
+}
+
+- (NSDictionary *)asDictionary
+{
+    return @{@"first_name": self.firstName,
+             @"user_id": self.userId,
+             @"last_name": self.lastName,
+             @"fb_flag": @([self.userType isEqualToString:@"facebook"]),
+             @"reg_id": self.googlePushId
+             };
+}
+
+- (void)setPropertiesWithFBDictionary:(NSDictionary *)dictionary
+{
+    if (dictionary[@"first_name"]) {
+        self.firstName = dictionary[@"first_name"];
+    }
+    
+    if (dictionary[@"last_name"]) {
+        self.lastName = dictionary[@"last_name"];
+    }
+    
+    if (dictionary[@"id"]) {
+        self.userId = dictionary[@"id"];
+    }
+    
+    if (dictionary[@"googlePushId"]) {
+        self.googlePushId = dictionary[@"googlePushId"];
+    }
+    
+    self.userType = kSLUserTypeFacebook;
+}
+
+- (id)valueOrNullForDictionary:(NSDictionary *)dictionary key:(id)value
+{
+    return dictionary[value] ? dictionary[value] : [NSNull null];
+}
+
+- (NSString *)fullName
+{
+    if (self.firstName && self.lastName) {
+        return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
+    } else if (self.firstName) {
+        return self.firstName;
+    }
+    
+    return nil;
+}
 
 @end
