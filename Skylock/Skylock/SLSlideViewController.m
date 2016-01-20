@@ -14,7 +14,6 @@
 #import "SLNavigationViewController.h"
 #import "SLAddLockViewController.h"
 #import "SLCirclePicView.h"
-#import "SLDbUser+Methods.h"
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
 #import "SLSlideTableViewHeader.h"
@@ -22,6 +21,8 @@
 #import "SLEditLockTableViewCell.h"
 #import "SLLock.h"
 #import "SLNotifications.h"
+#import "SLDbUser+CoreDataProperties.h"
+
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
 #define kSLSlideViewControllerRowImageKey           @"SLSlideViewControllerRowImageName"
@@ -275,8 +276,8 @@
         header.name = self.user.fullName;
         header.delegate = self;
         
-        if (self.user.facebookId) {
-            [SLPicManager.sharedManager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
+        if ([self.user.userType isEqualToString:@"facebook"]) {
+            [SLPicManager.sharedManager facebookPicForFBUserId:self.user.userId completion:^(UIImage *image) {
                 if (!image) {
                     image = [UIImage imageNamed:@"img_userav_small"];
                 }
@@ -284,7 +285,6 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [header.circleView setPicImage:image];
                 });
-                
             }];
         }
         

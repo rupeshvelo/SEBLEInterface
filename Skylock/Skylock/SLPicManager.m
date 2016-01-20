@@ -13,7 +13,7 @@
 
 
 #define kSLProfilePicDirPath            @"profie_pics"
-#define kSLProfilePicCacheRefreshDays   3
+#define kSLProfilePicCacheRefreshDays   2
 
 @interface SLPicManager()
 
@@ -82,9 +82,9 @@
     return YES;
 }
 
-- (void)getPicWithEmail:(NSString *)email withCompletion:(void (^)(UIImage *))completion
+- (void)getPicWithUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion
 {
-    NSString *hash = [email MD5String];
+    NSString *hash = [userId MD5String];
     if ([self.profilePicCache objectForKey:hash]) {
         if (completion) completion([self.profilePicCache objectForKey:hash]);
         return;
@@ -104,9 +104,9 @@
     if (completion) completion(nil);
 }
 
-- (void)savePicture:(UIImage *)image forEmail:(NSString *)email
+- (void)savePicture:(UIImage *)image forUserId:(NSString *)userId
 {
-    NSString *hash = [email MD5String];
+    NSString *hash = [userId MD5String];
     if ([self.profilePicCache objectForKey:hash]) {
         [self.profilePicCache setObject:image forKey:hash];
         return;
@@ -172,9 +172,9 @@
     }
 }
 
-- (void)facebookPicForFBUserId:(NSString *)fbUserId email:(NSString *)email completion:(void (^)(UIImage *))completion
+- (void)facebookPicForFBUserId:(NSString *)fbUserId completion:(void (^)(UIImage *))completion
 {
-    [self getPicWithEmail:email withCompletion:^(UIImage *cacheImage) {
+    [self getPicWithUserId:fbUserId withCompletion:^(UIImage *cacheImage) {
         if (cacheImage) {
             if (completion) completion(cacheImage);
             return;
@@ -182,7 +182,7 @@
         
         [SLFacebookManger.sharedManager getFacebookPicForUserId:fbUserId withCompletion:^(UIImage *image) {
             if (image) {
-                [self savePicture:image forEmail:email];
+                [self savePicture:image forUserId:fbUserId];
                 if (completion) {
                     completion(image);
                 }
@@ -194,9 +194,9 @@
     }];
 }
 
-- (UIImage *)userImageForEmail:(NSString *)email
+- (UIImage *)userImageForUserId:(NSString *)userId
 {
-    NSString *hash = [email MD5String];
+    NSString *hash = [userId MD5String];
     if ([self.profilePicCache objectForKey:hash]) {
         return [self.profilePicCache objectForKey:hash];
     }

@@ -9,6 +9,17 @@
 import UIKit
 
 class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "foundLock:",
+            name: "kSLNotificationLockManagerDiscoverdLock",
+            object: nil
+        )
+    }
+    
     override func newCardView() -> SLWalkthroughCardView {
         let cardView = super.newCardView()
         
@@ -96,5 +107,11 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         let lockManager = SLLockManager.sharedManager()
         lockManager.shouldEnterSearchMode(true)
         lockManager.startScan()
+    }
+    
+    func foundLock(notification: NSNotification) {
+        print("found lock")
+        let lockManager = SLLockManager.sharedManager()
+        lockManager.shouldEnterSearchMode(false)
     }
 }

@@ -19,6 +19,7 @@
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
 #import "Skylock-Swift.h"
+#import <Google/CloudMessaging.h>
 
 #define kSLAppDelegateNotificationActionIgnore  @"kSLAppDelegateNotificationActionIgnore"
 #define kSLAppDelegateNotificationActionHelp    @"kSLAppDelegateNotificationActionHelp"
@@ -34,13 +35,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
     [SLDatabaseManager.sharedManager setCurrentUser];
-//    [SLLockManager.sharedManager startBlueToothManager];
-//    [SLLockManager.sharedManager fetchLocks];
+    [SLLockManager.sharedManager startBlueToothManager];
+    [SLLockManager.sharedManager fetchLocks];
 //    [SLLockManager.sharedManager startScan];
 //
 //    if ([SLLockManager.sharedManager hasLocksForCurrentUser]) {
 //        [SLLockManager.sharedManager shouldEnterSearchMode:YES];
 //    }
+    
+
     
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
@@ -107,6 +110,34 @@
                                       annotation:annotation];
 }
 
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
+    instanceIDConfig.delegate = self;
+    
+    
+    NSDictionary *options = @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
+                              kGGLInstanceIDAPNSServerTypeSandboxOption:@YES};
+    
+    [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
+
+    [GGLInstanceID.sharedInstance
+     tokenWithAuthorizedEntity:@"750134088591"
+     scope:kGGLInstanceIDScopeGCM
+     options:options
+     handler:^(NSString *token, NSError *error) {
+         if (error) {
+             NSLog(@"Error getting google cloud service token %@", error.localizedDescription);
+             return;
+         }
+         
+         NSLog(@"got token: %@", token);
+         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+         [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
+         [ud synchronize];
+     }];
+}
+
 - (UIViewController *)initialViewController
 {
     UIViewController *initialVC;
@@ -145,32 +176,38 @@
 
 - (void)setUpNotficationSettings:(UIApplication *)application
 {
-    UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
-    ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
-    ignoreAction.title = NSLocalizedString(@"Ignore", nil);
-    ignoreAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
-    ignoreAction.destructive = NO;
-    ignoreAction.authenticationRequired = NO;
+    [[GCMService sharedInstance] startWithConfig:[GCMConfig defaultConfig]];
+    UIUserNotificationType allNotificationTypes = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
     
-    UIMutableUserNotificationAction *helpAction = [UIMutableUserNotificationAction new];
-    helpAction.identifier = kSLAppDelegateNotificationActionHelp;
-    helpAction.title = NSLocalizedString(@"Help", nil);
-    helpAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
-    helpAction.destructive = NO;
-    helpAction.authenticationRequired = NO;
-    
-    UIMutableUserNotificationCategory *notficationCategory = [UIMutableUserNotificationCategory new];
-    notficationCategory.identifier = kSLAppDelegateNotificationCategory;
-    [notficationCategory setActions:@[helpAction, ignoreAction]
-                         forContext:UIUserNotificationActionContextDefault];
-    [notficationCategory setActions:@[helpAction, ignoreAction]
-                         forContext:UIUserNotificationActionContextMinimal];
-    
-    UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
-    
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes
-                                                                             categories:[NSSet setWithObject:notficationCategory]];
-    [application registerUserNotificationSettings:settings];
+//    UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
+//    ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
+//    ignoreAction.title = NSLocalizedString(@"Ignore", nil);
+//    ignoreAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+//    ignoreAction.destructive = NO;
+//    ignoreAction.authenticationRequired = NO;
+//    
+//    UIMutableUserNotificationAction *helpAction = [UIMutableUserNotificationAction new];
+//    helpAction.identifier = kSLAppDelegateNotificationActionHelp;
+//    helpAction.title = NSLocalizedString(@"Help", nil);
+//    helpAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+//    helpAction.destructive = NO;
+//    helpAction.authenticationRequired = NO;
+//    
+//    UIMutableUserNotificationCategory *notficationCategory = [UIMutableUserNotificationCategory new];
+//    notficationCategory.identifier = kSLAppDelegateNotificationCategory;
+//    [notficationCategory setActions:@[helpAction, ignoreAction]
+//                         forContext:UIUserNotificationActionContextDefault];
+//    [notficationCategory setActions:@[helpAction, ignoreAction]
+//                         forContext:UIUserNotificationActionContextMinimal];
+//    
+//    UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+//    
+//    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes
+//                                                                             categories:[NSSet setWithObject:notficationCategory]];
+//    [application registerUserNotificationSettings:settings];
 }
 
 - (void)postNotification:(SLNotification *)notification

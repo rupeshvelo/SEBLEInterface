@@ -35,7 +35,7 @@
     NSString *url;
     switch (serverKey) {
         case SLRestManagerServerKeyMain:
-            url = @"http://skylock-beta.herokuapp.com/";
+            url = @"https://skylock-beta.herokuapp.com/api/v1/";
             break;
         default:
             break;
@@ -129,7 +129,7 @@
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-    //[sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
+    [sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     
@@ -138,7 +138,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    //[request setValue:@(jsonData.length).stringValue forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@(jsonData.length).stringValue forHTTPHeaderField:@"Content-Length"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setHTTPBody:jsonData];
     [request setTimeoutInterval:kSLRestManagerTimeout];

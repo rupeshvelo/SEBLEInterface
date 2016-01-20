@@ -13,5 +13,6 @@
 #define SLUserDefaultsTutorialComplete      @"SLUserDefaultsTutorialComplete"
 #define SLUserDefaultsCoachMarksComplete    @"SLUserDefaultsCoachMarksComplete"
 #define SLUserDefaultsProfilePicCacheDate   @"SLUserDefaultsProfilePicCacheDate"
+#define SLUserDefaultsPushNotificationToken @"SLUserDefaultsPushNotificationToken"
 
 #endif
