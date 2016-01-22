@@ -49,14 +49,16 @@
     NSString *url;
     switch (pathKey) {
         case SLRestManagerPathKeyChallengeData:
-            url = @"users/11111/challenge_data/";
+            url = @"users/";
             break;
         case SLRestManagerPathKeyChallengeKey:
-            url = @"users/11111/challenge_key/";
+            url = @"users/";
             break;
         case SLRestManagerPathKeyKeys:
-            url = @"users/11111/keys/";
+            url = @"users/";
             break;
+        case SLRestManagerPathUsers:
+            url = @"users/";
         default:
             break;
     }
@@ -66,39 +68,53 @@
 
 - (NSURL *)urlWithServerKey:(SLRestManagerServerKey)serverKey
                     pathKey:(SLRestManagerPathKey)pathKey
-                    options:(NSArray *)options
+                  subRoutes:(NSArray *)subRoutes
+
 {
-    NSUInteger counter = 0;
-    NSString *serverUrl = [NSString stringWithFormat:@"%@%@",
-                           [self serverUrl:serverKey],
-                           [self pathUrl:pathKey]
-                           ];
-    NSMutableString *url = [NSMutableString stringWithString:serverUrl];
-    
-    if (options && options.count > 0) {
-        for (NSString *option in options) {
-            [url appendString:option];
-            if (counter < options.count - 1) {
-                [url appendString:@"/"];
+    NSMutableString *url = [NSMutableString stringWithString:[NSString stringWithFormat:@"%@%@",
+                                                                    [self serverUrl:serverKey],
+                                                                    [self pathUrl:pathKey]]
+                            ];
+    if (subRoutes) {
+        for (NSString *subRoute in subRoutes) {
+            NSString *path = subRoute;
+            if (path.length > 0) {
+                NSString *firstChar = [path substringWithRange:NSMakeRange(0, 1)];
+                if ([firstChar isEqualToString:@"/"]) {
+                    path = [path substringFromIndex:1];
+                }
+                
+                if (path.length > 0) {
+                    NSString *lastChar = [path substringFromIndex:path.length - 1];
+                    if (![lastChar isEqualToString:@"/"]) {
+                        path = [path stringByAppendingString:@"/"];
+                    }
+                }
             }
             
-            counter++;
+            [url appendString:path];
         }
     }
+    
     
     return [NSURL URLWithString:url];
 }
 
 - (void)getRequestWithServerKey:(SLRestManagerServerKey)serverKey
-                            pathKey:(SLRestManagerPathKey)pathKey
-                            options:(NSArray *)options
-                         completion:(void (^)(NSDictionary *responseDict))completion
+                        pathKey:(SLRestManagerPathKey)pathKey
+                      subRoutes:(NSArray *)subRoutes
+              additionalHeaders:(NSDictionary *)additionalHeaders
+                     completion:(void (^)(NSDictionary *responseDict))completion
 {
-    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey options:options];
+    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey subRoutes:subRoutes];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"GET"];
     [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    if (additionalHeaders) {
+        [request setValuesForKeysWithDictionary:additionalHeaders];
+    }
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     [sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
@@ -121,10 +137,12 @@
 - (void)postObject:(NSDictionary *)object
          serverKey:(SLRestManagerServerKey)serverKey
            pathKey:(SLRestManagerPathKey)pathKey
+         subRoutes:(NSArray *)subRoutes
+ additionalHeaders:(NSDictionary *)additionalHeaders
         completion:(void (^)(NSDictionary *responseDict))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
+
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
     
@@ -133,7 +151,7 @@
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
     
-    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey options:nil];
+    NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey subRoutes:subRoutes];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
@@ -142,6 +160,16 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setHTTPBody:jsonData];
     [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    if (additionalHeaders) {
+        for (NSString *key in additionalHeaders.allKeys) {
+            [request setValue:additionalHeaders[key] forHTTPHeaderField:key];
+        }
+    }
+    
+    NSLog(@"post object: %@", object.description);
+    NSLog(@"post url: %@", request.URL.absoluteString);
+    NSLog(@"post request %@", [request allHTTPHeaderFields]);
     
     NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
                                                                fromData:jsonData
@@ -214,14 +242,29 @@
     }
     
     NSLog(@"server reply: %@", serverReply.description);
-    NSString *status = serverReply[@"status"];
-    if (![status isEqualToString:@"success"]) {
-        NSLog(@"Error in response from server: %@", serverReply[@"message"]);
+    id status = serverReply[@"status"];
+    
+    if ([status isKindOfClass:[NSString class]]) {
+        if (![status isEqualToString:@"success"]) {
+            NSLog(@"Error in response from server: %@", serverReply[@"message"]);
+            completion(nil);
+            return;
+        }
+        
+        completion(serverReply[@"payload"]);
+    } else {
+        NSLog(@"failed with error: %@", serverReply[@"status"]);
         completion(nil);
-        return;
     }
     
-    completion(serverReply[@"payload"]);
+}
+
+- (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password
+{
+    NSString *authStr = [NSString stringWithFormat:@"%@:%@", username, password];
+    NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *auth64String = [authData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    return [NSString stringWithFormat:@"Basic %@", auth64String];
 }
 
 @end

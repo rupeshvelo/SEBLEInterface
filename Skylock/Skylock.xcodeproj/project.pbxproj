@@ -104,9 +104,6 @@
 		DC6471EA1C40566600286DBF /* walkthrough3_Bluetooth@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E41C40566600286DBF /* walkthrough3_Bluetooth@3x.png */; };
 		DC6471EB1C40566600286DBF /* walkthrough3_hand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E51C40566600286DBF /* walkthrough3_hand@2x.png */; };
 		DC6471EC1C40566600286DBF /* walkthrough3_hand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E61C40566600286DBF /* walkthrough3_hand@3x.png */; };
-		DC7818A41B4F5C5400B59C11 /* SLMainTutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7818A31B4F5C5400B59C11 /* SLMainTutorialViewController.m */; };
-		DC7818AA1B4F5C8000B59C11 /* SLTutorialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7818A91B4F5C8000B59C11 /* SLTutorialViewController.m */; };
-		DC7821B01B4FAEBC00B59C11 /* SLTutorial1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7821AF1B4FAEBC00B59C11 /* SLTutorial1ViewController.m */; };
 		DC7A116C1B5714B100F3336E /* bg_splash1.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A105F1B5714B100F3336E /* bg_splash1.png */; };
 		DC7A116D1B5714B100F3336E /* bg_splash1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A10601B5714B100F3336E /* bg_splash1@2x.png */; };
 		DC7A116E1B5714B100F3336E /* bg_splash1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A10611B5714B100F3336E /* bg_splash1@3x.png */; };
@@ -613,12 +610,6 @@
 		DC6471E41C40566600286DBF /* walkthrough3_Bluetooth@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_Bluetooth@3x.png"; sourceTree = "<group>"; };
 		DC6471E51C40566600286DBF /* walkthrough3_hand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_hand@2x.png"; sourceTree = "<group>"; };
 		DC6471E61C40566600286DBF /* walkthrough3_hand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_hand@3x.png"; sourceTree = "<group>"; };
-		DC7818A21B4F5C5400B59C11 /* SLMainTutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLMainTutorialViewController.h; sourceTree = "<group>"; };
-		DC7818A31B4F5C5400B59C11 /* SLMainTutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLMainTutorialViewController.m; sourceTree = "<group>"; };
-		DC7818A81B4F5C8000B59C11 /* SLTutorialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLTutorialViewController.h; sourceTree = "<group>"; };
-		DC7818A91B4F5C8000B59C11 /* SLTutorialViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLTutorialViewController.m; sourceTree = "<group>"; };
-		DC7821AE1B4FAEBC00B59C11 /* SLTutorial1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLTutorial1ViewController.h; sourceTree = "<group>"; };
-		DC7821AF1B4FAEBC00B59C11 /* SLTutorial1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLTutorial1ViewController.m; sourceTree = "<group>"; };
 		DC7A105F1B5714B100F3336E /* bg_splash1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_splash1.png; sourceTree = "<group>"; };
 		DC7A10601B5714B100F3336E /* bg_splash1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash1@2x.png"; sourceTree = "<group>"; };
 		DC7A10611B5714B100F3336E /* bg_splash1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash1@3x.png"; sourceTree = "<group>"; };
@@ -1178,12 +1169,6 @@
 				DCF36BBB1B5356B900070F11 /* SLCoachMarkViewController.m */,
 				DCF36BA61B52425400070F11 /* SLLoginViewController.h */,
 				DCF36BA71B52425400070F11 /* SLLoginViewController.m */,
-				DC7821AE1B4FAEBC00B59C11 /* SLTutorial1ViewController.h */,
-				DC7821AF1B4FAEBC00B59C11 /* SLTutorial1ViewController.m */,
-				DC7818A21B4F5C5400B59C11 /* SLMainTutorialViewController.h */,
-				DC7818A31B4F5C5400B59C11 /* SLMainTutorialViewController.m */,
-				DC7818A81B4F5C8000B59C11 /* SLTutorialViewController.h */,
-				DC7818A91B4F5C8000B59C11 /* SLTutorialViewController.m */,
 				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
 				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
 				DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */,
@@ -2369,11 +2354,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC974D291C3A28D600797CF1 /* SLWalkthroughCardView.swift in Sources */,
-				DC7818AA1B4F5C8000B59C11 /* SLTutorialViewController.m in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
 				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
-				DC7821B01B4FAEBC00B59C11 /* SLTutorial1ViewController.m in Sources */,
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
 				DC4402521B98A69000D1C2B9 /* SLUtilities.swift in Sources */,
@@ -2428,7 +2411,6 @@
 				DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */,
 				DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
-				DC7818A41B4F5C5400B59C11 /* SLMainTutorialViewController.m in Sources */,
 				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
 				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
 				DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */,

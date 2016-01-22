@@ -12,9 +12,12 @@
 #import "SLDatabaseManager.h"
 #import "SLRestManager.h"
 #import "SLPicManager.h"
-
+#import "Skylock-Swift.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "SLDbUser+CoreDataProperties.h"
+#import "SLDatabaseManager.h"
+
 
 @interface SLFacebookManger()
 
@@ -88,23 +91,26 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-    [login logInWithReadPermissions:self.permissions fromViewController:fromViewController handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-        if (error) {
-            NSLog(@"Error logging into facebook %@", error.description);
-        } else if (result.isCancelled) {
-            NSLog(@"Canceled login to facebook");
-        } else {
-            [self getFBUserInfo];
-        }
-    }];
+    [login logInWithReadPermissions:self.permissions
+                 fromViewController:fromViewController
+                            handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+                                if (error) {
+                                    NSLog(@"Error logging into facebook %@", error.description);
+                                } else if (result.isCancelled) {
+                                    NSLog(@"Canceled login to facebook");
+                                } else {
+                                    [self getFBUserInfo];
+                                }
+                            }];
 }
 
 - (void)getFBUserInfo
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([FBSDKAccessToken currentAccessToken]) {
+        NSString *fields = @"id, name, link, first_name, last_name, picture.type(large), email";
         [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me"
-                                           parameters:@{@"fields": @"id, name, link, first_name, last_name, picture.type(large), email"}]
+                                           parameters:@{@"fields": fields}]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
              if (!error) {
                  [self userInfoRecieved:result];
@@ -118,16 +124,43 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
-        NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
         modifiedInfo[@"googlePushId"] = [ud objectForKey:SLUserDefaultsPushNotificationToken];
         [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
     } else {
-        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:info];
+        // TODO this googlePushId should not be here. Only placing it here for testing purpose
+        NSString *testPushId = @"dkdkododkdkdnfkdkdodwlslslsolslsldkdfjdffididlslapepkeke9";
+        modifiedInfo[@"googlePushId"] = testPushId;
+        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
     }
-
-    [SLPicManager.sharedManager facebookPicForFBUserId:info[@"id"] completion:nil];
- 
+    
+    NSString *userId = info[@"id"];
+    [SLPicManager.sharedManager facebookPicForFBUserId:userId completion:nil];
+    
+    [ud setObject:userId forKey:SLUserDefaultsPassword];
+    [ud synchronize];
+    
+    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+    NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asDictionary];
+    userDict[@"password"] = userId;
+    
+    [SLRestManager.sharedManager postObject:userDict
+                                  serverKey:SLRestManagerServerKeyMain
+                                    pathKey:SLRestManagerPathUsers
+                                  subRoutes:nil
+                          additionalHeaders:nil
+                                 completion:^(NSDictionary *responseDict) {
+                                     if (!responseDict || !responseDict[@"token"]) {
+                                         NSLog(@"No response or user token when saving facebook user");
+                                         return;
+                                     }
+                                     
+                                     NSLog(@"got response saving facebook userId: %@ Response Info: %@", userDict, responseDict);
+                                     [ud setObject:responseDict[@"token"] forKey:SLUserDefaultsUserToken];
+                                     [ud synchronize];
+                                 }];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
                                                         object:nil];
 }

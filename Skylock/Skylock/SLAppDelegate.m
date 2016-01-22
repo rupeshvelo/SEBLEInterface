@@ -11,7 +11,6 @@
 #import "SLFacebookManger.h"
 #import "SLLoginViewController.h"
 #import "SLMapViewController.h"
-#import "SLMainTutorialViewController.h"
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
 #import "SLUserDefaults.h"
@@ -37,13 +36,6 @@
     [SLDatabaseManager.sharedManager setCurrentUser];
     [SLLockManager.sharedManager startBlueToothManager];
     [SLLockManager.sharedManager fetchLocks];
-//    [SLLockManager.sharedManager startScan];
-//
-//    if ([SLLockManager.sharedManager hasLocksForCurrentUser]) {
-//        [SLLockManager.sharedManager shouldEnterSearchMode:YES];
-//    }
-    
-
     
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
@@ -53,15 +45,6 @@
     self.window.rootViewController = self.initialViewController;
     
     [self.window makeKeyAndVisible];
-    
-    UIPageControl *pageControl = [UIPageControl appearance];
-    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:225
-                                                         green:225
-                                                          blue:225];
-    
-    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:88
-                                                                green:204
-                                                                 blue:131];
     
     [self setUpNotficationSettings:application];
     
@@ -151,14 +134,10 @@
                     SLMapViewController *mvc = [SLMapViewController new];
                     initialVC = mvc;
                 } else {
-//                    SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-//                    tvc.shouldDismiss = NO;
                     SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
                     initialVC = wtvc;
                 }
             } else {
-//                SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-//                tvc.shouldDismiss = NO;
                 SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
                 initialVC = wtvc;
             }

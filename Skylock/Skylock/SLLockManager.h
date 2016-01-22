@@ -41,5 +41,6 @@
 - (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks;
 - (BOOL)hasLocksForCurrentUser;
 - (void)deselectAllLocks;
+- (void)testing;
 
 @end
