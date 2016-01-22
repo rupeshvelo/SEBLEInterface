@@ -28,6 +28,7 @@
 @interface SLLoginViewController ()
 
 @property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) UIImageView *blurredBackgroundOverlay;
 @property (nonatomic, strong) UIButton *getStartedButton;
 @property (nonatomic, strong) UIImageView *skylockLogoView;
 @property (nonatomic, assign) BOOL isGetStarted;
@@ -61,7 +62,7 @@
 - (UIImageView *)skylockLogoView
 {
     if (!_skylockLogoView) {
-        UIImage *image = [UIImage imageNamed:@"img_logo2"];
+        UIImage *image = [UIImage imageNamed:@"logo2"];
         _skylockLogoView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f,
                                                                          0.0f,
                                                                          image.size.width,

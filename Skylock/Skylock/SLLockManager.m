@@ -177,7 +177,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSArray *notifyChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState],
-                             [self uuidForCharacteristic:SLLockManagerCharacteristicPublicKey]
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicPublicKey],
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicLock]
                              ];
     
     return [NSSet setWithArray:notifyChars];
@@ -412,11 +413,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)getHardwareData:(NSTimer *)timer
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (self.selectedLock) {
-        [self.bleManager readValueForPeripheralNamed:self.selectedLock.name
-                                      forServiceUUID:[self uuidForService:SLLockManagerServiceHardware]
-                               andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo]];
-    }
+//    if (self.selectedLock) {
+//        [self.bleManager readValueForPeripheralNamed:self.selectedLock.name
+//                                      forServiceUUID:[self uuidForService:SLLockManagerServiceHardware]
+//                               andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicHardwareInfo]];
+//    }
 }
 
 - (void)shouldEnterSearchMode:(BOOL)shouldSearch
