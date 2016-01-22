@@ -104,6 +104,8 @@
 		DC6471EA1C40566600286DBF /* walkthrough3_Bluetooth@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E41C40566600286DBF /* walkthrough3_Bluetooth@3x.png */; };
 		DC6471EB1C40566600286DBF /* walkthrough3_hand@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E51C40566600286DBF /* walkthrough3_hand@2x.png */; };
 		DC6471EC1C40566600286DBF /* walkthrough3_hand@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E61C40566600286DBF /* walkthrough3_hand@3x.png */; };
+		DC7025191C51AE080038D412 /* logo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025171C51AE070038D412 /* logo2@2x.png */; };
+		DC70251A1C51AE080038D412 /* logo2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025181C51AE070038D412 /* logo2@3x.png */; };
 		DC7A116C1B5714B100F3336E /* bg_splash1.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A105F1B5714B100F3336E /* bg_splash1.png */; };
 		DC7A116D1B5714B100F3336E /* bg_splash1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A10601B5714B100F3336E /* bg_splash1@2x.png */; };
 		DC7A116E1B5714B100F3336E /* bg_splash1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7A10611B5714B100F3336E /* bg_splash1@3x.png */; };
@@ -610,6 +612,8 @@
 		DC6471E41C40566600286DBF /* walkthrough3_Bluetooth@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_Bluetooth@3x.png"; sourceTree = "<group>"; };
 		DC6471E51C40566600286DBF /* walkthrough3_hand@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_hand@2x.png"; sourceTree = "<group>"; };
 		DC6471E61C40566600286DBF /* walkthrough3_hand@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough3_hand@3x.png"; sourceTree = "<group>"; };
+		DC7025171C51AE070038D412 /* logo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@2x.png"; sourceTree = "<group>"; };
+		DC7025181C51AE070038D412 /* logo2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@3x.png"; sourceTree = "<group>"; };
 		DC7A105F1B5714B100F3336E /* bg_splash1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_splash1.png; sourceTree = "<group>"; };
 		DC7A10601B5714B100F3336E /* bg_splash1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash1@2x.png"; sourceTree = "<group>"; };
 		DC7A10611B5714B100F3336E /* bg_splash1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash1@3x.png"; sourceTree = "<group>"; };
@@ -1280,9 +1284,19 @@
 			path = walkthrough_page3;
 			sourceTree = "<group>";
 		};
+		DC7025161C51AE070038D412 /* november_assets */ = {
+			isa = PBXGroup;
+			children = (
+				DC7025171C51AE070038D412 /* logo2@2x.png */,
+				DC7025181C51AE070038D412 /* logo2@3x.png */,
+			);
+			path = november_assets;
+			sourceTree = "<group>";
+		};
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
 			isa = PBXGroup;
 			children = (
+				DC7025161C51AE070038D412 /* november_assets */,
 				DC0434151C482B7000BCDB14 /* walkthrough_page5 */,
 				DC8ECEDA1C4431BA00708CA3 /* walkthrough_page4 */,
 				DC6471E01C40566600286DBF /* walkthrough_page3 */,
@@ -1996,6 +2010,7 @@
 				DC7A11981B5714B100F3336E /* btn_login.png in Resources */,
 				DC7A11CD1B5714B100F3336E /* icon_battery_0@3x.png in Resources */,
 				DCCDA3251C3DDD0800854289 /* walkthrough2_Iphone@2x.png in Resources */,
+				DC70251A1C51AE080038D412 /* logo2@3x.png in Resources */,
 				DC7A12D61B572B3D00F3336E /* pagination_white3@2x.png in Resources */,
 				DC02507A1B59D539007D2D6A /* btn_theftalert_on@2x.png in Resources */,
 				DC6471EA1C40566600286DBF /* walkthrough3_Bluetooth@3x.png in Resources */,
@@ -2132,6 +2147,7 @@
 				DC7A12021B5714B100F3336E /* icon_mylock_on@2x.png in Resources */,
 				DC7A11721B5714B100F3336E /* bg_splash2_6@2x.png in Resources */,
 				DCCDA2F41C3DAC6800854289 /* Next_Button@2x.png in Resources */,
+				DC7025191C51AE080038D412 /* logo2@2x.png in Resources */,
 				DC7A12111B5714B100F3336E /* icon_settings_large@2x.png in Resources */,
 				DC7A11AB1B5714B100F3336E /* btn_savepin@2x.png in Resources */,
 				DC7A12241B5714B100F3336E /* icon_timer_white@3x.png in Resources */,
