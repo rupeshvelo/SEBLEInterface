@@ -14,7 +14,6 @@
 #import "SLNotifications.h"
 #import "SLUserDefaults.h"
 #import "SLMapViewController.h"
-#import "SLMainTutorialViewController.h"
 #import "NSString+Skylock.h"
 #import "Skylock-Swift.h"
 

@@ -18,6 +18,13 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
             name: "kSLNotificationLockManagerDiscoverdLock",
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: "pairedLock:",
+            name: "kSLNotificationLockPaired",
+            object: nil
+        )
     }
     
     override func newCardView() -> SLWalkthroughCardView {
@@ -113,5 +120,12 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         print("found lock")
         let lockManager = SLLockManager.sharedManager()
         lockManager.shouldEnterSearchMode(false)
+    }
+    
+    func pairedLock(notification: NSNotification) {
+        print("paired lock")
+        if let delegate = self.delegate {
+            delegate.cardViewControllerWantsNextCard(self)
+        }
     }
 }

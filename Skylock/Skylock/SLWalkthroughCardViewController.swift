@@ -14,6 +14,7 @@ protocol SLWalkthroughCardViewControllerDelegate {
     func cardViewControllerViewMovingLeft(wcvc:SLWalkthroughCardViewController)
     func cardViewControllerViewMovingRight(wcvc:SLWalkthroughCardViewController)
     func cardViewControllerViewMovedBackToCenter(wcvc:SLWalkthroughCardViewController)
+    func cardViewControllerWantsNextCard(wcvc:SLWalkthroughCardViewController)
 }
 
 class SLWalkthroughCardViewController: UIViewController {

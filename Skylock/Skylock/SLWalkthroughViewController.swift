@@ -385,16 +385,12 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     }
     
     func nextButtonPressed() {
-        print("next button pressed")
         switch self.currentPage {
-        case .One:
-            print("one")
-        case .Two:
-            print("two")
-        case .Three:
-            print("three")
-        case .Four:
-            print("four")
+        case .One, .Two, .Three, .Four:
+            if let wcvc = self.cardViewControllers[self.currentPage] {
+                self.cardStartingToMoveLeft(wcvc)
+                self.forceCardViewOffScreenLeft(wcvc)
+            }
         case .Five:
             let userDefaults = NSUserDefaults.standardUserDefaults()
             userDefaults.setBool(true, forKey: "SLUserDefaultsTutorialComplete")
@@ -405,11 +401,38 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     }
     
     func previousButtonPressed() {
-        print("previous button pressed")
+        if let wcvc = self.cardViewControllers[self.currentPage] {
+            self.cardStartingToMoveRight(wcvc)
+            self.forceCardViewOffScreenRight(wcvc)
+        }
     }
     
-    // MARK: SLWalkthroughCardViewControllerDelegate methods
-    func cardViewControllerViewOffscreenLeft(wcvc: SLWalkthroughCardViewController) {
+    func cardStartingToMoveLeft(wcvc: SLWalkthroughCardViewController) {
+        if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .Five {
+            self.bottomCardViewController = self.cardViewControllers[self.nextPage()]
+            self.addChildViewController(self.bottomCardViewController!)
+            self.view.insertSubview(
+                self.bottomCardViewController!.view,
+                belowSubview: self.topCardViewController!.view
+            )
+            self.bottomCardViewController!.view.autoresizesSubviews = true
+            self.bottomCardViewController!.view.frame = dummyVC.view.frame
+            self.bottomCardViewController!.didMoveToParentViewController(self)
+        }
+    }
+    
+    func cardStartingToMoveRight(wcvc: SLWalkthroughCardViewController) {
+        if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .One {
+            self.bottomCardViewController = self.cardViewControllers[self.previousPage()]
+            self.addChildViewController(self.bottomCardViewController!)
+            self.view.insertSubview(self.bottomCardViewController!.view, belowSubview: self.topCardViewController!.view)
+            self.bottomCardViewController!.view.autoresizesSubviews = true
+            self.bottomCardViewController!.view.frame = dummyVC.view.frame
+            self.bottomCardViewController!.didMoveToParentViewController(self)
+        }
+    }
+    
+    func forceCardViewOffScreenLeft(wcvc: SLWalkthroughCardViewController) {
         self.increaseCurrentPage()
         if let nextWcvc = self.cardViewControllers[self.currentPage] where nextWcvc != wcvc {
             wcvc.isActiveController = false
@@ -430,7 +453,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
         }
     }
     
-    func cardViewControllerViewOffscreenRight(wcvc: SLWalkthroughCardViewController) {
+    func forceCardViewOffScreenRight(wcvc: SLWalkthroughCardViewController) {
         self.decreaseCurrentPage()
         if let nextWcvc = self.cardViewControllers[self.currentPage] where nextWcvc != wcvc {
             wcvc.isActiveController = false
@@ -451,32 +474,28 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
         }
     }
     
+    // MARK: SLWalkthroughCardViewControllerDelegate methods
+    func cardViewControllerViewOffscreenLeft(wcvc: SLWalkthroughCardViewController) {
+        self.forceCardViewOffScreenLeft(wcvc)
+    }
+    
+    func cardViewControllerViewOffscreenRight(wcvc: SLWalkthroughCardViewController) {
+        self.forceCardViewOffScreenRight(wcvc)
+    }
+    
     func cardViewControllerViewMovingLeft(wcvc: SLWalkthroughCardViewController) {
-        if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .Five {
-            self.bottomCardViewController = self.cardViewControllers[self.nextPage()]
-            self.addChildViewController(self.bottomCardViewController!)
-            self.view.insertSubview(
-                self.bottomCardViewController!.view,
-                belowSubview: self.topCardViewController!.view
-            )
-            self.bottomCardViewController!.view.autoresizesSubviews = true
-            self.bottomCardViewController!.view.frame = dummyVC.view.frame
-            self.bottomCardViewController!.didMoveToParentViewController(self)
-        }
+        self.cardStartingToMoveLeft(wcvc)
     }
     
     func cardViewControllerViewMovingRight(wcvc: SLWalkthroughCardViewController) {
-        if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .One {
-            self.bottomCardViewController = self.cardViewControllers[self.previousPage()]
-            self.addChildViewController(self.bottomCardViewController!)
-            self.view.insertSubview(self.bottomCardViewController!.view, belowSubview: self.topCardViewController!.view)
-            self.bottomCardViewController!.view.autoresizesSubviews = true
-            self.bottomCardViewController!.view.frame = dummyVC.view.frame
-            self.bottomCardViewController!.didMoveToParentViewController(self)
-        }
+        self.cardStartingToMoveRight(wcvc)
     }
     
     func cardViewControllerViewMovedBackToCenter(wcvc: SLWalkthroughCardViewController) {
         self.bottomCardViewController = nil
+    }
+    
+    func cardViewControllerWantsNextCard(wcvc: SLWalkthroughCardViewController) {
+        self.nextButtonPressed()
     }
 }
