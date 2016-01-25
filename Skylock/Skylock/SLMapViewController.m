@@ -52,7 +52,7 @@
 @property (nonatomic, strong) GMSMarker *userMarker;
 @property (nonatomic, strong) GMSMarker *selectedLockMarker;
 
-@property (nonatomic, strong) NSMutableDictionary *lockAnnotations;
+@property (nonatomic, strong) NSMutableDictionary *lockMarkers;
 @property (nonatomic, assign) BOOL isInitialLoad;
 
 @property (nonatomic, strong) SLLock *selectedLock;
@@ -271,7 +271,7 @@
     
     [self.locationManager requestWhenInUseAuthorization];
     
-    self.lockAnnotations = [NSMutableDictionary new];
+    self.lockMarkers = [NSMutableDictionary new];
     self.isInitialLoad = YES;
     [self registerAlertNotifications];
     
@@ -767,10 +767,15 @@
 
 - (void)addLockToMap:(SLLock *)lock
 {
-    //[self.mapView addAnnotation:[self annotationForLock:lock]];
+    GMSMarker *lockMarker = [GMSMarker markerWithPosition:lock.location];
+    lockMarker.title = lock.name;
+    lockMarker.icon = [UIImage imageNamed:@"img_lock"];
+    lockMarker.map = self.mapView;
+    
+    self.lockMarkers[lock.name] = lockMarker;
 }
 
-- (void)updateUsersLocation
+- (void)updateUserLocation
 {
     self.userMarker.position = self.userLocation;
 
@@ -852,7 +857,7 @@
 //    }];
 }
 
-#pragma mark - MGL map view delegate methods
+#pragma mark - GMS map view delegate methods
 //- (MGLAnnotationImage *)mapView:(MGLMapView * __nonnull)mapView imageForAnnotation:(id<MGLAnnotation> __nonnull)annotation
 //{
 //    MGLAnnotationImage *image;
@@ -915,7 +920,7 @@
 {
     CLLocation *location = locations[0];
     self.userLocation = location.coordinate;
-    [self updateUsersLocation];
+    [self updateUserLocation];
 
     if (self.isInitialLoad) {
         [self centerOnUser];

@@ -237,6 +237,7 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
         _phoneNumberField.delegate = self;
         _phoneNumberField.tag = SLLoginFieldTagPhoneNumber;
         _phoneNumberField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        
         [self.view addSubview:_phoneNumberField];
     }
     
@@ -319,6 +320,7 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
     
     return _touchStopperView;
 }
+
 - (UIImage *)backgroundImage
 {
     NSUInteger height =  (NSUInteger)[UIScreen mainScreen].bounds.size.height;

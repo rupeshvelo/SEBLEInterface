@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
 
 @class SLLock;
 @class SLAccelerometerValues;
@@ -111,5 +112,5 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (NSString *)displayName;
 - (NSString *)macAddress;
 - (BOOL)isInFactoryMode;
-
+- (CLLocationCoordinate2D)location;
 @end
