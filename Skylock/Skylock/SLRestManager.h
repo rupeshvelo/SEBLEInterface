@@ -21,7 +21,8 @@ typedef NS_ENUM(NSUInteger, SLRestManagerServerKey) {
 typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
     SLRestManagerPathKeyChallengeKey,
     SLRestManagerPathKeyChallengeData,
-    SLRestManagerPathKeyKeys
+    SLRestManagerPathKeyKeys,
+    SLRestManagerPathUsers
 };
 
 
@@ -30,15 +31,20 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
 + (instancetype)sharedManager;
 
 - (void)getRequestWithServerKey:(SLRestManagerServerKey)serverKey
-                            pathKey:(SLRestManagerPathKey)pathKey
-                            options:(NSArray *)options
-                         completion:(void (^)(NSDictionary *responseDict))completion;
+                        pathKey:(SLRestManagerPathKey)pathKey
+                      subRoutes:(NSArray *)subRoutes
+              additionalHeaders:(NSDictionary *)additionalHeaders
+                     completion:(void (^)(NSDictionary *responseDict))completion;
 
 - (void)postObject:(NSDictionary *)object
          serverKey:(SLRestManagerServerKey)serverKey
            pathKey:(SLRestManagerPathKey)pathKey
+         subRoutes:(NSArray *)subRoutes
+ additionalHeaders:(NSDictionary *)additionalHeaders
         completion:(void (^)(NSDictionary *responseDict))completion;
 
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void(^)(NSData *))completion;
+
+- (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password;
 
 @end

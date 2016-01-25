@@ -8,9 +8,9 @@
 
 #import "SLDatabaseManager.h"
 #import "SLDbLock+Methods.h"
-#import "SLDbUser+Methods.h"
+#import "SLDbUser+CoreDataProperties.h"
+#import "SLDbUser.h"
 #import "SLLock.h"
-#import "SLUser.h"
 
 #define kSLDatabaseManagerEnityLock @"SLDbLock"
 #define kSLDatabaseManagerEnityUser @"SLDbUser"
@@ -211,49 +211,49 @@
 - (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLDbUser *facebookUser = [self getDbUserWithEmail:dictionary[@"email"]];
+    SLDbUser *facebookUser = [self getDbUserWithUserId:dictionary[@"id"]];
     
     if (facebookUser && self.currentUser) {
-        // facebook suer and current user exist. Check to see if they are
+        // facebook user and current user exist. Check to see if they are
         // the same user
-        if ([facebookUser.email isEqualToString:self.currentUser.email]) {
+        if ([facebookUser.userId isEqualToString:self.currentUser.userId]) {
             // the facebook user the current user. update the current user
-            [self.currentUser setPropertiesWithDictionary:dictionary];
+            [self.currentUser setPropertiesWithFBDictionary:dictionary];
         } else {
             // facebook user is not the current user. The facebook user should
             // become the current user
             self.currentUser.isCurrentUser = @(NO);
             facebookUser.isCurrentUser = @(YES);
-            [facebookUser setPropertiesWithDictionary:dictionary];
+            [facebookUser setPropertiesWithFBDictionary:dictionary];
             [self saveUser:self.currentUser withCompletion:nil];
             [self setCurrentUser];
         }
     } else if (self.currentUser) {
         // user exists and facebook user does not. check to see if
         // the current user matches the info in the facebook hash
-        if ([self.currentUser.email isEqualToString:dictionary[@"email"]]) {
-            [self.currentUser setPropertiesWithDictionary:dictionary];
+        if ([self.currentUser.userId isEqualToString:dictionary[@"id"]]) {
+            [self.currentUser setPropertiesWithFBDictionary:dictionary];
             [self saveUser:self.currentUser withCompletion:nil];
         } else {
             // the current user does not match the info in the facebook hash
             // create a new user and make it the current user
             self.currentUser.isCurrentUser = @(NO);
             facebookUser = self.newDbUser;
-            [facebookUser setPropertiesWithDictionary:dictionary];
+            [facebookUser setPropertiesWithFBDictionary:dictionary];
             facebookUser.isCurrentUser = @(YES);
             [self saveUser:facebookUser withCompletion:nil];
             [self setCurrentUser];
         }
     } else if (facebookUser) {
         // there is no current user set
-        [facebookUser setPropertiesWithDictionary:dictionary];
+        [facebookUser setPropertiesWithFBDictionary:dictionary];
         facebookUser.isCurrentUser = @(YES);
         [self saveUser:facebookUser withCompletion:nil];
         [self setCurrentUser];
     } else {
         // there is no current user or facebook user
         facebookUser = self.newDbUser;
-        [facebookUser setPropertiesWithFacebookDictionary:dictionary];
+        [facebookUser setPropertiesWithFBDictionary:dictionary];
         facebookUser.isCurrentUser = @(YES);
         [self saveUser:facebookUser withCompletion:nil];
         [self setCurrentUser];
@@ -293,10 +293,10 @@
     }
 }
 
-- (SLDbUser *)getDbUserWithEmail:(NSString *)email
+- (SLDbUser *)getDbUserWithUserId:(NSString *)userId
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"email == %@", email];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId == %@", userId];
     NSArray *users = [self getDBUsersWithPredicate:predicate];
     return (users && users.count > 0) ? users[0] : nil;
 }

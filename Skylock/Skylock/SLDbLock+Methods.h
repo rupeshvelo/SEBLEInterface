@@ -12,4 +12,6 @@
 
 - (NSDictionary *)asDictionary;
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
+- (NSString*)macAddress;
+
 @end

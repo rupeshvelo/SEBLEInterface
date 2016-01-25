@@ -11,7 +11,7 @@
 #import "SLAccountInfoFieldView.h"
 #import "UIColor+RGB.h"
 #import "SLDatabaseManager.h"
-#import "SLDbUser+Methods.h"
+#import "SLDbUser+CoreDataProperties.h"
 #import "SLPicManager.h"
 
 #define kSLAccountInfoFieldVCLabelFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
@@ -93,7 +93,7 @@
                                                                                    self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
                                                                                    33.0f)
                                                            headerString:NSLocalizedString(@"Email Address", nil)
-                                                             infoString:self.user.email
+                                                             infoString:self.user.userId
                                                            buttonString:NSLocalizedString(@"Change email address", nil) showSecure:NO];
         [self.view addSubview:_emailFieldView];
     }
@@ -109,7 +109,7 @@
                                                                                     self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
                                                                                     33.0f)
                                                             headerString:NSLocalizedString(@"Phone number", nil)
-                                                              infoString:self.user.phoneNumber
+                                                              infoString:self.user.userId
                                                             buttonString:NSLocalizedString(@"Change phone number", nil) showSecure:NO];
         [self.view addSubview:_phoneNumberView];
     }
@@ -125,7 +125,7 @@
                                                                                  self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
                                                                                  33.0f)
                                                          headerString:NSLocalizedString(@"Password", nil)
-                                                           infoString:self.user.password
+                                                           infoString:self.user.userId
                                                          buttonString:NSLocalizedString(@"Change password", nil)
                                                            showSecure:YES];
         [self.view addSubview:_passwordView];
@@ -188,7 +188,7 @@
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     
-    [SLPicManager.sharedManager facebookPicForFBUserId:self.user.facebookId email:self.user.email completion:^(UIImage *image) {
+    [SLPicManager.sharedManager facebookPicForFBUserId:self.user.userId completion:^(UIImage *image) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.picView setPicImage:image];
         });

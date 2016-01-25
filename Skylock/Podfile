@@ -3,3 +3,4 @@ platform :ios, '8.1'
 pod 'GoogleMaps', '~> 1.10'
 pod "FBSDKCoreKit"
 pod "FBSDKLoginKit"
+pod 'Google/CloudMessaging'

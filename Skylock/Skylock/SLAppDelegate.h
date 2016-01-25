@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import <Google/CloudMessaging.h>
+
 
 @class SLNotification;
 
-@interface SLAppDelegate : UIResponder <UIApplicationDelegate>
+@interface SLAppDelegate : UIResponder <UIApplicationDelegate, GGLInstanceIDDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

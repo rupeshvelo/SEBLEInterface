@@ -13,4 +13,11 @@
 #define SLUserDefaultsTutorialComplete      @"SLUserDefaultsTutorialComplete"
 #define SLUserDefaultsCoachMarksComplete    @"SLUserDefaultsCoachMarksComplete"
 #define SLUserDefaultsProfilePicCacheDate   @"SLUserDefaultsProfilePicCacheDate"
+#define SLUserDefaultsPushNotificationToken @"SLUserDefaultsPushNotificationToken"
+#define SLUserDefaultsPassword              @"SLUserDefaultsPassword"
+#define SLUserDefaultsChallengeKey          @"SLUserDefaultsChallengeKey"
+#define SLUserDefaultsPublicKey             @"SLUserDefaultsPublicKey"
+#define SLUserDefaultsSignedMessage         @"SLUserDefaultsSignedMessage"
+#define SLUserDefaultsUserToken             @"SLUserDefaultsUserToken"
+
 #endif

@@ -19,7 +19,6 @@
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
 #import "SLPicManager.h"
-#import "SLDbUser+Methods.h"
 #import "SLLock.h"
 #import "UIImage+Skylock.h"
 #import "SLNavigationViewController.h"
@@ -29,9 +28,9 @@
 #import "SLSharingViewController.h"
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
-#import "SLMainTutorialViewController.h"
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
+#import "SLDbUser+CoreDataProperties.h"
 
 #define kSLMapViewControllerLockInfoViewWidth 295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
@@ -313,7 +312,7 @@
     [self addChildViewController:self.lockInfoViewController];
     [self.view addSubview:self.lockInfoViewController.view];
     [self.view bringSubviewToFront:self.lockInfoViewController.view];
-    [self.lockInfoViewController didMoveToParentViewController:self];    
+    [self.lockInfoViewController didMoveToParentViewController:self];
 }
 
 - (void)registerAlertNotifications
@@ -637,13 +636,18 @@
     } completion:^(BOOL finished) {
         if (shouldBeLarge) {
             self.locationButton.hidden = NO;
+            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+            NSNumber *showCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
+            if (!showCoachmarks || !showCoachmarks.boolValue) {
+                [self presentCoachMarkViewController];
+            }
         }
     }];
 }
 
 - (void)locationButtonPressed
 {
-    //[self centerOnUser];
+    [self centerOnUser];
 }
 
 - (void)directionsButtonPushed
@@ -690,9 +694,8 @@
     } else if (action == SLSlideViewControllerButtonActionLockDeselected){
         self.selectedLock = nil;
     } else if (action == SLSlideViewControllerButtonActionAddLock){
-        SLMainTutorialViewController *tvc = [SLMainTutorialViewController new];
-        tvc.shouldDismiss = YES;        
-        [self presentViewController:tvc animated:YES completion:nil];
+        SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+        [self presentViewController:wtvc animated:YES completion:nil];
     } else if (action == SLSlideViewControllerButtonActionSharing) {
         SLSharingViewController *svc = [SLSharingViewController new];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
@@ -773,7 +776,8 @@
 
     if (self.isInitialLoad) {
         SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
-        UIImage *userPic = [SLPicManager.sharedManager userImageForEmail:user.email];
+        
+        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
         if (userPic) {
             UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
             UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
