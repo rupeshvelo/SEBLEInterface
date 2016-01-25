@@ -416,4 +416,9 @@
     return [self.name rangeOfString:@"-"].location != NSNotFound;
 }
 
+- (CLLocationCoordinate2D)location
+{
+    return CLLocationCoordinate2DMake(self.latitude.doubleValue, self.longitude.doubleValue);
+}
+
 @end
