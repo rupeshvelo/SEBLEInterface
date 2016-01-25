@@ -28,6 +28,13 @@
 		DC0434211C482B7000BCDB14 /* walkthrough5_finished_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC04341B1C482B7000BCDB14 /* walkthrough5_finished_button@3x.png */; };
 		DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */; };
 		DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */; };
+		DC10D2541C526C4400C8F023 /* facebook_loggin_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D24E1C526C4400C8F023 /* facebook_loggin_button@2x.png */; };
+		DC10D2551C526C4400C8F023 /* facebook_loggin_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D24F1C526C4400C8F023 /* facebook_loggin_button@3x.png */; };
+		DC10D2561C526C4400C8F023 /* logo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D2501C526C4400C8F023 /* logo2@2x.png */; };
+		DC10D2571C526C4400C8F023 /* logo2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D2511C526C4400C8F023 /* logo2@3x.png */; };
+		DC10D2581C526C4400C8F023 /* phone_login_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D2521C526C4400C8F023 /* phone_login_button@2x.png */; };
+		DC10D2591C526C4400C8F023 /* phone_login_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC10D2531C526C4400C8F023 /* phone_login_button@3x.png */; };
+		DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */; };
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
@@ -539,6 +546,13 @@
 		DC0520B71B4B8C0E00FBAAB7 /* SLDbLock+Methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLDbLock+Methods.h"; sourceTree = "<group>"; };
 		DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLDbLock+Methods.m"; sourceTree = "<group>"; };
 		DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Pods/GoogleMaps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
+		DC10D24E1C526C4400C8F023 /* facebook_loggin_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook_loggin_button@2x.png"; sourceTree = "<group>"; };
+		DC10D24F1C526C4400C8F023 /* facebook_loggin_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook_loggin_button@3x.png"; sourceTree = "<group>"; };
+		DC10D2501C526C4400C8F023 /* logo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@2x.png"; sourceTree = "<group>"; };
+		DC10D2511C526C4400C8F023 /* logo2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@3x.png"; sourceTree = "<group>"; };
+		DC10D2521C526C4400C8F023 /* phone_login_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_login_button@2x.png"; sourceTree = "<group>"; };
+		DC10D2531C526C4400C8F023 /* phone_login_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_login_button@3x.png"; sourceTree = "<group>"; };
+		DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoginTextField.swift; sourceTree = "<group>"; };
 		DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLPicManager.h; sourceTree = "<group>"; };
 		DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLPicManager.m; sourceTree = "<group>"; };
 		DC17ACB31B5C6B620090BE8A /* UIImage+Skylock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Skylock.h"; sourceTree = "<group>"; };
@@ -1155,6 +1169,7 @@
 				DC7E70CC1B8C27DF006E74DC /* SLNotificationCrashView.m */,
 				DC974D281C3A28D600797CF1 /* SLWalkthroughCardView.swift */,
 				DCB7388D1C3B4CC700A9156D /* SLWalkthoughCardView1.swift */,
+				DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -1254,6 +1269,19 @@
 			name = managers;
 			sourceTree = "<group>";
 		};
+		DC10D24D1C526C4400C8F023 /* loggin */ = {
+			isa = PBXGroup;
+			children = (
+				DC10D24E1C526C4400C8F023 /* facebook_loggin_button@2x.png */,
+				DC10D24F1C526C4400C8F023 /* facebook_loggin_button@3x.png */,
+				DC10D2501C526C4400C8F023 /* logo2@2x.png */,
+				DC10D2511C526C4400C8F023 /* logo2@3x.png */,
+				DC10D2521C526C4400C8F023 /* phone_login_button@2x.png */,
+				DC10D2531C526C4400C8F023 /* phone_login_button@3x.png */,
+			);
+			path = loggin;
+			sourceTree = "<group>";
+		};
 		DC44024F1B98A65D00D1C2B9 /* utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -1296,6 +1324,7 @@
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
 			isa = PBXGroup;
 			children = (
+				DC10D24D1C526C4400C8F023 /* loggin */,
 				DC7025161C51AE070038D412 /* november_assets */,
 				DC0434151C482B7000BCDB14 /* walkthrough_page5 */,
 				DC8ECEDA1C4431BA00708CA3 /* walkthrough_page4 */,
@@ -2059,9 +2088,11 @@
 				DC7A11A71B5714B100F3336E /* btn_retry.png in Resources */,
 				DC7A12631B5714B100F3336E /* img_theftalert_yellow@3x.png in Resources */,
 				DC7A11D41B5714B100F3336E /* icon_battery_33.png in Resources */,
+				DC10D2591C526C4400C8F023 /* phone_login_button@3x.png in Resources */,
 				DC7A118B1B5714B100F3336E /* btn_facebooklogout@3x.png in Resources */,
 				DCCDA2F61C3DAC6800854289 /* Previous_Button@2x.png in Resources */,
 				DC7A11731B5714B100F3336E /* bg_splash2_6@3x.png in Resources */,
+				DC10D2541C526C4400C8F023 /* facebook_loggin_button@2x.png in Resources */,
 				DC7A11811B5714B100F3336E /* btn_crashalert_on@2x.png in Resources */,
 				DC0250781B59D539007D2D6A /* btn_crashalert_off@3x.png in Resources */,
 				DCF36BC81B538CE100070F11 /* Roboto-Regular.ttf in Resources */,
@@ -2177,7 +2208,9 @@
 				DC7A11911B5714B100F3336E /* btn_ignore@3x.png in Resources */,
 				DC8ECEE91C4431BA00708CA3 /* walkthrough4_no_button@3x.png in Resources */,
 				DC7A11A21B5714B100F3336E /* btn_releasebike@2x.png in Resources */,
+				DC10D2571C526C4400C8F023 /* logo2@3x.png in Resources */,
 				DC44028A1B9C8E1100D1C2B9 /* btn_unlock_grey@1.5x.png in Resources */,
+				DC10D2581C526C4400C8F023 /* phone_login_button@2x.png in Resources */,
 				DC7A11A91B5714B100F3336E /* btn_retry@3x.png in Resources */,
 				DC7A11A81B5714B100F3336E /* btn_retry@2x.png in Resources */,
 				DC7A11E21B5714B100F3336E /* icon_bt@3x.png in Resources */,
@@ -2201,6 +2234,7 @@
 				DC7A11E31B5714B100F3336E /* icon_chevron_down.png in Resources */,
 				DC7A12281B5714B100F3336E /* icon_wifi_1.png in Resources */,
 				DC7A121D1B5714B100F3336E /* icon_tick@2x.png in Resources */,
+				DC10D2561C526C4400C8F023 /* logo2@2x.png in Resources */,
 				DCCDA3221C3DDD0800854289 /* walkthrough2_blue_tooth_icon@3x.png in Resources */,
 				DC7A11CB1B5714B100F3336E /* icon_battery_0.png in Resources */,
 				DC7A11F41B5714B100F3336E /* icon_hand@3x.png in Resources */,
@@ -2249,6 +2283,7 @@
 				DC7A11FD1B5714B100F3336E /* icon_menu@3x.png in Resources */,
 				DC7A124B1B5714B100F3336E /* img_logo2@3x.png in Resources */,
 				DC7A11EA1B5714B100F3336E /* icon_chevron_left_white@2x.png in Resources */,
+				DC10D2551C526C4400C8F023 /* facebook_loggin_button@3x.png in Resources */,
 				DCCDA2FE1C3DAC6800854289 /* walkthrough_radar@2x.png in Resources */,
 				DC7A122C1B5714B100F3336E /* icon_wifi_2@2x.png in Resources */,
 				DC7A11BA1B5714B100F3336E /* btn_theftalert_off@2x.png in Resources */,
@@ -2371,6 +2406,7 @@
 			files = (
 				DC974D291C3A28D600797CF1 /* SLWalkthroughCardView.swift in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
+				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
 				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
