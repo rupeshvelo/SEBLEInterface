@@ -41,9 +41,7 @@
     [GMSServices provideAPIKey:googleMapApiKey];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        
     self.window.rootViewController = self.initialViewController;
-    
     [self.window makeKeyAndVisible];
     
     [self setUpNotficationSettings:application];
@@ -97,7 +95,6 @@
 {
     GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
     instanceIDConfig.delegate = self;
-    
     
     NSDictionary *options = @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
                               kGGLInstanceIDAPNSServerTypeSandboxOption:@YES};

@@ -113,4 +113,5 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 - (NSString *)macAddress;
 - (BOOL)isInFactoryMode;
 - (CLLocationCoordinate2D)location;
+
 @end
