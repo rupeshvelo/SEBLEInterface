@@ -24,21 +24,24 @@
 #import "SLNavigationViewController.h"
 #import "SLAccountInfoViewController.h"
 #import <CoreLocation/CoreLocation.h>
-#import "Skylock-Swift.h"
 #import "SLSharingViewController.h"
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
 #import "SLDbUser+CoreDataProperties.h"
+#import "Skylock-Swift.h"
+
 
 #define kSLMapViewControllerLockInfoViewWidth       295.0f
 #define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
 #define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
 #define kSLMapViewControllerLockInfoViewPadding     12.0f
 #define kSLMapViewControllerCalloutScaler           4.0f
+#define kSLMapViewControllerCalloutOffsetScaler     0.75f
 
-@interface SLMapViewController ()
+
+@interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *menuButton;
@@ -224,6 +227,7 @@
     if (!_mapCalloutViewController) {
         _mapCalloutViewController = [SLMapCalloutViewController new];
         [_mapCalloutViewController setProperties:NSLocalizedString(@"Navigate to", nil) lock:self.selectedLock];
+        _mapCalloutViewController.delegate = self;
     }
     
     return _mapCalloutViewController;
@@ -794,6 +798,32 @@
 //    }];
 }
 
+- (void)getDirectionsForTransportation:(SLMapCalloutVCPane)pane
+{
+    if (!self.selectedLock) {
+        NSLog(@"Can't present directions");
+        return;
+    }
+    
+    NSString *url = [NSString stringWithFormat:
+                     @"https://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&departure_time=now&mode=%@",
+                     self.userLocation.latitude,
+                     self.userLocation.longitude,
+                     self.selectedLock.latitude.doubleValue,
+                     self.selectedLock.longitude.doubleValue,
+                     pane == SLMapCalloutVCPaneLeft ? @"walking" : @"bicycling"];
+                     //[[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"]];
+    
+    [SLRestManager.sharedManager getGoogleDirectionsFromUrl:url completion:^(NSDictionary *responseDict) {
+        if (!responseDict) {
+            NSLog(@"no response dictionary from: %@", url);
+            return;
+        }
+        
+        NSLog(@"received info from %@: %@", url, responseDict);
+    }];
+    
+}
 #pragma mark - GMS map view delegate methods
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker
@@ -823,8 +853,7 @@
     
     CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
     CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
-    //point.y -= self.mapView.selectedMarker.icon.size.height;
-    point.x += .75*self.mapCalloutViewController.view.bounds.size.width;
+    point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
     self.mapCalloutViewController.view.center = point;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, .1f, .1f)];
@@ -856,8 +885,7 @@
     if (self.selectedLockMarker && self.mapCalloutViewController) {
         CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
         CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
-        //point.y -= self.selectedLockMarker.icon.size.height;
-        point.x += .75*self.mapCalloutViewController.view.bounds.size.width;
+        point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
         self.mapCalloutViewController.view.center = point;
     }
 }
@@ -905,6 +933,17 @@
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
 {
     [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - SLMapCalloutViewController Delegate methods
+- (void)leftCalloutViewTapped:(SLMapCalloutViewController *)calloutController
+{
+    [self getDirectionsForTransportation:SLMapCalloutVCPaneLeft];
+}
+
+- (void)rightCalloutViewTapped:(SLMapCalloutViewController *)calloutController
+{
+    [self getDirectionsForTransportation:SLMapCalloutVCPaneRight];
 }
 
 @end

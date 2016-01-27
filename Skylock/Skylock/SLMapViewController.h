@@ -27,6 +27,7 @@ CLLocationManagerDelegate,
 SLNotificationViewControllerDelegate,
 MFMessageComposeViewControllerDelegate,
 SLDirectionsViewControllerDelegate,
-GMSMapViewDelegate>
+GMSMapViewDelegate
+>
 
 @end

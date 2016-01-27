@@ -8,6 +8,11 @@
 
 import UIKit
 
+@objc public enum SLMapCalloutVCPane: Int {
+    case Left
+    case Right
+}
+
 @objc public protocol SLMapCalloutViewControllerDelegate {
     @objc func leftCalloutViewTapped(calloutController: SLMapCalloutViewController)
     @objc func rightCalloutViewTapped(calloutController: SLMapCalloutViewController)
@@ -33,7 +38,7 @@ import UIKit
             height: self.view.bounds.size.height
         )
         
-        let lockName: String = self.lock == nil ? "" : self.lock!.displayName()
+        let lockName:String = self.lock == nil ? "" : self.lock!.displayName()
         
         let calloutView:SLMapCalloutView = SLMapCalloutView(
             frame: frame,
@@ -106,14 +111,10 @@ import UIKit
     
     // MARK: callout view delegate methods
     func calloutViewTapped(calloutView: SLMapCalloutView) {
-        if calloutView == self.leftCalloutView {
-            if let delegate = self.delegate {
-                delegate.leftCalloutViewTapped(self)
-            }
-        } else if calloutView == self.rightCalloutView {
-            if let delegate = self.delegate {
-                delegate.rightCalloutViewTapped(self)
-            }
+        if calloutView == self.leftCalloutView, let delegate = self.delegate {
+            delegate.leftCalloutViewTapped(self)
+        } else if calloutView == self.rightCalloutView, let delegate = self.delegate {
+            delegate.rightCalloutViewTapped(self)
         }
     }
 }
