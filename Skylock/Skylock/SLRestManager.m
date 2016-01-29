@@ -184,6 +184,36 @@
     [uploadTask resume];
 }
 
+- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void (^)(NSData *))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+                                            completionHandler:^(NSData *data,
+                                                                NSURLResponse *response,
+                                                                NSError *error) {
+                                                if (error) {
+                                                    NSLog(@"error getting directions from url: %@, failed with error: %@",
+                                                          urlString,
+                                                          error.localizedDescription);
+                                                    completion(nil);
+                                                    return;
+                                                }
+                                                
+                                                completion(data);
+                                            }];
+    [task resume];
+}
+
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void (^)(NSData *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));

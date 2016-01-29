@@ -15,9 +15,19 @@
 #import <MessageUI/MessageUI.h>
 #import "SLAnnotationDirectionCalloutView.h"
 #import "SLDirectionsViewController.h"
+
 @import GoogleMaps;
 
-@interface SLMapViewController : UIViewController <SLSlideViewControllerDelegate, SLCoachMarkViewControllerDelegate, SLLockInfoViewControllerDelegate,
-    UIAlertViewDelegate, CLLocationManagerDelegate, SLNotificationViewControllerDelegate, MFMessageComposeViewControllerDelegate, SLDirectionsViewControllerDelegate, GMSMapViewDelegate>
+@interface SLMapViewController : UIViewController <
+SLSlideViewControllerDelegate,
+SLCoachMarkViewControllerDelegate,
+SLLockInfoViewControllerDelegate,
+UIAlertViewDelegate,
+CLLocationManagerDelegate,
+SLNotificationViewControllerDelegate,
+MFMessageComposeViewControllerDelegate,
+SLDirectionsViewControllerDelegate,
+GMSMapViewDelegate
+>
 
 @end
