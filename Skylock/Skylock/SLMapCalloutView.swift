@@ -104,7 +104,16 @@ class SLMapCalloutView: UIView {
         }
         
         self.isSelected = !self.isSelected
+        self.setSelectedImage()
+    }
+    
+    func setSelected(isSelected: Bool) {
+        self.isSelected = isSelected
+        self.setSelectedImage()
+    }
+    
+    func setSelectedImage() {
         self.imageView.image = self.isSelected ?
-            UIImage(named: self.selectedImageName) : UIImage(named: self.deselectedImageName)
+        UIImage(named: self.selectedImageName) : UIImage(named: self.deselectedImageName)
     }
 }

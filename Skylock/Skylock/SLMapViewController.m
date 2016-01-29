@@ -717,6 +717,22 @@
     [self setupLockInfoViewControllerView:shouldIncreaseSize];
 }
 
+#pragma mark - SLDirectionsViewController Delegate Methods
+- (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        directionsController.view.frame = CGRectMake(self.view.bounds.size.width,
+                                                     self.directionsViewController.view.frame.origin.y,
+                                                     self.directionsViewController.view.bounds.size.width,
+                                                     self.directionsViewController.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [directionsController.view removeFromSuperview];
+        [directionsController removeFromParentViewController];
+        [self exitDirecitonMode];
+    }];
+}
+
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
@@ -788,8 +804,21 @@
                                                                                      directions:self.directions];
     [drawingHelper drawDirections:^{
         self.directionsButton.hidden = NO;
-        [self.lockInfoViewController setUpView];
+        
+        if (!self.lockInfoViewController.isUp) {
+            [self.lockInfoViewController setUpView];
+        }
     }];
+}
+
+- (void)exitDirecitonMode
+{
+    self.directions = nil;
+    self.directionsViewController = nil;
+    
+    if (self.mapCalloutViewController) {
+        [self.mapCalloutViewController setCalloutViewUnselected];
+    }
 }
 
 #pragma mark - GMS map view delegate methods
@@ -836,6 +865,7 @@
         [self.mapCalloutViewController.view removeFromSuperview];
         [self.mapCalloutViewController removeFromParentViewController];
         self.mapCalloutViewController = nil;
+        self.directionsButton.hidden = YES;
     }
     
     if (self.selectedLockMarker) {

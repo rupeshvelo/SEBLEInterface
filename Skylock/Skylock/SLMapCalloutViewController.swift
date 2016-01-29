@@ -109,6 +109,11 @@ import UIKit
         return "\(distance as Int)ft away"
     }
     
+    @objc public func setCalloutViewUnselected() {
+        self.leftCalloutView.setSelected(false)
+        self.rightCalloutView.setSelected(false)
+    }
+    
     // MARK: callout view delegate methods
     func calloutViewTapped(calloutView: SLMapCalloutView) {
         if calloutView == self.leftCalloutView, let delegate = self.delegate {
