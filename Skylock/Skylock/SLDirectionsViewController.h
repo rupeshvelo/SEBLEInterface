@@ -17,5 +17,7 @@
 @interface SLDirectionsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) NSArray *directions;
+@property (nonatomic, copy) NSString *endAddress;
+
 @property (nonatomic, weak) id <SLDirectionsViewControllerDelegate> delegate;
 @end

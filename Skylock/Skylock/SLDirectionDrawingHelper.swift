@@ -9,26 +9,28 @@
 import Foundation
 import MapKit
 import CoreLocation
-//import GoogleMaps
+import GoogleMaps
 
 class SLDirectionDrawingHelper: NSObject {
-//    let mapView: GMSMapView
-//    let directions: [SLDirection]
-//    
-//    init(mapView: GMSMapView, directions: [SLDirection]) {
-//        self.mapView = mapView;
-//        self.directions = directions;
-//    }
-//    
-//    func drawDirections(completion: () -> ()) {
-//        var coords: [CLLocationCoordinate2D] = []
-//        for direction in self.directions {
-//            coords.append(direction.coordinate)
-//        }
-//        
-////        let line: MGLPolyline = MGLPolyline(coordinates: &coords, count: UInt(coords.count))
-////        self.mapView.addAnnotation(line)
-//        
-//        completion()
-//    }
+    let mapView: GMSMapView
+    let directions: [SLDirection]
+    
+    init(mapView: GMSMapView, directions: [SLDirection]) {
+        self.mapView = mapView;
+        self.directions = directions;
+    }
+    
+    func drawDirections(completion: () -> ()) {
+        let path = GMSMutablePath()
+        for direction in self.directions where direction.start != nil {
+            path.addCoordinate(direction.start!)
+        }
+        
+        let polyline = GMSPolyline(path: path)
+        polyline.strokeWidth = 5
+        polyline.strokeColor = UIColor.redColor()
+        polyline.map = self.mapView
+        
+        completion()
+    }
 }

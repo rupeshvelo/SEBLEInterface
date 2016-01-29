@@ -47,6 +47,6 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
 
 - (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password;
 
-- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void(^)(NSDictionary *responseDict))completion;
+- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void(^)(NSData *reponseData))completion;
 
 @end

@@ -66,6 +66,8 @@
 @property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
 
 @property (nonatomic, strong) NSArray *directions;
+@property (nonatomic, copy) NSString *directionEndAddress;
+
 @property (nonatomic, strong) UIButton *locationButton;
 @property (nonatomic, strong) UIButton *directionsButton;
 
@@ -200,7 +202,7 @@
                                                                        image.size.width,
                                                                        image.size.height)];
         [_directionsButton addTarget:self
-                              action:@selector(presentDirectionsViewController)
+                              action:@selector(directionsButtonPushed)
                     forControlEvents:UIControlEventTouchDown];
         [_directionsButton setImage:image forState:UIControlStateNormal];
         _directionsButton.hidden = YES;
@@ -215,8 +217,8 @@
     if (!_directionsViewController) {
         _directionsViewController = [SLDirectionsViewController new];
         _directionsViewController.directions = self.directions;
+        _directionsViewController.endAddress = self.directionEndAddress;
         _directionsViewController.delegate = self;
-        [self.view addSubview:_directionsButton];
     }
     
     return _directionsViewController;
@@ -370,7 +372,7 @@
 {
     self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width,
                                                           0.0f,
-                                                          .4*self.view.bounds.size.width,
+                                                          .5f*self.view.bounds.size.width,
                                                           self.view.bounds.size.height);
     self.directionsViewController.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
     
@@ -628,7 +630,7 @@
 
 - (void)directionsButtonPushed
 {
-    
+    [self presentDirectionsViewController];
 }
 
 - (void)handleDirectionsMode
@@ -718,13 +720,14 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:16];
+    // zoom should be 16
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:14];
     [self.mapView animateToCameraPosition:cameraPosition];
 }
 
 - (void)addLockToMap:(SLLock *)lock
 {
-    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.358942, -120.620910);
+    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.344306, -120.615732);
     GMSMarker *lockMarker = [GMSMarker markerWithPosition:postion];
     lockMarker.title = lock.name;
     lockMarker.icon = [UIImage imageNamed:@"img_lock"];
@@ -751,53 +754,6 @@
     }
 }
 
-//- (void)getDirectionsToLocation:(CLLocationCoordinate2D)location transportType:(MKDirectionsTransportType)transportType
-//{
-//    MKPlacemark *userPlacemark = [[MKPlacemark alloc] initWithCoordinate:self.userLocation addressDictionary:nil];
-//    MKPlacemark *lockPlacemark = [[MKPlacemark alloc] initWithCoordinate:location addressDictionary:nil];
-//    
-//    MKDirectionsRequest *directionRequest = [[MKDirectionsRequest alloc] init];
-//    directionRequest.source = [[MKMapItem alloc] initWithPlacemark:userPlacemark];
-//    directionRequest.destination = [[MKMapItem alloc] initWithPlacemark:lockPlacemark];
-//    directionRequest.transportType = transportType;
-//    MKDirections *directions = [[MKDirections alloc] initWithRequest:directionRequest];
-//    [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
-//        if (error) {
-//            NSLog(@"error getting directions");
-//            // TODO -- check and see what should happen when we can't get dirctions...popup?
-//            return;
-//        }
-//        
-//        if (!response.routes || response.routes.count == 0) {
-//            NSLog(@"no routes in directions");
-//            // TODO -- check and see what should happen when there aren't any routes
-//            return;
-//        }
-//        
-//        MKRoute *route = response.routes[0];
-//        NSMutableArray *routeDirections = [NSMutableArray new];
-//        for (MKRouteStep *routeStep in route.steps) {
-//            SLDirection *direction = [[SLDirection alloc] initWithCoordinate:routeStep.polyline.coordinate
-//                                                                  directions:routeStep.instructions
-//                                                                    distance:routeStep.distance];
-//            [routeDirections addObject:direction];
-//        }
-//        
-//        [self enterDirectionModeWithDirections:routeDirections];
-//    }];
-//}
-
-- (void)enterDirectionModeWithDirections:(NSArray *)directions
-{
-//    self.directions = directions;
-//    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
-//                                                                                     directions:self.directions];
-//    [drawingHelper drawDirections:^{
-//        self.directionsButton.hidden = NO;
-//        [self.lockInfoViewController setUpView];
-//    }];
-}
-
 - (void)getDirectionsForTransportation:(SLMapCalloutVCPane)pane
 {
     if (!self.selectedLock) {
@@ -805,25 +761,37 @@
         return;
     }
     
-    NSString *url = [NSString stringWithFormat:
-                     @"https://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&departure_time=now&mode=%@",
-                     self.userLocation.latitude,
-                     self.userLocation.longitude,
-                     self.selectedLock.latitude.doubleValue,
-                     self.selectedLock.longitude.doubleValue,
-                     pane == SLMapCalloutVCPaneLeft ? @"walking" : @"bicycling"];
-                     //[[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"]];
-    
-    [SLRestManager.sharedManager getGoogleDirectionsFromUrl:url completion:^(NSDictionary *responseDict) {
-        if (!responseDict) {
-            NSLog(@"no response dictionary from: %@", url);
+
+    SLDirectionAPIHelper *directionsHelper = [[SLDirectionAPIHelper alloc] initWithStart:self.userLocation
+                                                                                     end:self.selectedLock.location
+                                                                                isBiking:pane == SLMapCalloutVCPaneRight];
+    [directionsHelper getDirections:^(NSArray *directions, NSString *endAddress) {
+        if (!directions || !endAddress) {
+            NSLog(@"Error: could not retrieve directions");
             return;
         }
         
-        NSLog(@"received info from %@: %@", url, responseDict);
+        self.directionEndAddress = endAddress;
+        self.directions = directions;
+        [self enterDirectionsMode];
     }];
-    
 }
+
+- (void)enterDirectionsMode
+{
+    if (!self.directions || !self.directionEndAddress) {
+        NSLog(@"Error: direcions and/or directionEndAddress not defined");
+        return;
+    }
+    
+    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
+                                                                                     directions:self.directions];
+    [drawingHelper drawDirections:^{
+        self.directionsButton.hidden = NO;
+        [self.lockInfoViewController setUpView];
+    }];
+}
+
 #pragma mark - GMS map view delegate methods
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker

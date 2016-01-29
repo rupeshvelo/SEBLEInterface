@@ -184,7 +184,7 @@
     [uploadTask resume];
 }
 
-- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void (^)(NSDictionary *))completion
+- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void (^)(NSData *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -209,20 +209,7 @@
                                                     return;
                                                 }
                                                 
-                                                NSDictionary *serverReply = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                            options:0
-                                                                                                              error:&error];
-                                                
-                                                if (error) {
-                                                    NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
-                                                          urlString,
-                                                          error
-                                                          );
-                                                    completion(nil);
-                                                    return;
-                                                }
-                                                
-                                                NSLog(@"server reply: %@", serverReply);
+                                                completion(data);
                                             }];
     [task resume];
 }
