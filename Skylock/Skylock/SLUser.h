@@ -1,28 +1,28 @@
 //
-//  SLDbUser.h
+//  SLUser.h
 //  Skylock
 //
-//  Created by Andre Green on 1/19/16.
+//  Created by Andre Green on 1/30/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class SLDbLock;
+@class SLLock;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SLDbUser : NSManagedObject
+@interface SLUser : NSManagedObject
 
 - (id)initWithFacebookDictionary:(NSDictionary *)dictionary;
 - (id)initWithDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)asDictionary;
-- (void)setPropertiesWithFBDictionary:(NSDictionary *)dictionary;
 - (NSString *)fullName;
+- (void)setPropertiesWithFBDictionary:(NSDictionary *)dictionary;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser+CoreDataProperties.h"

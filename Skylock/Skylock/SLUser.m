@@ -1,19 +1,18 @@
 //
-//  SLDbUser.m
+//  SLUser.m
 //  Skylock
 //
-//  Created by Andre Green on 1/19/16.
+//  Created by Andre Green on 1/30/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
-#import "SLDbUser.h"
-#import "SLDbLock.h"
+#import "SLUser.h"
+#import "SLLock.h"
 
 #define kSLUserTypeFacebook @"facebook"
 #define kSLUserTypePhone    @"phone"
 
-
-@implementation SLDbUser
+@implementation SLUser
 
 - (id)initWithDictionary:(NSDictionary *)dictionary
 {

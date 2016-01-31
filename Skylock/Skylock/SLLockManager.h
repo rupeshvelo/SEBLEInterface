@@ -11,8 +11,10 @@
 #import "SLLockValue.h"
 #import "SLLock.h"
 
-
-@interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate, SLLockValueDelegate>
+@interface SLLockManager : NSObject <
+SEBLEInterfaceManagerDelegate,
+SLLockValueDelegate
+>
 
 
 

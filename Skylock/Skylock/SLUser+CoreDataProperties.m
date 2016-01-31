@@ -1,24 +1,24 @@
 //
-//  SLDbUser+CoreDataProperties.m
+//  SLUser+CoreDataProperties.m
 //  Skylock
 //
-//  Created by Andre Green on 1/19/16.
+//  Created by Andre Green on 1/30/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser+CoreDataProperties.h"
 
-@implementation SLDbUser (CoreDataProperties)
+@implementation SLUser (CoreDataProperties)
 
 @dynamic firstName;
+@dynamic googlePushId;
 @dynamic isCurrentUser;
 @dynamic lastName;
 @dynamic userId;
 @dynamic userType;
-@dynamic googlePushId;
 @dynamic locks;
 
 @end

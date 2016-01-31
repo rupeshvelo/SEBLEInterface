@@ -29,6 +29,10 @@
 		DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */; };
 		DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */; };
 		DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */; };
+		DC156BD61C5D240D00015B53 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */; };
+		DC156BD71C5D240D00015B53 /* SLUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD11C5D240D00015B53 /* SLUser.m */; };
+		DC156BD81C5D240D00015B53 /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */; };
+		DC156BD91C5D240D00015B53 /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD51C5D240D00015B53 /* SLLock.m */; };
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
@@ -81,10 +85,6 @@
 		DC44028B1B9C8E1100D1C2B9 /* btn_unlock_grey@1.5x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC4402801B9C8E1100D1C2B9 /* btn_unlock_grey@1.5x.png */; };
 		DC44028C1B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC4402811B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png */; };
 		DC44028D1B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC4402811B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png */; };
-		DC4402901B9C934000D1C2B9 /* SLDbLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC44028F1B9C934000D1C2B9 /* SLDbLock.m */; };
-		DC4402911B9C934000D1C2B9 /* SLDbLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC44028F1B9C934000D1C2B9 /* SLDbLock.m */; };
-		DC4FCD2A1C4EFBB300A3049B /* SLDbUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4FCD271C4EFBB300A3049B /* SLDbUser+CoreDataProperties.m */; };
-		DC4FCD2B1C4EFBB300A3049B /* SLDbUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4FCD291C4EFBB300A3049B /* SLDbUser.m */; };
 		DC5C164C1C56A51F006A41A5 /* facebook_loggin_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C16461C56A51F006A41A5 /* facebook_loggin_button@2x.png */; };
 		DC5C164D1C56A51F006A41A5 /* facebook_loggin_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C16471C56A51F006A41A5 /* facebook_loggin_button@3x.png */; };
 		DC5C164E1C56A51F006A41A5 /* logo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C16481C56A51F006A41A5 /* logo2@2x.png */; };
@@ -93,7 +93,6 @@
 		DC5C16511C56A51F006A41A5 /* phone_login_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5C164B1C56A51F006A41A5 /* phone_login_button@3x.png */; };
 		DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */; };
 		DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */; };
-		DC61477A1B3233460077484B /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6147791B3233460077484B /* SLLock.m */; };
 		DC6471D51C4050B200286DBF /* SLWalkthroughThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */; };
 		DC6471E71C40566600286DBF /* middle_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E11C40566600286DBF /* middle_button@2x.png */; };
 		DC6471E81C40566600286DBF /* middle_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6471E21C40566600286DBF /* middle_button@3x.png */; };
@@ -522,6 +521,14 @@
 		DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLDbLock+Methods.m"; sourceTree = "<group>"; };
 		DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Pods/GoogleMaps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
 		DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoginTextField.swift; sourceTree = "<group>"; };
+		DC156BCE1C5D240D00015B53 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
+		DC156BD01C5D240D00015B53 /* SLUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLUser.h; sourceTree = "<group>"; };
+		DC156BD11C5D240D00015B53 /* SLUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLUser.m; sourceTree = "<group>"; };
+		DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLock+CoreDataProperties.m"; sourceTree = "<group>"; };
+		DC156BD41C5D240D00015B53 /* SLLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLock.h; sourceTree = "<group>"; };
+		DC156BD51C5D240D00015B53 /* SLLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLock.m; sourceTree = "<group>"; };
 		DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLPicManager.h; sourceTree = "<group>"; };
 		DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLPicManager.m; sourceTree = "<group>"; };
 		DC17ACB31B5C6B620090BE8A /* UIImage+Skylock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Skylock.h"; sourceTree = "<group>"; };
@@ -573,12 +580,6 @@
 		DC44027F1B9C8E1100D1C2B9 /* btn_unlock_grey@0.5x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_unlock_grey@0.5x.png"; sourceTree = "<group>"; };
 		DC4402801B9C8E1100D1C2B9 /* btn_unlock_grey@1.5x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_unlock_grey@1.5x.png"; sourceTree = "<group>"; };
 		DC4402811B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_unlock_grey@1x.png"; sourceTree = "<group>"; };
-		DC44028E1B9C934000D1C2B9 /* SLDbLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDbLock.h; sourceTree = "<group>"; };
-		DC44028F1B9C934000D1C2B9 /* SLDbLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDbLock.m; sourceTree = "<group>"; };
-		DC4FCD261C4EFBB300A3049B /* SLDbUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLDbUser+CoreDataProperties.h"; sourceTree = "<group>"; };
-		DC4FCD271C4EFBB300A3049B /* SLDbUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLDbUser+CoreDataProperties.m"; sourceTree = "<group>"; };
-		DC4FCD281C4EFBB300A3049B /* SLDbUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDbUser.h; sourceTree = "<group>"; };
-		DC4FCD291C4EFBB300A3049B /* SLDbUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDbUser.m; sourceTree = "<group>"; };
 		DC5C16461C56A51F006A41A5 /* facebook_loggin_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook_loggin_button@2x.png"; sourceTree = "<group>"; };
 		DC5C16471C56A51F006A41A5 /* facebook_loggin_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "facebook_loggin_button@3x.png"; sourceTree = "<group>"; };
 		DC5C16481C56A51F006A41A5 /* logo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@2x.png"; sourceTree = "<group>"; };
@@ -587,8 +588,6 @@
 		DC5C164B1C56A51F006A41A5 /* phone_login_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "phone_login_button@3x.png"; sourceTree = "<group>"; };
 		DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutViewController.swift; sourceTree = "<group>"; };
 		DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutView.swift; sourceTree = "<group>"; };
-		DC6147781B3233460077484B /* SLLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLock.h; sourceTree = "<group>"; };
-		DC6147791B3233460077484B /* SLLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLock.m; sourceTree = "<group>"; };
 		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthroughThreeViewController.swift; sourceTree = "<group>"; };
 		DC6471E11C40566600286DBF /* middle_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "middle_button@2x.png"; sourceTree = "<group>"; };
@@ -1176,16 +1175,18 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				DC4FCD261C4EFBB300A3049B /* SLDbUser+CoreDataProperties.h */,
-				DC4FCD271C4EFBB300A3049B /* SLDbUser+CoreDataProperties.m */,
-				DC4FCD281C4EFBB300A3049B /* SLDbUser.h */,
-				DC4FCD291C4EFBB300A3049B /* SLDbUser.m */,
+				DC156BCE1C5D240D00015B53 /* SLUser+CoreDataProperties.h */,
+				DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */,
+				DC156BD01C5D240D00015B53 /* SLUser.h */,
+				DC156BD11C5D240D00015B53 /* SLUser.m */,
+				DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */,
+				DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */,
+				DC156BD41C5D240D00015B53 /* SLLock.h */,
+				DC156BD51C5D240D00015B53 /* SLLock.m */,
 				DC974D151C38962600797CF1 /* KeychainWrapper.h */,
 				DC974D161C38962600797CF1 /* KeychainWrapper.m */,
 				DCDAC22D1BA9FE8400396951 /* SLDirectionAPIHelper.swift */,
 				DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */,
-				DC44028E1B9C934000D1C2B9 /* SLDbLock.h */,
-				DC44028F1B9C934000D1C2B9 /* SLDbLock.m */,
 				DC4402701B9BAE5900D1C2B9 /* SLDbLockSharedContact.h */,
 				DC4402711B9BAE5900D1C2B9 /* SLDbLockSharedContact.m */,
 				DCFFF31B1B8EB94D0076C167 /* SLAccelerometerValues.h */,
@@ -1196,8 +1197,6 @@
 				DC7E70C21B8BC0F9006E74DC /* SLLockValue.m */,
 				DC0520B71B4B8C0E00FBAAB7 /* SLDbLock+Methods.h */,
 				DC0520B81B4B8C0E00FBAAB7 /* SLDbLock+Methods.m */,
-				DC6147781B3233460077484B /* SLLock.h */,
-				DC6147791B3233460077484B /* SLLock.m */,
 				DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */,
 				DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */,
 				DC3CCE031BA30ED000528992 /* SLDirection.swift */,
@@ -2347,7 +2346,6 @@
 				DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */,
 				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
 				DC974D251C3A1BB000797CF1 /* SLWalkthroughViewController.swift in Sources */,
-				DC61477A1B3233460077484B /* SLLock.m in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DC7E70C31B8BC0F9006E74DC /* SLLockValue.m in Sources */,
 				DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */,
@@ -2364,7 +2362,6 @@
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */,
 				DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */,
-				DC4402901B9C934000D1C2B9 /* SLDbLock.m in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */,
 				DC974D171C38962600797CF1 /* KeychainWrapper.m in Sources */,
@@ -2374,12 +2371,13 @@
 				DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */,
 				DC7E70CA1B8C27C5006E74DC /* SLNotificationView.m in Sources */,
 				DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */,
+				DC156BD71C5D240D00015B53 /* SLUser.m in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */,
 				DC0434131C474B3F00BCDB14 /* SLWalkthroughFiveViewController.swift in Sources */,
 				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
-				DC4FCD2B1C4EFBB300A3049B /* SLDbUser.m in Sources */,
+				DC156BD61C5D240D00015B53 /* SLUser+CoreDataProperties.m in Sources */,
 				DC0520B91B4B8C0E00FBAAB7 /* SLDbLock+Methods.m in Sources */,
 				DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
@@ -2392,13 +2390,14 @@
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
 				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
 				DCB7388E1C3B4CC700A9156D /* SLWalkthoughCardView1.swift in Sources */,
-				DC4FCD2A1C4EFBB300A3049B /* SLDbUser+CoreDataProperties.m in Sources */,
 				DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
 				DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */,
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
+				DC156BD81C5D240D00015B53 /* SLLock+CoreDataProperties.m in Sources */,
+				DC156BD91C5D240D00015B53 /* SLLock.m in Sources */,
 				DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */,
 				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,
 			);
@@ -2414,7 +2413,6 @@
 				DC44025B1B991FEA00D1C2B9 /* SkylockColors.swift in Sources */,
 				DC3CCE271BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
 				DCD82FF81B1FCBBC00B38910 /* SkylockTests.m in Sources */,
-				DC4402911B9C934000D1C2B9 /* SLDbLock.m in Sources */,
 				DC4402731B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
 				DC3CCE051BA30ED000528992 /* SLDirection.swift in Sources */,
 				DC44027B1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */,

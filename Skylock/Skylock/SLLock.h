@@ -2,15 +2,19 @@
 //  SLLock.h
 //  Skylock
 //
-//  Created by Andre Green on 6/17/15.
-//  Copyright (c) 2015 Andre Green. All rights reserved.
+//  Created by Andre Green on 1/30/16.
+//  Copyright © 2016 Andre Green. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 #import <CoreLocation/CoreLocation.h>
 
-@class SLLock;
-@class SLAccelerometerValues;
+@class SLDbLockSharedContact, SLUser, SLAccelerometerValues;
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface SLLock : NSManagedObject
 
 typedef NS_ENUM(NSUInteger, SLLockBatteryState) {
     SLLockBatteryStateNone,
@@ -41,32 +45,7 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
     SLLockWifiSignalState5
 };
 
-typedef NS_ENUM(NSUInteger, SLLockProperty) {
-    SLLockPropertyName,
-    SLLockPropertyUUID,
-    SLLockPropertyBatteryVoltage,
-    SLLockPropertyWifiStrength,
-    SLLockPropertyCellStrength,
-    SLLockPropertyLastTime,
-    SLLockPropertyDistanceAway,
-    SLLockPropertyRSSIStrength,
-    SLLockPropertyIsLocked,
-    SLLockPropertyIsCrashOn,
-    SLLockPropertyIsSharingOn,
-    SLLockPropertyIsSecurityOn,
-    SLLockPropertyLatitude,
-    SLLockPropertyLongitude,
-    SLLockPropertyTemperature,
-    SLLockPropertyAccelerometerValues,
-    SLLockPropertyIsCurrentLock
-};
 
-
-
-@interface SLLock : NSObject
-
-@property (nonatomic, copy) NSString *uuid;
-@property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSNumber *batteryVoltage;
 @property (nonatomic, copy) NSNumber *wifiStrength;
 @property (nonatomic, copy) NSNumber *cellStrength;
@@ -77,41 +56,24 @@ typedef NS_ENUM(NSUInteger, SLLockProperty) {
 @property (nonatomic, copy) NSNumber *isCrashOn;
 @property (nonatomic, copy) NSNumber *isSharingOn;
 @property (nonatomic, copy) NSNumber *isSecurityOn;
-@property (nonatomic, copy) NSNumber *latitude;
-@property (nonatomic, copy) NSNumber *longitude;
 @property (nonatomic, copy) NSNumber *temperature;
-@property (nonatomic, copy) NSNumber *isCurrentLock;
 
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
-- (id)initWithName:(NSString *)name
-              uuid:(NSString *)uuid
-    batteryVoltage:(NSNumber *)batteryVoltage
-      wifiStrength:(NSNumber *)wifiStrength
-      cellStrength:(NSNumber *)cellStrength
-          lastTime:(NSNumber *)lastTime
-      distanceAway:(NSNumber *)distanceAway
-      rssiStrength:(NSNumber *)rssiStrength
-          isLocked:(NSNumber *)isLocked
-         isCrashOn:(NSNumber *)isCrashOn
-       isSharingOn:(NSNumber *)isSharingOn
-      isSecurityOn:(NSNumber *)isSecurityOn
-          latitude:(NSNumber *)latitude
-         longitude:(NSNumber *)longitude
-     isCurrentLock:(NSNumber *)isCurrentLock;
 
-+ (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
-+ (id)lockWithDbDictionary:(NSDictionary *)dbDictionary;
-- (SLLockBatteryState)batteryState;
 - (SLLockCellSignalState)cellSignalState;
+- (SLLockBatteryState)batteryState;
 - (SLLockWifiSignalState)wifiState;
-- (NSDictionary *)dictionaryRepresentation;
-- (NSDictionary *)asDbDictionary;
-- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
+- (NSDictionary *)asDictionary;
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
+- (void)updateProperties:(NSDictionary *)dictionary;
 - (NSString *)displayName;
 - (NSString *)macAddress;
 - (BOOL)isInFactoryMode;
 - (CLLocationCoordinate2D)location;
 
 @end
+
+NS_ASSUME_NONNULL_END
+
+#import "SLLock+CoreDataProperties.h"
