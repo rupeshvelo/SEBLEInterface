@@ -10,10 +10,10 @@
 #import "SLAccountInfoFieldView.h"
 #import "SLCirclePicView.h"
 
-@class SLDbUser;
+@class SLUser;
 
 @interface SLAccountInfoViewController : UIViewController <SLAccountInfoFieldViewDelegate, SLCirclePicViewDelegate>
 
-@property (nonatomic, strong) SLDbUser *user;
+@property (nonatomic, strong) SLUser *user;
 
 @end

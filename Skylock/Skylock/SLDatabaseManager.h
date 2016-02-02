@@ -31,6 +31,6 @@
 - (NSArray *)sharedContactsForLock:(SLLock *)lock;
 - (void)setCurrentLock:(SLLock *)lock;
 - (void)deselectAllLocks;
-- (SLLock *)getLockWithName:(NSString *)name;
+- (SLLock *)getLockNamed:(NSString *)name;
 
 @end

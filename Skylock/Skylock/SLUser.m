@@ -14,6 +14,8 @@
 
 @implementation SLUser
 
+@synthesize location;
+
 - (id)initWithDictionary:(NSDictionary *)dictionary
 {
     self = [super init];
@@ -70,6 +72,11 @@
     }
     
     self.userType = kSLUserTypeFacebook;
+}
+
+- (void)setPropertiesWithRegularUserDictionary:(NSDictionary *)dictionary
+{
+    
 }
 
 - (id)valueOrNullForDictionary:(NSDictionary *)dictionary key:(id)value

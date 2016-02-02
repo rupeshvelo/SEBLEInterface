@@ -46,6 +46,15 @@
                                          inManagedObjectContext:self.context];
 }
 
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
+{
+    SLLock *lock = self.newLock;
+    lock.name = name;
+    lock.uuid = uuid;
+    
+    return lock;
+}
+
 - (NSArray *)sharedContactsForLock:(SLLock *)lock
 {
     return lock.sharedContacts.allObjects;
@@ -238,7 +247,7 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isCurrentUser == 1"];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
     if (users && users.count > 0) {
         self.currentUser = users[0];
     }
@@ -264,11 +273,12 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId == %@", userId];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
+    
     return (users && users.count > 0) ? users[0] : nil;
 }
 
-- (NSArray *)getDBUsersWithPredicate:(NSPredicate *)predicate
+- (NSArray *)getUsersWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityUser];

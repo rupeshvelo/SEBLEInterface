@@ -7,7 +7,7 @@
 //
 
 #import "SLDbLockSharedContact.h"
-#import "SLDbLock.h"
+#import "SLLock.h"
 
 
 @implementation SLDbLockSharedContact

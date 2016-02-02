@@ -30,6 +30,7 @@ SLLockValueDelegate
 - (NSArray *)unaddedLocks;
 - (void)setCurrentLock:(SLLock *)lock;
 - (SLLock *)getCurrentLock;
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;

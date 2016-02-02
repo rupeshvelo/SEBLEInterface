@@ -14,18 +14,33 @@
 
 @implementation SLLock
 
-@dynamic batteryVoltage;
-@dynamic wifiStrength;
-@dynamic cellStrength;
-@dynamic lastTime;
-@dynamic distanceAway;
-@dynamic rssiStrength;
-@dynamic isLocked;
-@dynamic isCrashOn;
-@dynamic isSharingOn;
-@dynamic isSecurityOn;
-@dynamic temperature;
-@dynamic accelerometerVales;
+@synthesize batteryVoltage;
+@synthesize wifiStrength;
+@synthesize cellStrength;
+@synthesize lastTime;
+@synthesize distanceAway;
+@synthesize rssiStrength;
+@synthesize isLocked;
+@synthesize isCrashOn;
+@synthesize isSharingOn;
+@synthesize isSecurityOn;
+@synthesize temperature;
+@synthesize accelerometerVales;
+
+- (void)setInitialProperties:(NSDictionary *)dictionary
+{
+    self.batteryVoltage = dictionary[@"batteryVoltage"] ? dictionary[@"batteryVoltage"] : @(0);
+    self.wifiStrength = dictionary[@"wifiStrength"] ? dictionary[@"wifiStrength"] : @(0);
+    self.cellStrength = dictionary[@"cellStrength"] ? dictionary[@"cellStrength"] : @(0);
+    self.lastTime = dictionary[@"lastTime"] ? dictionary[@"lastTime"] : @(0);
+    self.distanceAway = dictionary[@"distanceAway"] ? dictionary[@"distanceAway"] : @(0);
+    self.rssiStrength = dictionary[@"rssiStrength"] ? dictionary[@"rssiStrength"] : @(0);
+    self.temperature = dictionary[@"temperature"] ? dictionary[@"temperature"] : @(0);
+    self.isLocked = dictionary[@"isLocked"] ? dictionary[@"isLocked"] : @(NO);
+    self.isCrashOn = dictionary[@"isCrashOn"] ? dictionary[@"isCrashOn"] : @(NO);
+    self.isSharingOn = dictionary[@"isSharingOn"] ? dictionary[@"isSharingOn"] : @(NO);
+    self.isSecurityOn = dictionary[@"isSecurityOn"] ? dictionary[@"isSecurityOn"] : @(NO);
+}
 
 - (void)updateProperties:(NSDictionary *)dictionary
 {
@@ -34,15 +49,15 @@
     }
     
     if (dictionary[@"wifiStrength"]) {
-        self.batteryVoltage = dictionary[@"wifiStrength"];
+        self.wifiStrength = dictionary[@"wifiStrength"];
     }
     
     if (dictionary[@"cellStrength"]) {
-        self.batteryVoltage = dictionary[@"cellStrength"];
+        self.cellStrength = dictionary[@"cellStrength"];
     }
     
     if (dictionary[@"lastTime"]) {
-        self.batteryVoltage = dictionary[@"lastTime"];
+        self.lastTime = dictionary[@"lastTime"];
     }
     
     if (dictionary[@"distanceAway"]) {
@@ -50,33 +65,30 @@
     }
     
     if (dictionary[@"rssiStrength"]) {
-        self.distanceAway = dictionary[@"rssiStrength"];
+        self.rssiStrength = dictionary[@"rssiStrength"];
     }
     
     if (dictionary[@"isLocked"]) {
-        self.distanceAway = dictionary[@"isLocked"];
+        self.isLocked = dictionary[@"isLocked"];
     }
     
     if (dictionary[@"isCrashOn"]) {
-        self.distanceAway = dictionary[@"isCrashOn"];
+        self.isCrashOn = dictionary[@"isCrashOn"];
     }
     
     if (dictionary[@"isSharingOn"]) {
-        self.distanceAway = dictionary[@"isSharingOn"];
+        self.isSharingOn = dictionary[@"isSharingOn"];
     }
     
     if (dictionary[@"isSecurityOn"]) {
-        self.distanceAway = dictionary[@"isSecurityOn"];
+        self.isSecurityOn = dictionary[@"isSecurityOn"];
     }
     
     if (dictionary[@"temperature"]) {
-        self.distanceAway = dictionary[@"temperature"];
-    }
-    
-    if (dictionary[@"accelerometerVales"]) {
-        self.distanceAway = dictionary[@"accelerometerVales"];
+        self.temperature = dictionary[@"temperature"];
     }
 }
+
 - (SLLockCellSignalState)cellSignalState
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -188,6 +200,12 @@
 - (CLLocationCoordinate2D)location
 {
     return CLLocationCoordinate2DMake(self.latitude.doubleValue, self.longitude.doubleValue);
+}
+
+- (void)setCurrentLocation:(CLLocationCoordinate2D)location
+{
+    self.latitude = @(location.latitude);
+    self.longitude = @(location.longitude);
 }
 
 @end

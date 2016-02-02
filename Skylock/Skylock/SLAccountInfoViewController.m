@@ -11,7 +11,7 @@
 #import "SLAccountInfoFieldView.h"
 #import "UIColor+RGB.h"
 #import "SLDatabaseManager.h"
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser.h"
 #import "SLPicManager.h"
 
 #define kSLAccountInfoFieldVCLabelFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]

@@ -14,7 +14,6 @@
 #import "SLEditLockTableViewCell.h"
 
 @class SLSlideViewController;
-@class SLDbUser;
 
 typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
     SLSlideViewControllerButtonActionNone,

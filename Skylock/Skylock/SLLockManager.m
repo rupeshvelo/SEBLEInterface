@@ -330,8 +330,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SL
-    return [SLLock lockWithName:blePeripheral.peripheral.name uuid:blePeripheral.CBUUIDAsString];
+
+    return [SLDatabaseManager.sharedManager newLockWithName:blePeripheral.peripheral.name
+                                                    andUUID:blePeripheral.CBUUIDAsString];
 }
 
 - (BOOL)hasLocksForCurrentUser
@@ -751,9 +752,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     NSLog(@"Received challenge data from lock: %@", challengeString);
     
-    SLLock *lock = self.locks[lockName];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     
     SLRestManager *restManager = [SLRestManager sharedManager];
     
@@ -835,7 +835,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)handleChallengeKeyConnectionPhase:(SLLock *)lock
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     
     SLRestManager *restManager = [SLRestManager sharedManager];
     
@@ -882,7 +882,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    SLUser *currentUser = [self.databaseManger currentUser];
     SLLock *lock = [self lockFromPeripheral:peripheral];
+    [lock setInitialProperties:@{}];
+    [lock setCurrentLocation:currentUser.location];
+    
     if ((!self.locksToAdd[lock.name] &&
         !self.locks[lock.name]) &&
         ([self.namesToConnect containsObject:peripheral.peripheral.name] || self.shouldSearch)) {
@@ -894,7 +898,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         self.locksToAdd[lock.name] = lock;
         
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
         
         SLRestManager *restManager = [SLRestManager sharedManager];
         
@@ -963,8 +967,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSLog(@"blue tooth manager powered on");
     self.bleIsPoweredOn = YES;
     
-    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
-    if (user && [user locks].count > 0) {
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+    if (user && user.locks.count > 0) {
         self.shouldSearch = YES;
         [self.bleManager startScan];
     }
@@ -1027,7 +1031,7 @@ changedUpdateStateForCharacteristic:(NSString *)characteristicUUID
         [lock updateAccelerometerValues:meanValues];
         [SLNotificationManager.sharedManager checkIfLockNeedsNotification:lock];
     } else {
-        [lock updatePropertiesWithDictionary:meanValues];
+        [lock updateProperties:meanValues];
         [self checkAutoUnlockForLock:lock];
     }
 }
