@@ -2,129 +2,91 @@
 //  SLLock.m
 //  Skylock
 //
-//  Created by Andre Green on 6/17/15.
-//  Copyright (c) 2015 Andre Green. All rights reserved.
+//  Created by Andre Green on 1/30/16.
+//  Copyright © 2016 Andre Green. All rights reserved.
 //
 
 #import "SLLock.h"
+#import "SLDbLockSharedContact.h"
+#import "SLUser.h"
 #import "SLAccelerometerValues.h"
-// stadlib.h just here for testing...remove when shipping app
-#include <stdlib.h>
+
 
 @implementation SLLock
 
-- (id)initWithName:(NSString *)name
-              uuid:(NSString *)uuid
-    batteryVoltage:(NSNumber *)batteryVoltage
-      wifiStrength:(NSNumber *)wifiStrength
-      cellStrength:(NSNumber *)cellStrength
-          lastTime:(NSNumber *)lastTime
-      distanceAway:(NSNumber *)distanceAway
-      rssiStrength:(NSNumber *)rssiStrength
-          isLocked:(NSNumber *)isLocked
-         isCrashOn:(NSNumber *)isCrashOn
-       isSharingOn:(NSNumber *)isSharingOn
-      isSecurityOn:(NSNumber *)isSecurityOn
-          latitude:(NSNumber *)latitude
-         longitude:(NSNumber *)longitude
-     isCurrentLock:(NSNumber *)isCurrentLock
+@synthesize batteryVoltage;
+@synthesize wifiStrength;
+@synthesize cellStrength;
+@synthesize lastTime;
+@synthesize distanceAway;
+@synthesize rssiStrength;
+@synthesize isLocked;
+@synthesize isCrashOn;
+@synthesize isSharingOn;
+@synthesize isSecurityOn;
+@synthesize temperature;
+@synthesize accelerometerVales;
+
+- (void)setInitialProperties:(NSDictionary *)dictionary
 {
-    self = [super init];
-    if (self) {
-        _name               = name;
-        _uuid               = uuid;
-        _batteryVoltage     = batteryVoltage;
-        _wifiStrength       = wifiStrength;
-        _cellStrength       = cellStrength;
-        _lastTime           = lastTime;
-        _distanceAway       = distanceAway;
-        _rssiStrength       = rssiStrength;
-        _isLocked           = isLocked;
-        _isCrashOn          = isCrashOn;
-        _isSharingOn        = isSharingOn;
-        _isSecurityOn       = isSecurityOn;
-        _latitude           = latitude;
-        _longitude          = longitude;
-        _isCurrentLock      = isCurrentLock;
+    self.batteryVoltage = dictionary[@"batteryVoltage"] ? dictionary[@"batteryVoltage"] : @(0);
+    self.wifiStrength = dictionary[@"wifiStrength"] ? dictionary[@"wifiStrength"] : @(0);
+    self.cellStrength = dictionary[@"cellStrength"] ? dictionary[@"cellStrength"] : @(0);
+    self.lastTime = dictionary[@"lastTime"] ? dictionary[@"lastTime"] : @(0);
+    self.distanceAway = dictionary[@"distanceAway"] ? dictionary[@"distanceAway"] : @(0);
+    self.rssiStrength = dictionary[@"rssiStrength"] ? dictionary[@"rssiStrength"] : @(0);
+    self.temperature = dictionary[@"temperature"] ? dictionary[@"temperature"] : @(0);
+    self.isLocked = dictionary[@"isLocked"] ? dictionary[@"isLocked"] : @(NO);
+    self.isCrashOn = dictionary[@"isCrashOn"] ? dictionary[@"isCrashOn"] : @(NO);
+    self.isSharingOn = dictionary[@"isSharingOn"] ? dictionary[@"isSharingOn"] : @(NO);
+    self.isSecurityOn = dictionary[@"isSecurityOn"] ? dictionary[@"isSecurityOn"] : @(NO);
+}
+
+- (void)updateProperties:(NSDictionary *)dictionary
+{
+    if (dictionary[@"batteryVoltage"]) {
+        self.batteryVoltage = dictionary[@"batteryVoltage"];
     }
     
-    return self;
-}
-
-- (id)initTestWithName:(NSString *)name
-                  uuid:(NSString *)uuid
-        batteryVoltage:(NSNumber *)batteryVoltage
-          wifiStrength:(NSNumber *)wifiStrength
-          cellStrength:(NSNumber *)cellStrength
-              lastTime:(NSNumber *)lastTime
-          distanceAway:(NSNumber *)distanceAway
-              isLocked:(NSNumber *)isLocked
-             isCrashOn:(NSNumber *)isCrashOn
-           isSharingOn:(NSNumber *)isSharingOn
-          isSecurityOn:(NSNumber *)isSecurityOn
-              latitude:(NSNumber *)latitude
-             longitude:(NSNumber *)longitude
-         isCurrentLock:(NSNumber *)isCurrentLock
-{
-    self = [self  initWithName:name
-                          uuid:uuid
-                batteryVoltage:batteryVoltage
-                  wifiStrength:wifiStrength
-                  cellStrength:cellStrength
-                      lastTime:lastTime
-                  distanceAway:distanceAway
-                  rssiStrength:@(0)
-                      isLocked:isLocked
-                     isCrashOn:isCrashOn
-                   isSharingOn:isSharingOn
-                  isSecurityOn:isSecurityOn
-                      latitude:latitude
-                     longitude:longitude
-                 isCurrentLock:isCurrentLock];
-    if (self) {
-        NSDictionary *location = self.testLocation;
-        _latitude = location[@"latitude"];
-        _longitude = location[@"longitude"];
+    if (dictionary[@"wifiStrength"]) {
+        self.wifiStrength = dictionary[@"wifiStrength"];
     }
     
-    return self;
-}
-
-+ (id)lockWithName:(NSString *)name uuid:(NSString *)uuid;
-{
-    return  [[self alloc] initTestWithName:name
-                                      uuid:uuid
-                            batteryVoltage:@(67)
-                              wifiStrength:@(40)
-                              cellStrength:@(34)
-                                  lastTime:@(0)
-                              distanceAway:@(0)
-                                  isLocked:@(NO)
-                                 isCrashOn:@(NO)
-                               isSharingOn:@(NO)
-                              isSecurityOn:@(NO)
-                                  latitude:@(0)
-                                 longitude:@(0)
-                              isCurrentLock:@(NO)];
-}
-
-+ (id)lockWithDbDictionary:(NSDictionary *)dbDictionary
-{
-    return [[self alloc] initTestWithName:dbDictionary[@"name"]
-                                     uuid:dbDictionary[@"uuid"]
-                           batteryVoltage:@(87)
-                             wifiStrength:@(55)
-                             cellStrength:@(98)
-                                 lastTime:@(0)
-                             distanceAway:@(0)
-                                 isLocked:@(NO)
-                                isCrashOn:@(NO)
-                              isSharingOn:@(NO)
-                             isSecurityOn:@(NO)
-                                 latitude:dbDictionary[@"latitude"]
-                                longitude:dbDictionary[@"longitude"]
-                            isCurrentLock:dbDictionary[@"isCurrentLock"]];
+    if (dictionary[@"cellStrength"]) {
+        self.cellStrength = dictionary[@"cellStrength"];
+    }
     
+    if (dictionary[@"lastTime"]) {
+        self.lastTime = dictionary[@"lastTime"];
+    }
+    
+    if (dictionary[@"distanceAway"]) {
+        self.distanceAway = dictionary[@"distanceAway"];
+    }
+    
+    if (dictionary[@"rssiStrength"]) {
+        self.rssiStrength = dictionary[@"rssiStrength"];
+    }
+    
+    if (dictionary[@"isLocked"]) {
+        self.isLocked = dictionary[@"isLocked"];
+    }
+    
+    if (dictionary[@"isCrashOn"]) {
+        self.isCrashOn = dictionary[@"isCrashOn"];
+    }
+    
+    if (dictionary[@"isSharingOn"]) {
+        self.isSharingOn = dictionary[@"isSharingOn"];
+    }
+    
+    if (dictionary[@"isSecurityOn"]) {
+        self.isSecurityOn = dictionary[@"isSecurityOn"];
+    }
+    
+    if (dictionary[@"temperature"]) {
+        self.temperature = dictionary[@"temperature"];
+    }
 }
 
 - (SLLockCellSignalState)cellSignalState
@@ -186,18 +148,7 @@
     return wifiState;
 }
 
-- (NSDictionary *)dictionaryRepresentation
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableDictionary *dictRep = [NSMutableDictionary new];
-    for (NSNumber *property in self.propertiesArray) {
-        dictRep[property] = [self getPropertyOrNull:property.unsignedIntegerValue];
-    }
-    
-    return dictRep;
-}
-
-- (NSDictionary *)asDbDictionary
+- (NSDictionary *)asDictionary
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSDictionary *db = @{@"name":self.name,
@@ -209,176 +160,6 @@
     return db;
 }
 
-- (id)getPropertyOrNull:(SLLockProperty)property
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    return [self valueForKey:[self keyForProperty:property]];
-}
-
-- (NSString *)keyForProperty:(SLLockProperty)property
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    switch (property) {
-        case SLLockPropertyName:
-            return @"name";
-            break;
-        case SLLockPropertyBatteryVoltage:
-            return @"batteryVoltage";
-            break;
-        case SLLockPropertyWifiStrength:
-            return @"wifiStrength";
-            break;
-        case SLLockPropertyCellStrength:
-            return @"cellStrength";
-            break;
-        case SLLockPropertyLastTime:
-            return @"lastTime";
-            break;
-        case SLLockPropertyDistanceAway:
-            return @"distanceAway";
-            break;
-        case SLLockPropertyIsLocked:
-            return @"isLocked";
-            break;
-        case SLLockPropertyIsCrashOn:
-            return @"isCrashOn";
-            break;
-        case SLLockPropertyIsSharingOn:
-            return @"isSharingOn";
-            break;
-        case SLLockPropertyIsSecurityOn:
-            return @"isSecurityOn";
-            break;
-        case SLLockPropertyLatitude:
-            return @"latitude";
-            break;
-        case SLLockPropertyLongitude:
-            return @"longitude";
-            break;
-        case SLLockPropertyUUID:
-            return @"UUID";
-            break;
-        case SLLockPropertyIsCurrentLock:
-            return @"isCurrentLock";
-            break;
-        default:
-            return nil;
-            break;
-    }
-}
-
-- (NSArray *)propertiesArray
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    return @[@(SLLockPropertyName),
-             @(SLLockPropertyUUID),
-             @(SLLockPropertyBatteryVoltage),
-             @(SLLockPropertyWifiStrength),
-             @(SLLockPropertyCellStrength),
-             @(SLLockPropertyLastTime),
-             @(SLLockPropertyDistanceAway),
-             @(SLLockPropertyIsLocked),
-             @(SLLockPropertyIsCrashOn),
-             @(SLLockPropertyIsSharingOn),
-             @(SLLockPropertyIsSecurityOn),
-             @(SLLockPropertyIsCurrentLock)
-             ];
-}
-
-- (NSDictionary *)testLocation
-{
-    int target = arc4random() % 4;
-    NSNumber *latitude;
-    NSNumber *longitude;
-    
-    switch (target) {
-        case 0:
-            latitude = @(37.767895);
-            longitude = @(-122.453178);
-            break;
-        case 1:
-            latitude = @(37.794550);
-            longitude = @(-122.427877);
-            break;
-        case 2:
-            latitude = @(37.752481);
-            longitude = @(-122.427877);
-        case 3:
-            latitude = @(37.778368);
-            longitude = @(-122.485277);
-        default:
-            break;
-    }
-    
-    return @{@"latitude":latitude,
-             @"longitude":longitude
-             };
-}
-
-- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary
-{
-    for (NSNumber *key in dictionary.allKeys) {
-        [self updatePropertyFromDictionary:dictionary forProperty:key];
-    }
-}
-
-- (void)updatePropertyFromDictionary:(NSDictionary *)dictionary forProperty:(NSNumber *)property
-{
-    switch (property.unsignedIntegerValue) {
-        case SLLockPropertyName:
-            self.name = dictionary[property];
-            break;
-        case SLLockPropertyUUID:
-            self.uuid = dictionary[property];
-            break;
-        case SLLockPropertyBatteryVoltage:
-            self.batteryVoltage = dictionary[property];
-            break;
-        case SLLockPropertyWifiStrength:
-            self.wifiStrength = dictionary[property];
-            break;
-        case SLLockPropertyCellStrength:
-            self.cellStrength = dictionary[property];
-            break;
-        case SLLockPropertyLastTime:
-            self.lastTime = dictionary[property];
-            break;
-        case SLLockPropertyDistanceAway:
-            self.distanceAway = dictionary[property];
-            break;
-        case SLLockPropertyRSSIStrength:
-            self.rssiStrength = dictionary[property];
-            break;
-        case SLLockPropertyIsLocked:
-            self.isLocked = dictionary[property];
-            break;
-        case SLLockPropertyIsCrashOn:
-            self.isCrashOn = dictionary[property];
-            break;
-        case SLLockPropertyIsSharingOn:
-            self.isSharingOn = dictionary[property];
-            break;
-        case SLLockPropertyIsSecurityOn:
-            self.isSecurityOn = dictionary[property];
-            break;
-        case SLLockPropertyLatitude:
-            self.latitude = dictionary[property];
-            break;
-        case SLLockPropertyLongitude:
-            self.longitude = dictionary[property];
-            break;
-        case SLLockPropertyTemperature:
-            self.temperature = dictionary[property];
-            break;
-        case SLLockPropertyAccelerometerValues:
-            self.accelerometerVales = dictionary[property];
-            break;
-        case SLLockPropertyIsCurrentLock:
-            self.isCurrentLock = dictionary[property];
-        default:
-            break;
-    }
-}
 
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary
 {
@@ -419,6 +200,12 @@
 - (CLLocationCoordinate2D)location
 {
     return CLLocationCoordinate2DMake(self.latitude.doubleValue, self.longitude.doubleValue);
+}
+
+- (void)setCurrentLocation:(CLLocationCoordinate2D)location
+{
+    self.latitude = @(location.latitude);
+    self.longitude = @(location.longitude);
 }
 
 @end

@@ -7,13 +7,11 @@
 //
 
 #import "SLDatabaseManager.h"
-#import "SLDbLock+Methods.h"
-#import "SLDbUser+CoreDataProperties.h"
-#import "SLDbUser.h"
 #import "SLLock.h"
+#import "SLUser.h"
 
-#define kSLDatabaseManagerEnityLock @"SLDbLock"
-#define kSLDatabaseManagerEnityUser @"SLDbUser"
+#define kSLDatabaseManagerEnityLock @"SLLock"
+#define kSLDatabaseManagerEnityUser @"SLUser"
 
 @interface SLDatabaseManager()
 
@@ -41,28 +39,25 @@
     _context = context;
 }
 
-- (SLDbLock *)newDbLock
+- (SLLock *)newLock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityLock
                                          inManagedObjectContext:self.context];
 }
 
-- (NSArray *)locksFromDbLocks:(NSArray *)dbLocks
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
-    }
+    SLLock *lock = self.newLock;
+    lock.name = name;
+    lock.uuid = uuid;
     
-    return locks;
+    return lock;
 }
 
 - (NSArray *)sharedContactsForLock:(SLLock *)lock
 {
-    SLDbLock *dbLock = [self dbLockForLock:lock];
-    return dbLock.sharedContacts.allObjects;
+    return lock.sharedContacts.allObjects;
 }
 
 - (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate forEnityNamed:(NSString *)enityName
@@ -92,13 +87,12 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
+    SLLock *dbLock = [self getLockWithUUID:lock.uuid];
     if (!dbLock) {
-        dbLock = [self newDbLock];
+        dbLock = [self newLock];
     }
     
     dbLock.user = self.currentUser;
-    [dbLock updatePropertiesWithDictionary:lock.asDbDictionary];
     
     NSError *error;
     BOOL success = NO;
@@ -116,10 +110,11 @@
 - (void)setCurrentLock:(SLLock *)lock
 {
     NSArray *locks = self.currentUser.locks.allObjects;
-    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
-        BOOL isCurrent = [dbLock.name isEqualToString:lock.name];
-        dbLock.isCurrentLock = @(isCurrent);
+    [locks enumerateObjectsUsingBlock:^(SLLock *dbLock, NSUInteger idx, BOOL *stop) {
+        dbLock.isCurrentLock = @(NO);
     }];
+    
+    lock.isCurrentLock = @(YES);
     
     [self saveUser:self.currentUser withCompletion:nil];
 }
@@ -127,48 +122,31 @@
 - (void)deselectAllLocks
 {
     NSArray *locks = self.currentUser.locks.allObjects;
-    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
+    [locks enumerateObjectsUsingBlock:^(SLLock *dbLock, NSUInteger idx, BOOL *stop) {
         dbLock.isCurrentLock = @(NO);
     }];
     
     [self saveUser:self.currentUser withCompletion:nil];
 }
 
-- (NSArray *)getAllLocksFromDb
+- (NSArray *)allLocks
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSArray *dbLocks = [self getDbLocksWithPredicate:nil];
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
-    }
-    
-    return locks;
+    return [self getLocksWithPredicate:nil];
 }
 
 - (NSArray *)locksForCurrentUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in self.currentUser.locks.allObjects) {
-        SLLock *lock = [SLLock lockWithDbDictionary:dbLock.asDictionary];
-        [locks addObject:lock];
-    }
-    
-    return locks;
+    return self.currentUser.locks.allObjects;
 }
 
-- (SLDbLock *)getDbLockWithUUID:(NSString *)uuid
+- (SLLock *)getLockWithUUID:(NSString *)uuid
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", uuid];
-    NSArray *locks = [self getDbLocksWithPredicate:predicate];
+    NSArray *locks = [self getLocksWithPredicate:predicate];
     return (locks && locks.count > 0) ? locks[0] : nil;
-}
-
-- (SLDbLock *)dbLockForLock:(SLLock *)lock
-{
-    return [self getDbLockWithUUID:lock.uuid];
 }
 
 - (NSArray *)getDbLocksWithUUIDs:(NSArray *)uuids
@@ -185,10 +163,10 @@
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateString
                                                 argumentArray:uuids];
-    return [self getDbLocksWithPredicate:predicate];
+    return [self getLocksWithPredicate:predicate];
 }
 
-- (NSArray *)getDbLocksWithPredicate:(NSPredicate *)predicate
+- (NSArray *)getLocksWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityLock];
@@ -196,12 +174,10 @@
 
 - (void)deleteLock:(SLLock *)lock withCompletion:(void (^)(BOOL))completion
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
     BOOL didSucceed = NO;
     
-    if (dbLock) {
-        [self.context deleteObject:dbLock];
+    if (lock) {
+        [self.context deleteObject:lock];
         didSucceed = YES;
     }
     
@@ -211,7 +187,7 @@
 - (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLDbUser *facebookUser = [self getDbUserWithUserId:dictionary[@"id"]];
+    SLUser *facebookUser = [self getUserWithUserId:dictionary[@"id"]];
     
     if (facebookUser && self.currentUser) {
         // facebook user and current user exist. Check to see if they are
@@ -260,7 +236,7 @@
     }
 }
 
-- (SLDbUser *)newDbUser
+- (SLUser *)newDbUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityUser
@@ -271,13 +247,13 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isCurrentUser == 1"];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
     if (users && users.count > 0) {
         self.currentUser = users[0];
     }
 }
 
-- (void)saveUser:(SLDbUser *)user withCompletion:(void (^)(BOOL))completion
+- (void)saveUser:(SLUser *)user withCompletion:(void (^)(BOOL))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSError *error;
@@ -293,15 +269,16 @@
     }
 }
 
-- (SLDbUser *)getDbUserWithUserId:(NSString *)userId
+- (SLUser *)getUserWithUserId:(NSString *)userId
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId == %@", userId];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
+    
     return (users && users.count > 0) ? users[0] : nil;
 }
 
-- (NSArray *)getDBUsersWithPredicate:(NSPredicate *)predicate
+- (NSArray *)getUsersWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityUser];

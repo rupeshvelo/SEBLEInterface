@@ -21,7 +21,7 @@
 #import "SLEditLockTableViewCell.h"
 #import "SLLock.h"
 #import "SLNotifications.h"
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser.h"
 
 
 #define kSLSlideViewControllerOptionCellIdentifier  @"SLSlideViewControllerOptionCellIdentifier"
@@ -38,7 +38,7 @@
 @property (nonatomic, strong) NSArray *locks;
 @property (nonatomic, strong) NSArray *options;
 @property (nonatomic, strong) UIView *dividerView;
-@property (nonatomic, strong) SLDbUser *user;
+@property (nonatomic, strong) SLUser *user;
 @property (nonatomic, assign) BOOL isEditMode;
 
 @end

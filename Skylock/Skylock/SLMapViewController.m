@@ -29,7 +29,7 @@
 #import "SLNotificationViewController.h"
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser.h"
 #import "Skylock-Swift.h"
 
 
@@ -589,7 +589,7 @@
 {
     NSDictionary *info = notification.userInfo;
     NSArray *recipients = info[@"recipients"];
-    SLDbUser *currentUser = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *currentUser = [SLDatabaseManager.sharedManager currentUser];
     // temporay location for this message. It should be stored in a p-list or the database
     NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock", currentUser.fullName, currentUser.fullName];
     MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
@@ -681,7 +681,7 @@
     }
 }
 
-- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLDbUser *)user
+- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLUser *)user
 {
     SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
     aivc.user = user;
@@ -759,7 +759,7 @@
     self.userMarker.position = self.userLocation;
 
     if (self.isInitialLoad) {
-        SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
         
         UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
         if (userPic) {
@@ -776,7 +776,6 @@
         NSLog(@"Can't present directions");
         return;
     }
-    
 
     SLDirectionAPIHelper *directionsHelper = [[SLDirectionAPIHelper alloc] initWithStart:self.userLocation
                                                                                      end:self.selectedLock.location
@@ -913,6 +912,10 @@
 {
     CLLocation *location = locations[0];
     self.userLocation = location.coordinate;
+
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+    user.location = self.userLocation;
+    
     [self updateUserLocation];
 
     if (self.isInitialLoad) {

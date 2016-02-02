@@ -15,7 +15,7 @@
 #import "Skylock-Swift.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser.h"
 #import "SLDatabaseManager.h"
 
 
@@ -141,7 +141,7 @@
     [ud setObject:userId forKey:SLUserDefaultsPassword];
     [ud synchronize];
     
-    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asDictionary];
     userDict[@"password"] = userId;
     

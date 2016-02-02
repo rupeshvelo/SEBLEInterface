@@ -1,19 +1,20 @@
 //
-//  SLDbUser.m
+//  SLUser.m
 //  Skylock
 //
-//  Created by Andre Green on 1/19/16.
+//  Created by Andre Green on 1/30/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
-#import "SLDbUser.h"
-#import "SLDbLock.h"
+#import "SLUser.h"
+#import "SLLock.h"
 
 #define kSLUserTypeFacebook @"facebook"
 #define kSLUserTypePhone    @"phone"
 
+@implementation SLUser
 
-@implementation SLDbUser
+@synthesize location;
 
 - (id)initWithDictionary:(NSDictionary *)dictionary
 {
@@ -71,6 +72,11 @@
     }
     
     self.userType = kSLUserTypeFacebook;
+}
+
+- (void)setPropertiesWithRegularUserDictionary:(NSDictionary *)dictionary
+{
+    
 }
 
 - (id)valueOrNullForDictionary:(NSDictionary *)dictionary key:(id)value
