@@ -18,6 +18,7 @@
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLUser" inverseName="locks" inverseEntity="SLUser" syncable="YES"/>
     </entity>
     <entity name="SLUser" representedClassName="SLUser" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="googlePushId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -27,8 +28,8 @@
         <relationship name="locks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLLock" inverseName="user" inverseEntity="SLLock" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="150"/>
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
-        <element name="SLUser" positionX="-63" positionY="9" width="128" height="150"/>
+        <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="150"/>
+        <element name="SLUser" positionX="-63" positionY="9" width="128" height="163"/>
     </elements>
 </model>

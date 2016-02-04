@@ -327,11 +327,13 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
              };
 }
 
-- (SLLock *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
+- (NSDictionary *)lockFromPeripheral:(SEBLEPeripheral *)blePeripheral
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-
+    
+    NSDictionary *possibleNames = [self factoryAndNonFactoryNameForName:blePeripheral.peripheral.name];
     return [SLDatabaseManager.sharedManager newLockWithName:blePeripheral.peripheral.name
+                                              possibleNames:[NSSet setWithArray:possibleNames.allValues]
                                                     andUUID:blePeripheral.CBUUIDAsString];
 }
 
@@ -877,15 +879,64 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                   data:signedMessage.bytesString];
 }
 
+- (void)handleLockStateForLockNamed:(NSString *)lockName data:(NSData *)data
+{
+    
+}
+
+- (NSDictionary *)factoryAndNonFactoryNameForName:(NSString *)name
+{
+    NSDictionary *names;
+    NSString *factoryName = nil;
+    NSString *nonFactoryName = nil;
+    NSArray *parts;
+    
+    if ([name rangeOfString:@"-"].location == NSNotFound) {
+        // lock is not in factory mode
+        parts = [name componentsSeparatedByString:@" "];
+        if (parts.count != 2) {
+            NSLog(@"Error parsing lock name and factory name");
+        } else {
+            factoryName = [parts componentsJoinedByString:@"-"];
+            nonFactoryName = name;
+        }
+    } else {
+        // lock is in factory mode
+        parts = [name componentsSeparatedByString:@"-"];
+        if (parts.count != 2) {
+            NSLog(@"Error parsing lock name and factory name");
+        } else {
+            factoryName = name;
+            nonFactoryName = [parts componentsJoinedByString:@" "];;
+        }
+    }
+    
+    if (factoryName && nonFactoryName) {
+        names = @{@"factory": factoryName,
+                  @"nonFactory": nonFactoryName
+                  };
+    }
+    
+    return names;
+}
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     SLUser *currentUser = [self.databaseManger currentUser];
-    SLLock *lock = [self lockFromPeripheral:peripheral];
+    NSDictionary *lockDict = [self lockFromPeripheral:peripheral];
+    NSNumber *isNew = lockDict[@"isNew"];
+    SLLock *lock = lockDict[@"lock"];
     [lock setInitialProperties:@{}];
     [lock setCurrentLocation:currentUser.location];
+    
+    if (!isNew.boolValue && !self.locks[lock.name] && !lock.isInFactoryMode) {
+        self.lockConnectionPhases[lock.name] = @(SLLockManagerConnectionPhaseSignedMessage);
+        self.locksToAdd[lock.name] = lock;
+        [self addLock:lock];
+        return;
+    }
     
     if ((!self.locksToAdd[lock.name] &&
         !self.locks[lock.name]) &&
@@ -898,14 +949,13 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         self.locksToAdd[lock.name] = lock;
         
         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
         
         SLRestManager *restManager = [SLRestManager sharedManager];
         
         NSString *token = [ud objectForKey:SLUserDefaultsUserToken];
         NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
         NSDictionary *additionalHeaders = @{@"Authorization": authValue};
-        NSArray *subRoutes = @[user.userId, @"keys"];
+        NSArray *subRoutes = @[currentUser.userId, @"keys"];
         NSDictionary *lockData = @{@"mac_id":lock.macAddress};
 
         [SLRestManager.sharedManager postObject:lockData
@@ -923,9 +973,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                 [ud synchronize];
 
                 [self addLock:lock];
-                
-//                    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-//                                                                        object:lock];
             }
         }];
     
@@ -953,6 +1000,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         [self handleHardwareServiceForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet]]) {
         [self handleMagnetForLockNamed:peripheral.peripheral.name data:data];
+    } else if([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicLock]]) {
+        [self handleLockStateForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer]]) {
         [self handleAccelerometerForLockNamed:peripheral.peripheral.name data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState]]) {

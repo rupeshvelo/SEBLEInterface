@@ -48,6 +48,7 @@
     return @{@"first_name": self.firstName,
              @"user_id": self.userId,
              @"last_name": self.lastName,
+             @"email": self.email ? self.email : [NSNull null],
              @"fb_flag": @([self.userType isEqualToString:@"facebook"]),
              @"reg_id": self.googlePushId
              };
@@ -69,6 +70,10 @@
     
     if (dictionary[@"googlePushId"]) {
         self.googlePushId = dictionary[@"googlePushId"];
+    }
+    
+    if (dictionary[@"email"]) {
+        self.email = dictionary[@"email"];
     }
     
     self.userType = kSLUserTypeFacebook;
