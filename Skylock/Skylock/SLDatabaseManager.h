@@ -32,5 +32,6 @@
 - (void)setCurrentLock:(SLLock *)lock;
 - (void)deselectAllLocks;
 - (SLLock *)getLockNamed:(NSString *)name;
+- (NSDictionary *)newLockWithName:(NSString *)name possibleNames:(NSSet *)possibleNames andUUID:(NSString *)uuid;
 
 @end

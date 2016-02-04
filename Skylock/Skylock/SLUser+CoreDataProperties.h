@@ -2,7 +2,7 @@
 //  SLUser+CoreDataProperties.h
 //  Skylock
 //
-//  Created by Andre Green on 1/30/16.
+//  Created by Andre Green on 2/4/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *lastName;
 @property (nullable, nonatomic, retain) NSString *userId;
 @property (nullable, nonatomic, retain) NSString *userType;
+@property (nullable, nonatomic, retain) NSString *email;
 @property (nullable, nonatomic, retain) NSSet<SLLock *> *locks;
 
 @end

@@ -33,7 +33,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         let middleButtonView = UIImageView(image: UIImage(named: "middle_button"))
         middleButtonView.frame = CGRectMake(
             cardView.bounds.size.width - self.xPadding - middleButtonView.bounds.size.width,
-            60,
+            0,
             middleButtonView.bounds.size.width,
             middleButtonView.bounds.size.height
         )

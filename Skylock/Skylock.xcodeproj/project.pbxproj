@@ -28,13 +28,13 @@
 		DC0434211C482B7000BCDB14 /* walkthrough5_finished_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC04341B1C482B7000BCDB14 /* walkthrough5_finished_button@3x.png */; };
 		DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */; };
 		DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */; };
-		DC156BD61C5D240D00015B53 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */; };
 		DC156BD71C5D240D00015B53 /* SLUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD11C5D240D00015B53 /* SLUser.m */; };
 		DC156BD81C5D240D00015B53 /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */; };
 		DC156BD91C5D240D00015B53 /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD51C5D240D00015B53 /* SLLock.m */; };
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
+		DC1F5B321C63CBEB00106362 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */; };
 		DC20E2A81C165C0F00E098D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC20E2A71C165C0F00E098D4 /* Security.framework */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
 		DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2B94711B63DD720047583D /* SLSettingsViewController.swift */; };
@@ -395,7 +395,6 @@
 		DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */; };
 		DCA07CE31B61F7ED0057AA26 /* SLEditLockTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA07CE21B61F7ED0057AA26 /* SLEditLockTableViewCell.m */; };
 		DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */; };
-		DCB7388E1C3B4CC700A9156D /* SLWalkthoughCardView1.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB7388D1C3B4CC700A9156D /* SLWalkthoughCardView1.swift */; };
 		DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */; };
 		DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0931B417AD100636D8E /* SLLockDidShareTableViewCell.m */; };
 		DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A0961B417B2400636D8E /* SLShareingBaseTableViewCell.m */; };
@@ -534,8 +533,6 @@
 		DC04341B1C482B7000BCDB14 /* walkthrough5_finished_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "walkthrough5_finished_button@3x.png"; sourceTree = "<group>"; };
 		DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Pods/GoogleMaps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
 		DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoginTextField.swift; sourceTree = "<group>"; };
-		DC156BCE1C5D240D00015B53 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
-		DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC156BD01C5D240D00015B53 /* SLUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLUser.h; sourceTree = "<group>"; };
 		DC156BD11C5D240D00015B53 /* SLUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLUser.m; sourceTree = "<group>"; };
 		DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -548,6 +545,8 @@
 		DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Skylock.m"; sourceTree = "<group>"; };
 		DC17ACB71B5C6C6F0090BE8A /* SLMapAnnotationImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLMapAnnotationImage.h; sourceTree = "<group>"; };
 		DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLMapAnnotationImage.m; sourceTree = "<group>"; };
+		DC1F5B301C63CBEB00106362 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC20E2A71C165C0F00E098D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
@@ -921,7 +920,6 @@
 		DCA07CE21B61F7ED0057AA26 /* SLEditLockTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLEditLockTableViewCell.m; sourceTree = "<group>"; };
 		DCAB642A1B560FD60074BBF4 /* SLLockInfoViewBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewBase.h; sourceTree = "<group>"; };
 		DCAB642B1B560FD60074BBF4 /* SLLockInfoViewBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockInfoViewBase.m; sourceTree = "<group>"; };
-		DCB7388D1C3B4CC700A9156D /* SLWalkthoughCardView1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthoughCardView1.swift; sourceTree = "<group>"; };
 		DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBaseTableViewCell.h; sourceTree = "<group>"; };
 		DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBaseTableViewCell.m; sourceTree = "<group>"; };
 		DCB7A0921B417AD100636D8E /* SLLockDidShareTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockDidShareTableViewCell.h; sourceTree = "<group>"; };
@@ -1152,7 +1150,6 @@
 				DC7E70CB1B8C27DF006E74DC /* SLNotificationCrashView.h */,
 				DC7E70CC1B8C27DF006E74DC /* SLNotificationCrashView.m */,
 				DC974D281C3A28D600797CF1 /* SLWalkthroughCardView.swift */,
-				DCB7388D1C3B4CC700A9156D /* SLWalkthoughCardView1.swift */,
 				DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */,
 				DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */,
 			);
@@ -1192,8 +1189,8 @@
 				DC974D241C3A1BB000797CF1 /* SLWalkthroughViewController.swift */,
 				DC974D261C3A285200797CF1 /* SLWalkthroughCardViewController.swift */,
 				DCCDA2E11C3D876400854289 /* SLWalkthroughOneViewController.swift */,
-				DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */,
 				DCCDA3021C3DCD1200854289 /* SLWalkthroughTwoViewController.swift */,
+				DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */,
 				DC8ECED71C437A3D00708CA3 /* SLWalkthoughFourViewController.swift */,
 				DC0434121C474B3F00BCDB14 /* SLWalkthroughFiveViewController.swift */,
 				DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */,
@@ -1204,8 +1201,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				DC156BCE1C5D240D00015B53 /* SLUser+CoreDataProperties.h */,
-				DC156BCF1C5D240D00015B53 /* SLUser+CoreDataProperties.m */,
+				DC1F5B301C63CBEB00106362 /* SLUser+CoreDataProperties.h */,
+				DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */,
 				DC156BD01C5D240D00015B53 /* SLUser.h */,
 				DC156BD11C5D240D00015B53 /* SLUser.m */,
 				DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */,
@@ -2444,8 +2441,8 @@
 				DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */,
 				DC0434131C474B3F00BCDB14 /* SLWalkthroughFiveViewController.swift in Sources */,
 				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
-				DC156BD61C5D240D00015B53 /* SLUser+CoreDataProperties.m in Sources */,
 				DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */,
+				DC1F5B321C63CBEB00106362 /* SLUser+CoreDataProperties.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
 				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
@@ -2455,7 +2452,6 @@
 				DCCDA2E21C3D876400854289 /* SLWalkthroughOneViewController.swift in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
 				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
-				DCB7388E1C3B4CC700A9156D /* SLWalkthoughCardView1.swift in Sources */,
 				DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
 				DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */,

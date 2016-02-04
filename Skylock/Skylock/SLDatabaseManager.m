@@ -46,13 +46,29 @@
                                          inManagedObjectContext:self.context];
 }
 
-- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
+- (NSDictionary *)newLockWithName:(NSString *)name possibleNames:(NSSet *)possibleNames andUUID:(NSString *)uuid
 {
-    SLLock *lock = self.newLock;
-    lock.name = name;
-    lock.uuid = uuid;
+    NSArray *dbLocks = [self allLocks];
+    SLLock *lock;
+    BOOL isNew = NO;
     
-    return lock;
+    for (SLLock *dbLock in dbLocks) {
+        if ([possibleNames containsObject:dbLock.name]) {
+            lock = dbLock;
+            break;
+        }
+    }
+    
+    if (!lock) {
+        isNew = YES;
+        lock = self.newLock;
+        lock.name = name;
+        lock.uuid = uuid;
+    }
+    
+    return @{@"lock": lock,
+             @"isNew": @(isNew)
+             };
 }
 
 - (NSArray *)sharedContactsForLock:(SLLock *)lock
@@ -147,6 +163,17 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", uuid];
     NSArray *locks = [self getLocksWithPredicate:predicate];
     return (locks && locks.count > 0) ? locks[0] : nil;
+}
+
+- (SLLock *)getLockNamed:(NSString *)name
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+    NSArray *locks = [self getLocksWithPredicate:predicate];
+    if (locks && locks.count > 0) {
+        return [locks firstObject];
+    }
+    
+    return nil;
 }
 
 - (NSArray *)getDbLocksWithUUIDs:(NSArray *)uuids

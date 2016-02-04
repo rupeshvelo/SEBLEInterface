@@ -46,4 +46,9 @@ SLLockValueDelegate
 - (void)deselectAllLocks;
 - (void)testing;
 
+/**
+ * returns a dictionary with keys "factory" and "nonFactory"
+ */
+- (NSDictionary *)factoryAndNonFactoryNameForName:(NSString *)name;
+
 @end
