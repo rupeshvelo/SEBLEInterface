@@ -127,12 +127,12 @@
     NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
         modifiedInfo[@"googlePushId"] = [ud objectForKey:SLUserDefaultsPushNotificationToken];
-        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
+        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     } else {
         // TODO this googlePushId should not be here. Only placing it here for testing purpose
         NSString *testPushId = @"dkdkododkdkdnfkdkdodwlslslsolslsldkdfjdffididlslapepkeke9";
         modifiedInfo[@"googlePushId"] = testPushId;
-        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
+        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     }
     
     NSString *userId = info[@"id"];
@@ -147,7 +147,7 @@
     
     [SLRestManager.sharedManager postObject:userDict
                                   serverKey:SLRestManagerServerKeyMain
-                                    pathKey:SLRestManagerPathUsers
+                                    pathKey:SLRestManagerPathKeyUsers
                                   subRoutes:nil
                           additionalHeaders:nil
                                  completion:^(NSDictionary *responseDict) {

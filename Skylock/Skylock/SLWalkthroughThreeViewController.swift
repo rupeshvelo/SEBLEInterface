@@ -93,7 +93,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         detailLabel.textColor = UIColor(red: 155, green: 155, blue: 155)
         cardView.addSubview(detailLabel)
         
-        let blueToothImage = UIImage(named: "walkthrough3_Bluetooth")
+        let blueToothImage = UIImage(named: "walkthrough3_bluetooth")
         let blueToothButtonFrame = CGRectMake(
             0.5*(cardView.bounds.size.width - blueToothImage!.size.width),
             CGRectGetMaxY(detailLabel.frame) + 15,

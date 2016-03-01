@@ -211,23 +211,23 @@
     completion(didSucceed);
 }
 
-- (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary
+- (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLUser *facebookUser = [self getUserWithUserId:dictionary[@"id"]];
+    SLUser *user = [self getUserWithUserId:dictionary[@"id"]];
     
-    if (facebookUser && self.currentUser) {
-        // facebook user and current user exist. Check to see if they are
+    if (user && self.currentUser) {
+        // user and current user exist. Check to see if they are
         // the same user
-        if ([facebookUser.userId isEqualToString:self.currentUser.userId]) {
+        if ([user.userId isEqualToString:self.currentUser.userId]) {
             // the facebook user the current user. update the current user
-            [self.currentUser setPropertiesWithFBDictionary:dictionary];
+            [self.currentUser setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
         } else {
             // facebook user is not the current user. The facebook user should
             // become the current user
             self.currentUser.isCurrentUser = @(NO);
-            facebookUser.isCurrentUser = @(YES);
-            [facebookUser setPropertiesWithFBDictionary:dictionary];
+            user.isCurrentUser = @(YES);
+            [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
             [self saveUser:self.currentUser withCompletion:nil];
             [self setCurrentUser];
         }
@@ -235,30 +235,30 @@
         // user exists and facebook user does not. check to see if
         // the current user matches the info in the facebook hash
         if ([self.currentUser.userId isEqualToString:dictionary[@"id"]]) {
-            [self.currentUser setPropertiesWithFBDictionary:dictionary];
+            [self.currentUser setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
             [self saveUser:self.currentUser withCompletion:nil];
         } else {
             // the current user does not match the info in the facebook hash
             // create a new user and make it the current user
             self.currentUser.isCurrentUser = @(NO);
-            facebookUser = self.newDbUser;
-            [facebookUser setPropertiesWithFBDictionary:dictionary];
-            facebookUser.isCurrentUser = @(YES);
-            [self saveUser:facebookUser withCompletion:nil];
+            user = self.newDbUser;
+            [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+            user.isCurrentUser = @(YES);
+            [self saveUser:user withCompletion:nil];
             [self setCurrentUser];
         }
-    } else if (facebookUser) {
+    } else if (user) {
         // there is no current user set
-        [facebookUser setPropertiesWithFBDictionary:dictionary];
-        facebookUser.isCurrentUser = @(YES);
-        [self saveUser:facebookUser withCompletion:nil];
+        [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+        user.isCurrentUser = @(YES);
+        [self saveUser:user withCompletion:nil];
         [self setCurrentUser];
     } else {
         // there is no current user or facebook user
-        facebookUser = self.newDbUser;
-        [facebookUser setPropertiesWithFBDictionary:dictionary];
-        facebookUser.isCurrentUser = @(YES);
-        [self saveUser:facebookUser withCompletion:nil];
+        user = self.newDbUser;
+        [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+        user.isCurrentUser = @(YES);
+        [self saveUser:user withCompletion:nil];
         [self setCurrentUser];
     }
 }

@@ -17,7 +17,6 @@ SLLockValueDelegate
 >
 
 
-
 @property (nonatomic, assign) BOOL hasBleControl;
 
 + (id)sharedManager;
@@ -30,7 +29,6 @@ SLLockValueDelegate
 - (NSArray *)unaddedLocks;
 - (void)setCurrentLock:(SLLock *)lock;
 - (SLLock *)getCurrentLock;
-- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
@@ -44,7 +42,12 @@ SLLockValueDelegate
 - (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks;
 - (BOOL)hasLocksForCurrentUser;
 - (void)deselectAllLocks;
-- (void)testing;
+- (void)updateFirmware;
+- (void)deleteLockFromCurrentUserAccount:(NSString *)lockName;
+
+// temporary methods for testing
+- (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress;
+- (void)tempReadFirmwareDataForLock:(NSString *)lockName;
 
 /**
  * returns a dictionary with keys "factory" and "nonFactory"

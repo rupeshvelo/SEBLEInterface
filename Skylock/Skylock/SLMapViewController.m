@@ -293,6 +293,26 @@
     [self.lockInfoViewController didMoveToParentViewController:self];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // remove: just a quick hack
+//    UIButton *removeLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x, self.view.center.y, 150, 50)];
+//    [removeLockButton addTarget:self action:@selector(removeLockTemp) forControlEvents:UIControlEventTouchDown];
+//    [removeLockButton setBackgroundColor:[UIColor greenColor]];
+//    [removeLockButton setTitle:@"Remove Lock" forState:UIControlStateNormal];
+//    removeLockButton.clipsToBounds = YES;
+//    removeLockButton.layer.cornerRadius = 3;
+//    [self.mapView addSubview:removeLockButton];
+}
+
+- (void)removeLockTemp
+{
+    NSLog(@"remove lock button pressed");
+    [SLLockManager.sharedManager tempReadFirmwareDataForLock:@"Skylock-F261CF82266C"];
+}
+
 - (void)registerAlertNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self

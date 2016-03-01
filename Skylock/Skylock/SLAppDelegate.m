@@ -153,37 +153,34 @@
 - (void)setUpNotficationSettings:(UIApplication *)application
 {
     [[GCMService sharedInstance] startWithConfig:[GCMConfig defaultConfig]];
-    UIUserNotificationType allNotificationTypes = (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
     
-//    UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
-//    ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
-//    ignoreAction.title = NSLocalizedString(@"Ignore", nil);
-//    ignoreAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
-//    ignoreAction.destructive = NO;
-//    ignoreAction.authenticationRequired = NO;
-//    
-//    UIMutableUserNotificationAction *helpAction = [UIMutableUserNotificationAction new];
-//    helpAction.identifier = kSLAppDelegateNotificationActionHelp;
-//    helpAction.title = NSLocalizedString(@"Help", nil);
-//    helpAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
-//    helpAction.destructive = NO;
-//    helpAction.authenticationRequired = NO;
-//    
-//    UIMutableUserNotificationCategory *notficationCategory = [UIMutableUserNotificationCategory new];
-//    notficationCategory.identifier = kSLAppDelegateNotificationCategory;
-//    [notficationCategory setActions:@[helpAction, ignoreAction]
-//                         forContext:UIUserNotificationActionContextDefault];
-//    [notficationCategory setActions:@[helpAction, ignoreAction]
-//                         forContext:UIUserNotificationActionContextMinimal];
-//    
-//    UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
-//    
-//    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes
-//                                                                             categories:[NSSet setWithObject:notficationCategory]];
-//    [application registerUserNotificationSettings:settings];
+    UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
+    ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
+    ignoreAction.title = NSLocalizedString(@"Ignore", nil);
+    ignoreAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+    ignoreAction.destructive = NO;
+    ignoreAction.authenticationRequired = NO;
+    
+    UIMutableUserNotificationAction *helpAction = [UIMutableUserNotificationAction new];
+    helpAction.identifier = kSLAppDelegateNotificationActionHelp;
+    helpAction.title = NSLocalizedString(@"Help", nil);
+    helpAction.activationMode = UIUserNotificationActivationModeBackground | UIUserNotificationActivationModeForeground;
+    helpAction.destructive = NO;
+    helpAction.authenticationRequired = NO;
+    
+    UIMutableUserNotificationCategory *notficationCategory = [UIMutableUserNotificationCategory new];
+    notficationCategory.identifier = kSLAppDelegateNotificationCategory;
+    [notficationCategory setActions:@[helpAction, ignoreAction]
+                         forContext:UIUserNotificationActionContextDefault];
+    [notficationCategory setActions:@[helpAction, ignoreAction]
+                         forContext:UIUserNotificationActionContextMinimal];
+    
+    UIUserNotificationType notificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
+    
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes
+                                                                             categories:[NSSet setWithObject:notficationCategory]];
+    [application registerUserNotificationSettings:settings];
+    [application registerForRemoteNotifications];
 }
 
 - (void)postNotification:(SLNotification *)notification
@@ -284,7 +281,8 @@
     if (!coordinator) {
         return nil;
     }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
+    
+    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     return _managedObjectContext;
 }

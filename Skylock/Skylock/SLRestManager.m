@@ -57,8 +57,12 @@
         case SLRestManagerPathKeyKeys:
             url = @"users/";
             break;
-        case SLRestManagerPathUsers:
+        case SLRestManagerPathKeyUsers:
             url = @"users/";
+            break;
+        case SLRestManagerPathKeyFirmwareUpdate:
+            url = @"updates/";
+            break;
         default:
             break;
     }
@@ -113,7 +117,9 @@
     [request setTimeoutInterval:kSLRestManagerTimeout];
     
     if (additionalHeaders) {
-        [request setValuesForKeysWithDictionary:additionalHeaders];
+        for (NSString *key in additionalHeaders.allKeys) {
+            [request setValue:additionalHeaders[key] forHTTPHeaderField:key];
+        }
     }
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -263,7 +269,7 @@
                                                                   error:&error];
     
     if (error) {
-        NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
+        NSLog(@"Error could not decode json object for fetch request: %@. Failed with error: %@",
               originalUrl.absoluteString,
               error
               );
@@ -281,9 +287,16 @@
             return;
         }
         
-        completion(serverReply[@"payload"]);
+        id payload = serverReply[@"payload"];
+        if ([payload isKindOfClass:[NSDictionary class]]) {
+            completion(payload);
+        } else if ([payload isKindOfClass:[NSArray class]]) {
+            completion(@{@"payload": payload});
+        } else {
+            completion(nil);
+        }
     } else {
-        NSLog(@"failed with error: %@", serverReply[@"status"]);
+        NSLog(@"failed with error: %@", status);
         completion(nil);
     }
     
@@ -294,6 +307,7 @@
     NSString *authStr = [NSString stringWithFormat:@"%@:%@", username, password];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *auth64String = [authData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    
     return [NSString stringWithFormat:@"Basic %@", auth64String];
 }
 

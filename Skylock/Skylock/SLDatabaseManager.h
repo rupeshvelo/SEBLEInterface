@@ -26,7 +26,7 @@
 - (NSArray *)locksForCurrentUser;
 - (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
 - (void)saveUser:(SLUser *)user withCompletion:(void(^)(BOOL success))completion;
-- (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary;
+- (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser;
 - (void)setCurrentUser;
 - (NSArray *)sharedContactsForLock:(SLLock *)lock;
 - (void)setCurrentLock:(SLLock *)lock;
