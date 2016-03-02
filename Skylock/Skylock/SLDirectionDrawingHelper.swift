@@ -14,6 +14,7 @@ import GoogleMaps
 class SLDirectionDrawingHelper: NSObject {
     let mapView: GMSMapView
     let directions: [SLDirection]
+    var polyline: GMSPolyline?
     
     init(mapView: GMSMapView, directions: [SLDirection]) {
         self.mapView = mapView;
@@ -26,11 +27,17 @@ class SLDirectionDrawingHelper: NSObject {
             path.addCoordinate(direction.start!)
         }
         
-        let polyline = GMSPolyline(path: path)
-        polyline.strokeWidth = 5
-        polyline.strokeColor = UIColor.redColor()
-        polyline.map = self.mapView
+        self.polyline = GMSPolyline(path: path)
+        self.polyline!.strokeWidth = 5
+        self.polyline!.strokeColor = UIColor.redColor()
+        self.polyline!.map = self.mapView
         
         completion()
+    }
+    
+    func removeDirections() {
+        if let polyline = self.polyline {
+            polyline.map = nil
+        }
     }
 }
