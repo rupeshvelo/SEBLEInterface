@@ -46,14 +46,22 @@
                                          inManagedObjectContext:self.context];
 }
 
-- (NSDictionary *)newLockWithName:(NSString *)name possibleNames:(NSSet *)possibleNames andUUID:(NSString *)uuid
+- (NSDictionary *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
 {
-    NSArray *dbLocks = [self allLocks];
     SLLock *lock;
     BOOL isNew = NO;
     
+    NSArray *parts;
+    if ([name rangeOfString:@"-"].location == NSNotFound) {
+        parts = [name componentsSeparatedByString:@" "];
+    } else {
+        parts = [name componentsSeparatedByString:@"-"];
+    }
+    
+    NSString *macAddress = parts[1];
+    NSArray *dbLocks = [self allLocks];
     for (SLLock *dbLock in dbLocks) {
-        if ([possibleNames containsObject:dbLock.name]) {
+        if ([dbLock.macAddress isEqualToString:macAddress]) {
             lock = dbLock;
             break;
         }
@@ -103,18 +111,9 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    SLLock *dbLock = [self getLockWithUUID:lock.uuid];
-    if (!dbLock) {
-        dbLock = [self newLock];
-    }
-    
-    dbLock.user = self.currentUser;
-    
     NSError *error;
-    BOOL success = NO;
-    if ([self.context save:&error]) {
-        success = YES;
-    } else {
+    BOOL success = [self.context save:&error];
+    if (!success) {
         NSLog(@"Failed to save lock to database with error: %@", error.localizedDescription);
     }
     
@@ -165,7 +164,7 @@
     return (locks && locks.count > 0) ? locks[0] : nil;
 }
 
-- (SLLock *)getLockNamed:(NSString *)name
+- (SLLock *)getLockWithMacAddress:(NSString *)macAddress
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
     NSArray *locks = [self getLocksWithPredicate:predicate];

@@ -208,4 +208,14 @@
     self.longitude = @(location.longitude);
 }
 
+- (void)switchLockNameToProvisioned
+{
+    if (!self.isInFactoryMode) {
+        return;
+    }
+    
+    NSArray *parts = [self.name componentsSeparatedByString:@"-"];
+    self.name = [NSString stringWithFormat:@"%@ %@", parts[0], parts[1]];
+}
+
 @end

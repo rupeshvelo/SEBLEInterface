@@ -23,6 +23,7 @@
         <attribute name="googlePushId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="macAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userType" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="locks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLLock" inverseName="user" inverseEntity="SLLock" syncable="YES"/>
@@ -30,6 +31,6 @@
     <elements>
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
         <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="150"/>
-        <element name="SLUser" positionX="-63" positionY="9" width="128" height="163"/>
+        <element name="SLUser" positionX="-63" positionY="9" width="128" height="180"/>
     </elements>
 </model>

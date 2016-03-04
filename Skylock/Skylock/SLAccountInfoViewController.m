@@ -156,6 +156,10 @@
 {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    self.user = [SLDatabaseManager.sharedManager currentUser];
+    
     UIImageView *titleView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 25.0f, 35.0f)];
     titleView.image = [UIImage imageNamed:@"img_logo2"];
     titleView.contentMode = UIViewContentModeScaleAspectFit;

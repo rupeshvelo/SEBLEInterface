@@ -699,6 +699,9 @@
         SLSharingViewController *svc = [SLSharingViewController new];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
         [self presentViewController:nc animated:YES completion:nil];
+    } else if (action == SLSlideViewControllerButtonActionViewAccount) {
+        SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
+        [self presentViewController:aivc animated:YES completion:nil];
     }
 }
 
