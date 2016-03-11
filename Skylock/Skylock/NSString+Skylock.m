@@ -66,4 +66,22 @@
     return [NSData dataWithBytes:&bytes length:self.length/2];
 }
 
+- (NSString *)macAddress
+{
+    NSArray *parts;
+    if ([self rangeOfString:@"-"].location == NSNotFound &&
+        [self rangeOfString:@" "].location != NSNotFound) {
+        parts = [self componentsSeparatedByString:@" "];
+        return parts[1];
+    }
+    
+    if ([self rangeOfString:@" "].location == NSNotFound &&
+        [self rangeOfString:@"-"].location != NSNotFound) {
+        parts = [self componentsSeparatedByString:@"-"];
+        return parts[1];
+    }
+    
+    return nil;
+}
+
 @end

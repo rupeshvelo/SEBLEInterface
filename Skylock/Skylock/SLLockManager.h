@@ -47,7 +47,7 @@ SLLockValueDelegate
 
 // temporary methods for testing
 - (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress;
-- (void)tempReadFirmwareDataForLock:(NSString *)lockName;
+- (void)tempReadFirmwareDataForLock:(NSString *)macAddress;
 
 /**
  * returns a dictionary with keys "factory" and "nonFactory"

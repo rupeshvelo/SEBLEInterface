@@ -72,6 +72,7 @@
         lock = self.newLock;
         lock.name = name;
         lock.uuid = uuid;
+        lock.macAddress = macAddress;
     }
     
     return @{@"lock": lock,
@@ -84,7 +85,8 @@
     return lock.sharedContacts.allObjects;
 }
 
-- (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate forEnityNamed:(NSString *)enityName
+- (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate
+                              forEnityNamed:(NSString *)enityName
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSFetchRequest *fetchRequest = [NSFetchRequest new];
@@ -166,7 +168,7 @@
 
 - (SLLock *)getLockWithMacAddress:(NSString *)macAddress
 {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", name];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"macAddress == %@", macAddress];
     NSArray *locks = [self getLocksWithPredicate:predicate];
     if (locks && locks.count > 0) {
         return [locks firstObject];
