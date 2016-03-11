@@ -17,6 +17,7 @@
 #import "NSString+Skylock.h"
 #import "Skylock-Swift.h"
 #import "SLRestManager.h"
+#import "SLDatabaseManager.h"
 
 
 #define kSLLoginVCFontName      @"HelveticaNeue"
@@ -724,40 +725,43 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
         return;
     }
     
-    NSDictionary *user;
+    NSDictionary *userDict;
     if (self.currentStage == SLLoginStageNew) {
-        user = @{@"first_name": self.firstName,
-                 @"last_name": self.lastName,
-                 @"user_id": self.phoneNumber,
-                 @"password": self.password,
-                 @"fb_flag": @(NO),
-                 @"reg_id": pushToken
-                 };
+        userDict = @{@"first_name": self.firstName,
+                     @"last_name": self.lastName,
+                     @"user_id": self.phoneNumber,
+                     @"password": self.password,
+                     @"fb_flag": @(NO),
+                     @"reg_id": pushToken,
+                     @"email": @"some@test.email"
+                     };
     } else if (self.currentStage == SLLoginStageExisting) {
-        user = @{@"first_name": [NSNull null],
-                 @"last_name": [NSNull null],
-                 @"user_id": self.phoneNumber,
-                 @"password": self.password,
-                 @"fb_flag": [NSNull null],
-                 @"reg_id": pushToken
-                 };
+        userDict = @{@"first_name": [NSNull null],
+                     @"last_name": [NSNull null],
+                     @"user_id": self.phoneNumber,
+                     @"password": self.password,
+                     @"fb_flag": [NSNull null],
+                     @"reg_id": pushToken,
+                     @"email": @"some@test.email"
+                     };
     }
     
-    if (!user) {
+    if (!userDict) {
         NSLog(@"Error: Could not create user");
         return;
     }
     
     // TODO: Saving a user should be moved to its own class
+    [SLDatabaseManager.sharedManager saveUserWithDictionary:userDict isFacebookUser:NO];
     [SLRestManager.sharedManager
-     postObject:user
+     postObject:userDict
      serverKey:SLRestManagerServerKeyMain
-     pathKey:SLRestManagerPathUsers
+     pathKey:SLRestManagerPathKeyUsers
      subRoutes:nil
      additionalHeaders:nil
      completion:^(NSDictionary *responseDict) {
          if (!responseDict) {
-             NSLog(@"Did not receive user response while saving user: %@", user);
+             NSLog(@"Did not receive user response while saving user: %@", userDict);
              return;
          }
          

@@ -69,10 +69,10 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 - (void)setInitialProperties:(NSDictionary *)dictionary;
 - (void)updateProperties:(NSDictionary *)dictionary;
 - (NSString *)displayName;
-- (NSString *)macAddress;
 - (BOOL)isInFactoryMode;
 - (CLLocationCoordinate2D)location;
 - (void)setCurrentLocation:(CLLocationCoordinate2D)location;
+- (void)switchLockNameToProvisioned;
 
 @end
 

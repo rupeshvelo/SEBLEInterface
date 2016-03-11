@@ -180,18 +180,6 @@
     return [self.name substringToIndex:maxLength];
 }
 
-- (NSString *)macAddress
-{
-    NSArray *parts;
-    if (self.isInFactoryMode) {
-        parts = [self.name componentsSeparatedByString:@"-"];
-    } else {
-        parts = [self.name componentsSeparatedByString:@" "];
-    }
-    
-    return parts[1];
-}
-
 - (BOOL)isInFactoryMode
 {
     return [self.name rangeOfString:@"-"].location != NSNotFound;
@@ -206,6 +194,16 @@
 {
     self.latitude = @(location.latitude);
     self.longitude = @(location.longitude);
+}
+
+- (void)switchLockNameToProvisioned
+{
+    if (!self.isInFactoryMode) {
+        return;
+    }
+    
+    NSArray *parts = [self.name componentsSeparatedByString:@"-"];
+    self.name = [NSString stringWithFormat:@"%@ %@", parts[0], parts[1]];
 }
 
 @end

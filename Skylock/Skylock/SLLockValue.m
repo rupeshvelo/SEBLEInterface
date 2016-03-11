@@ -14,19 +14,19 @@
 @property (nonatomic, assign) NSUInteger count;
 @property (nonatomic, strong) NSMutableArray *values;
 @property (nonatomic, strong) NSArray *keys;
-@property (nonatomic, copy) NSString *lockName;
+@property (nonatomic, copy) NSString *macAddres;
 
 @end
 
 @implementation SLLockValue
 
-- (id)initWithMaxCount:(NSUInteger)maxCount andLockName:(NSString *)lockName
+- (id)initWithMaxCount:(NSUInteger)maxCount andMacAddress:(NSString *)macAddress
 {
     self = [super init];
     if (self) {
         _count = 0;
         _maxCount = maxCount;
-        _lockName = lockName;
+        _macAddres = macAddress;
         _values = [NSMutableArray new];
     }
     
@@ -81,9 +81,9 @@
     }
 }
 
-- (NSString *)name
+- (NSString *)macAddress
 {
-    return self.lockName;
+    return self.macAddress;
 }
 
 @end

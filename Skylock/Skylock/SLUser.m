@@ -54,7 +54,7 @@
              };
 }
 
-- (void)setPropertiesWithFBDictionary:(NSDictionary *)dictionary
+- (void)setPropertiesWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser
 {
     if (dictionary[@"first_name"]) {
         self.firstName = dictionary[@"first_name"];
@@ -68,20 +68,23 @@
         self.userId = dictionary[@"id"];
     }
     
+    if (dictionary[@"user_id"]) {
+        self.userId = dictionary[@"user_id"];
+    }
+    
     if (dictionary[@"googlePushId"]) {
         self.googlePushId = dictionary[@"googlePushId"];
+    }
+    
+    if (dictionary[@"reg_id"]) {
+        self.googlePushId = dictionary[@"reg_id"];
     }
     
     if (dictionary[@"email"]) {
         self.email = dictionary[@"email"];
     }
     
-    self.userType = kSLUserTypeFacebook;
-}
-
-- (void)setPropertiesWithRegularUserDictionary:(NSDictionary *)dictionary
-{
-    
+    self.userType = isFacebookUser ? kSLUserTypeFacebook : kSLUserTypePhone;
 }
 
 - (id)valueOrNullForDictionary:(NSDictionary *)dictionary key:(id)value

@@ -38,8 +38,8 @@
 #define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
 #define kSLMapViewControllerLockInfoViewPadding     12.0f
 #define kSLMapViewControllerCalloutScaler           4.0f
-#define kSLMapViewControllerCalloutOffsetScaler     0.75f
-
+#define kSLMapViewControllerCalloutOffsetScaler     0.65f
+#define kSLMapViewControllerCalloutYOffset          40.0f
 
 @interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
 
@@ -74,6 +74,7 @@
 @property (nonatomic, strong) SLDirectionsViewController *directionsViewController;
 
 @property (nonatomic, strong) SLMapCalloutViewController *mapCalloutViewController;
+@property (nonatomic, strong) SLDirectionDrawingHelper *directionDrawingHelper;
 
 @end
 
@@ -291,6 +292,27 @@
     [self.view addSubview:self.lockInfoViewController.view];
     [self.view bringSubviewToFront:self.lockInfoViewController.view];
     [self.lockInfoViewController didMoveToParentViewController:self];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    // remove: just a quick hack
+//    UIButton *removeLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x, self.view.center.y, 150, 50)];
+//    [removeLockButton addTarget:self action:@selector(removeLockTemp) forControlEvents:UIControlEventTouchDown];
+//    [removeLockButton setBackgroundColor:[UIColor greenColor]];
+//    [removeLockButton setTitle:@"Remove Lock" forState:UIControlStateNormal];
+//    removeLockButton.clipsToBounds = YES;
+//    removeLockButton.layer.cornerRadius = 3;
+//    [self.mapView addSubview:removeLockButton];
+}
+
+- (void)removeLockTemp
+{
+    NSLog(@"remove lock button pressed");
+    [SLLockManager.sharedManager tempDeleteLockFromCurrentUserAccount:@"Skylock DF928DD51C00"];
+    //[SLLockManager.sharedManager tempReadFirmwareDataForLock:@"Skylock-F261CF82266C"];
 }
 
 - (void)registerAlertNotifications
@@ -653,7 +675,6 @@
         // user has not given access
     } else if (buttonIndex == 1) {
         // user has granted location services
-        
     }
 }
 
@@ -678,6 +699,9 @@
         SLSharingViewController *svc = [SLSharingViewController new];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
         [self presentViewController:nc animated:YES completion:nil];
+    } else if (action == SLSlideViewControllerButtonActionViewAccount) {
+        SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
+        [self presentViewController:aivc animated:YES completion:nil];
     }
 }
 
@@ -743,12 +767,14 @@
 
 - (void)addLockToMap:(SLLock *)lock
 {
-    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.344306, -120.615732);
+    // hard coding location for demo
+    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.761758, -122.421241);
+    //CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.767869, -122.453231);
+    [self.selectedLock setCurrentLocation:postion];
     GMSMarker *lockMarker = [GMSMarker markerWithPosition:postion];
     lockMarker.title = lock.name;
     lockMarker.icon = [UIImage imageNamed:@"img_lock"];
     lockMarker.map = self.mapView;
-    lockMarker.groundAnchor = CGPointMake(0, 0);
     lockMarker.infoWindowAnchor = CGPointMake(0.0f, 0.0f);
     
     self.lockMarkers[lock.name] = lockMarker;
@@ -799,9 +825,9 @@
         return;
     }
     
-    SLDirectionDrawingHelper *drawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
-                                                                                     directions:self.directions];
-    [drawingHelper drawDirections:^{
+    self.directionDrawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
+                                                                         directions:self.directions];
+    [self.directionDrawingHelper drawDirections:^{
         self.directionsButton.hidden = NO;
         
         if (!self.lockInfoViewController.isUp) {
@@ -817,6 +843,8 @@
     
     if (self.mapCalloutViewController) {
         [self.mapCalloutViewController setCalloutViewUnselected];
+//        [self.directionDrawingHelper removeDirections];
+//        self.directionDrawingHelper = nil;
     }
 }
 
@@ -824,13 +852,12 @@
 
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker
 {
-    self.directionsButton.hidden = NO;
     if (marker != self.userMarker) {
+        self.directionsButton.hidden = NO;
         self.selectedLockMarker = marker;
+        [mapView setSelectedMarker:marker];
     }
-    
-    [mapView setSelectedMarker:marker];
-    
+
     return YES;
 }
 
@@ -850,6 +877,7 @@
     CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
     CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
     point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
+    point.y -= kSLMapViewControllerCalloutYOffset;
     self.mapCalloutViewController.view.center = point;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, .1f, .1f)];
@@ -865,6 +893,10 @@
         [self.mapCalloutViewController removeFromParentViewController];
         self.mapCalloutViewController = nil;
         self.directionsButton.hidden = YES;
+        if (self.directionDrawingHelper) {
+           [self.directionDrawingHelper removeDirections];
+            self.directionDrawingHelper = nil;
+        }
     }
     
     if (self.selectedLockMarker) {
@@ -883,6 +915,7 @@
         CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
         CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
         point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
+        point.y -= kSLMapViewControllerCalloutYOffset;
         self.mapCalloutViewController.view.center = point;
     }
 }

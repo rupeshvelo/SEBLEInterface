@@ -22,7 +22,8 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
     SLRestManagerPathKeyChallengeKey,
     SLRestManagerPathKeyChallengeData,
     SLRestManagerPathKeyKeys,
-    SLRestManagerPathUsers
+    SLRestManagerPathKeyUsers,
+    SLRestManagerPathKeyFirmwareUpdate
 };
 
 
