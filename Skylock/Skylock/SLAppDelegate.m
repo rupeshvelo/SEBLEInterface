@@ -93,29 +93,29 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
-    instanceIDConfig.delegate = self;
-    
-    NSDictionary *options = @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
-                              kGGLInstanceIDAPNSServerTypeSandboxOption:@YES};
-    
-    [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
-
-    [GGLInstanceID.sharedInstance
-     tokenWithAuthorizedEntity:@"750134088591"
-     scope:kGGLInstanceIDScopeGCM
-     options:options
-     handler:^(NSString *token, NSError *error) {
-         if (error) {
-             NSLog(@"Error getting google cloud service token %@", error.localizedDescription);
-             return;
-         }
-         
-         NSLog(@"got token: %@", token);
-         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-         [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
-         [ud synchronize];
-     }];
+//    GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
+//    instanceIDConfig.delegate = self;
+//    
+//    NSDictionary *options = @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
+//                              kGGLInstanceIDAPNSServerTypeSandboxOption:@YES};
+//    
+//    [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
+//
+//    [GGLInstanceID.sharedInstance
+//     tokenWithAuthorizedEntity:@"750134088591"
+//     scope:kGGLInstanceIDScopeGCM
+//     options:options
+//     handler:^(NSString *token, NSError *error) {
+//         if (error) {
+//             NSLog(@"Error getting google cloud service token %@", error.localizedDescription);
+//             return;
+//         }
+//         
+//         NSLog(@"got token: %@", token);
+//         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//         [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
+//         [ud synchronize];
+//     }];
 }
 
 - (UIViewController *)initialViewController

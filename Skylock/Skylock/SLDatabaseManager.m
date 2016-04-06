@@ -7,6 +7,7 @@
 //
 
 #import "SLDatabaseManager.h"
+#import "NSString+Skylock.h"
 #import "SLLock.h"
 #import "SLUser.h"
 
@@ -46,38 +47,26 @@
                                          inManagedObjectContext:self.context];
 }
 
-- (NSDictionary *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
 {
     SLLock *lock;
-    BOOL isNew = NO;
+    NSArray *dbLocks = self.allLocks;
     
-    NSArray *parts;
-    if ([name rangeOfString:@"-"].location == NSNotFound) {
-        parts = [name componentsSeparatedByString:@" "];
-    } else {
-        parts = [name componentsSeparatedByString:@"-"];
-    }
-    
-    NSString *macAddress = parts[1];
-    NSArray *dbLocks = [self allLocks];
     for (SLLock *dbLock in dbLocks) {
-        if ([dbLock.macAddress isEqualToString:macAddress]) {
+        if ([dbLock.macAddress isEqualToString:name.macAddress]) {
             lock = dbLock;
             break;
         }
     }
     
     if (!lock) {
-        isNew = YES;
         lock = self.newLock;
         lock.name = name;
         lock.uuid = uuid;
-        lock.macAddress = macAddress;
+        lock.macAddress = name.macAddress;
     }
     
-    return @{@"lock": lock,
-             @"isNew": @(isNew)
-             };
+    return lock;
 }
 
 - (NSArray *)sharedContactsForLock:(SLLock *)lock

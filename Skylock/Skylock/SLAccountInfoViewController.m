@@ -13,6 +13,8 @@
 #import "SLDatabaseManager.h"
 #import "SLUser.h"
 #import "SLPicManager.h"
+#import "Skylock-Swift.h"
+
 
 #define kSLAccountInfoFieldVCLabelFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
 #define kSLAccountInfoFieldVCXPadding   25.0f
@@ -27,6 +29,7 @@
 @property (nonatomic, strong) SLAccountInfoFieldView *emailFieldView;
 @property (nonatomic, strong) SLAccountInfoFieldView *phoneNumberView;
 @property (nonatomic, strong) SLAccountInfoFieldView *passwordView;
+@property (nonatomic, strong) SLAccountInfoFieldView *emergencyContactsView;
 
 @property (nonatomic, strong) UIButton *logoutButton;
 
@@ -78,7 +81,6 @@
                                                      name:NSLocalizedString(@"Change photo", nil)
                                                 picRadius:35.0f
                                                labelColor:[UIColor colorWithRed:52 green:152 blue:219]];
-        _picView.delegate = self;
         [self.view addSubview:_picView];
     }
     
@@ -111,6 +113,11 @@
                                                             headerString:NSLocalizedString(@"Phone number", nil)
                                                               infoString:self.user.userId
                                                             buttonString:NSLocalizedString(@"Change phone number", nil) showSecure:NO];
+        __weak typeof(self) weakSelf = self;
+        _phoneNumberView.buttonPressedBlock = ^{
+            [weakSelf phoneNumberViewButtonPressed];
+        };
+        
         [self.view addSubview:_phoneNumberView];
     }
     
@@ -128,11 +135,39 @@
                                                            infoString:self.user.userId
                                                          buttonString:NSLocalizedString(@"Change password", nil)
                                                            showSecure:YES];
+        __weak typeof(self) weakSelf = self;
+        _passwordView.buttonPressedBlock = ^{
+            [weakSelf passwordViewButtonPressed];
+        };
+        
         [self.view addSubview:_passwordView];
     }
     
     return _passwordView;
 }
+
+- (SLAccountInfoFieldView *)emergencyContactsView
+{
+    if (!_emergencyContactsView) {
+        _emergencyContactsView = [[SLAccountInfoFieldView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                          0.0f,
+                                                                                          self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
+                                                                                          33.0f)
+                                                                  headerString:NSLocalizedString(@"Emergency Contacts", nil)
+                                                                    infoString:@""
+                                                                  buttonString:NSLocalizedString(@"+ Add Contacts", nil)
+                                                                    showSecure:NO];
+        __weak typeof(self) weakSelf = self;
+        _emergencyContactsView.buttonPressedBlock = ^{
+            [weakSelf emergencyContactsViewButtonPressed];
+        };
+        
+        [self.view addSubview:_emergencyContactsView];
+    }
+    
+    return _emergencyContactsView;
+}
+
 
 - (UIButton *)logoutButton
 {
@@ -198,30 +233,48 @@
         });
     }];
     
-    self.emailFieldView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                             CGRectGetMaxY(self.picView.frame) + 47.0f,
-                                             self.emailFieldView.bounds.size.width,
-                                             self.emailFieldView.bounds.size.height);
-    
     self.phoneNumberView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                             CGRectGetMaxY(self.emailFieldView.frame) + 30.0f,
-                                             self.phoneNumberView.bounds.size.width,
-                                             self.phoneNumberView.bounds.size.height);
+                                            CGRectGetMaxY(self.picView.frame) + 47.0f,
+                                            self.phoneNumberView.bounds.size.width,
+                                            self.phoneNumberView.bounds.size.height);
     
     self.passwordView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                             CGRectGetMaxY(self.phoneNumberView.frame) + 30.0f,
-                                             self.passwordView.bounds.size.width,
-                                             self.passwordView.bounds.size.height);
+                                         CGRectGetMaxY(self.phoneNumberView.frame) + 30.0f,
+                                         self.passwordView.bounds.size.width,
+                                         self.passwordView.bounds.size.height);
+    
+    self.emergencyContactsView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
+                                                  CGRectGetMaxY(self.passwordView.frame) + 30.0f,
+                                                  self.passwordView.bounds.size.width,
+                                                  self.passwordView.bounds.size.height);
     
     self.logoutButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.logoutButton.bounds.size.width),
-                                    CGRectGetMaxY(self.passwordView.frame) + 45.0f,
-                                    self.logoutButton.bounds.size.width,
-                                    self.logoutButton.bounds.size.height);
+                                         CGRectGetMaxY(self.emergencyContactsView.frame) + 45.0f,
+                                         self.logoutButton.bounds.size.width,
+                                         self.logoutButton.bounds.size.height);
+}
+
+- (void)phoneNumberViewButtonPressed
+{
+    NSLog(@"phone number field button pressed");
+}
+
+- (void)passwordViewButtonPressed
+{
+    NSLog(@"password field button pressed");
+}
+
+- (void)emergencyContactsViewButtonPressed
+{
+    SLContactViewController *cvc = [SLContactViewController new];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:cvc];
+
+    [self presentViewController:nc animated:YES completion:nil];
 }
 
 - (void)logoutButtonPressed
 {
-    
+    NSLog(@"logout button pressed");
 }
 
 - (void)navBackButtonPressed
@@ -234,4 +287,5 @@
 {
     
 }
+
 @end

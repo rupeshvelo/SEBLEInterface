@@ -9,16 +9,11 @@
 #import <UIKit/UIKit.h>
 @class SLAccountInfoFieldView;
 
-@protocol SLAccountInfoFieldViewDelegate <NSObject>
-
-- (void)accountInfoFieldViewButtonPushed:(SLAccountInfoFieldView *)view;
-
-@end
 
 @interface SLAccountInfoFieldView : UIView
 
 @property (nonatomic, strong) UITextField *infoField;
-@property (nonatomic, weak) id <SLAccountInfoFieldViewDelegate> delegate;
+@property (nonatomic, copy) void (^buttonPressedBlock)();
 
 - (id)initWithFrame:(CGRect)frame headerString:(NSString *)headerString infoString:(NSString *)infoString buttonString:(NSString *)buttonString showSecure:(BOOL)showSecure;
 

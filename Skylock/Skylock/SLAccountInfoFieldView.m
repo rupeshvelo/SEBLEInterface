@@ -118,8 +118,9 @@
 
 - (void)buttonPushed
 {
-    if ([self.delegate respondsToSelector:@selector(accountInfoFieldViewButtonPushed:)]) {
-        [self.delegate accountInfoFieldViewButtonPushed:self];
+    if (self.buttonPressedBlock) {
+        self.buttonPressedBlock();
     }
 }
+
 @end

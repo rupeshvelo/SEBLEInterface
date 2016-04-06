@@ -37,6 +37,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     let buttonOffset:CGFloat = 10.0
     var topCardViewController:SLWalkthroughCardViewController?
     var bottomCardViewController:SLWalkthroughCardViewController?
+    @objc var onExit:(() -> Void)?
     
     // lazy variables
     lazy var nextButton:UIButton = {
@@ -396,6 +397,9 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             userDefaults.setBool(true, forKey: "SLUserDefaultsTutorialComplete")
             userDefaults.synchronize()
             
+            if let completion = self.onExit {
+                completion()
+            }
             let mapViewController = SLMapViewController()
             self.presentViewController(mapViewController, animated: true, completion: nil)
         }

@@ -30,7 +30,7 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
         let buttonWidth: CGFloat = 4*image!.size.width
         var button: UIButton = UIButton(frame: CGRectMake(0, 15, buttonWidth, buttonHeght))
         button.setImage(image!, forState: UIControlState.Normal)
-        button.addTarget(self, action: "backButtonPushed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(backButtonPushed), forControlEvents: UIControlEvents.TouchDown)
         view.addSubview(button)
         
         let label = UILabel(frame:view.bounds)
@@ -81,8 +81,8 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             self.view.bounds.size.width - 2*self.xPadding,
             28)
         )
-        settingLabel.text = NSLocalizedString("Theft alerts are sent when tampering or " +
-            "vibrations on a lock are detected.",
+        settingLabel.text = NSLocalizedString(
+            "Theft alerts are sent when tampering or vibrations on a lock are detected.",
             comment: ""
         )
         settingLabel.font = self.infoFont
@@ -105,7 +105,7 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
         )
         segmentControl.addTarget(
             self,
-            action: "segmentPressed:",
+            action: #selector(segmentPressed(_:)),
             forControlEvents: UIControlEvents.ValueChanged
         )
         segmentControl.selectedSegmentIndex = 1
@@ -168,7 +168,7 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             view.bounds.size.height - 2*dividerHeight
             )
         )
-        button.addTarget(self, action: "sharingButtonPushed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(sharingButtonPushed), forControlEvents: UIControlEvents.TouchDown)
         button.setTitle(NSLocalizedString("Sharing", comment:""), forState: UIControlState.Normal)
         button.setTitleColor(self.titleColor, forState: UIControlState.Normal)
         button.titleEdgeInsets = UIEdgeInsets(top: 0, left: self.xPadding, bottom: 0, right: 0)
@@ -256,7 +256,11 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             pinImage.size.height
             )
         )
-        self.resetPinButton!.addTarget(self, action: "resetPinButtonPushed", forControlEvents: UIControlEvents.TouchDown)
+        self.resetPinButton!.addTarget(
+            self, action:
+            #selector(resetPinButtonPushed),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         self.resetPinButton!.setImage(pinImage, forState: UIControlState.Normal)
         view.addSubview(self.resetPinButton!)
         
@@ -339,7 +343,11 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             touchPadSwitch.bounds.size.width,
             touchPadSwitch.bounds.size.height
         )
-        touchPadSwitch.addTarget(self, action: "touchPadSwitchFlipped:", forControlEvents: UIControlEvents.ValueChanged)
+        touchPadSwitch.addTarget(
+            self,
+            action: #selector(touchPadSwitchFlipped(_:)),
+            forControlEvents: UIControlEvents.ValueChanged
+        )
         view.addSubview(touchPadSwitch)
         
         let autoLockSwitch: UISwitch = UISwitch()
@@ -349,7 +357,7 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             autoLockSwitch.bounds.size.width,
             autoLockSwitch.bounds.size.height
         )
-        autoLockSwitch.addTarget(self, action: "autoLockSwitchFlipped:", forControlEvents: UIControlEvents.ValueChanged)
+        autoLockSwitch.addTarget(self, action: #selector(autoLockSwitchFlipped(_:)), forControlEvents: UIControlEvents.ValueChanged)
         view.addSubview(autoLockSwitch)
         
         let autoUnLockSwitch: UISwitch = UISwitch()
@@ -359,7 +367,11 @@ class SLSettingsViewController: UIViewController, SLTouchPadViewControllerDelega
             autoUnLockSwitch.bounds.size.width,
             autoUnLockSwitch.bounds.size.height
         )
-        autoUnLockSwitch.addTarget(self, action: "autoUnlockSwitchFlipped:", forControlEvents: UIControlEvents.ValueChanged)
+        autoUnLockSwitch.addTarget(
+            self,
+            action: #selector(autoUnlockSwitchFlipped(_:)),
+            forControlEvents: UIControlEvents.ValueChanged
+        )
         view.addSubview(autoUnLockSwitch)
         
         return view
