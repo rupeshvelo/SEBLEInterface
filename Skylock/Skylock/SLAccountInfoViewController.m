@@ -19,10 +19,11 @@
 #define kSLAccountInfoFieldVCLabelFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
 #define kSLAccountInfoFieldVCXPadding   25.0f
 
-@interface SLAccountInfoViewController ()
+@interface SLAccountInfoViewController () <SLEmergencyContactPopupViewControllerDelegate>
 
 @property (nonatomic, strong) UILabel *accountHeaderLabel;
 @property (nonatomic, strong) UILabel *accountInfoLabel;
+@property (nonatomic, strong) UIView *touchStopperView;
 
 @property (nonatomic, strong) SLCirclePicView *picView;
 
@@ -69,6 +70,16 @@
     }
     
     return _accountInfoLabel;
+}
+
+- (UIView *)touchStopperView
+{
+    if (!_touchStopperView) {
+        _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
+        _touchStopperView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.75];
+    }
+    
+    return _touchStopperView;
 }
 
 - (SLCirclePicView *)picView
@@ -266,10 +277,29 @@
 
 - (void)emergencyContactsViewButtonPressed
 {
-    SLContactViewController *cvc = [SLContactViewController new];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:cvc];
-
-    [self presentViewController:nc animated:YES completion:nil];
+    [self.view addSubview:self.touchStopperView];
+    
+    static CGFloat xPadding = 25.0f;
+    static CGFloat yPadding = 50.0f;
+    
+    SLEmergencyContactPopupViewController *ecvc = [SLEmergencyContactPopupViewController new];
+    ecvc.delegate = self;
+    ecvc.view.frame = CGRectMake(xPadding,
+                                 yPadding,
+                                 self.view.bounds.size.width - 2*xPadding,
+                                 self.view.bounds.size.height - 2*yPadding);
+    ecvc.view.layer.cornerRadius = 2.0f;
+    [self addChildViewController:ecvc];
+    [self.view addSubview:ecvc.view];
+    [self.view bringSubviewToFront:ecvc.view];
+    [ecvc didMoveToParentViewController:self];
+    
+//    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+//        self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width - self.directionsViewController.view.bounds.size.width,
+//                                                              0.0f,
+//                                                              self.directionsViewController.view.bounds.size.width,
+//                                                              self.directionsViewController.view.bounds.size.height);
+//    }];
 }
 
 - (void)logoutButtonPressed
@@ -286,6 +316,28 @@
 - (void)circlePicViewPressed:(SLCirclePicView *)picView
 {
     
+}
+
+#pragma mark - SLEmergencyContactsViewControllerDelegate Methods
+- (void)contactPopUpViewControllerWantsExit:(SLEmergencyContactPopupViewController *)cpvc
+{
+    [UIView animateWithDuration:.2 animations:^{
+        cpvc.view.frame = CGRectMake(cpvc.view.frame.origin.x + 20.0f,
+                                     cpvc.view.frame.origin.y,
+                                     cpvc.view.bounds.size.width,
+                                     cpvc.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:.3 animations:^{
+            cpvc.view.frame = CGRectMake(-cpvc.view.bounds.size.width,
+                                         cpvc.view.frame.origin.y,
+                                         cpvc.view.bounds.size.width,
+                                         cpvc.view.bounds.size.height);
+        } completion:^(BOOL finished) {
+            [cpvc.view removeFromSuperview];
+            [cpvc removeFromParentViewController];
+            [self.touchStopperView removeFromSuperview];
+        }];
+    }];
 }
 
 @end

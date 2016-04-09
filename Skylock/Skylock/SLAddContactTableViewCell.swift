@@ -9,7 +9,10 @@
 import UIKit
 
 protocol SLAddContactTableViewCellDelegate {
-    
+    func addAccountTableViewCellButtonPressed(
+        cell: SLAddContactTableViewCell,
+        cellButtonType: SLAddContactTableViewCellButton
+    )
 }
 
 enum SLAddContactTableViewCellButton {
@@ -20,6 +23,8 @@ enum SLAddContactTableViewCellButton {
 class SLAddContactTableViewCell:UITableViewCell {
     let buttonDivider:CGFloat = 15.0
     var imageData:NSData?
+    var delegate: SLAddContactTableViewCellDelegate?
+    var shouldShowButtons: Bool?
     
     lazy var emailButton: UIButton = {
         let emailImage = UIImage(named: "contact_cell_email")!
@@ -78,9 +83,11 @@ class SLAddContactTableViewCell:UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.addSubview(self.emailButton)
-        self.addSubview(self.dividerView)
-        self.addSubview(self.phoneButton)
+        if let shouldShowButtons = self.shouldShowButtons where shouldShowButtons {
+            self.addSubview(self.emailButton)
+            self.addSubview(self.dividerView)
+            self.addSubview(self.phoneButton)
+        }
         
         let anonymousContactImage:UIImage = UIImage(named: "contact_cell_anonymous_contact")!
         let profilePic:UIImage
@@ -108,10 +115,14 @@ class SLAddContactTableViewCell:UITableViewCell {
     }
     
     func emailButtonPressed() {
-        print("email button pressed")
+        if let delegate = self.delegate {
+            delegate.addAccountTableViewCellButtonPressed(self, cellButtonType: .Email)
+        }
     }
     
     func phoneButtonPressed() {
-        print("phone button pressed")
+        if let delegate = self.delegate {
+            delegate.addAccountTableViewCellButtonPressed(self, cellButtonType: .Phone)
+        }
     }
 }

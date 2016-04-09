@@ -10,3 +10,4 @@
 #import "SLLockManager.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import "SLLock.h"
+#import "SLAppDelegate.h"
