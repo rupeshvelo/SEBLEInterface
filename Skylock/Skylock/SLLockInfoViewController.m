@@ -21,6 +21,7 @@
 #define kSLLockInfoViewControllerButtonLabelFont    [UIFont fontWithName:@"Roboto-Regular" size:10.0f]
 #define kSLLockInfoViewControllerLabelColor         [UIColor colorWithRed:128 green:128 blue:128]
 #define kSLLockInfoViewControllerViewSizeDelta      107.0f
+
 @interface SLLockInfoViewController()
 
 @property (nonatomic, strong) UILabel *lockNameLabel;
@@ -660,12 +661,14 @@
 
 - (void)lockOpened:(NSNotification *)notification
 {
-    self.lockButton.selected = @YES;
+    self.lockButton.selected = YES;
+    [self.lockButton setNeedsDisplay];
 }
 
 - (void)lockClosed:(NSNotification *)notification
 {
     self.lockButton.selected = NO;
+    [self.lockButton setNeedsDisplay];
 }
 
 - (void)crashOn:(NSNotification *)notification

@@ -144,10 +144,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (NSArray *)deviceNameFragmentsToConnect
 {
     return @[@"skylock"];
-    
-    //return @[@"Skylock DF928DD51C00"];
-    //return @[@"Skylock-F261CF82266C"];
-    //return @[@"Skylock-C2FA3DF9D29F"];
 }
 
 - (NSSet *)servicesToSubcribeTo
@@ -185,10 +181,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSArray *notifyChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState],
-                             //[self uuidForCharacteristic:SLLockManagerCharacteristicPublicKey],
-                             [self uuidForCharacteristic:SLLockManagerCharacteristicLock],
-                             //[self uuidForCharacteristic:SLLockManagerCharacteristicChallengeKey],
-                             //[self uuidForCharacteristic:SLLockManagerCharacteristicSignedMessage]
+                             [self uuidForCharacteristic:SLLockManagerCharacteristicLock]
                              ];
     
     return [NSSet setWithArray:notifyChars];
@@ -196,8 +189,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (NSSet *)servicesToBeNotifedOfWhenFound
 {
-    NSArray *services = @[[self uuidForService:SLLockManagerServiceSecurity]
-                          ];
+    NSArray *services = @[[self uuidForService:SLLockManagerServiceSecurity]];
     return [NSSet setWithArray:services];
 }
 
@@ -272,6 +264,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     self.lockConnectionPhases[lock.macAddress] = @(phase);
     self.locks[lock.macAddress] = lock;
     [self.bleManager addPeripheralWithKey:lock.macAddress];
+    
     [self saveLockToDatabase:lock];
     
     if (self.locksToAdd[lock.macAddress]) {
@@ -524,6 +517,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             break;
         case SLLockManagerCharacteristicSecurityState:
             return turnOn ? SLLockManagerValueOn : SLLockManagerValueOff;
+            break;
         default:
             return SLLockManagerCharacteristicStateNone;
             break;
@@ -533,6 +527,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)saveLockToDatabase:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+
+    SLUser *currentUser = self.databaseManger.currentUser;
+    lock.user = currentUser;
+    
     [self.databaseManger saveLockToDb:lock withCompletion:^(BOOL success) {
         NSLog(@"saving lock: %@ was a %@", lock.name, success ? @"succes":@"failure");
     }];

@@ -160,6 +160,30 @@
     return db;
 }
 
+- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary
+{
+    if (dictionary[@"name"]) {
+        self.name = dictionary[@"name"];
+    }
+    
+    if (dictionary[@"uuid"]) {
+        self.uuid = dictionary[@"uuid"];
+    }
+    
+    if (dictionary[@"latitude"]) {
+        self.latitude = dictionary[@"latitude"];
+    }
+    
+    if (dictionary[@"longitude"]) {
+        self.longitude = dictionary[@"longitude"];
+    }
+    
+    if (dictionary[@"isCurrentLock"]) {
+        self.isCurrentLock = dictionary[@"isCurrentLock"];
+    }
+    
+}
+
 
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary
 {

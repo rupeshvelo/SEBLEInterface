@@ -166,6 +166,18 @@
     return nil;
 }
 
+- (BOOL)doesCurrentUserHaveLock:(SLLock *)lock
+{
+    NSArray *usersLocks = [self.currentUser.locks allObjects];
+    for (SLLock *userLock in usersLocks) {
+        if ([lock.macAddress isEqualToString:userLock.macAddress]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 - (NSArray *)getDbLocksWithUUIDs:(NSArray *)uuids
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
