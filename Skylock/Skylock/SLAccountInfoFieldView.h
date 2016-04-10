@@ -12,9 +12,13 @@
 
 @interface SLAccountInfoFieldView : UIView
 
-@property (nonatomic, strong) UITextField *infoField;
+
 @property (nonatomic, copy) void (^buttonPressedBlock)();
 
 - (id)initWithFrame:(CGRect)frame headerString:(NSString *)headerString infoString:(NSString *)infoString buttonString:(NSString *)buttonString showSecure:(BOOL)showSecure;
+
+- (void)setButtonEnabled:(BOOL)shouldSetEnabled;
+
+- (void)changeLabelText:(NSString *)text;
 
 @end

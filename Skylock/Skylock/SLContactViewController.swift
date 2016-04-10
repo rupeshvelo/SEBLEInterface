@@ -142,6 +142,10 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
             
             self.tableYOffset = keyboardFrame.height - (keyboardFrame.origin.y - convertedFrame.origin.y)
             
+            if let navController = self.navigationController {
+                self.tableYOffset += navController.navigationBar.bounds.size.height + UIApplication.sharedApplication().statusBarFrame.size.height
+            }
+            
             self.tableView.contentInset = UIEdgeInsetsMake(
                 self.tableView.contentInset.top,
                 self.tableView.contentInset.left,

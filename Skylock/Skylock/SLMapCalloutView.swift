@@ -88,7 +88,10 @@ class SLMapCalloutView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "viewTapped:")
+        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(SLMapCalloutView.viewTapped(_:))
+        )
         tgr.numberOfTapsRequired = 1
         
         self.addGestureRecognizer(tgr)

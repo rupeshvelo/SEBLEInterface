@@ -18,7 +18,10 @@ enum SLTouchPadLocation {
 }
 
 protocol SLTouchPadViewDelegate {
-    func touchPadViewLocationSelected(touchPadViewController: SLTouchPadView, location:SLTouchPadLocation)
+    func touchPadViewLocationSelected(
+        touchPadViewController: SLTouchPadView,
+        location:SLTouchPadLocation
+    )
 }
 
 class SLTouchPadView: UIView {
@@ -36,7 +39,11 @@ class SLTouchPadView: UIView {
             self.buttonDiameter
             )
         )
-        button.addTarget(self, action: "touchPadButtonPressed:", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(
+            self,
+            action: #selector(touchPadButtonPressed(_:)),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         button.backgroundColor = self.buttonGreyColor
         button.layer.cornerRadius = 0.5*self.buttonDiameter;
         return button
@@ -50,8 +57,11 @@ class SLTouchPadView: UIView {
             self.buttonDiameter
             )
         )
-        //button.setBackgroundColor(self.buttonGreenColor, controlState: UIControlState.Normal)
-        button.addTarget(self, action: "touchPadButtonPressed:", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(
+            self,
+            action: #selector(touchPadButtonPressed(_:)),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         button.backgroundColor = self.buttonGreenColor
         button.layer.cornerRadius = 0.5*self.buttonDiameter;
         return button
@@ -65,7 +75,11 @@ class SLTouchPadView: UIView {
             self.buttonDiameter
             )
         )
-        button.addTarget(self, action: "touchPadButtonPressed:", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(
+            self,
+            action: #selector(touchPadButtonPressed(_:)),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         button.backgroundColor = self.buttonGreyColor
         button.layer.cornerRadius = 0.5*self.buttonDiameter;
         return button
@@ -79,7 +93,11 @@ class SLTouchPadView: UIView {
             self.buttonDiameter
             )
         )
-        button.addTarget(self, action: "touchPadButtonPressed:", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(
+            self,
+            action: #selector(touchPadButtonPressed(_:)),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         button.backgroundColor = self.buttonGreenColor
         button.layer.cornerRadius = 0.5*self.buttonDiameter;
         return button
@@ -93,7 +111,11 @@ class SLTouchPadView: UIView {
             self.largeButtonDiameter
             )
         )
-        button.addTarget(self, action: "touchPadButtonPressed:", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(
+            self,
+            action: #selector(touchPadButtonPressed(_:)),
+            forControlEvents: UIControlEvents.TouchDown
+        )
         button.backgroundColor = self.buttonGreyColor
         button.layer.cornerRadius = 0.5*self.largeButtonDiameter;
         return button

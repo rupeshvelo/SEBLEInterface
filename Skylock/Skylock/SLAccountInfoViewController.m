@@ -14,11 +14,18 @@
 #import "SLUser.h"
 #import "SLPicManager.h"
 #import "Skylock-Swift.h"
+#import "SLRestManager.h"
+#import "SLUserDefaults.h"
 
 
-#define kSLAccountInfoFieldVCLabelFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
-#define kSLAccountInfoFieldVCXPadding   25.0f
+typedef NS_ENUM(NSUInteger, TextFieldOption) {
+    TextFieldOptionPhoneNumber,
+    TextFieldOptionEmergencyContacts
+};
 
+#define kSLAccountInfoFieldVCLabelFont      [UIFont fontWithName:@"HelveticaNeue" size:15.0f]
+#define kSLAccountInfoFieldVCXPadding       25.0f
+#define kSLAccountInfoTouchStopperViewAlpha .75f
 @interface SLAccountInfoViewController () <SLEmergencyContactPopupViewControllerDelegate>
 
 @property (nonatomic, strong) UILabel *accountHeaderLabel;
@@ -33,7 +40,9 @@
 @property (nonatomic, strong) SLAccountInfoFieldView *emergencyContactsView;
 
 @property (nonatomic, strong) UIButton *logoutButton;
+@property (nonatomic, strong) UIBarButtonItem *backButton;
 
+@property (nonatomic, strong) UITextField *textField;
 
 @end
 
@@ -76,7 +85,8 @@
 {
     if (!_touchStopperView) {
         _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
-        _touchStopperView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.75];
+        _touchStopperView.backgroundColor = [UIColor blackColor];
+        _touchStopperView.alpha = kSLAccountInfoTouchStopperViewAlpha;
     }
     
     return _touchStopperView;
@@ -86,12 +96,13 @@
 {
     if (!_picView) {
         _picView = [[SLCirclePicView alloc] initWithFrame:CGRectMake(0.0f,
-                                                                    0.0f,
-                                                                    70.0f,
-                                                                    87.0f)
+                                                                     0.0f,
+                                                                     100.0f,
+                                                                     130.0f)
                                                      name:NSLocalizedString(@"Change photo", nil)
-                                                picRadius:35.0f
-                                               labelColor:[UIColor colorWithRed:52 green:152 blue:219]];
+                                                picRadius:50.0f
+                                               labelColor:[UIColor colorWithRed:52 green:152 blue:219]
+                                           verticalOffset:0.0f];
         [self.view addSubview:_picView];
     }
     
@@ -122,7 +133,7 @@
                                                                                     self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
                                                                                     33.0f)
                                                             headerString:NSLocalizedString(@"Phone number", nil)
-                                                              infoString:self.user.userId
+                                                              infoString:self.user.phoneNumber ? self.user.phoneNumber : @""
                                                             buttonString:NSLocalizedString(@"Change phone number", nil) showSecure:NO];
         __weak typeof(self) weakSelf = self;
         _phoneNumberView.buttonPressedBlock = ^{
@@ -151,7 +162,7 @@
             [weakSelf passwordViewButtonPressed];
         };
         
-        [self.view addSubview:_passwordView];
+        //[self.view addSubview:_passwordView];
     }
     
     return _passwordView;
@@ -160,18 +171,21 @@
 - (SLAccountInfoFieldView *)emergencyContactsView
 {
     if (!_emergencyContactsView) {
+        SLContactHandler *contactHandler = [SLContactHandler new];
         _emergencyContactsView = [[SLAccountInfoFieldView alloc] initWithFrame:CGRectMake(0.0f,
                                                                                           0.0f,
                                                                                           self.view.bounds.size.width - 2*kSLAccountInfoFieldVCXPadding,
                                                                                           33.0f)
                                                                   headerString:NSLocalizedString(@"Emergency Contacts", nil)
-                                                                    infoString:@""
+                                                                    infoString:[contactHandler emergencyContactsCommaSeperatedFirstNames]
                                                                   buttonString:NSLocalizedString(@"+ Add Contacts", nil)
                                                                     showSecure:NO];
+        [_emergencyContactsView setButtonEnabled:!!self.user.phoneNumber];
         __weak typeof(self) weakSelf = self;
         _emergencyContactsView.buttonPressedBlock = ^{
             [weakSelf emergencyContactsViewButtonPressed];
         };
+        
         
         [self.view addSubview:_emergencyContactsView];
     }
@@ -198,6 +212,38 @@
     return _logoutButton;
 }
 
+- (UIBarButtonItem *)backButton
+{
+    if (!_backButton) {
+        _backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_chevron_left"]
+                                                       style:UIBarButtonItemStylePlain
+                                                      target:self
+                                                      action:@selector(navBackButtonPressed)];
+    }
+    
+    return _backButton;
+}
+
+- (UITextField *)textField
+{
+    if (!_textField) {
+        _textField = [[UITextField alloc] initWithFrame:CGRectMake(0.0f,
+                                                                   0.0f,
+                                                                   .75*self.view.bounds.size.width,
+                                                                   20.0f)];
+        _textField.delegate = self;
+        _textField.placeholder = @"";
+        _textField.font = [UIFont fontWithName:@"HelveticaNeue" size:15.0f];
+        _textField.textColor = [UIColor blackColor];
+        _textField.backgroundColor = [UIColor whiteColor];
+        _textField.textAlignment = NSTextAlignmentCenter;
+        _textField.keyboardType = UIKeyboardTypeNumberPad;
+        _textField.layer.cornerRadius = 3.0f;
+    }
+    
+    return _textField;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -211,20 +257,17 @@
     titleView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.navigationItem.titleView = titleView;
-    
-    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_chevron_left"]
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(navBackButtonPressed)];
-    self.navigationItem.leftBarButtonItem = backButton;
+    self.navigationItem.leftBarButtonItem = self.backButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
+    CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
+                    [UIApplication sharedApplication].statusBarFrame.size.height + 25.0f;
     self.accountHeaderLabel.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                               25.0f,
+                                               y0,
                                                self.accountHeaderLabel.bounds.size.width,
                                                self.accountHeaderLabel.bounds.size.height);
     
@@ -249,18 +292,18 @@
                                             self.phoneNumberView.bounds.size.width,
                                             self.phoneNumberView.bounds.size.height);
     
-    self.passwordView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                         CGRectGetMaxY(self.phoneNumberView.frame) + 30.0f,
-                                         self.passwordView.bounds.size.width,
-                                         self.passwordView.bounds.size.height);
+//    self.passwordView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
+//                                         CGRectGetMaxY(self.phoneNumberView.frame) + 30.0f,
+//                                         self.passwordView.bounds.size.width,
+//                                         self.passwordView.bounds.size.height);
     
     self.emergencyContactsView.frame = CGRectMake(kSLAccountInfoFieldVCXPadding,
-                                                  CGRectGetMaxY(self.passwordView.frame) + 30.0f,
+                                                  CGRectGetMaxY(self.phoneNumberView.frame) + 30.0f,
                                                   self.passwordView.bounds.size.width,
                                                   self.passwordView.bounds.size.height);
     
     self.logoutButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.logoutButton.bounds.size.width),
-                                         CGRectGetMaxY(self.emergencyContactsView.frame) + 45.0f,
+                                         self.view.bounds.size.height - self.logoutButton.bounds.size.height - 30.0f,
                                          self.logoutButton.bounds.size.width,
                                          self.logoutButton.bounds.size.height);
 }
@@ -268,6 +311,8 @@
 - (void)phoneNumberViewButtonPressed
 {
     NSLog(@"phone number field button pressed");
+    self.navigationItem.leftBarButtonItem = nil;
+    [self presentTextField:TextFieldOptionPhoneNumber];
 }
 
 - (void)passwordViewButtonPressed
@@ -275,31 +320,119 @@
     NSLog(@"password field button pressed");
 }
 
+- (void)setUpTextFieldWithText:(NSString *)text placeHolder:(NSString *)placeHolder
+{
+    self.textField.text = text;
+    self.textField.placeholder = placeHolder;
+}
+
+- (void)presentTextField:(TextFieldOption)option
+{
+    CGRect startFrame = CGRectZero;
+    switch (option) {
+        case TextFieldOptionPhoneNumber:
+            [self setUpTextFieldWithText:self.user.phoneNumber
+                             placeHolder:NSLocalizedString(@"Phone Number", nil)];
+            startFrame = self.phoneNumberView.frame;
+            break;
+        default:
+            return;
+            break;
+    }
+    
+    UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(touchStropperViewTapped)];
+    tgr.numberOfTapsRequired = 1;
+    [self.touchStopperView addGestureRecognizer:tgr];
+    
+    self.textField.frame = startFrame;
+    [self.textField becomeFirstResponder];
+    
+    [self.view addSubview:self.touchStopperView];
+    [self.view addSubview:self.textField];
+    
+    [UIView animateWithDuration:.3f animations:^{
+        self.textField.frame = CGRectMake(self.textField.frame.origin.x,
+                                          CGRectGetMaxY(self.accountInfoLabel.frame) + 10.0f,
+                                          self.textField.frame.size.width,
+                                          self.textField.frame.size.height);
+    }];
+}
+
+- (void)removeTextFieldWithOption:(TextFieldOption)option
+{
+    CGRect endFrame = CGRectZero;
+    switch (option) {
+        case TextFieldOptionPhoneNumber:
+            if (self.textField.text) {
+                self.user.phoneNumber = self.textField.text;
+                [self.phoneNumberView changeLabelText:self.user.phoneNumber];
+                [SLDatabaseManager.sharedManager saveUser:self.user withCompletion:nil];
+                [self saveUserPhoneNumberToSever];
+            }
+            endFrame = CGRectMake(self.textField.frame.origin.x,
+                                  self.phoneNumberView.frame.origin.y,
+                                  self.textField.frame.size.width,
+                                  self.textField.frame.size.height);
+
+            break;
+        default:
+            return;
+            break;
+    }
+    
+    [self.textField resignFirstResponder];
+    
+    [UIView animateWithDuration:.3f animations:^{
+        self.textField.frame = endFrame;
+        self.textField.alpha = 0.0f;
+        self.touchStopperView.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [self.touchStopperView removeFromSuperview];
+        [self.textField removeFromSuperview];
+        self.touchStopperView = nil;
+        self.textField = nil;
+        self.navigationItem.leftBarButtonItem = self.backButton;
+    }];
+}
+
+- (void)touchStropperViewTapped
+{
+    [self removeTextFieldWithOption:TextFieldOptionPhoneNumber];
+}
+
 - (void)emergencyContactsViewButtonPressed
 {
+    self.navigationItem.leftBarButtonItem = nil;
+    self.touchStopperView.alpha = 0.0f;
     [self.view addSubview:self.touchStopperView];
     
     static CGFloat xPadding = 25.0f;
     static CGFloat yPadding = 50.0f;
-    
+    CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
+                    [UIApplication sharedApplication].statusBarFrame.size.height;
     SLEmergencyContactPopupViewController *ecvc = [SLEmergencyContactPopupViewController new];
     ecvc.delegate = self;
-    ecvc.view.frame = CGRectMake(xPadding,
-                                 yPadding,
-                                 self.view.bounds.size.width - 2*xPadding,
-                                 self.view.bounds.size.height - 2*yPadding);
+    
+    CGFloat width = self.view.bounds.size.width - 2*xPadding;
+    CGFloat height = self.view.bounds.size.height - 2*yPadding - y0;
+    ecvc.view.frame = CGRectMake(-width,
+                                 y0 + yPadding,
+                                 width,
+                                 height);
     ecvc.view.layer.cornerRadius = 2.0f;
     [self addChildViewController:ecvc];
     [self.view addSubview:ecvc.view];
     [self.view bringSubviewToFront:ecvc.view];
     [ecvc didMoveToParentViewController:self];
     
-//    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-//        self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width - self.directionsViewController.view.bounds.size.width,
-//                                                              0.0f,
-//                                                              self.directionsViewController.view.bounds.size.width,
-//                                                              self.directionsViewController.view.bounds.size.height);
-//    }];
+    [UIView animateWithDuration:.3f animations:^{
+        self.touchStopperView.alpha = kSLAccountInfoTouchStopperViewAlpha;
+        ecvc.view.frame = CGRectMake(xPadding,
+                                     y0 + yPadding,
+                                     width,
+                                     height);
+    }];
 }
 
 - (void)logoutButtonPressed
@@ -312,15 +445,42 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)saveUserPhoneNumberToSever
+{
+    // TODO This code should be moved to the user manager when it is created
+    SLRestManager *restManager = [SLRestManager sharedManager];
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
+    NSString *token = [ud objectForKey:SLUserDefaultsUserToken];
+    NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
+    NSDictionary *additionalHeaders = @{@"Authorization": authValue};
+    NSArray *subRoutes = @[self.user.userId, @"mobiles"];
+    NSDictionary *postBody = @{@"mobile":self.user.phoneNumber};
+    
+    [SLRestManager.sharedManager postObject:postBody
+                                  serverKey:SLRestManagerServerKeyMain
+                                    pathKey:SLRestManagerPathKeyKeys
+                                  subRoutes:subRoutes
+                          additionalHeaders:additionalHeaders
+                                 completion:^(NSDictionary *responseDict) {
+                                     
+                                 }];
+    
+}
+
 #pragma mark - Circle Pic View delegate methods
 - (void)circlePicViewPressed:(SLCirclePicView *)picView
 {
-    
+    NSLog(@"circle view has been tapped");
 }
 
 #pragma mark - SLEmergencyContactsViewControllerDelegate Methods
 - (void)contactPopUpViewControllerWantsExit:(SLEmergencyContactPopupViewController *)cpvc
 {
+    SLContactHandler *ch = [SLContactHandler new];
+    NSString *contactsText = [ch emergencyContactsCommaSeperatedFirstNames];
+    [self.emergencyContactsView changeLabelText:contactsText];
+    
     [UIView animateWithDuration:.2 animations:^{
         cpvc.view.frame = CGRectMake(cpvc.view.frame.origin.x + 20.0f,
                                      cpvc.view.frame.origin.y,
@@ -336,8 +496,17 @@
             [cpvc.view removeFromSuperview];
             [cpvc removeFromParentViewController];
             [self.touchStopperView removeFromSuperview];
+            self.navigationItem.leftBarButtonItem = self.backButton;
         }];
     }];
+}
+
+#pragma mark - UITextFieldDelegate Methods
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self removeTextFieldWithOption:TextFieldOptionPhoneNumber];
+
+    return YES;
 }
 
 @end

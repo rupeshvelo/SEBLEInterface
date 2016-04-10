@@ -13,7 +13,6 @@
 #import "SLSharingTableViewCell.h"
 #import "SLLock.h"
 #import "SLDatabaseManager.h"
-#import "SLAddContactViewController.h"
 
 
 #define kSLSharingVCXPadding    25.0f
@@ -205,8 +204,8 @@
     if (indexPath.section == 0) {
         NSLog(@"first section selected");
     } else if (indexPath.section == 1) {
-        SLAddContactViewController *acvc = [SLAddContactViewController new];
-        [self.navigationController pushViewController:acvc animated:YES];
+//        SLAddContactViewController *acvc = [SLAddContactViewController new];
+//        [self.navigationController pushViewController:acvc animated:YES];
     }
 }
 @end

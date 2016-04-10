@@ -11,3 +11,5 @@
 #import <GoogleMaps/GoogleMaps.h>
 #import "SLLock.h"
 #import "SLAppDelegate.h"
+#import "SLDatabaseManager.h"
+#import "SLUser.h"

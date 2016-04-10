@@ -50,7 +50,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "nextButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(nextButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         
         return button
     }()
@@ -65,7 +65,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "previousButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(previousButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         button.hidden = true
         
         return button

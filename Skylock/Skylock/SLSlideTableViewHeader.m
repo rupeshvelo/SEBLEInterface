@@ -55,13 +55,15 @@
 {
     if (!_circleView) {
         CGFloat height = self.bounds.size.height - self.seperatorView.bounds.size.height - self.addAccountLabel.bounds.size.height;
+        CGFloat yOffset = [UIApplication sharedApplication].statusBarFrame.size.height;
         _circleView = [[SLCirclePicView alloc] initWithFrame:CGRectMake(0.0f,
                                                                         0.0f,
                                                                         self.bounds.size.width,
                                                                         height)
                                                         name:self.name
                                                    picRadius:22.5f
-                                                  labelColor:nil];
+                                                  labelColor:nil
+                                              verticalOffset:yOffset];
         _circleView.delegate = self;
         [self addSubview:_circleView];
     }

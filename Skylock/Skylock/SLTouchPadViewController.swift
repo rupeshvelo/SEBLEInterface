@@ -80,7 +80,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
             image!.size.height
             )
         )
-        button.addTarget(self, action: "savePinButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(savePinButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         button.setImage(image, forState: UIControlState.Normal)
         
         return button
@@ -95,7 +95,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
             image!.size.height
             )
         )
-        button.addTarget(self, action: "cancelPinButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(cancelPinButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         //button.setImage(image, forState: UIControlState.Normal)
         button.setTitle("Cancel", forState: UIControlState.Normal)
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)

@@ -271,7 +271,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             SLLockManagerConnectionPhasePublicKey : SLLockManagerConnectionPhaseSignedMessage;
     self.lockConnectionPhases[lock.macAddress] = @(phase);
     self.locks[lock.macAddress] = lock;
-    [self.bleManager addPeripheralNamed:lock.macAddress];
+    [self.bleManager addPeripheralWithKey:lock.macAddress];
     [self saveLockToDatabase:lock];
     
     if (self.locksToAdd[lock.macAddress]) {
@@ -300,7 +300,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     if ([self.namesToConnect containsObject:lock.macAddress]) {
         [self.namesToConnect removeObject:lock.macAddress];
         [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
-        [self.bleManager removePeripheralNamed:lock.macAddress];
+        [self.bleManager removePeripheralForKey:lock.macAddress];
     }
 }
 

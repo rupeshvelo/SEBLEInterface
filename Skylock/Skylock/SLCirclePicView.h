@@ -20,7 +20,7 @@
 
 @property (nonatomic, weak) id <SLCirclePicViewDelegate> delegate;
 
-- (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius labelColor:(UIColor *)labelColor;
+- (id)initWithFrame:(CGRect)frame name:(NSString *)name picRadius:(CGFloat)picRadius labelColor:(UIColor *)labelColor verticalOffset:(CGFloat)verticalOffset;
 
 - (void)setPicImage:(UIImage *)image;
 

@@ -10,17 +10,19 @@
 #import "UIColor+RGB.h"
 
 #define kSLAccountInfoFieldViewLabelFont   [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
-#define kSLAccountInfoFieldViewButtonFont  [UIFont fontWithName:@"HelveticaNeue" size:10.0f]
+#define kSLAccountInfoFieldViewButtonFont  [UIFont fontWithName:@"HelveticaNeue" size:13.0f]
 
 @interface SLAccountInfoFieldView()
 
 @property (nonatomic, strong) UILabel *headerLabel;
 @property (nonatomic, strong) UIButton *button;
+@property (nonatomic, strong) UILabel *label;
 
 @property (nonatomic, strong) NSString *headerString;
 @property (nonatomic, strong) NSString *infoString;
 @property (nonatomic, strong) NSString *buttonString;
 @property (nonatomic, assign) BOOL showSecure;
+
 @end
 
 @implementation SLAccountInfoFieldView
@@ -58,21 +60,20 @@
     return _headerLabel;
 }
 
-- (UITextField *)infoField
+- (UILabel *)label
 {
-    if (!_infoField) {
-        _infoField = [[UITextField alloc] initWithFrame:CGRectMake(0.0f,
-                                                               0.0f,
-                                                               .5*self.bounds.size.width,
-                                                               16.0f)];
-        _infoField.text = self.infoString;
-        _infoField.secureTextEntry = self.showSecure;
-        _infoField.font = kSLAccountInfoFieldViewLabelFont;
-        _infoField.textColor = [UIColor colorWithRed:191 green:191 blue:191];
-        [self addSubview:_infoField];
+    if (!_label) {
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(0.0f,
+                                                           0.0f,
+                                                           .5*self.bounds.size.width,
+                                                           16.0f)];
+        _label.text = self.infoString;
+        _label.font = kSLAccountInfoFieldViewLabelFont;
+        _label.textColor = [UIColor colorWithRed:191 green:191 blue:191];
+        [self addSubview:_label];
     }
     
-    return _infoField;
+    return _label;
 }
 
 - (UIButton *)button
@@ -83,6 +84,7 @@
                                                              .5*self.bounds.size.width,
                                                              self.bounds.size.height)];
         _button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        _button.contentVerticalAlignment = UIControlContentVerticalAlignmentTop;
         [_button addTarget:self
                     action:@selector(buttonPushed)
           forControlEvents:UIControlEventTouchDown];
@@ -105,10 +107,10 @@
                                         self.headerLabel.bounds.size.width,
                                         self.headerLabel.bounds.size.height);
     
-    self.infoField.frame = CGRectMake(0.0f,
-                                      self.bounds.size.height - self.infoField.bounds.size.height,
-                                      self.infoField.bounds.size.width,
-                                      self.infoField.bounds.size.height);
+    self.label.frame = CGRectMake(0.0f,
+                                  self.bounds.size.height - self.label.bounds.size.height,
+                                  self.label.bounds.size.width,
+                                  self.label.bounds.size.height);
     
     self.button.frame = CGRectMake(self.bounds.size.width - self.button.bounds.size.width,
                                    0.0f,
@@ -121,6 +123,16 @@
     if (self.buttonPressedBlock) {
         self.buttonPressedBlock();
     }
+}
+
+- (void)setButtonEnabled:(BOOL)shouldSetEnabled
+{
+    self.button.enabled = shouldSetEnabled;
+}
+
+- (void)changeLabelText:(NSString *)text
+{
+    self.label.text = text;
 }
 
 @end

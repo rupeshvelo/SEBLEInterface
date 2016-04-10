@@ -395,7 +395,11 @@ SLContactViewControllerDelegate
     
     func saveEmergencyContact(contact: CNContact) {
         if let contactId = self.selectedEmergencyContactViewID {
-            self.contactHandler.saveContactToUserDefaults(contact, contactId: contactId)
+            self.contactHandler.saveContactToUserDefaults(
+                contact,
+                contactId: contactId,
+                shouldSaveToServer: true
+            )
         }
     }
     

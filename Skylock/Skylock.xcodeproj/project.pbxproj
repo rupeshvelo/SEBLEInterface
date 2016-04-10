@@ -29,7 +29,6 @@
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
 		DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */; };
-		DC1F5B321C63CBEB00106362 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */; };
 		DC20E2A81C165C0F00E098D4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC20E2A71C165C0F00E098D4 /* Security.framework */; };
 		DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2387291B30516600BB28F3 /* SLLockInfoViewController.m */; };
 		DC28488D1CB8865100B0BBF3 /* btn_add_new_contact@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC28487F1CB8865100B0BBF3 /* btn_add_new_contact@2x.png */; };
@@ -77,8 +76,6 @@
 		DC44025B1B991FEA00D1C2B9 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC4402721B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402711B9BAE5900D1C2B9 /* SLDbLockSharedContact.m */; };
 		DC4402731B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402711B9BAE5900D1C2B9 /* SLDbLockSharedContact.m */; };
-		DC4402761B9BC31300D1C2B9 /* SLAddContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402751B9BC31300D1C2B9 /* SLAddContactViewController.m */; };
-		DC4402771B9BC31300D1C2B9 /* SLAddContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402751B9BC31300D1C2B9 /* SLAddContactViewController.m */; };
 		DC44027A1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402791B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m */; };
 		DC44027B1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC4402791B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m */; };
 		DC4402821B9C8E1100D1C2B9 /* btn_lock_grey@0.5x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC44027C1B9C8E1100D1C2B9 /* btn_lock_grey@0.5x.png */; };
@@ -102,6 +99,7 @@
 		DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */; };
 		DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */; };
 		DC6471D51C4050B200286DBF /* SLWalkthroughThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */; };
+		DC6F1CD51CB9A84100D44739 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */; };
 		DC7025191C51AE080038D412 /* logo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025171C51AE070038D412 /* logo2@2x.png */; };
 		DC70251A1C51AE080038D412 /* logo2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025181C51AE070038D412 /* logo2@3x.png */; };
 		DC763D371CB471C800037EF9 /* SLContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC763D361CB471C700037EF9 /* SLContactViewController.swift */; };
@@ -561,8 +559,6 @@
 		DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Skylock.m"; sourceTree = "<group>"; };
 		DC17ACB71B5C6C6F0090BE8A /* SLMapAnnotationImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLMapAnnotationImage.h; sourceTree = "<group>"; };
 		DC17ACB81B5C6C6F0090BE8A /* SLMapAnnotationImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLMapAnnotationImage.m; sourceTree = "<group>"; };
-		DC1F5B301C63CBEB00106362 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
-		DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC20E2A71C165C0F00E098D4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		DC2387241B304EC500BB28F3 /* SLConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLConstants.h; sourceTree = "<group>"; };
 		DC2387281B30516600BB28F3 /* SLLockInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockInfoViewController.h; sourceTree = "<group>"; };
@@ -612,8 +608,6 @@
 		DC4402581B98EEB300D1C2B9 /* SLTouchPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchPadView.swift; sourceTree = "<group>"; };
 		DC4402701B9BAE5900D1C2B9 /* SLDbLockSharedContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDbLockSharedContact.h; sourceTree = "<group>"; };
 		DC4402711B9BAE5900D1C2B9 /* SLDbLockSharedContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDbLockSharedContact.m; sourceTree = "<group>"; };
-		DC4402741B9BC31300D1C2B9 /* SLAddContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddContactViewController.h; sourceTree = "<group>"; };
-		DC4402751B9BC31300D1C2B9 /* SLAddContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAddContactViewController.m; sourceTree = "<group>"; };
 		DC4402781B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLSharingContactTableViewCell.h; sourceTree = "<group>"; };
 		DC4402791B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLSharingContactTableViewCell.m; sourceTree = "<group>"; };
 		DC44027C1B9C8E1100D1C2B9 /* btn_lock_grey@0.5x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_lock_grey@0.5x.png"; sourceTree = "<group>"; };
@@ -632,6 +626,8 @@
 		DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutView.swift; sourceTree = "<group>"; };
 		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthroughThreeViewController.swift; sourceTree = "<group>"; };
+		DC6F1CD31CB9A84100D44739 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC7025171C51AE070038D412 /* logo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@2x.png"; sourceTree = "<group>"; };
 		DC7025181C51AE070038D412 /* logo2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@3x.png"; sourceTree = "<group>"; };
 		DC763D361CB471C700037EF9 /* SLContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContactViewController.swift; sourceTree = "<group>"; };
@@ -1201,8 +1197,6 @@
 			children = (
 				DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */,
 				DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */,
-				DC4402741B9BC31300D1C2B9 /* SLAddContactViewController.h */,
-				DC4402751B9BC31300D1C2B9 /* SLAddContactViewController.m */,
 				DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */,
 				DC7E70D71B8D1DC9006E74DC /* SLNotificationViewController.h */,
 				DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */,
@@ -1243,8 +1237,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				DC1F5B301C63CBEB00106362 /* SLUser+CoreDataProperties.h */,
-				DC1F5B311C63CBEB00106362 /* SLUser+CoreDataProperties.m */,
+				DC6F1CD31CB9A84100D44739 /* SLUser+CoreDataProperties.h */,
+				DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */,
 				DC156BD01C5D240D00015B53 /* SLUser.h */,
 				DC156BD11C5D240D00015B53 /* SLUser.m */,
 				DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */,
@@ -2474,6 +2468,7 @@
 				DC763D391CB4C31B00037EF9 /* SLAddContactTableViewCell.swift in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
 				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
+				DC6F1CD51CB9A84100D44739 /* SLUser+CoreDataProperties.m in Sources */,
 				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
 				DC9EADDE1B34C20900DA1692 /* SLDropDownLabel.m in Sources */,
@@ -2485,7 +2480,6 @@
 				DCCB81B11CB7356C00800E3F /* SLContactHandler.swift in Sources */,
 				DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */,
 				DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */,
-				DC4402761B9BC31300D1C2B9 /* SLAddContactViewController.m in Sources */,
 				DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */,
 				DC3141211B93849E00492C4D /* SLTouchPadViewController.swift in Sources */,
 				DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */,
@@ -2534,7 +2528,6 @@
 				DC0434131C474B3F00BCDB14 /* SLWalkthroughFiveViewController.swift in Sources */,
 				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
 				DC9EADFF1B35013200DA1692 /* SLLockTableViewCell.m in Sources */,
-				DC1F5B321C63CBEB00106362 /* SLUser+CoreDataProperties.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
 				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
@@ -2570,7 +2563,6 @@
 				DC4402731B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
 				DC3CCE051BA30ED000528992 /* SLDirection.swift in Sources */,
 				DC44027B1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */,
-				DC4402771B9BC31300D1C2B9 /* SLAddContactViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
