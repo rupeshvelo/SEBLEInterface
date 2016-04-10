@@ -37,6 +37,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     let buttonOffset:CGFloat = 10.0
     var topCardViewController:SLWalkthroughCardViewController?
     var bottomCardViewController:SLWalkthroughCardViewController?
+    @objc var onExit:(() -> Void)?
     
     // lazy variables
     lazy var nextButton:UIButton = {
@@ -49,7 +50,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "nextButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(nextButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         
         return button
     }()
@@ -64,7 +65,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "previousButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(previousButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         button.hidden = true
         
         return button
@@ -396,6 +397,9 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             userDefaults.setBool(true, forKey: "SLUserDefaultsTutorialComplete")
             userDefaults.synchronize()
             
+            if let completion = self.onExit {
+                completion()
+            }
             let mapViewController = SLMapViewController()
             self.presentViewController(mapViewController, animated: true, completion: nil)
         }

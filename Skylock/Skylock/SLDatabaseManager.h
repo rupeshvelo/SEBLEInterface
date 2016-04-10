@@ -32,6 +32,6 @@
 - (void)setCurrentLock:(SLLock *)lock;
 - (void)deselectAllLocks;
 - (SLLock *)getLockWithMacAddress:(NSString *)macAddress;
-- (NSDictionary *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
 
 @end

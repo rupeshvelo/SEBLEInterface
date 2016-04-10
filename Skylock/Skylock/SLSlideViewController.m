@@ -141,8 +141,8 @@
     self.isEditMode = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(resizeTables)
-                                                 name:kSLNotificationLockManagerConnectedLock
+                                             selector:@selector(lockPaired:)
+                                                 name:kSLNotificationLockPaired
                                                object:nil];
 }
 
@@ -188,7 +188,7 @@
     
 }
 
-- (void)resizeTables
+- (void)lockPaired:(NSNotification *)notification
 {
     self.locks = [SLLockManager.sharedManager orderedLocksByName];
     self.tableView.frame = CGRectMake(0.0f,
@@ -201,6 +201,25 @@
                                              CGRectGetMaxY(self.tableView.frame),
                                              self.optionsTableView.bounds.size.width,
                                              self.optionsTableView.bounds.size.height);
+    
+    NSDictionary *info = (NSDictionary *)notification.object;
+    if (!info || !info[@"lock"]) {
+        return;
+    }
+    
+    SLLock *lock = info[@"lock"];
+    NSUInteger index = NSUIntegerMax;
+    for (NSUInteger i=0; i < self.locks.count; i++) {
+        SLLock *currentLock = self.locks[i];
+        if ([currentLock.macAddress isEqualToString:lock.macAddress]) {
+            index = i;
+            break;
+        }
+    }
+    
+    if (index != NSUIntegerMax) {
+        [self handleActionForLockSelectedAtIndex:index shouldForceSelected:YES];
+    }
 }
 
 #pragma mark UITableView delegate & datasource methods
@@ -327,20 +346,7 @@
     if (tableView == self.tableView) {
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         if ([cell isMemberOfClass:[SLLockTableViewCell class]]) {
-            SLLock *selectedLock = self.locks[indexPath.row];
-            SLSlideViewControllerButtonAction action;
-            if (selectedLock.isCurrentLock.boolValue) {
-                [SLLockManager.sharedManager deselectAllLocks];
-                action = SLSlideViewControllerButtonActionLockDeselected;
-            } else {
-                [SLLockManager.sharedManager setCurrentLock:selectedLock];
-                action = SLSlideViewControllerButtonActionLockSelected;
-            }
-            
-            if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
-                [self.delegate slideViewController:self actionOccured:action options:nil];
-            }
-                
+            [self handleActionForLockSelectedAtIndex:indexPath.row shouldForceSelected:NO];
             [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         }
     } else {
@@ -367,6 +373,27 @@
             [self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
             [self.delegate slideViewController:self actionOccured:action options:nil];
         }
+    }
+}
+
+- (void)handleActionForLockSelectedAtIndex:(NSUInteger)index shouldForceSelected:(BOOL)forceSelected
+{
+    SLLock *selectedLock = self.locks[index];
+    SLSlideViewControllerButtonAction action;
+    if (selectedLock.isCurrentLock.boolValue) {
+        if (forceSelected) {
+            action = SLSlideViewControllerButtonActionLockSelected;
+        } else {
+            [SLLockManager.sharedManager deselectAllLocks];
+            action = SLSlideViewControllerButtonActionLockDeselected;
+        }
+    } else {
+        [SLLockManager.sharedManager setCurrentLock:selectedLock];
+        action = SLSlideViewControllerButtonActionLockSelected;
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+        [self.delegate slideViewController:self actionOccured:action options:nil];
     }
 }
 

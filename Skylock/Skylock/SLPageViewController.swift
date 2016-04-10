@@ -74,7 +74,8 @@ class SLPageViewController: UIViewController {
             return
         }
         
-        let currentDotView = self.dotViews[self.currentDotIndex++]
+        let currentDotView = self.dotViews[self.currentDotIndex]
+        self.currentDotIndex += 1
         currentDotView.backgroundColor = self.nonActiveColor
         
         let nextDotView = self.dotViews[self.currentDotIndex]
@@ -86,7 +87,8 @@ class SLPageViewController: UIViewController {
             return
         }
         
-        let currentDotView = self.dotViews[self.currentDotIndex--]
+        let currentDotView = self.dotViews[self.currentDotIndex]
+        self.currentDotIndex -= 1
         currentDotView.backgroundColor = self.nonActiveColor
         
         let nextDotView = self.dotViews[self.currentDotIndex]

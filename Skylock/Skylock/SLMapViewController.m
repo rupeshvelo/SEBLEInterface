@@ -252,7 +252,7 @@
     
     self.lockMarkers = [NSMutableDictionary new];
     self.isInitialLoad = YES;
-    [self registerAlertNotifications];
+    [self registerNotifications];
     
     [self.view addSubview:self.mapView];
     
@@ -298,6 +298,15 @@
 {
     [super viewDidAppear:animated];
     
+    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
+    
+    if (self.selectedLock
+        && self.lockInfoViewController
+        && !self.lockInfoViewController.isUp) {
+        [self lockSelected];
+        [self setupLockInfoViewControllerView:YES];
+    }
+
     // remove: just a quick hack
 //    UIButton *removeLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x, self.view.center.y, 150, 50)];
 //    [removeLockButton addTarget:self action:@selector(removeLockTemp) forControlEvents:UIControlEventTouchDown];
@@ -315,7 +324,7 @@
     //[SLLockManager.sharedManager tempReadFirmwareDataForLock:@"Skylock-F261CF82266C"];
 }
 
-- (void)registerAlertNotifications
+- (void)registerNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleCrashAndTheftAlerts:)
@@ -329,6 +338,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(presentEmergencyText:)
                                                  name:kSLNotificationSendEmergecyText
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockAdded:)
+                                                 name:kSLNotificationLockPaired
                                                object:nil];
 }
 
@@ -622,6 +636,23 @@
     [self presentViewController:cvc animated:YES completion:nil];
 }
 
+- (void)lockAdded:(NSNotification *)notification
+{
+    for (UIViewController *vc in self.childViewControllers) {
+        if ([vc isMemberOfClass:[SLSlideViewController class]]) {
+            return;
+        }
+    }
+    
+    NSDictionary *info = (NSDictionary *)notification.object;
+    if (!info || !info[@"lock"]) {
+        return;
+    }
+    
+    self.selectedLock = info[@"lock"];
+    [self setupLockInfoViewControllerView:YES];
+}
+
 - (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
 {
     self.lockInfoViewController.lock = self.selectedLock;
@@ -637,8 +668,8 @@
         if (shouldBeLarge) {
             self.locationButton.hidden = NO;
             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-            NSNumber *showCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-            if (!showCoachmarks || !showCoachmarks.boolValue) {
+            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
+            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)) {
                 [self presentCoachMarkViewController];
             }
         }
@@ -653,6 +684,15 @@
 - (void)directionsButtonPushed
 {
     [self presentDirectionsViewController];
+}
+
+- (void)lockSelected
+{
+    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
+    self.settingsButton.enabled = YES;
+    
+    // TODO - clear lock annotations that are no longer active
+    [self addLockToMap:self.selectedLock];
 }
 
 - (void)handleDirectionsMode
@@ -685,15 +725,16 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (action == SLSlideViewControllerButtonActionLockSelected) {
-        self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
-        self.settingsButton.enabled = YES;
-        
-        // TODO - clear lock annotations that are no longer active
-        [self addLockToMap:self.selectedLock];
+        [self lockSelected];
     } else if (action == SLSlideViewControllerButtonActionLockDeselected){
         self.selectedLock = nil;
     } else if (action == SLSlideViewControllerButtonActionAddLock){
         SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+        __weak typeof(wtvc) weekWtcv = wtvc;
+        wtvc.onExit = ^{
+            [weekWtcv dismissViewControllerAnimated:YES completion:nil];
+        };
+        
         [self presentViewController:wtvc animated:YES completion:nil];
     } else if (action == SLSlideViewControllerButtonActionSharing) {
         SLSharingViewController *svc = [SLSharingViewController new];
@@ -701,7 +742,8 @@
         [self presentViewController:nc animated:YES completion:nil];
     } else if (action == SLSlideViewControllerButtonActionViewAccount) {
         SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
-        [self presentViewController:aivc animated:YES completion:nil];
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:aivc];
+        [self presentViewController:nc animated:YES completion:nil];
     }
 }
 
@@ -777,7 +819,7 @@
     lockMarker.map = self.mapView;
     lockMarker.infoWindowAnchor = CGPointMake(0.0f, 0.0f);
     
-    self.lockMarkers[lock.name] = lockMarker;
+    self.lockMarkers[lock.macAddress] = lockMarker;
 }
 
 - (void)updateUserLocation

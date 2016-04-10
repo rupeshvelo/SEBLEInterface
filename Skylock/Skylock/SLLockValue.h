@@ -21,9 +21,8 @@
 
 @property (nonatomic, weak) id <SLLockValueDelegate> delegate;
 
-
 - (id)initWithMaxCount:(NSUInteger)maxCount andMacAddress:(NSString *)macAddress;
 - (void)updateValuesWithValues:(NSDictionary *)newValues;
-- (NSString *)macAddress;
+- (NSString *)getMacAddress;
 
 @end

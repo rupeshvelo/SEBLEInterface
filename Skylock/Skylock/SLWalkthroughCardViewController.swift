@@ -68,7 +68,7 @@ class SLWalkthroughCardViewController: UIViewController {
     }
     
     func newCardView() -> SLWalkthroughCardView {
-        let pgr = UIPanGestureRecognizer(target: self, action: "cardViewDragged:")
+        let pgr = UIPanGestureRecognizer(target: self, action: #selector(cardViewDragged(_:)))
         let cardView = SLWalkthroughCardView(
             frame: CGRectMake(0, 0, self.viewSize.width, self.viewSize.height),
             scaleFactor: self.scaleFactor

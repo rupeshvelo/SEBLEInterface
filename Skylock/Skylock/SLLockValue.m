@@ -14,7 +14,7 @@
 @property (nonatomic, assign) NSUInteger count;
 @property (nonatomic, strong) NSMutableArray *values;
 @property (nonatomic, strong) NSArray *keys;
-@property (nonatomic, copy) NSString *macAddres;
+@property (nonatomic, copy) NSString *macAddress;
 
 @end
 
@@ -26,7 +26,7 @@
     if (self) {
         _count = 0;
         _maxCount = maxCount;
-        _macAddres = macAddress;
+        _macAddress = macAddress;
         _values = [NSMutableArray new];
     }
     
@@ -81,7 +81,7 @@
     }
 }
 
-- (NSString *)macAddress
+- (NSString *)getMacAddress
 {
     return self.macAddress;
 }

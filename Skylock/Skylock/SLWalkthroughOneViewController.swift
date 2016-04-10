@@ -110,7 +110,7 @@ class SLWalkthroughOneViewController: SLWalkthroughCardViewController {
         let orderSkylockButton = UIButton(frame: orderSkylockButtonFrame)
         orderSkylockButton.setTitle(orderSkylockText, forState: UIControlState.Normal)
         orderSkylockButton.setTitleColor(UIColor(red: 105, green: 224, blue: 156), forState: UIControlState.Normal)
-        orderSkylockButton.addTarget(self, action: "orderSkylockButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        orderSkylockButton.addTarget(self, action: #selector(orderSkylockButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         orderSkylockButton.titleLabel?.font = dontHaveOneFont
         cardView.addSubview(orderSkylockButton)
         

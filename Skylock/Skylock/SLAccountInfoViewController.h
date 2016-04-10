@@ -12,7 +12,7 @@
 
 @class SLUser;
 
-@interface SLAccountInfoViewController : UIViewController <SLAccountInfoFieldViewDelegate, SLCirclePicViewDelegate>
+@interface SLAccountInfoViewController : UIViewController <SLCirclePicViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) SLUser *user;
 

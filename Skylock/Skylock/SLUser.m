@@ -25,6 +25,7 @@
         self.userId         = [self valueOrNullForDictionary:dictionary key:@"userId"];
         self.googlePushId   = [self valueOrNullForDictionary:dictionary key:@"googlePushId"];
         self.userType       = [self valueOrNullForDictionary:dictionary key:@"userType"];
+        self.phoneNumber    = [self valueOrNullForDictionary:dictionary key:@"phoneNumber"];
     }
     
     return self;
@@ -50,7 +51,8 @@
              @"last_name": self.lastName,
              @"email": self.email ? self.email : [NSNull null],
              @"fb_flag": @([self.userType isEqualToString:@"facebook"]),
-             @"reg_id": self.googlePushId
+             @"reg_id": self.googlePushId,
+             
              };
 }
 
@@ -70,6 +72,10 @@
     
     if (dictionary[@"user_id"]) {
         self.userId = dictionary[@"user_id"];
+        
+        if (!isFacebookUser) {
+            self.phoneNumber = dictionary[@"user_id"];
+        }
     }
     
     if (dictionary[@"googlePushId"]) {

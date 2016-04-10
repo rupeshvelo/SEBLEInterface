@@ -623,19 +623,27 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
 {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:@(YES) forKey:SLUserDefaultsSignedIn];
-    
+    SLMapViewController *mvc = [SLMapViewController new];
     if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
         NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
         if (isTutorialComplete.boolValue) {
-            SLMapViewController *mvc = [SLMapViewController new];
             [self presentViewController:mvc animated:YES completion:nil];
         } else {
             SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+            __weak typeof(wtvc) weekWtcv = wtvc;
+            wtvc.onExit = ^{
+                [weekWtcv presentViewController:mvc animated:YES completion:nil];
+            };
+            
             [self presentViewController:wtvc animated:YES completion:nil];
         }
     } else {
         [ud setObject:@(NO) forKey:SLUserDefaultsTutorialComplete];
         SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+        __weak typeof(wtvc) weekWtcv = wtvc;
+        wtvc.onExit = ^{
+            [weekWtcv presentViewController:mvc animated:YES completion:nil];
+        };
         [self presentViewController:wtvc animated:YES completion:nil];
     }
     

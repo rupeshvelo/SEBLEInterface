@@ -32,7 +32,6 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 
 - (void)slideViewController:(SLSlideViewController *)slvc actionOccured:(SLSlideViewControllerButtonAction)action options:(NSDictionary *)options;
 
-
 @end
 
 
