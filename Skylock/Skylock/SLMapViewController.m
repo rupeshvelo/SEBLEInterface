@@ -294,29 +294,6 @@
     [self.lockInfoViewController didMoveToParentViewController:self];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
-    
-    if (self.selectedLock
-        && self.lockInfoViewController
-        && !self.lockInfoViewController.isUp) {
-        [self lockSelected];
-        [self setupLockInfoViewControllerView:YES];
-    }
-
-    // remove: just a quick hack
-//    UIButton *removeLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x, self.view.center.y, 150, 50)];
-//    [removeLockButton addTarget:self action:@selector(removeLockTemp) forControlEvents:UIControlEventTouchDown];
-//    [removeLockButton setBackgroundColor:[UIColor greenColor]];
-//    [removeLockButton setTitle:@"Remove Lock" forState:UIControlStateNormal];
-//    removeLockButton.clipsToBounds = YES;
-//    removeLockButton.layer.cornerRadius = 3;
-//    [self.mapView addSubview:removeLockButton];
-}
-
 - (void)removeLockTemp
 {
     NSLog(@"remove lock button pressed");
@@ -564,9 +541,6 @@
     if (svc) {
         [self removeSlideViewController:svc withCompletion:nil];
     }
-    
-    self.lockInfoViewController.lock = self.selectedLock;
-    [self.lockInfoViewController setUpView];
 }
 
 - (void)handleCrashAndTheftAlerts:(NSNotification *)notification
@@ -638,24 +612,31 @@
 
 - (void)lockAdded:(NSNotification *)notification
 {
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass:[SLSlideViewController class]]) {
-            return;
-        }
-    }
-    
     NSDictionary *info = (NSDictionary *)notification.object;
     if (!info || !info[@"lock"]) {
         return;
     }
     
     self.selectedLock = info[@"lock"];
-    [self setupLockInfoViewControllerView:YES];
+    //[self setupLockInfoViewControllerView:YES];
+    self.lockInfoViewController.lock = self.selectedLock;
+    
+    [self.lockInfoViewController setUpView];
 }
 
 - (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
 {
-    self.lockInfoViewController.lock = self.selectedLock;
+    BOOL isShowingSlideVC = NO;
+    for (UIViewController *vc in self.childViewControllers) {
+        if ([vc isMemberOfClass: [SLSlideViewController class]]) {
+            isShowingSlideVC = YES;
+            break;
+        }
+    }
+    
+    if ([self.presentedViewController class] == [SLWalkthroughViewController class] || isShowingSlideVC) {
+        return;
+    }
     
     if (!shouldBeLarge) {
         self.locationButton.hidden = NO;
@@ -669,10 +650,13 @@
             self.locationButton.hidden = NO;
             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
             NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)) {
+            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue))
+            {
                 [self presentCoachMarkViewController];
             }
         }
+        
+        self.lockInfoViewController.isUp = shouldBeLarge;
     }];
 }
 
@@ -688,7 +672,6 @@
 
 - (void)lockSelected
 {
-    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
     self.settingsButton.enabled = YES;
     
     // TODO - clear lock annotations that are no longer active

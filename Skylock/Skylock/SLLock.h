@@ -65,6 +65,7 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 - (SLLockBatteryState)batteryState;
 - (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)asDictionary;
+- (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
 - (void)setInitialProperties:(NSDictionary *)dictionary;
 - (void)updateProperties:(NSDictionary *)dictionary;
