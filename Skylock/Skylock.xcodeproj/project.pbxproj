@@ -100,6 +100,11 @@
 		DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */; };
 		DC6471D51C4050B200286DBF /* SLWalkthroughThreeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */; };
 		DC6F1CD51CB9A84100D44739 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */; };
+		DC6F1CDD1CBAEBD800D44739 /* settings_change_pin_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CD91CBAEBD800D44739 /* settings_change_pin_button@2x.png */; };
+		DC6F1CDE1CBAEBD800D44739 /* settings_change_pin_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CDA1CBAEBD800D44739 /* settings_change_pin_button@3x.png */; };
+		DC6F1CDF1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CDB1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png */; };
+		DC6F1CE01CBAEBD800D44739 /* settings_change_pin_button_dissabled@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CDC1CBAEBD800D44739 /* settings_change_pin_button_dissabled@3x.png */; };
+		DC6F1CE31CBB007900D44739 /* SLUnderlinedCharacterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6F1CE21CBB007900D44739 /* SLUnderlinedCharacterView.swift */; };
 		DC7025191C51AE080038D412 /* logo2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025171C51AE070038D412 /* logo2@2x.png */; };
 		DC70251A1C51AE080038D412 /* logo2@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC7025181C51AE070038D412 /* logo2@3x.png */; };
 		DC763D371CB471C800037EF9 /* SLContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC763D361CB471C700037EF9 /* SLContactViewController.swift */; };
@@ -628,6 +633,11 @@
 		DC6471D41C4050B200286DBF /* SLWalkthroughThreeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthroughThreeViewController.swift; sourceTree = "<group>"; };
 		DC6F1CD31CB9A84100D44739 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
 		DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
+		DC6F1CD91CBAEBD800D44739 /* settings_change_pin_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_change_pin_button@2x.png"; sourceTree = "<group>"; };
+		DC6F1CDA1CBAEBD800D44739 /* settings_change_pin_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_change_pin_button@3x.png"; sourceTree = "<group>"; };
+		DC6F1CDB1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_change_pin_button_dissabled@2x.png"; sourceTree = "<group>"; };
+		DC6F1CDC1CBAEBD800D44739 /* settings_change_pin_button_dissabled@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_change_pin_button_dissabled@3x.png"; sourceTree = "<group>"; };
+		DC6F1CE21CBB007900D44739 /* SLUnderlinedCharacterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUnderlinedCharacterView.swift; sourceTree = "<group>"; };
 		DC7025171C51AE070038D412 /* logo2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@2x.png"; sourceTree = "<group>"; };
 		DC7025181C51AE070038D412 /* logo2@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo2@3x.png"; sourceTree = "<group>"; };
 		DC763D361CB471C700037EF9 /* SLContactViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContactViewController.swift; sourceTree = "<group>"; };
@@ -1188,6 +1198,7 @@
 				DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */,
 				DC763D381CB4C31B00037EF9 /* SLAddContactTableViewCell.swift */,
 				DC763D491CB5AF0700037EF9 /* SLAddContactButtonView.swift */,
+				DC6F1CE21CBB007900D44739 /* SLUnderlinedCharacterView.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -1337,6 +1348,17 @@
 			path = loggin;
 			sourceTree = "<group>";
 		};
+		DC6F1CD81CBAEBD800D44739 /* settings */ = {
+			isa = PBXGroup;
+			children = (
+				DC6F1CD91CBAEBD800D44739 /* settings_change_pin_button@2x.png */,
+				DC6F1CDA1CBAEBD800D44739 /* settings_change_pin_button@3x.png */,
+				DC6F1CDB1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png */,
+				DC6F1CDC1CBAEBD800D44739 /* settings_change_pin_button_dissabled@3x.png */,
+			);
+			path = settings;
+			sourceTree = "<group>";
+		};
 		DC7025161C51AE070038D412 /* november_assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -1349,6 +1371,7 @@
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
 			isa = PBXGroup;
 			children = (
+				DC6F1CD81CBAEBD800D44739 /* settings */,
 				DC28487E1CB8865100B0BBF3 /* contacts_and_sharing */,
 				DCED48DA1C862429007AC038 /* walkthrough_page1 */,
 				DCED48E71C862429007AC038 /* walkthrough_page2 */,
@@ -2028,6 +2051,8 @@
 				DC7A117F1B5714B100F3336E /* btn_cancel@3x.png in Resources */,
 				DC7A11DD1B5714B100F3336E /* icon_battery_75.png in Resources */,
 				DC7A12431B5714B100F3336E /* img_lock.png in Resources */,
+				DC6F1CDD1CBAEBD800D44739 /* settings_change_pin_button@2x.png in Resources */,
+				DC6F1CE01CBAEBD800D44739 /* settings_change_pin_button_dissabled@3x.png in Resources */,
 				DC4402881B9C8E1100D1C2B9 /* btn_unlock_grey@0.5x.png in Resources */,
 				DC7A124A1B5714B100F3336E /* img_logo2@2x.png in Resources */,
 				DC7A12661B5714B100F3336E /* img_user@3x.png in Resources */,
@@ -2050,6 +2075,7 @@
 				DC7A121E1B5714B100F3336E /* icon_tick@3x.png in Resources */,
 				DC7A12621B5714B100F3336E /* img_theftalert_yellow@2x.png in Resources */,
 				DC02507B1B59D539007D2D6A /* btn_theftalert_on@3x.png in Resources */,
+				DC6F1CDE1CBAEBD800D44739 /* settings_change_pin_button@3x.png in Resources */,
 				DC7A11C21B5714B100F3336E /* btn_toggle_on.png in Resources */,
 				DCED49091C862429007AC038 /* Skylock-Logo@2x.png in Resources */,
 				DC4402841B9C8E1100D1C2B9 /* btn_lock_grey@1x.png in Resources */,
@@ -2316,6 +2342,7 @@
 				DC7A12501B5714B100F3336E /* img_theft_low@2x.png in Resources */,
 				DCC0D3E41C6021C1006AE5B6 /* pagination_white1@3x.png in Resources */,
 				DCED49051C862429007AC038 /* Iphone@2x.png in Resources */,
+				DC6F1CDF1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png in Resources */,
 				DCED49081C862429007AC038 /* Lock@3x.png in Resources */,
 				DC7A122D1B5714B100F3336E /* icon_wifi_2@3x.png in Resources */,
 				DC7A11B31B5714B100F3336E /* btn_sharing_on.png in Resources */,
@@ -2539,6 +2566,7 @@
 				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
 				DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
+				DC6F1CE31CBB007900D44739 /* SLUnderlinedCharacterView.swift in Sources */,
 				DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */,
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,

@@ -9,12 +9,10 @@
 import UIKit
 
 enum SLTouchPadLocation {
-    case None
     case Top
     case Right
     case Bottom
     case Left
-    case Center
 }
 
 protocol SLTouchPadViewDelegate {
@@ -29,6 +27,7 @@ class SLTouchPadView: UIView {
     let largeButtonDiameter: CGFloat = 80.0
     let buttonGreenColor = UIColor.color(110, green: 223, blue: 158)
     let buttonGreyColor = UIColor.color(216, green: 216, blue: 216)
+    let font = UIFont(name: "Helvetica Neue", size: 28)
     var delegate: SLTouchPadViewDelegate?
     
     lazy var topButton: UIButton = {
@@ -44,8 +43,10 @@ class SLTouchPadView: UIView {
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.backgroundColor = self.buttonGreyColor
-        button.layer.cornerRadius = 0.5*self.buttonDiameter;
+        button.setTitle(NSLocalizedString("B", comment: ""), forState: UIControlState.Normal)
+        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
+        button.titleLabel?.font = self.font
+        
         return button
     }()
     
@@ -62,8 +63,10 @@ class SLTouchPadView: UIView {
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.backgroundColor = self.buttonGreenColor
-        button.layer.cornerRadius = 0.5*self.buttonDiameter;
+        button.setTitle(NSLocalizedString("Y", comment: ""), forState: UIControlState.Normal)
+        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
+        button.titleLabel?.font = self.font
+        
         return button
     }()
     
@@ -80,8 +83,10 @@ class SLTouchPadView: UIView {
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.backgroundColor = self.buttonGreyColor
-        button.layer.cornerRadius = 0.5*self.buttonDiameter;
+        button.setTitle(NSLocalizedString("X", comment: ""), forState: UIControlState.Normal)
+        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
+        button.titleLabel?.font = self.font
+        
         return button
     }()
     
@@ -98,26 +103,10 @@ class SLTouchPadView: UIView {
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.backgroundColor = self.buttonGreenColor
-        button.layer.cornerRadius = 0.5*self.buttonDiameter;
-        return button
-    }()
-    
-    lazy var middleButton: UIButton = {
-        let button:UIButton = UIButton(frame: CGRectMake(
-            CGRectGetMidX(self.bounds) - 0.5*self.largeButtonDiameter,
-            CGRectGetMidY(self.bounds) - 0.5*self.largeButtonDiameter,
-            self.largeButtonDiameter,
-            self.largeButtonDiameter
-            )
-        )
-        button.addTarget(
-            self,
-            action: #selector(touchPadButtonPressed(_:)),
-            forControlEvents: UIControlEvents.TouchDown
-        )
-        button.backgroundColor = self.buttonGreyColor
-        button.layer.cornerRadius = 0.5*self.largeButtonDiameter;
+        button.setTitle(NSLocalizedString("A", comment: ""), forState: UIControlState.Normal)
+        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
+        button.titleLabel?.font = self.font
+        
         return button
     }()
     
@@ -128,13 +117,12 @@ class SLTouchPadView: UIView {
         self.addSubview(self.rightButton)
         self.addSubview(self.bottomButton)
         self.addSubview(self.leftButton)
-        self.addSubview(self.middleButton)
     }
     
     func touchPadButtonPressed(sender: UIButton) {
         print("touch pad button pressed")
         
-        var location: SLTouchPadLocation?
+        let location: SLTouchPadLocation
         switch sender {
         case self.topButton:
             location = SLTouchPadLocation.Top
@@ -142,14 +130,13 @@ class SLTouchPadView: UIView {
             location = SLTouchPadLocation.Right
         case self.bottomButton:
             location = SLTouchPadLocation.Bottom
-        case self.rightButton:
+        case self.leftButton:
             location = SLTouchPadLocation.Left
-        case self.middleButton:
-            location = SLTouchPadLocation.Center
         default:
-            location = SLTouchPadLocation.None
+            print("Error: Button did not map to SLTouchPadLocation")
+            return;
         }
-        
-        self.delegate?.touchPadViewLocationSelected(self, location: location!)
+    
+        self.delegate?.touchPadViewLocationSelected(self, location: location)
     }
 }

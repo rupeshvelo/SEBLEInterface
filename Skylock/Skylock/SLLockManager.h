@@ -16,6 +16,12 @@ SEBLEInterfaceManagerDelegate,
 SLLockValueDelegate
 >
 
+typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
+    SLLockManagerTouchPadButtonTop,
+    SLLockManagerTouchPadButtonRight,
+    SLLockManagerTouchPadButtonBottom,
+    SLLockManagerTouchPadButtonLeft
+};
 
 @property (nonatomic, assign) BOOL hasBleControl;
 
@@ -44,6 +50,8 @@ SLLockValueDelegate
 - (void)deselectAllLocks;
 - (void)updateFirmware;
 - (void)deleteLockFromCurrentUserAccount:(NSString *)lockName;
+- (void)writeTouchPadButtonPushes:(UInt8 *)pushes size:(int)size lock:(SLLock *)lock;
+- (void)readButtonLockSequenceForLock:(SLLock *)lock;
 
 // temporary methods for testing
 - (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress;

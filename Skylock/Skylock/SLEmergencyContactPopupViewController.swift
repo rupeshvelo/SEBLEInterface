@@ -54,6 +54,7 @@ SLContactViewControllerDelegate
             size.width,
             size.height
         )
+        
         let label:UILabel = UILabel(frame: frame)
         label.text = text
         label.font = font
@@ -82,6 +83,7 @@ SLContactViewControllerDelegate
             size.width,
             size.height
         )
+        
         let label:UILabel = UILabel(frame: frame)
         label.text = text
         label.font = font
@@ -450,8 +452,10 @@ SLContactViewControllerDelegate
     }
     
     func removeContactViewController(cvc: SLContactViewController) {
+        
         UIView.animateWithDuration(0.3, animations: {
-            cvc.view.frame = CGRect(x: cvc.view.center.x, y: cvc.view.center.y, width: 0, height: 0)
+            //cvc.view.frame = CGRect(x: cvc.view.center.x, y: cvc.view.center.y, width: 0, height: 0)
+            cvc.view.alpha = 0.0
         }) { (finished) in
             cvc.view.removeFromSuperview()
             cvc.removeFromParentViewController()
@@ -505,11 +509,16 @@ SLContactViewControllerDelegate
         cvc.searchBarPlaceholderText = NSLocalizedString("Add Contact", comment: "")
         cvc.cornerRadius = self.view.layer.cornerRadius
         cvc.view.frame = self.view.bounds
+        cvc.view.alpha = 0.0;
         
         self.addChildViewController(cvc)
         self.view.addSubview(cvc.view)
         self.view.bringSubviewToFront(cvc.view)
         cvc.didMoveToParentViewController(self)
+        
+        UIView.animateWithDuration(0.3) {
+            cvc.view.alpha = 1.0
+        }
     }
     
     // MARK SLContactViewControllerDelegate Methods
