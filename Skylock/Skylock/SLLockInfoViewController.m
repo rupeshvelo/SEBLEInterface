@@ -631,8 +631,7 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!self.theftButton.isSelected) {
-        //[SLLockManager.sharedManager toggleCrashForLock:self.lock];
-        [SLLockManager.sharedManager readButtonLockSequenceForLock:self.lock];
+        [SLLockManager.sharedManager toggleCrashForLock:self.lock];
     }
 }
 
