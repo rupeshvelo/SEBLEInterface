@@ -45,7 +45,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicSignedMessage,
     SLLockManagerCharacteristicChallengeData,
     SLLockManagerCharacteristicChallengeKey,
-    SLLockManagerCharacteristicCodeVersion
+    SLLockManagerCharacteristicCodeVersion,
+    SLLockManagerCharacteristicButtonLockSequence
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
@@ -71,8 +72,11 @@ typedef enum {
     SLLockManagerValueLockLocked        = 0x01,
     SLLockManagerValueLockOpen          = 0x00,
     SLLockManagerValueLockIntermediate  = 0x02,
-    SLLockManagerValueLockInvalid       = 0x03
-    
+    SLLockManagerValueLockInvalid       = 0x03,
+    SLLockManagerValueTopButton         = 0x01,
+    SLLockManagerValueRightButton       = 0x02,
+    SLLockManagerValueBottomButton      = 0x04,
+    SLLockManagerValueLeftButton        = 0x08
 } SLLockMangerValue;
 
 typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
@@ -170,7 +174,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                            [self uuidForCharacteristic:SLLockManagerCharacteristicSignedMessage],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicChallengeData],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicChallengeKey],
-                           [self uuidForCharacteristic:SLLockManagerCharacteristicCodeVersion]
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicCodeVersion],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence]
                            ];
     
     return [NSSet setWithArray:readChars];
@@ -498,10 +503,15 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                      service:(SLLockManagerService)service
                               characteristic:(SLLockManagerCharacteristic)characteristic
 {
-    NSLog(@"reading value from lock: %@, for service: %@, for characteristic: %@",
+    NSString *serviceUUID = [self uuidForService:service];
+    NSString *characteristicUUID = [self uuidForCharacteristic:characteristic];
+    NSLog(@"Attempting to read value from lock: %@, for service: %@, for characteristic: %@",
           macAddress,
-          [self uuidForService:service],
-          [self uuidForCharacteristic:characteristic]);
+          serviceUUID,
+          characteristicUUID);
+    [self.bleManager readValueForPeripheralWithKey:macAddress
+                                    forServiceUUID:serviceUUID
+                             andCharacteristicUUID:characteristicUUID];
 }
 
 - (uint8_t)valueForCharacteristic:(SLLockManagerCharacteristic)characteristic
@@ -588,6 +598,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         case SLLockManagerCharacteristicCodeVersion:
             characteristicString = @"5D01";
             break;
+        case SLLockManagerCharacteristicButtonLockSequence:
+            characteristicString = @"5E84";
         default:
             break;
     }
@@ -981,6 +993,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                         object:@{@"lock": lock}];
 }
 
+- (void)handleLockSequenceWriteForMacAddress:(NSString *)macAddress data:(NSData *)data
+{
+    // TODO post notification that new sequence was accepted or declined
+    NSLog(@"updated lock sequence successfully");
+}
+
 - (NSDictionary *)factoryAndNonFactoryNameForName:(NSString *)name
 {
     NSString *factoryName = nil;
@@ -1118,6 +1136,32 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     [self.bleManager removeNotConnectPeripheralForKey:macAddress];
     [self.bleManager removeConnectedPeripheralForKey:macAddress];
+}
+
+- (void)writeTouchPadButtonPushes:(UInt8 *)pushes size:(int)size lock:(SLLock *)lock
+{
+    static int length = 16;
+    if (size > length) {
+        NSLog(@"Error: size of touches to write is longer than the maximum allowable number of bytes");
+        return;
+    }
+    
+    uint8_t pushData[length];
+    for (int i = 0; i < length; i++) {
+        pushData[i] = i < size ? pushes[i] : 0x00;
+    }
+    
+    [self writeToLockWithMacAddress:lock.macAddress
+                            service:SLLockManagerServiceConfiguration
+                     characteristic:SLLockManagerCharacteristicButtonLockSequence
+                               data:[NSData dataWithBytes:&pushData length:length]];
+}
+
+- (void)readButtonLockSequenceForLock:(SLLock *)lock
+{
+    [self readValueFromPeripheralForMacAddress:lock.macAddress
+                                       service:SLLockManagerServiceConfiguration
+                                characteristic:SLLockManagerCharacteristicButtonLockSequence];
 }
 
 #pragma mark - SEBLEInterfaceManager Delegate Methods
@@ -1259,6 +1303,8 @@ discoveredCharacteristicsForService:(CBService *)service
         [self handleChallengeDataForLockMacAddress:macAddress data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicLed]]) {
         [self handleLEDStateForLockMacAddress:macAddress data:data];
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence]]) {
+        [self handleLockSequenceWriteForMacAddress:macAddress data:data];
     } else {
         char *bytes = (char *)data.bytes;
         for (int i=0; i < data.length; i++) {
@@ -1283,6 +1329,8 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
         [self.bleManager readValueForPeripheralWithKey:macAddress
                                         forServiceUUID:[self uuidForService:SLLockManagerServiceHardware]
                                  andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicLed]];
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence]]) {
+        [self readButtonLockSequenceForLock:self.selectedLock];
     }
 }
 

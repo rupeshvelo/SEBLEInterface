@@ -332,7 +332,13 @@
 - (void)settingsButtonPressed
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self presentSettingsViewController];
+    SLSettingsViewController *svc = [SLSettingsViewController new];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
+    nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    nc.modalPresentationStyle = UIModalPresentationFullScreen;
+    
+    [self presentViewController:nc animated:YES completion:nil];
+
 }
 
 - (void)presentSlideViewController
@@ -400,13 +406,6 @@
                                                               self.directionsViewController.view.bounds.size.width,
                                                               self.directionsViewController.view.bounds.size.height);
     }];
-}
-
-- (void)presentSettingsViewController
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLSettingsViewController *svc = [SLSettingsViewController new];
-    [self presentViewController:svc animated:YES completion:nil];
 }
 
 - (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
@@ -601,7 +600,9 @@
     NSArray *recipients = info[@"recipients"];
     SLUser *currentUser = [SLDatabaseManager.sharedManager currentUser];
     // temporay location for this message. It should be stored in a p-list or the database
-    NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock", currentUser.fullName, currentUser.fullName];
+    NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock",
+                         currentUser.fullName,
+                         currentUser.fullName];
     MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
     cvc.messageComposeDelegate = self;
     cvc.recipients = recipients;
@@ -726,6 +727,9 @@
     } else if (action == SLSlideViewControllerButtonActionViewAccount) {
         SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:aivc];
+        nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        nc.modalPresentationStyle = UIModalPresentationFullScreen;
+        
         [self presentViewController:nc animated:YES completion:nil];
     }
 }

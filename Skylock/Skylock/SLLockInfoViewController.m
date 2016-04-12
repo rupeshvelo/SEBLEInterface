@@ -631,7 +631,8 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!self.theftButton.isSelected) {
-        [SLLockManager.sharedManager toggleCrashForLock:self.lock];
+        //[SLLockManager.sharedManager toggleCrashForLock:self.lock];
+        [SLLockManager.sharedManager readButtonLockSequenceForLock:self.lock];
     }
 }
 
@@ -641,7 +642,7 @@
     if (!self.crashButton.isSelected) {
         button.selected = !button.selected;
         self.lock.isSecurityOn = @(button.isSelected);
-        [SLLockManager.sharedManager toggleSecurityForLock:self.lock];
+        //[SLLockManager.sharedManager toggleSecurityForLock:self.lock];
     }
 }
 
@@ -662,13 +663,11 @@
 - (void)lockOpened:(NSNotification *)notification
 {
     self.lockButton.selected = YES;
-    [self.lockButton setNeedsDisplay];
 }
 
 - (void)lockClosed:(NSNotification *)notification
 {
     self.lockButton.selected = NO;
-    [self.lockButton setNeedsDisplay];
 }
 
 - (void)crashOn:(NSNotification *)notification
