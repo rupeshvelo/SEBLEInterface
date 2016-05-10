@@ -472,16 +472,14 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                            turnOn:(BOOL)turnOn
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSString *serviceUUID = [self uuidForService:service];
-    NSString *characteristicUUID = [self uuidForCharacteristic:characteristic];
-    
+
     u_int8_t value = [self valueForCharacteristic:characteristic turnOn:turnOn];
     NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
     
-    [self.bleManager writeToPeripheralWithKey:macAddress
-                                   serviceUUID:serviceUUID
-                            characteristicUUID:characteristicUUID
-                                          data:data];
+    [self writeToLockWithMacAddress:macAddress
+                            service:service
+                     characteristic:characteristic
+                               data:data];
 }
 
 - (void)writeToLockWithMacAddress:(NSString *)macAddress
@@ -523,7 +521,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             return turnOn ? SLLockManagerValueLedOn : SLLockManagerValueOff;
             break;
         case SLLockManagerCharacteristicLock:
-            return turnOn ? SLLockManagerValueOn: SLLockManagerValueOff;
+            return turnOn ? SLLockManagerValueOn : SLLockManagerValueOff;
             break;
         case SLLockManagerCharacteristicSecurityState:
             return turnOn ? SLLockManagerValueOn : SLLockManagerValueOff;
@@ -961,6 +959,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         case SLLockManagerValueLockLocked:
             isLocked = YES;
             notification = kSLNotificationLockClosed;
+            break;
         default:
             isLocked = YES;
             notification = kSLNotificationLockClosed;
@@ -1100,7 +1099,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                  }];
 }
 
-- (void)tempReadFirmwareDataForLock:(NSString *)macAddress
+- (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress
 {
     [self.bleManager readValueForPeripheralWithKey:macAddress
                                     forServiceUUID:[self uuidForService:SLLockManagerServiceConfiguration]
@@ -1307,8 +1306,8 @@ discoveredCharacteristicsForService:(CBService *)service
         [self handleLockSequenceWriteForMacAddress:macAddress data:data];
     } else {
         char *bytes = (char *)data.bytes;
+        NSLog(@"update for %@", uuid);
         for (int i=0; i < data.length; i++) {
-            NSLog(@"update for %@", uuid);
             int byte = bytes[i];
             NSLog(@"byte # %d:%d",i, byte);
         }
