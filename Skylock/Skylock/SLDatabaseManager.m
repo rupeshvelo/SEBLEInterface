@@ -25,7 +25,6 @@
 
 + (id)sharedManager
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLDatabaseManager *dbManager = nil;
     static dispatch_once_t token;
     dispatch_once(&token, ^{

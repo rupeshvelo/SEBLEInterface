@@ -2660,7 +2660,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "129c9367-d18b-4dd1-bf18-62befa6a77cf";
+				PROVISIONING_PROFILE = "79942854-61e4-4de6-86f5-468cfe75fb59";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -2708,7 +2708,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "5a80babe-3237-40a2-9675-5bd5b5b4bbed";
+				PROVISIONING_PROFILE = "094603bc-4c70-493b-9558-1e5f5ad2cd5d";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2745,7 +2745,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.Skylock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "129c9367-d18b-4dd1-bf18-62befa6a77cf";
+				PROVISIONING_PROFILE = "79942854-61e4-4de6-86f5-468cfe75fb59";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2782,7 +2782,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.Skylock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "5a80babe-3237-40a2-9675-5bd5b5b4bbed";
+				PROVISIONING_PROFILE = "094603bc-4c70-493b-9558-1e5f5ad2cd5d";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 			};

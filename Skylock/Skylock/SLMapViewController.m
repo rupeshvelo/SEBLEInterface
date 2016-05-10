@@ -292,13 +292,22 @@
     [self.view addSubview:self.lockInfoViewController.view];
     [self.view bringSubviewToFront:self.lockInfoViewController.view];
     [self.lockInfoViewController didMoveToParentViewController:self];
+    
+//    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
+//                                                                            self.view.center.y,
+//                                                                            100,
+//                                                                            50)];
+//    [testActionButton addTarget:self action:@selector(testAction) forControlEvents:UIControlEventTouchDown];
+//    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
+//    [testActionButton setBackgroundColor:[UIColor purpleColor]];
+//    [self.view addSubview:testActionButton];
 }
 
-- (void)removeLockTemp
+- (void)testAction
 {
-    NSLog(@"remove lock button pressed");
-    [SLLockManager.sharedManager tempDeleteLockFromCurrentUserAccount:@"Skylock DF928DD51C00"];
-    //[SLLockManager.sharedManager tempReadFirmwareDataForLock:@"Skylock-F261CF82266C"];
+    NSLog(@"test action button pressed");
+    //[SLLockManager.sharedManager tempDeleteLockFromCurrentUserAccount:@"Skylock DF928DD51C00"];
+    [SLLockManager.sharedManager tempReadFirmwareDataForLockAddress:@"E12E18E807D6"];
 }
 
 - (void)registerNotifications
