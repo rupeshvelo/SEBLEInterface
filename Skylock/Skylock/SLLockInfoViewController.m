@@ -236,8 +236,8 @@
 - (UIButton *)lockButton
 {
     if (!_lockButton) {
-        UIImage *normalImage = [UIImage imageNamed:@"btn_lock"];
-        UIImage *selectedImage = [UIImage imageNamed:@"btn_unlock"];
+        UIImage *normalImage = [UIImage imageNamed:@"btn_unlock"];
+        UIImage *selectedImage = [UIImage imageNamed:@"btn_lock"];
         UIImage *disabledImage = [UIImage imageNamed:@"btn_lock_grey"];
         
         _lockButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
