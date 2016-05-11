@@ -43,7 +43,7 @@ class SLWalkthroughTwoViewController: SLWalkthroughCardViewController {
         )
         let headingFrame = CGRectMake(
             self.xPadding,
-            CGRectGetMaxY(phoneView.frame) + 10,
+            CGRectGetMaxY(phoneView.frame) - 50,
             headingSize.width,
             headingSize.height
         )

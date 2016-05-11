@@ -37,10 +37,11 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     let buttonOffset:CGFloat = 10.0
     var topCardViewController:SLWalkthroughCardViewController?
     var bottomCardViewController:SLWalkthroughCardViewController?
+    @objc var onExit:(() -> Void)?
     
     // lazy variables
     lazy var nextButton:UIButton = {
-        let image = UIImage(named: "Next_Button")
+        let image = UIImage(named: "walkthrough_next_button")
         let button = UIButton(frame: CGRectMake(
             0.5*(self.view.bounds.size.width - image!.size.width),
             self.pageViewController.view.frame.origin.y - 10 - image!.size.height,
@@ -49,13 +50,13 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "nextButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(nextButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         
         return button
     }()
     
     lazy var prevButton:UIButton = {
-        let image = UIImage(named: "Previous_Button")
+        let image = UIImage(named: "walkthrough_previous_button")
         let button = UIButton(frame: CGRectMake(
             0.5*(self.view.bounds.size.width - image!.size.width),
             self.pageViewController.view.frame.origin.y - 10 - image!.size.height,
@@ -64,7 +65,7 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             )
         )
         button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(self, action: "previousButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        button.addTarget(self, action: #selector(previousButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         button.hidden = true
         
         return button
@@ -288,13 +289,13 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     private func placeButtons() {
         switch self.currentPage {
         case .One:
-            self.nextButton.setImage(UIImage(named: "Next_Button"), forState: UIControlState.Normal)
+            self.nextButton.setImage(UIImage(named: "walkthrough_next_button"), forState: UIControlState.Normal)
             self.prevButton.hidden = true
         case .Two:
             self.prevButton.hidden = false
         case .Three:
-            self.nextButton.setImage(UIImage(named: "Next_Button"), forState: UIControlState.Normal)
-            self.prevButton.setImage(UIImage(named: "Previous_Button"), forState: UIControlState.Normal)
+            self.nextButton.setImage(UIImage(named: "walkthrough_next_button"), forState: UIControlState.Normal)
+            self.prevButton.setImage(UIImage(named: "walkthrough_previous_button"), forState: UIControlState.Normal)
         case .Four:
             self.nextButton.setImage(UIImage(named: "walkthrough4_yes_button"), forState: UIControlState.Normal)
             self.prevButton.setImage(UIImage(named: "walkthrough4_no_button"), forState: UIControlState.Normal)
@@ -395,8 +396,10 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             let userDefaults = NSUserDefaults.standardUserDefaults()
             userDefaults.setBool(true, forKey: "SLUserDefaultsTutorialComplete")
             userDefaults.synchronize()
-            let mapViewController = SLMapViewController()
-            self.presentViewController(mapViewController, animated: true, completion: nil)
+            
+            if let completion = self.onExit {
+                completion()
+            }
         }
     }
     
@@ -408,6 +411,10 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     }
     
     func cardStartingToMoveLeft(wcvc: SLWalkthroughCardViewController) {
+        print("current page: \(self.currentPage) next page: \(self.nextPage())")
+        if self.currentPage.rawValue + 1 != self.nextPage().rawValue {
+            print("problem will robinson")
+        }
         if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .Five {
             self.bottomCardViewController = self.cardViewControllers[self.nextPage()]
             self.addChildViewController(self.bottomCardViewController!)
@@ -422,6 +429,11 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     }
     
     func cardStartingToMoveRight(wcvc: SLWalkthroughCardViewController) {
+        print("current page: \(self.currentPage) prev page: \(self.previousPage())")
+        if self.currentPage.rawValue - 1 != self.previousPage().rawValue {
+            print("problem will robinson")
+        }
+        
         if let dummyVC = self.dummyCardViewControllers.last where self.currentPage != .One {
             self.bottomCardViewController = self.cardViewControllers[self.previousPage()]
             self.addChildViewController(self.bottomCardViewController!)
@@ -476,10 +488,12 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
     
     // MARK: SLWalkthroughCardViewControllerDelegate methods
     func cardViewControllerViewOffscreenLeft(wcvc: SLWalkthroughCardViewController) {
+        self.cardStartingToMoveLeft(wcvc)
         self.forceCardViewOffScreenLeft(wcvc)
     }
     
     func cardViewControllerViewOffscreenRight(wcvc: SLWalkthroughCardViewController) {
+        self.cardStartingToMoveRight(wcvc)
         self.forceCardViewOffScreenRight(wcvc)
     }
     

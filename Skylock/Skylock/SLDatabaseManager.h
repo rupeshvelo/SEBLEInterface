@@ -7,15 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+@class SLUser;
 @class SLLock;
-@class SLDbUser;
-@class SLDbLock;
 
 @class NSManagedObjectContext;
 
 @interface SLDatabaseManager : NSObject
 
-@property (strong) SLDbUser *currentUser;
+@property (strong) SLUser *currentUser;
 
 
 +(id)sharedManager;
@@ -23,15 +22,17 @@
 - (void)setContext:(NSManagedObjectContext *)context;
 
 - (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
-- (NSArray *)getAllLocksFromDb;
+- (NSArray *)allLocks;
 - (NSArray *)locksForCurrentUser;
 - (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
-- (void)saveUser:(SLDbUser *)user withCompletion:(void(^)(BOOL success))completion;
-- (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary;
+- (void)saveUser:(SLUser *)user withCompletion:(void(^)(BOOL success))completion;
+- (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser;
 - (void)setCurrentUser;
 - (NSArray *)sharedContactsForLock:(SLLock *)lock;
-- (SLDbLock *)dbLockForLock:(SLLock *)lock;
 - (void)setCurrentLock:(SLLock *)lock;
 - (void)deselectAllLocks;
+- (SLLock *)getLockWithMacAddress:(NSString *)macAddress;
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
+- (BOOL)doesCurrentUserHaveLock:(SLLock *)lock;
 
 @end

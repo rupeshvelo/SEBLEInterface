@@ -17,6 +17,8 @@
 @property (nonatomic, assign) CGFloat picRadius;
 @property (nonatomic, strong) UIImageView *picView;
 @property (nonatomic, strong) UIColor *labelColor;
+@property (nonatomic, assign) CGFloat verticalOffset;
+
 @end
 
 
@@ -26,19 +28,20 @@
                name:(NSString *)name
           picRadius:(CGFloat)picRadius
          labelColor:(UIColor *)labelColor
+     verticalOffset:(CGFloat)verticalOffset
 {
     self = [super initWithFrame:frame];
     if (self) {
         _name = name;
         _picRadius = picRadius;
         _labelColor = labelColor;
+        _verticalOffset = verticalOffset;
         
         self.userInteractionEnabled = YES;
         UITapGestureRecognizer *tgr = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(picViewTouched)];
         tgr.numberOfTapsRequired = 1;
         [self addGestureRecognizer:tgr];
-        
     }
     
     return self;
@@ -95,7 +98,7 @@
     [super layoutSubviews];
     
     self.picView.frame = CGRectMake(.5*(self.bounds.size.width - self.picView.bounds.size.width),
-                                    20.0f,
+                                    self.verticalOffset,
                                     self.picView.bounds.size.width,
                                     self.picView.bounds.size.height);
     

@@ -17,10 +17,10 @@
                font:(UIFont *)font
          titleColor:(UIColor *)titleColor
 {
-    self = [UIButton buttonWithType:UIButtonTypeCustom];
+    self = [super initWithFrame:frame];
+    
     if (self) {
         UIImage *image = [UIImage imageNamed:imageName];
-        self.frame = frame;
         
         [self setTitle:title forState:UIControlStateNormal];
         [self setTitleColor:titleColor forState:UIControlStateNormal];

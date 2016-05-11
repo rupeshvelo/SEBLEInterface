@@ -88,7 +88,10 @@ class SLMapCalloutView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "viewTapped:")
+        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(SLMapCalloutView.viewTapped(_:))
+        )
         tgr.numberOfTapsRequired = 1
         
         self.addGestureRecognizer(tgr)
@@ -104,7 +107,16 @@ class SLMapCalloutView: UIView {
         }
         
         self.isSelected = !self.isSelected
+        self.setSelectedImage()
+    }
+    
+    func setSelected(isSelected: Bool) {
+        self.isSelected = isSelected
+        self.setSelectedImage()
+    }
+    
+    func setSelectedImage() {
         self.imageView.image = self.isSelected ?
-            UIImage(named: self.selectedImageName) : UIImage(named: self.deselectedImageName)
+        UIImage(named: self.selectedImageName) : UIImage(named: self.deselectedImageName)
     }
 }

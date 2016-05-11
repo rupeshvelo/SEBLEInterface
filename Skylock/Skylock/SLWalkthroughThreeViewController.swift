@@ -14,14 +14,14 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "foundLock:",
+            selector: #selector(foundLock(_:)),
             name: "kSLNotificationLockManagerDiscoverdLock",
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "pairedLock:",
+            selector: #selector(pairedLock(_:)),
             name: "kSLNotificationLockPaired",
             object: nil
         )
@@ -33,7 +33,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         let middleButtonView = UIImageView(image: UIImage(named: "middle_button"))
         middleButtonView.frame = CGRectMake(
             cardView.bounds.size.width - self.xPadding - middleButtonView.bounds.size.width,
-            60,
+            0,
             middleButtonView.bounds.size.width,
             middleButtonView.bounds.size.height
         )
@@ -102,7 +102,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         )
         let blueToothButton = UIButton(frame: blueToothButtonFrame)
         blueToothButton.setImage(blueToothImage, forState: UIControlState.Normal)
-        blueToothButton.addTarget(self, action: "blueToothButtonPressed", forControlEvents: UIControlEvents.TouchDown)
+        blueToothButton.addTarget(self, action: #selector(blueToothButtonPressed), forControlEvents: UIControlEvents.TouchDown)
         cardView.addSubview(blueToothButton)
 
         return cardView

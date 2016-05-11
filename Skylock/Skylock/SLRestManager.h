@@ -22,7 +22,8 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
     SLRestManagerPathKeyChallengeKey,
     SLRestManagerPathKeyChallengeData,
     SLRestManagerPathKeyKeys,
-    SLRestManagerPathUsers
+    SLRestManagerPathKeyUsers,
+    SLRestManagerPathKeyFirmwareUpdate
 };
 
 
@@ -46,5 +47,7 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void(^)(NSData *))completion;
 
 - (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password;
+
+- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void(^)(NSData *reponseData))completion;
 
 @end

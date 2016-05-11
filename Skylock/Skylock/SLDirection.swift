@@ -10,14 +10,52 @@ import Foundation;
 import CoreLocation;
 
 public class SLDirection: NSObject {
-    public let coordinate: CLLocationCoordinate2D
-    public let directions: String
-    public let distance: Double
-
-    internal init(coordinate: CLLocationCoordinate2D, directions: String, distance: Double) {
-        self.coordinate = coordinate
-        self.directions = directions
-        self.distance = distance
-        super.init()
+    public var start: CLLocationCoordinate2D?
+    public var end: CLLocationCoordinate2D?
+    public var directions: String?
+    public var distance: Int?
+    public var address: String?
+    private let milesPerMeter:Float = 0.000621371
+    
+    convenience init(input: [String: AnyObject]) {
+        self.init()
+        
+        if let instructions = input["html_instructions"] as? String {
+            self.directions = instructions.stringByReplacingOccurrencesOfString(
+                "<[^>]+>",
+                withString: "",
+                options: .RegularExpressionSearch,
+                range: nil
+            )
+        }
+        
+        if let startLocation = input["start_location"] as? [String:Double],
+            let latitude = startLocation["lat"],
+            let longitude = startLocation["lng"] {
+            self.start = CLLocationCoordinate2DMake(latitude, longitude)
+        }
+        
+        if let endLocation = input["end_location"] as? [String:Double],
+            let latitude = endLocation["lat"],
+            let longitude = endLocation["lng"] {
+                self.end = CLLocationCoordinate2DMake(latitude, longitude)
+        }
+        
+        if let distance = input["distance"] as? [String:AnyObject],
+            let value = distance["value"] as? Int {
+            self.distance = value
+        }
+    }
+    
+    @objc public func getDirections() -> String? {
+        return self.directions
+    }
+    
+    @objc public func distanceInMiles() -> CGFloat {
+        if let distance = self.distance {
+            return CGFloat(distance)*CGFloat(self.milesPerMeter)
+        }
+        
+        return CGFloat.max
     }
 }

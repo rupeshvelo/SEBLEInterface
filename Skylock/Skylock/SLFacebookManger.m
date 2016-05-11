@@ -15,7 +15,7 @@
 #import "Skylock-Swift.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import "SLDbUser+CoreDataProperties.h"
+#import "SLUser.h"
 #import "SLDatabaseManager.h"
 
 
@@ -127,12 +127,12 @@
     NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
         modifiedInfo[@"googlePushId"] = [ud objectForKey:SLUserDefaultsPushNotificationToken];
-        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
+        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     } else {
         // TODO this googlePushId should not be here. Only placing it here for testing purpose
         NSString *testPushId = @"dkdkododkdkdnfkdkdodwlslslsolslsldkdfjdffididlslapepkeke9";
         modifiedInfo[@"googlePushId"] = testPushId;
-        [SLDatabaseManager.sharedManager saveFacebookUserWithDictionary:modifiedInfo];
+        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     }
     
     NSString *userId = info[@"id"];
@@ -141,13 +141,13 @@
     [ud setObject:userId forKey:SLUserDefaultsPassword];
     [ud synchronize];
     
-    SLDbUser *user = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asDictionary];
     userDict[@"password"] = userId;
     
     [SLRestManager.sharedManager postObject:userDict
                                   serverKey:SLRestManagerServerKeyMain
-                                    pathKey:SLRestManagerPathUsers
+                                    pathKey:SLRestManagerPathKeyUsers
                                   subRoutes:nil
                           additionalHeaders:nil
                                  completion:^(NSDictionary *responseDict) {

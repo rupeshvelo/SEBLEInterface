@@ -11,10 +11,17 @@
 #import "SLLockValue.h"
 #import "SLLock.h"
 
+@interface SLLockManager : NSObject <
+SEBLEInterfaceManagerDelegate,
+SLLockValueDelegate
+>
 
-@interface SLLockManager : NSObject <SEBLEInterfaceManagerDelegate, SLLockValueDelegate>
-
-
+typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
+    SLLockManagerTouchPadButtonTop,
+    SLLockManagerTouchPadButtonRight,
+    SLLockManagerTouchPadButtonBottom,
+    SLLockManagerTouchPadButtonLeft
+};
 
 @property (nonatomic, assign) BOOL hasBleControl;
 
@@ -41,6 +48,18 @@
 - (NSDictionary *)addedAndRemovedLocksFromPreviousLocks:(NSArray *)previousLocks;
 - (BOOL)hasLocksForCurrentUser;
 - (void)deselectAllLocks;
-- (void)testing;
+- (void)updateFirmware;
+- (void)deleteLockFromCurrentUserAccount:(NSString *)lockName;
+- (void)writeTouchPadButtonPushes:(UInt8 *)pushes size:(int)size lock:(SLLock *)lock;
+- (void)readButtonLockSequenceForLock:(SLLock *)lock;
+
+// temporary methods for testing
+- (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress;
+- (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
+
+/**
+ * returns a dictionary with keys "factory" and "nonFactory"
+ */
+- (NSDictionary *)factoryAndNonFactoryNameForName:(NSString *)name;
 
 @end

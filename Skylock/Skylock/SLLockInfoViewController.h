@@ -34,8 +34,6 @@ typedef NS_ENUM(NSUInteger, SLLockInfoViewControllerAction) {
 
 - (void)setUpView;
 
-- (NSDictionary *)buttonFrames;
-
 - (CGRect)crashButtonFrame;
 - (CGRect)theftButtonFrame;
 - (CGRect)sharingButtonFrame;

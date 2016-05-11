@@ -18,4 +18,6 @@
 - (NSString *)MD5String;
 
 - (NSData *)bytesString;
+
+- (NSString *)macAddress;
 @end

@@ -14,11 +14,14 @@
 #import "SLNavigationViewController.h"
 #import "NSString+Skylock.h"
 #import "UIColor+RGB.h"
+#import "SLNotifications.h"
+
 
 #define kSLLockInfoViewControllerPadding            12.0f
 #define kSLLockInfoViewControllerButtonLabelFont    [UIFont fontWithName:@"Roboto-Regular" size:10.0f]
 #define kSLLockInfoViewControllerLabelColor         [UIColor colorWithRed:128 green:128 blue:128]
 #define kSLLockInfoViewControllerViewSizeDelta      107.0f
+
 @interface SLLockInfoViewController()
 
 @property (nonatomic, strong) UILabel *lockNameLabel;
@@ -233,8 +236,8 @@
 - (UIButton *)lockButton
 {
     if (!_lockButton) {
-        UIImage *normalImage = [UIImage imageNamed:@"btn_lock"];
-        UIImage *selectedImage = [UIImage imageNamed:@"btn_unlock"];
+        UIImage *normalImage = [UIImage imageNamed:@"btn_unlock"];
+        UIImage *selectedImage = [UIImage imageNamed:@"btn_lock"];
         UIImage *disabledImage = [UIImage imageNamed:@"btn_lock_grey"];
         
         _lockButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
@@ -275,6 +278,11 @@
     return _transientViews;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)viewDidLoad
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -289,6 +297,27 @@
     self.bottomHeight = -1.0;
     
     [self hideViews:!self.lock];
+    
+    // notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(crashOn:)
+                                                 name:kSLNotificationLedTurnedOn
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(crashOff:)
+                                                 name:kSLNotificationLedTurnedOff
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockOpened:)
+                                                 name:kSLNotificationLockOpened
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockClosed:)
+                                                 name:kSLNotificationLockClosed
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -602,8 +631,6 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if (!self.theftButton.isSelected) {
-        button.selected = !button.selected;
-        self.lock.isCrashOn = @(button.isSelected);
         [SLLockManager.sharedManager toggleCrashForLock:self.lock];
     }
 }
@@ -614,7 +641,7 @@
     if (!self.crashButton.isSelected) {
         button.selected = !button.selected;
         self.lock.isSecurityOn = @(button.isSelected);
-        [SLLockManager.sharedManager toggleSecurityForLock:self.lock];
+        //[SLLockManager.sharedManager toggleSecurityForLock:self.lock];
     }
 }
 
@@ -629,9 +656,47 @@
 - (void)lockButtonPressed
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    self.lockButton.selected = !self.lockButton.isSelected;
-    self.lock.isLocked = @(!self.lockButton.isSelected);
     [SLLockManager.sharedManager setLockStateForLock:self.lock];
+}
+
+- (void)lockOpened:(NSNotification *)notification
+{
+    self.lockButton.selected = YES;
+}
+
+- (void)lockClosed:(NSNotification *)notification
+{
+    self.lockButton.selected = NO;
+}
+
+- (void)crashOn:(NSNotification *)notification
+{
+    self.crashButton.selected = YES;
+}
+
+- (void)crashOff:(NSNotification *)notification
+{
+    self.crashButton.selected = NO;
+}
+
+- (void)securityOn:(NSNotification *)notification
+{
+    self.theftButton.selected = YES;
+}
+
+- (void)securityOff:(NSNotification *)notification
+{
+    self.theftButton.selected = NO;
+}
+
+- (void)sharingOn:(NSNotification *)notification
+{
+    self.sharingButton.selected = YES;
+}
+
+- (void)sharingOff:(NSNotification *)notification
+{
+    self.sharingButton.selected = NO;
 }
 
 @end

@@ -16,6 +16,7 @@
 #define SLUserDefaultsPushNotificationToken @"SLUserDefaultsPushNotificationToken"
 #define SLUserDefaultsPassword              @"SLUserDefaultsPassword"
 #define SLUserDefaultsChallengeKey          @"SLUserDefaultsChallengeKey"
+#define SLUserDefaultsChallengeData         @"SLUserDefaultsChallengeData"
 #define SLUserDefaultsPublicKey             @"SLUserDefaultsPublicKey"
 #define SLUserDefaultsSignedMessage         @"SLUserDefaultsSignedMessage"
 #define SLUserDefaultsUserToken             @"SLUserDefaultsUserToken"

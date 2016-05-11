@@ -50,16 +50,38 @@
 
 - (NSData *)bytesString
 {
-    NSMutableData *data = [NSMutableData new];
-    const char *publicKeyChars = [self UTF8String];
+    Byte bytes[self.length/2];
+    
     for (int i=0; i < self.length; i += 2) {
-        char firstChar = publicKeyChars[i];
-        char secondChar = publicKeyChars[i+1];
-        char chars[2] = {firstChar, secondChar};
-        unsigned long bytes = strtoul(chars, NULL, 16);
-        [data appendBytes:&bytes length:1];
+        NSString *hexValue = [self substringWithRange:NSMakeRange(i, 2)];
+        unsigned int decVal = 0 ;
+        NSScanner* scan = [NSScanner scannerWithString:hexValue];
+        [scan scanHexInt:&decVal];
+        scan = nil;
+        
+        Byte byteValue = decVal;
+        bytes[i/2] = byteValue;
     }
     
-    return data;
+    return [NSData dataWithBytes:&bytes length:self.length/2];
 }
+
+- (NSString *)macAddress
+{
+    NSArray *parts;
+    if ([self rangeOfString:@"-"].location == NSNotFound &&
+        [self rangeOfString:@" "].location != NSNotFound) {
+        parts = [self componentsSeparatedByString:@" "];
+        return parts[1];
+    }
+    
+    if ([self rangeOfString:@" "].location == NSNotFound &&
+        [self rangeOfString:@"-"].location != NSNotFound) {
+        parts = [self componentsSeparatedByString:@"-"];
+        return parts[1];
+    }
+    
+    return nil;
+}
+
 @end

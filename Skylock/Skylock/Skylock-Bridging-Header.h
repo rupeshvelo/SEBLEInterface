@@ -8,3 +8,8 @@
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
 #import "SLLockManager.h"
+#import <GoogleMaps/GoogleMaps.h>
+#import "SLLock.h"
+#import "SLAppDelegate.h"
+#import "SLDatabaseManager.h"
+#import "SLUser.h"

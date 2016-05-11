@@ -1,34 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="15C50" minimumToolsVersion="Automatic">
-    <entity name="SLDbLock" representedClassName="SLDbLock" syncable="YES">
-        <attribute name="isCurrentLock" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
-        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="sharedContacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLDbLockSharedContact" inverseName="lock" inverseEntity="SLDbLockSharedContact" syncable="YES"/>
-        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLDbUser" inverseName="locks" inverseEntity="SLDbUser" syncable="YES"/>
-    </entity>
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Automatic">
     <entity name="SLDbLockSharedContact" representedClassName="SLDbLockSharedContact" syncable="YES">
         <attribute name="dateShared" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateSharedWith" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="facebookId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="lock" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLDbLock" inverseName="sharedContacts" inverseEntity="SLDbLock" syncable="YES"/>
+        <relationship name="lock" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLLock" inverseName="sharedContacts" inverseEntity="SLLock" syncable="YES"/>
     </entity>
-    <entity name="SLDbUser" representedClassName="SLDbUser" syncable="YES">
+    <entity name="SLLock" representedClassName="SLLock" syncable="YES">
+        <attribute name="givenName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="isCurrentLock" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="macAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="sharedContacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLDbLockSharedContact" inverseName="lock" inverseEntity="SLDbLockSharedContact" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLUser" inverseName="locks" inverseEntity="SLUser" syncable="YES"/>
+    </entity>
+    <entity name="SLUser" representedClassName="SLUser" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="googlePushId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userType" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="locks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLDbLock" inverseName="user" inverseEntity="SLDbLock" syncable="YES"/>
+        <relationship name="locks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLLock" inverseName="user" inverseEntity="SLLock" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SLDbLock" positionX="-1017" positionY="-333" width="128" height="148"/>
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
-        <element name="SLDbUser" positionX="-63" positionY="9" width="128" height="150"/>
+        <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="180"/>
+        <element name="SLUser" positionX="-63" positionY="9" width="128" height="180"/>
     </elements>
 </model>

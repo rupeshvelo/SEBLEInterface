@@ -57,8 +57,12 @@
         case SLRestManagerPathKeyKeys:
             url = @"users/";
             break;
-        case SLRestManagerPathUsers:
+        case SLRestManagerPathKeyUsers:
             url = @"users/";
+            break;
+        case SLRestManagerPathKeyFirmwareUpdate:
+            url = @"updates/";
+            break;
         default:
             break;
     }
@@ -113,7 +117,9 @@
     [request setTimeoutInterval:kSLRestManagerTimeout];
     
     if (additionalHeaders) {
-        [request setValuesForKeysWithDictionary:additionalHeaders];
+        for (NSString *key in additionalHeaders.allKeys) {
+            [request setValue:additionalHeaders[key] forHTTPHeaderField:key];
+        }
     }
     
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
@@ -184,6 +190,36 @@
     [uploadTask resume];
 }
 
+- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void (^)(NSData *))completion
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfig];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    [request setTimeoutInterval:kSLRestManagerTimeout];
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+                                            completionHandler:^(NSData *data,
+                                                                NSURLResponse *response,
+                                                                NSError *error) {
+                                                if (error) {
+                                                    NSLog(@"error getting directions from url: %@, failed with error: %@",
+                                                          urlString,
+                                                          error.localizedDescription);
+                                                    completion(nil);
+                                                    return;
+                                                }
+                                                
+                                                completion(data);
+                                            }];
+    [task resume];
+}
+
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void (^)(NSData *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -233,7 +269,7 @@
                                                                   error:&error];
     
     if (error) {
-        NSLog(@"Error could decode json object for fetch request: %@. Failed with error: %@",
+        NSLog(@"Error could not decode json object for fetch request: %@. Failed with error: %@",
               originalUrl.absoluteString,
               error
               );
@@ -251,9 +287,16 @@
             return;
         }
         
-        completion(serverReply[@"payload"]);
+        id payload = serverReply[@"payload"];
+        if ([payload isKindOfClass:[NSDictionary class]]) {
+            completion(payload);
+        } else if ([payload isKindOfClass:[NSArray class]]) {
+            completion(@{@"payload": payload});
+        } else {
+            completion(nil);
+        }
     } else {
-        NSLog(@"failed with error: %@", serverReply[@"status"]);
+        NSLog(@"failed with error: %@", status);
         completion(nil);
     }
     
@@ -264,6 +307,7 @@
     NSString *authStr = [NSString stringWithFormat:@"%@:%@", username, password];
     NSData *authData = [authStr dataUsingEncoding:NSUTF8StringEncoding];
     NSString *auth64String = [authData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+    
     return [NSString stringWithFormat:@"Basic %@", auth64String];
 }
 

@@ -68,7 +68,7 @@ class SLWalkthroughCardViewController: UIViewController {
     }
     
     func newCardView() -> SLWalkthroughCardView {
-        let pgr = UIPanGestureRecognizer(target: self, action: "cardViewDragged:")
+        let pgr = UIPanGestureRecognizer(target: self, action: #selector(cardViewDragged(_:)))
         let cardView = SLWalkthroughCardView(
             frame: CGRectMake(0, 0, self.viewSize.width, self.viewSize.height),
             scaleFactor: self.scaleFactor
@@ -113,6 +113,28 @@ class SLWalkthroughCardViewController: UIViewController {
         if self.previousX == nil {
             self.previousX = self.view.center.x
         } else {
+            print("initial center x: \(CGRectGetMidX(self.initialFrame))")
+            print("current center x: \(CGRectGetMidX(self.view.frame))")
+            if self.isCardMoving &&
+                self.view.center.x > self.previousX &&
+                self.delegate != nil &&
+                self.movementDirection == .Left &&
+                CGRectGetMidX(self.view.frame) > CGRectGetMidX(self.initialFrame) {
+                // card moved from left to right movement
+                self.movementDirection = .Right
+                self.delegate!.cardViewControllerViewMovingRight(self)
+                return
+            } else if self.view.center.x < self.previousX &&
+                self.delegate != nil &&
+                !self.isCardMoving &&
+                self.movementDirection == .Right &&
+                CGRectGetMidX(self.view.frame) < CGRectGetMidX(self.initialFrame) {
+                // card moved from right to left movement
+                self.movementDirection = .Left
+                self.delegate!.cardViewControllerViewMovingLeft(self)
+                return
+            }
+            
             if self.view.center.x > self.previousX && self.delegate != nil && !self.isCardMoving {
                 self.isCardMoving = true
                 self.movementDirection = .Right

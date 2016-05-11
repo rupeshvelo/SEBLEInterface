@@ -15,6 +15,7 @@
 - (void)sharingContactCellPhoneButtonPushed:(SLSharingContactTableViewCell *)sharingContactCell;
 
 - (void)sharingContactCellEmailButtonPushed:(SLSharingContactTableViewCell *)sharingContactCell;
+
 @end
 
 @interface SLSharingContactTableViewCell : UITableViewCell

@@ -7,13 +7,12 @@
 //
 
 #import "SLDatabaseManager.h"
-#import "SLDbLock+Methods.h"
-#import "SLDbUser+CoreDataProperties.h"
-#import "SLDbUser.h"
+#import "NSString+Skylock.h"
 #import "SLLock.h"
+#import "SLUser.h"
 
-#define kSLDatabaseManagerEnityLock @"SLDbLock"
-#define kSLDatabaseManagerEnityUser @"SLDbUser"
+#define kSLDatabaseManagerEnityLock @"SLLock"
+#define kSLDatabaseManagerEnityUser @"SLUser"
 
 @interface SLDatabaseManager()
 
@@ -26,7 +25,6 @@
 
 + (id)sharedManager
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     static SLDatabaseManager *dbManager = nil;
     static dispatch_once_t token;
     dispatch_once(&token, ^{
@@ -41,31 +39,42 @@
     _context = context;
 }
 
-- (SLDbLock *)newDbLock
+- (SLLock *)newLock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityLock
                                          inManagedObjectContext:self.context];
 }
 
-- (NSArray *)locksFromDbLocks:(NSArray *)dbLocks
+- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
+    SLLock *lock;
+    NSArray *dbLocks = self.allLocks;
+    
+    for (SLLock *dbLock in dbLocks) {
+        if ([dbLock.macAddress isEqualToString:name.macAddress]) {
+            lock = dbLock;
+            break;
+        }
     }
     
-    return locks;
+    if (!lock) {
+        lock = self.newLock;
+        lock.name = name;
+        lock.uuid = uuid;
+        lock.macAddress = name.macAddress;
+    }
+    
+    return lock;
 }
 
 - (NSArray *)sharedContactsForLock:(SLLock *)lock
 {
-    SLDbLock *dbLock = [self dbLockForLock:lock];
-    return dbLock.sharedContacts.allObjects;
+    return lock.sharedContacts.allObjects;
 }
 
-- (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate forEnityNamed:(NSString *)enityName
+- (NSArray *)getManagedObjectsWithPredicate:(NSPredicate *)predicate
+                              forEnityNamed:(NSString *)enityName
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSFetchRequest *fetchRequest = [NSFetchRequest new];
@@ -92,19 +101,9 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
-    if (!dbLock) {
-        dbLock = [self newDbLock];
-    }
-    
-    dbLock.user = self.currentUser;
-    [dbLock updatePropertiesWithDictionary:lock.asDbDictionary];
-    
     NSError *error;
-    BOOL success = NO;
-    if ([self.context save:&error]) {
-        success = YES;
-    } else {
+    BOOL success = [self.context save:&error];
+    if (!success) {
         NSLog(@"Failed to save lock to database with error: %@", error.localizedDescription);
     }
     
@@ -116,10 +115,11 @@
 - (void)setCurrentLock:(SLLock *)lock
 {
     NSArray *locks = self.currentUser.locks.allObjects;
-    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
-        BOOL isCurrent = [dbLock.name isEqualToString:lock.name];
-        dbLock.isCurrentLock = @(isCurrent);
+    [locks enumerateObjectsUsingBlock:^(SLLock *dbLock, NSUInteger idx, BOOL *stop) {
+        dbLock.isCurrentLock = @(NO);
     }];
+    
+    lock.isCurrentLock = @(YES);
     
     [self saveUser:self.currentUser withCompletion:nil];
 }
@@ -127,48 +127,54 @@
 - (void)deselectAllLocks
 {
     NSArray *locks = self.currentUser.locks.allObjects;
-    [locks enumerateObjectsUsingBlock:^(SLDbLock *dbLock, NSUInteger idx, BOOL *stop) {
+    [locks enumerateObjectsUsingBlock:^(SLLock *dbLock, NSUInteger idx, BOOL *stop) {
         dbLock.isCurrentLock = @(NO);
     }];
     
     [self saveUser:self.currentUser withCompletion:nil];
 }
 
-- (NSArray *)getAllLocksFromDb
+- (NSArray *)allLocks
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSArray *dbLocks = [self getDbLocksWithPredicate:nil];
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in dbLocks) {
-        [locks addObject:[SLLock lockWithDbDictionary:dbLock.asDictionary]];
-    }
-    
-    return locks;
+    return [self getLocksWithPredicate:nil];
 }
 
 - (NSArray *)locksForCurrentUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableArray *locks = [NSMutableArray new];
-    for (SLDbLock *dbLock in self.currentUser.locks.allObjects) {
-        SLLock *lock = [SLLock lockWithDbDictionary:dbLock.asDictionary];
-        [locks addObject:lock];
-    }
-    
-    return locks;
+    return self.currentUser.locks.allObjects;
 }
 
-- (SLDbLock *)getDbLockWithUUID:(NSString *)uuid
+- (SLLock *)getLockWithUUID:(NSString *)uuid
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid == %@", uuid];
-    NSArray *locks = [self getDbLocksWithPredicate:predicate];
+    NSArray *locks = [self getLocksWithPredicate:predicate];
     return (locks && locks.count > 0) ? locks[0] : nil;
 }
 
-- (SLDbLock *)dbLockForLock:(SLLock *)lock
+- (SLLock *)getLockWithMacAddress:(NSString *)macAddress
 {
-    return [self getDbLockWithUUID:lock.uuid];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"macAddress == %@", macAddress];
+    NSArray *locks = [self getLocksWithPredicate:predicate];
+    if (locks && locks.count > 0) {
+        return [locks firstObject];
+    }
+    
+    return nil;
+}
+
+- (BOOL)doesCurrentUserHaveLock:(SLLock *)lock
+{
+    NSArray *usersLocks = [self.currentUser.locks allObjects];
+    for (SLLock *userLock in usersLocks) {
+        if ([lock.macAddress isEqualToString:userLock.macAddress]) {
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 - (NSArray *)getDbLocksWithUUIDs:(NSArray *)uuids
@@ -185,10 +191,10 @@
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateString
                                                 argumentArray:uuids];
-    return [self getDbLocksWithPredicate:predicate];
+    return [self getLocksWithPredicate:predicate];
 }
 
-- (NSArray *)getDbLocksWithPredicate:(NSPredicate *)predicate
+- (NSArray *)getLocksWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityLock];
@@ -196,35 +202,33 @@
 
 - (void)deleteLock:(SLLock *)lock withCompletion:(void (^)(BOOL))completion
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLDbLock *dbLock = [self getDbLockWithUUID:lock.uuid];
     BOOL didSucceed = NO;
     
-    if (dbLock) {
-        [self.context deleteObject:dbLock];
+    if (lock) {
+        [self.context deleteObject:lock];
         didSucceed = YES;
     }
     
     completion(didSucceed);
 }
 
-- (void)saveFacebookUserWithDictionary:(NSDictionary *)dictionary
+- (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLDbUser *facebookUser = [self getDbUserWithUserId:dictionary[@"id"]];
+    SLUser *user = [self getUserWithUserId:dictionary[@"id"]];
     
-    if (facebookUser && self.currentUser) {
-        // facebook user and current user exist. Check to see if they are
+    if (user && self.currentUser) {
+        // user and current user exist. Check to see if they are
         // the same user
-        if ([facebookUser.userId isEqualToString:self.currentUser.userId]) {
+        if ([user.userId isEqualToString:self.currentUser.userId]) {
             // the facebook user the current user. update the current user
-            [self.currentUser setPropertiesWithFBDictionary:dictionary];
+            [self.currentUser setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
         } else {
             // facebook user is not the current user. The facebook user should
             // become the current user
             self.currentUser.isCurrentUser = @(NO);
-            facebookUser.isCurrentUser = @(YES);
-            [facebookUser setPropertiesWithFBDictionary:dictionary];
+            user.isCurrentUser = @(YES);
+            [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
             [self saveUser:self.currentUser withCompletion:nil];
             [self setCurrentUser];
         }
@@ -232,35 +236,35 @@
         // user exists and facebook user does not. check to see if
         // the current user matches the info in the facebook hash
         if ([self.currentUser.userId isEqualToString:dictionary[@"id"]]) {
-            [self.currentUser setPropertiesWithFBDictionary:dictionary];
+            [self.currentUser setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
             [self saveUser:self.currentUser withCompletion:nil];
         } else {
             // the current user does not match the info in the facebook hash
             // create a new user and make it the current user
             self.currentUser.isCurrentUser = @(NO);
-            facebookUser = self.newDbUser;
-            [facebookUser setPropertiesWithFBDictionary:dictionary];
-            facebookUser.isCurrentUser = @(YES);
-            [self saveUser:facebookUser withCompletion:nil];
+            user = self.newDbUser;
+            [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+            user.isCurrentUser = @(YES);
+            [self saveUser:user withCompletion:nil];
             [self setCurrentUser];
         }
-    } else if (facebookUser) {
+    } else if (user) {
         // there is no current user set
-        [facebookUser setPropertiesWithFBDictionary:dictionary];
-        facebookUser.isCurrentUser = @(YES);
-        [self saveUser:facebookUser withCompletion:nil];
+        [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+        user.isCurrentUser = @(YES);
+        [self saveUser:user withCompletion:nil];
         [self setCurrentUser];
     } else {
         // there is no current user or facebook user
-        facebookUser = self.newDbUser;
-        [facebookUser setPropertiesWithFBDictionary:dictionary];
-        facebookUser.isCurrentUser = @(YES);
-        [self saveUser:facebookUser withCompletion:nil];
+        user = self.newDbUser;
+        [user setPropertiesWithDictionary:dictionary isFacebookUser:isFacebookUser];
+        user.isCurrentUser = @(YES);
+        [self saveUser:user withCompletion:nil];
         [self setCurrentUser];
     }
 }
 
-- (SLDbUser *)newDbUser
+- (SLUser *)newDbUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityUser
@@ -271,13 +275,13 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isCurrentUser == 1"];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
     if (users && users.count > 0) {
         self.currentUser = users[0];
     }
 }
 
-- (void)saveUser:(SLDbUser *)user withCompletion:(void (^)(BOOL))completion
+- (void)saveUser:(SLUser *)user withCompletion:(void (^)(BOOL))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSError *error;
@@ -293,15 +297,16 @@
     }
 }
 
-- (SLDbUser *)getDbUserWithUserId:(NSString *)userId
+- (SLUser *)getUserWithUserId:(NSString *)userId
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId == %@", userId];
-    NSArray *users = [self getDBUsersWithPredicate:predicate];
+    NSArray *users = [self getUsersWithPredicate:predicate];
+    
     return (users && users.count > 0) ? users[0] : nil;
 }
 
-- (NSArray *)getDBUsersWithPredicate:(NSPredicate *)predicate
+- (NSArray *)getUsersWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityUser];

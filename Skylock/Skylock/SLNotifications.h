@@ -21,4 +21,9 @@
 #define kSLNotificationTimeExpired                  @"kSLNotificationTimeExpired"
 #define kSLNotificationSendEmergecyText             @"kSLNotificationSendEmergecyText"
 #define kSLNotificationLockPaired                   @"kSLNotificationLockPaired"
+#define kSLNotificationLedTurnedOn                  @"kSLNotificationLedTurnedOn"
+#define kSLNotificationLedTurnedOff                 @"kSLNotificationLedTurnedOff"
+#define kSLNotificationLockOpened                   @"kSLNotificationLockOpened"
+#define kSLNotificationLockClosed                   @"kSLNotificationLockClosed"
+
 #endif
