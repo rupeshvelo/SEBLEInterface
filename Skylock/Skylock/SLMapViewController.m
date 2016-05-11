@@ -303,6 +303,16 @@
 //    [self.view addSubview:testActionButton];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (!self.lockInfoViewController.isUp && [SLLockManager.sharedManager selectedLock] && self.isInitialLoad) {
+        self.lockInfoViewController.lock = [SLLockManager.sharedManager selectedLock];
+        [self.lockInfoViewController setUpView];
+    }
+}
+
 - (void)testAction
 {
     NSLog(@"test action button pressed");
@@ -685,7 +695,10 @@
     self.settingsButton.enabled = YES;
     
     // TODO - clear lock annotations that are no longer active
-    [self addLockToMap:self.selectedLock];
+    self.selectedLock = [SLLockManager.sharedManager selectedLock];
+    if (self.selectedLock) {
+       [self addLockToMap:self.selectedLock];
+    }
 }
 
 - (void)handleDirectionsMode
