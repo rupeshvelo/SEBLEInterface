@@ -30,24 +30,29 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
     override func newCardView() -> SLWalkthroughCardView {
         let cardView = super.newCardView()
         
-        let middleButtonView = UIImageView(image: UIImage(named: "middle_button"))
-        middleButtonView.frame = CGRectMake(
-            cardView.bounds.size.width - self.xPadding - middleButtonView.bounds.size.width,
+        let handAndBluetoothButton = UIImageView(image: UIImage(named: "walkthrough-lock-hand"))
+        handAndBluetoothButton.frame = CGRectMake(
+            cardView.bounds.size.width - self.xPadding - handAndBluetoothButton.bounds.size.width,
             0,
-            middleButtonView.bounds.size.width,
-            middleButtonView.bounds.size.height
+            handAndBluetoothButton.bounds.size.width,
+            handAndBluetoothButton.bounds.size.height
         )
-        cardView.addSubview(middleButtonView)
+        cardView.addSubview(handAndBluetoothButton)
         
-        let handView = UIImageView(image: UIImage(named: "walkthrough3_hand"))
-        handView.frame = CGRectMake(
-            cardView.bounds.size.width - self.xPadding - handView.bounds.size.width - 15,
-            CGRectGetMidY(middleButtonView.frame) - 5,
-            handView.bounds.size.width,
-            handView.bounds.size.height
+        let shackleViewHeight:CGFloat = 50.0
+        let shackleViewPadding:CGFloat = 0.0
+        let shackleViewFrame:CGRect = CGRect(
+            x: shackleViewPadding,
+            y: CGRectGetMidY(handAndBluetoothButton.frame) - 0.5*shackleViewHeight - 20.0,
+            width: cardView.bounds.size.width - shackleViewPadding - self.xPadding - 30.0,
+            height: shackleViewHeight
         )
-        cardView.addSubview(handView)
         
+        let shackleView = UIView(frame: shackleViewFrame)
+        shackleView.layer.borderColor = UIColor(red: 219, green: 219, blue: 219).CGColor
+        shackleView.layer.borderWidth = 1.0
+        cardView.insertSubview(shackleView, belowSubview: handAndBluetoothButton)
+    
         let utility: SLUtilities = SLUtilities()
         
         let headerText = NSLocalizedString("Press the middle button on your Skylock", comment: "")
@@ -61,7 +66,7 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         )
         let headerFrame = CGRectMake(
             self.xPadding,
-            CGRectGetMaxY(handView.frame) + 10,
+            CGRectGetMaxY(handAndBluetoothButton.frame) + 10,
             headerSize.width,
             headerSize.height
         )
