@@ -7,6 +7,7 @@
 //
 
 #import "SLRestManager.h"
+#import "SLDatabaseManager.h"
 
 #define kSLRestManagerTimeout   30
 
@@ -260,6 +261,11 @@
               error,
               response
               );
+        [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
+         @"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
+          originalUrl.absoluteString,
+          error,
+          response]];
         completion(nil);
         return;
     }

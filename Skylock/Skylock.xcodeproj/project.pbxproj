@@ -496,6 +496,10 @@
 		DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BBB1B5356B900070F11 /* SLCoachMarkViewController.m */; };
 		DCF36BC31B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCF36BC21B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf */; };
 		DCF36BC81B538CE100070F11 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCF36BC71B538CE100070F11 /* Roboto-Regular.ttf */; };
+		DCF41CA21CE7C679008C17DE /* SLLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF41CA11CE7C679008C17DE /* SLLogViewController.swift */; };
+		DCF41CA81CE7F56C008C17DE /* SLLog+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF41CA51CE7F56C008C17DE /* SLLog+CoreDataProperties.m */; };
+		DCF41CA91CE7F56C008C17DE /* SLLog.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF41CA71CE7F56C008C17DE /* SLLog.m */; };
+		DCF41CAB1CE8D91C008C17DE /* SLLogDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF41CAA1CE8D91C008C17DE /* SLLogDetailViewController.swift */; };
 		DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF945001B29CC2E00136E39 /* SLRestManager.m */; };
 		DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */ = {isa = PBXBuildFile; fileRef = DCFFF31C1B8EB94D0076C167 /* SLAccelerometerValues.m */; };
 /* End PBXBuildFile section */
@@ -1067,6 +1071,12 @@
 		DCF36BBB1B5356B900070F11 /* SLCoachMarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCoachMarkViewController.m; sourceTree = "<group>"; };
 		DCF36BC21B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ShadowsIntoLightTwo-Regular.ttf"; sourceTree = "<group>"; };
 		DCF36BC71B538CE100070F11 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
+		DCF41CA11CE7C679008C17DE /* SLLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLogViewController.swift; sourceTree = "<group>"; };
+		DCF41CA41CE7F56C008C17DE /* SLLog+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLog+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DCF41CA51CE7F56C008C17DE /* SLLog+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLog+CoreDataProperties.m"; sourceTree = "<group>"; };
+		DCF41CA61CE7F56C008C17DE /* SLLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLog.h; sourceTree = "<group>"; };
+		DCF41CA71CE7F56C008C17DE /* SLLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLog.m; sourceTree = "<group>"; };
+		DCF41CAA1CE8D91C008C17DE /* SLLogDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLogDetailViewController.swift; sourceTree = "<group>"; };
 		DCF944FF1B29CC2E00136E39 /* SLRestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLRestManager.h; sourceTree = "<group>"; };
 		DCF945001B29CC2E00136E39 /* SLRestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLRestManager.m; sourceTree = "<group>"; };
 		DCFFF31B1B8EB94D0076C167 /* SLAccelerometerValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAccelerometerValues.h; sourceTree = "<group>"; };
@@ -1202,6 +1212,8 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DCF41CAA1CE8D91C008C17DE /* SLLogDetailViewController.swift */,
+				DCF41CA11CE7C679008C17DE /* SLLogViewController.swift */,
 				DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */,
 				DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */,
 				DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */,
@@ -1244,6 +1256,10 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				DCF41CA41CE7F56C008C17DE /* SLLog+CoreDataProperties.h */,
+				DCF41CA51CE7F56C008C17DE /* SLLog+CoreDataProperties.m */,
+				DCF41CA61CE7F56C008C17DE /* SLLog.h */,
+				DCF41CA71CE7F56C008C17DE /* SLLog.m */,
 				DC6F1CD31CB9A84100D44739 /* SLUser+CoreDataProperties.h */,
 				DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */,
 				DC156BD01C5D240D00015B53 /* SLUser.h */,
@@ -2484,6 +2500,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC974D291C3A28D600797CF1 /* SLWalkthroughCardView.swift in Sources */,
+				DCF41CA81CE7F56C008C17DE /* SLLog+CoreDataProperties.m in Sources */,
 				DC763D391CB4C31B00037EF9 /* SLAddContactTableViewCell.swift in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
 				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
@@ -2511,6 +2528,7 @@
 				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
 				DC974D251C3A1BB000797CF1 /* SLWalkthroughViewController.swift in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
+				DCF41CAB1CE8D91C008C17DE /* SLLogDetailViewController.swift in Sources */,
 				DC7E70C31B8BC0F9006E74DC /* SLLockValue.m in Sources */,
 				DCCB81B31CB74D2D00800E3F /* SLErrors.swift in Sources */,
 				DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */,
@@ -2524,12 +2542,14 @@
 				DC7A13051B5837E900F3336E /* SLSlideControllerOptionsButton.m in Sources */,
 				DC8ECED81C437A3D00708CA3 /* SLWalkthoughFourViewController.swift in Sources */,
 				DC4402721B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
+				DCF41CA91CE7F56C008C17DE /* SLLog.m in Sources */,
 				DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */,
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */,
 				DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */,
 				DC763D371CB471C800037EF9 /* SLContactViewController.swift in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
+				DCF41CA21CE7C679008C17DE /* SLLogViewController.swift in Sources */,
 				DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */,
 				DC974D171C38962600797CF1 /* KeychainWrapper.m in Sources */,
 				DC3AE90B1B75838A009287DA /* SLSharingTableViewCell.m in Sources */,

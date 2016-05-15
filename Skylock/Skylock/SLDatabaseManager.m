@@ -10,9 +10,12 @@
 #import "NSString+Skylock.h"
 #import "SLLock.h"
 #import "SLUser.h"
+#import "SLLog.h"
+#import "SLNotifications.h"
 
 #define kSLDatabaseManagerEnityLock @"SLLock"
 #define kSLDatabaseManagerEnityUser @"SLUser"
+#define KSLDatabaseManagerEnityLog  @"SLLog"
 
 @interface SLDatabaseManager()
 
@@ -311,4 +314,29 @@
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityUser];
 }
+
+- (NSArray *)getAllLogs
+{
+    return [self getManagedObjectsWithPredicate:nil
+                                  forEnityNamed:KSLDatabaseManagerEnityLog];
+}
+
+- (void)saveLogEntry:(NSString *)entry
+{
+    SLLog *newLog = [NSEntityDescription insertNewObjectForEntityForName:KSLDatabaseManagerEnityLog
+                                                  inManagedObjectContext:self.context];
+    newLog.entry = entry;
+    newLog.date = [NSDate date];
+    
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (success) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLogUpdated
+                                                            object:self
+                                                          userInfo:@{@"log": newLog}];
+    } else {
+        NSLog(@"Failed to save log with error: %@", error.localizedDescription);
+    }
+}
+
 @end

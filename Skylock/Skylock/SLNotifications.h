@@ -25,5 +25,6 @@
 #define kSLNotificationLedTurnedOff                 @"kSLNotificationLedTurnedOff"
 #define kSLNotificationLockOpened                   @"kSLNotificationLockOpened"
 #define kSLNotificationLockClosed                   @"kSLNotificationLockClosed"
+#define kSLNotificationLogUpdated                   @"kSLNotificationLogUpdated"
 
 #endif
