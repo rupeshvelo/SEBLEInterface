@@ -19,6 +19,8 @@ class SLSettingsViewController: UIViewController {
     private let settingGreenColor = UIColor.color(30, green: 221, blue: 128)
     var lock: SLLock?
     private var pinLabel: UILabel?
+    var touchCounter: Int = 0
+    var navBarTgr:UITapGestureRecognizer?
     
     lazy var controlView: UIView = {
         let y0: CGFloat = self.navigationController == nil ? 20.0 :
@@ -189,13 +191,28 @@ class SLSettingsViewController: UIViewController {
         
         self.view.backgroundColor = UIColor.color(255, green: 255, blue: 255)
         
+        
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.view.addSubview(self.controlView)
-        self.view.addSubview(self.pinCodeView)
+        self.navBarTgr = UITapGestureRecognizer(
+            target: self,
+            action: #selector(navigationBarTapped)
+        )
+        
+        self.navigationController?.navigationBar.addGestureRecognizer(self.navBarTgr!)
+        
+        self.touchCounter = 0
+        
+        if !self.view.subviews.contains(self.controlView) {
+            self.view.addSubview(self.controlView)
+        }
+        
+        if !self.view.subviews.contains(self.pinCodeView) {
+            self.view.addSubview(self.pinCodeView)
+        }
     }
     
     func backButtonPushed() {
@@ -214,5 +231,15 @@ class SLSettingsViewController: UIViewController {
     
     func autoLockSwitchFlipped(sender: UISwitch) {
         print("auto lock switch flipped")
+    }
+    
+    func navigationBarTapped() {
+        self.touchCounter += 1
+
+        if (self.touchCounter == 10) {
+            let logViewController = SLLogViewController()
+            self.navigationController?.pushViewController(logViewController, animated: true)
+            self.navigationController?.navigationBar.removeGestureRecognizer(self.navBarTgr!)
+        }
     }
 }

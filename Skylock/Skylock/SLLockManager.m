@@ -275,6 +275,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     if (self.locksToAdd[lock.macAddress]) {
         [self.locksToAdd removeObjectForKey:lock.macAddress];
     }
+    
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"Connecting lock: %@", lock.name]];
 }
 
 - (void)addLocksFromDb:(NSArray *)locks
@@ -738,6 +741,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     if (value != 0 && value != 1 && value != 2 && value != 3 && value != 4) {
         NSLog(@"Error: updating security state got value: %@", @(value));
+        [SLDatabaseManager.sharedManager saveLogEntry:
+         [NSString stringWithFormat:@"Error: updating security state got value: %@", @(value)]];
         return;
     }
     
@@ -757,6 +762,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     if (value == 1 || value == 2) {
         NSLog(@"wrote signed message to %@ successfully", macAddress);
         NSLog(@"Attempting to get challenge data from %@", macAddress);
+        [SLDatabaseManager.sharedManager saveLogEntry:
+         [NSString stringWithFormat:@"wrote signed message to %@ successfully. Attempting to get challenge data", macAddress]];
         [self.bleManager readValueForPeripheralWithKey:macAddress
                                         forServiceUUID:[self uuidForService:SLLockManagerServiceSecurity]
                                  andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicChallengeData]];
@@ -764,6 +771,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
     
     NSLog(@"Successfully wrote challenge data to %@", macAddress);
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"Successfully wrote challenge data to %@", macAddress]];
+    
     SLLock *lock = self.locks[macAddress];
     if (lock.isInFactoryMode) {
         NSLog(@"lock name before saving: %@", lock.macAddress);

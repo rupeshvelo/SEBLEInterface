@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10171" systemVersion="15E65" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="10174" systemVersion="15E65" minimumToolsVersion="Automatic">
     <entity name="SLDbLockSharedContact" representedClassName="SLDbLockSharedContact" syncable="YES">
         <attribute name="dateShared" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateSharedWith" optional="YES" attributeType="Date" syncable="YES"/>
@@ -19,6 +19,10 @@
         <relationship name="sharedContacts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SLDbLockSharedContact" inverseName="lock" inverseEntity="SLDbLockSharedContact" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SLUser" inverseName="locks" inverseEntity="SLUser" syncable="YES"/>
     </entity>
+    <entity name="SLLog" representedClassName="SLLog" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="entry" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="SLUser" representedClassName="SLUser" syncable="YES">
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
@@ -34,5 +38,6 @@
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
         <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="180"/>
         <element name="SLUser" positionX="-63" positionY="9" width="128" height="180"/>
+        <element name="SLLog" positionX="-819" positionY="-189" width="128" height="75"/>
     </elements>
 </model>

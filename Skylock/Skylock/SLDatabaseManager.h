@@ -34,5 +34,7 @@
 - (SLLock *)getLockWithMacAddress:(NSString *)macAddress;
 - (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
 - (BOOL)doesCurrentUserHaveLock:(SLLock *)lock;
+- (NSArray *)getAllLogs;
+- (void)saveLogEntry:(NSString *)entry;
 
 @end

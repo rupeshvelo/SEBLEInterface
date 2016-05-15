@@ -13,3 +13,5 @@
 #import "SLAppDelegate.h"
 #import "SLDatabaseManager.h"
 #import "SLUser.h"
+#import "SLLog.h"
+#import "SLNotifications.h"
