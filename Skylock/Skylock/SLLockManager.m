@@ -1114,26 +1114,26 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }];
 }
 
-- (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress
-{
-    SLUser *user = [self.databaseManger currentUser];
-    
-    SLRestManager *restManager = [SLRestManager sharedManager];
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    
-    NSString *token = [ud objectForKey:SLUserDefaultsUserToken];
-    NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
-    NSDictionary *additionalHeaders = @{@"Authorization": authValue};
-    NSArray *subRoutes = @[user.userId, @"deletelock"];
-    
-    [SLRestManager.sharedManager postObject:@{@"mac_id":macAddress}
-                                  serverKey:SLRestManagerServerKeyMain
-                                    pathKey:SLRestManagerPathKeyUsers subRoutes:subRoutes
-                          additionalHeaders:additionalHeaders
-                                 completion:^(NSDictionary *responseDict) {
-                                     
-                                 }];
-}
+//- (void)tempDeleteLockFromCurrentUserAccount:(NSString *)macAddress
+//{
+//    SLUser *user = [self.databaseManger currentUser];
+//    
+//    SLRestManager *restManager = [SLRestManager sharedManager];
+//    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//    
+//    NSString *token = [ud objectForKey:SLUserDefaultsUserToken];
+//    NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
+//    NSDictionary *additionalHeaders = @{@"Authorization": authValue};
+//    NSArray *subRoutes = @[user.userId, @"deletelock"];
+//    
+//    [SLRestManager.sharedManager postObject:@{@"mac_id":macAddress}
+//                                  serverKey:SLRestManagerServerKeyMain
+//                                    pathKey:SLRestManagerPathKeyUsers subRoutes:subRoutes
+//                          additionalHeaders:additionalHeaders
+//                                 completion:^(NSDictionary *responseDict) {
+//                                     
+//                                 }];
+//}
 
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress
 {
