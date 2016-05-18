@@ -303,8 +303,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     if ([self.namesToConnect containsObject:lock.macAddress]) {
         [self.namesToConnect removeObject:lock.macAddress];
         [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
-        [self.bleManager removePeripheralForKey:lock.macAddress];
     }
+    
+    [self.bleManager removePeripheralForKey:lock.macAddress];
 }
 
 - (void)removeUnconnectedLocks
