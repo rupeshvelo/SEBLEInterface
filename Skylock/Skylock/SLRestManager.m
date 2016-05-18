@@ -178,6 +178,12 @@
     NSLog(@"post url: %@", request.URL.absoluteString);
     NSLog(@"post request %@", [request allHTTPHeaderFields]);
     
+    [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
+                                                   @"REST manager posting object %@. to url: %@, with headers: %@",
+                                                   object.description,
+                                                   request.URL.absoluteString,
+                                                   [request allHTTPHeaderFields].description]];
+    
     NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
                                                                fromData:jsonData
                                                       completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -283,6 +289,9 @@
         return;
     }
     
+    [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
+                                                   @"Got response from server: %@", serverReply.description]];
+    
     NSLog(@"server reply: %@", serverReply.description);
     id status = serverReply[@"status"];
     
@@ -302,7 +311,9 @@
             completion(nil);
         }
     } else {
-        NSLog(@"failed with error: %@", status);
+        NSLog(@"Internal server error status %@", status);
+        [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
+                                                       @"Internal server error status %@", status]];
         completion(nil);
     }
     

@@ -25,7 +25,8 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
     SLSlideViewControllerButtonActionLockSelected,
     SLSlideViewControllerButtonActionLockDeselected,
     SLSlideViewControllerButtonActionRename,
-    SLSlideViewControllerButtonActionViewAccount
+    SLSlideViewControllerButtonActionViewAccount,
+    SLSlideViewControllerButtonActionRemoveLock
 };
 
 @protocol SLSlideViewControllerDelegate <NSObject>

@@ -46,7 +46,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicChallengeData,
     SLLockManagerCharacteristicChallengeKey,
     SLLockManagerCharacteristicCodeVersion,
-    SLLockManagerCharacteristicButtonLockSequence
+    SLLockManagerCharacteristicButtonLockSequence,
+    SLLockManagerCharacteristicRemoveLock
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
@@ -76,7 +77,8 @@ typedef enum {
     SLLockManagerValueTopButton         = 0x01,
     SLLockManagerValueRightButton       = 0x02,
     SLLockManagerValueBottomButton      = 0x04,
-    SLLockManagerValueLeftButton        = 0x08
+    SLLockManagerValueLeftButton        = 0x08,
+    SLLockManagerValueRemoveLock        = 0xBC
 } SLLockMangerValue;
 
 typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
@@ -393,17 +395,24 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager startScan];
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"Starting bluetooth scan"]];
 }
 
 - (void)stopScan
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [self.bleManager stopScan];
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"Stopping bluetooth scan"]];
 }
 
 - (void)startBlueToothManager
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"Starting bluetooth manager"]];
     
     for (SLLock *lock in [self.databaseManger allLocks]) {
         NSLog(@"lock in database: %@", lock.name);
@@ -601,6 +610,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             break;
         case SLLockManagerCharacteristicButtonLockSequence:
             characteristicString = @"5E84";
+            break;
+        case SLLockManagerCharacteristicRemoveLock:
+            characteristicString = @"5E81";
+            break;
         default:
             break;
     }
@@ -917,7 +930,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                  subRoutes:subRoutes
                                        additionalHeaders:additionalHeaders
                                               completion:^(NSDictionary *responseDict) {
-                                                  if (!responseDict) {
+                                                  if (!responseDict || !responseDict[@"challenge_key"]) {
                                                       // TODO figure out how to handle this
                                                       NSLog(@"Error could not retrieve challenge key from server.");
                                                       return;
@@ -1066,7 +1079,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }];
 }
 
-- (void)deleteLockFromCurrentUserAccount:(NSString *)lockName
+- (void)deleteLockFromCurrentUserAccountWithMacAddress:(NSString *)macAddress
 {
     SLUser *user = [self.databaseManger currentUser];
     
@@ -1077,14 +1090,27 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
     NSDictionary *additionalHeaders = @{@"Authorization": authValue};
     NSArray *subRoutes = @[user.userId, @"deletelock"];
-    SLLock *lock = self.locks[lockName];
+    SLLock *lock = self.locks[macAddress];
     
     [SLRestManager.sharedManager postObject:@{@"mac_id":lock.macAddress}
                                   serverKey:SLRestManagerServerKeyMain
                                     pathKey:SLRestManagerPathKeyUsers subRoutes:subRoutes
                           additionalHeaders:additionalHeaders
                                  completion:^(NSDictionary *responseDict) {
-        
+                                     // TODO the server currently returns an empty payload for this url
+                                     // and the server is always returning an error. When that is fixed,
+                                     // this should be updated
+                                     
+                                     u_int8_t value = (u_int8_t)SLLockManagerValueRemoveLock;
+                                     NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
+                                     
+                                     [self removeLock:lock];
+
+                                     [self writeToLockWithMacAddress:lock.macAddress
+                                                             service:SLLockManagerServiceConfiguration
+                                                      characteristic:SLLockManagerCharacteristicRemoveLock
+                                                                data:data];
+                                     
     }];
 }
 
@@ -1183,6 +1209,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSString *name = (advertisementData && advertisementData[@"kCBAdvDataLocalName"]) ?
     advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
     NSLog(@"found peripheral: %@", name);
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"found peripheral: %@", name]];
     NSString *macAddress = name.macAddress;
     if (self.locksToAdd[macAddress]) {
         NSLog(@"Lock %@ already in connection process...", name);
@@ -1240,7 +1268,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
     NSDictionary *additionalHeaders = @{@"Authorization": authValue};
     NSArray *subRoutes = @[currentUser.userId, @"keys"];
-    NSDictionary *lockData = @{@"mac_id":lock.macAddress};
+    NSDictionary *lockData = @{@"mac_id": lock.macAddress};
 
     [SLRestManager.sharedManager postObject:lockData
                                   serverKey:SLRestManagerServerKeyMain
@@ -1248,13 +1276,19 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                   subRoutes:subRoutes
                           additionalHeaders:additionalHeaders
                                  completion:^(NSDictionary *responseDict) {
-        if (responseDict && responseDict[@"signed_message"] && responseDict[@"public_key"] && responseDict[@"message"]) {
+        if (responseDict && responseDict[@"signed_message"] &&
+            responseDict[@"public_key"] &&
+            responseDict[@"message"])
+        {
             NSLog(@"messages for lock %@", lock.name);
             [ud setObject:responseDict[@"signed_message"] forKey:SLUserDefaultsSignedMessage];
             [ud setObject:responseDict[@"public_key"] forKey:SLUserDefaultsPublicKey];
             //[ud setObject:responseDict[@"message"] forKey:SLUserDefaultsChallengeKey];
             [ud synchronize];
-
+            
+            [SLDatabaseManager.sharedManager saveLogEntry:
+             [NSString stringWithFormat:@"received signed message and public key from server for: %@", name]];
+            
             [self addLock:lock];
         }
     }];
@@ -1264,6 +1298,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         connectedPeripheralNamed:(NSString *)peripheralName
 {
     NSString *macAddress = peripheralName.macAddress;
+    
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"bluetooth manager connected peripheral %@", peripheralName]];
+    
     if ([self.bleManager notConnectedPeripheralForKey:macAddress]) {
         SEBLEPeripheral *peripheral = [self.bleManager notConnectedPeripheralForKey:macAddress];
         [self.bleManager removeNotConnectPeripheralForKey:macAddress];

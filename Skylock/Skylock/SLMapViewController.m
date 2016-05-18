@@ -753,6 +753,12 @@
         nc.modalPresentationStyle = UIModalPresentationFullScreen;
         
         [self presentViewController:nc animated:YES completion:nil];
+    } else if (action == SLSlideViewControllerButtonActionRemoveLock) {
+        if (options && options[@"lock"]) {
+            SLLock *lock = (SLLock *)options[@"lock"];
+            [SLLockManager.sharedManager
+             deleteLockFromCurrentUserAccountWithMacAddress:lock.macAddress];
+        }
     }
 }
 

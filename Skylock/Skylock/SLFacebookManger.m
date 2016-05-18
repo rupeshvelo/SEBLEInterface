@@ -153,12 +153,19 @@
                                  completion:^(NSDictionary *responseDict) {
                                      if (!responseDict || !responseDict[@"token"]) {
                                          NSLog(@"No response or user token when saving facebook user");
+                                         [SLDatabaseManager.sharedManager saveLogEntry:
+                                          @"No response or user token when saving facebook user"];
                                          return;
                                      }
                                      
                                      NSLog(@"got response saving facebook userId: %@ Response Info: %@", userDict, responseDict);
                                      [ud setObject:responseDict[@"token"] forKey:SLUserDefaultsUserToken];
                                      [ud synchronize];
+                                     
+                                     [SLDatabaseManager.sharedManager saveLogEntry:
+                                      [NSString stringWithFormat:@"got response saving facebook userId: %@ Response Info: %@",
+                                       userDict,
+                                       responseDict]];
                                  }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
