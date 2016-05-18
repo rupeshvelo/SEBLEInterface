@@ -399,6 +399,9 @@ class SLWalkthroughViewController: UIViewController, SLWalkthroughCardViewContro
             
             if let completion = self.onExit {
                 completion()
+            } else {
+                let mapViewController:SLMapViewController = SLMapViewController()
+                self.presentViewController(mapViewController, animated: true, completion: nil)
             }
         }
     }

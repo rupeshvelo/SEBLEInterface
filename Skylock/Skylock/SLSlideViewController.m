@@ -500,7 +500,17 @@
 
 - (void)editLockCellRemovePushed:(SLEditLockTableViewCell *)cell
 {
-    NSLog(@"remove pushed");
+    if ([self.delegate respondsToSelector:@selector(slideViewController:actionOccured:options:)]) {
+        NSUInteger index = [self.tableView.visibleCells indexOfObject:cell];
+        if (index == NSNotFound || index > self.locks.count) {
+            NSLog(@"could not remove lock at index %lul", (unsigned long)index);
+            return;
+        }
+        
+        [self.delegate slideViewController:self
+                             actionOccured:SLSlideViewControllerButtonActionRemoveLock
+                                   options:@{@"lock": self.locks[index]}];
+    }
 }
 
 - (void)editLockCellLongPressActivated:(SLEditLockTableViewCell *)cell

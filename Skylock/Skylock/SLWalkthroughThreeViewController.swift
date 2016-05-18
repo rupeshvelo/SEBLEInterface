@@ -116,6 +116,9 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
     func blueToothButtonPressed() {
         print("blue tooth button pressed")
         
+        let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        databaseManager.saveLogEntry("bluetooth button pressed on walkthrough")
+        
         let lockManager = SLLockManager.sharedManager()
         lockManager.shouldEnterSearchMode(true)
         lockManager.startScan()
