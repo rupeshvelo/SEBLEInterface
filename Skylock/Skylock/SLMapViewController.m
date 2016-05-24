@@ -340,6 +340,11 @@
                                              selector:@selector(lockAdded:)
                                                  name:kSLNotificationLockPaired
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockRemoved:)
+                                                 name:kSLNotificationLockManagerDisconnectedLock
+                                               object:nil];
 }
 
 - (void)menuButtonPressed
@@ -644,6 +649,11 @@
     [self.lockInfoViewController setUpView];
 }
 
+- (void)lockRemoved:(NSNotification *)notification
+{
+    
+}
+
 - (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
 {
     BOOL isShowingSlideVC = NO;
@@ -668,12 +678,11 @@
     } completion:^(BOOL finished) {
         if (shouldBeLarge) {
             self.locationButton.hidden = NO;
-            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue))
-            {
-                [self presentCoachMarkViewController];
-            }
+//            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
+//            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)){
+//                [self presentCoachMarkViewController];
+//            }
         }
         
         self.lockInfoViewController.isUp = shouldBeLarge;

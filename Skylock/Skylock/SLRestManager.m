@@ -281,10 +281,11 @@
                                                                   error:&error];
     
     if (error) {
-        NSLog(@"Error could not decode json object for fetch request: %@. Failed with error: %@",
-              originalUrl.absoluteString,
-              error
-              );
+        NSString *message = [NSString stringWithFormat:@"Error could not decode json object for fetch request: %@. Failed with error: %@",
+                             originalUrl.absoluteString,
+                             error];
+        NSLog(@"%@", message);
+        [SLDatabaseManager.sharedManager saveLogEntry:message];
         completion(nil);
         return;
     }

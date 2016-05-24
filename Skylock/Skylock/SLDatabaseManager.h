@@ -28,6 +28,7 @@
 - (void)saveUser:(SLUser *)user withCompletion:(void(^)(BOOL success))completion;
 - (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser;
 - (void)setCurrentUser;
+- (SLLock *)getCurrentLockForCurrentUser;
 - (NSArray *)sharedContactsForLock:(SLLock *)lock;
 - (void)setCurrentLock:(SLLock *)lock;
 - (void)deselectAllLocks;
@@ -36,5 +37,6 @@
 - (BOOL)doesCurrentUserHaveLock:(SLLock *)lock;
 - (NSArray *)getAllLogs;
 - (void)saveLogEntry:(NSString *)entry;
+- (void)saveLockConnectedDate:(SLLock *)lock;
 
 @end

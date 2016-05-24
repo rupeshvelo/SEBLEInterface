@@ -106,14 +106,17 @@
      scope:kGGLInstanceIDScopeGCM
      options:options
      handler:^(NSString *token, NSError *error) {
+         // TODO: This needs to be fixed in the google dev panel.
+         // This is a tempory fix
          if (error) {
              NSLog(@"Error getting google cloud service token %@", error.localizedDescription);
-             return;
+             //return;
          }
          
+         NSString *tempToken = @"00000000000000000000000000000000000000";
          NSLog(@"got token: %@", token);
          NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-         [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
+         [ud setObject:token ? token: tempToken forKey:SLUserDefaultsPushNotificationToken];
          [ud synchronize];
      }];
 }
