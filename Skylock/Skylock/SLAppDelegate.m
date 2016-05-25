@@ -114,7 +114,7 @@
          }
          
          NSString *tempToken = @"00000000000000000000000000000000000000";
-         NSLog(@"got token: %@", token);
+         NSLog(@"using token: %@", token ? token : tempToken);
          NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
          [ud setObject:token ? token: tempToken forKey:SLUserDefaultsPushNotificationToken];
          [ud synchronize];
