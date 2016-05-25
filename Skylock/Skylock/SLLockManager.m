@@ -90,18 +90,16 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 @interface SLLockManager()
 
-@property (nonatomic, strong) SLLock *lock;
 @property (nonatomic, strong) NSMutableDictionary *locks;
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
-@property (nonatomic, strong) NSMutableDictionary *locksToAdd;
 @property (nonatomic, strong) SLDatabaseManager *databaseManger;
 @property (nonatomic, assign) BOOL bleIsPoweredOn;
 @property (nonatomic, strong) NSTimer *harwareTimer;
 @property (nonatomic, strong) SLLock *selectedLock;
 @property (nonatomic, strong) NSMutableDictionary *lockValues;
 @property (nonatomic, strong) NSMutableSet *namesToConnect;
-@property (nonatomic, strong) NSMutableDictionary *lockConnectionPhases;
-@property (nonatomic, assign) BOOL shouldSearch;
+@property (nonatomic, assign) SLLockManagerConnectionPhase currentConnectionPhase;
+@property (nonatomic, assign) BOOL shouldEnterActiveSearch;
 @property (nonatomic, strong) SLKeychainHandler *keychainHandler;
 
 // testing
@@ -115,18 +113,16 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     self = [super init];
     if (self) {
-        _locks                  = [NSMutableDictionary new];
-        _locksToAdd             = [NSMutableDictionary new];
-        _lockValues             = [NSMutableDictionary new];
-        _lockConnectionPhases   = [NSMutableDictionary new];
-        
-        _namesToConnect         = [NSMutableSet new];
-        _bleManager             = [SEBLEInterfaceMangager sharedManager];
-        _bleManager.delegate    = self;
-        _databaseManger         = [SLDatabaseManager sharedManager];
-        _keychainHandler        = [SLKeychainHandler new];
-        _bleIsPoweredOn         = NO;
-        _shouldSearch           = NO;
+        _locks                      = [NSMutableDictionary new];
+        _lockValues                 = [NSMutableDictionary new];
+        _namesToConnect             = [NSMutableSet new];
+        _bleManager                 = [SEBLEInterfaceMangager sharedManager];
+        _bleManager.delegate        = self;
+        _databaseManger             = [SLDatabaseManager sharedManager];
+        _keychainHandler            = [SLKeychainHandler new];
+        _bleIsPoweredOn             = NO;
+        _shouldEnterActiveSearch    = NO;
+        _currentConnectionPhase     = SLLockManagerConnectionPhaseNone;
     }
     
     return self;
@@ -258,7 +254,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([self isLockConnected:lock]) {
         NSLog(@"Duplicate lock: %@", lock.name);
-    } else if (self.locksToAdd[lock.macAddress]) {
+    } else if (self.selectedLock && [self.selectedLock.macAddress isEqualToString:lock.macAddress]) {
+        [self connectLock:lock];
+    } else if (!self.selectedLock) {
         [self connectLock:lock];
     } else {
         for (SLLock *dbLock in [self.databaseManger allLocks]) {
@@ -272,17 +270,13 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)connectLock:(SLLock *)lock
 {
-    SLLockManagerConnectionPhase phase = lock.isInFactoryMode ?
+    self.currentConnectionPhase = lock.isInFactoryMode ?
     SLLockManagerConnectionPhasePublicKey : SLLockManagerConnectionPhaseSignedMessage;
-    self.lockConnectionPhases[lock.macAddress] = @(phase);
+    
     self.locks[lock.macAddress] = lock;
     [self.bleManager addPeripheralWithKey:lock.macAddress];
     
     [self saveLockToDatabase:lock];
-    
-    if (self.locksToAdd[lock.macAddress]) {
-        [self.locksToAdd removeObjectForKey:lock.macAddress];
-    }
     
     [self.databaseManger saveLogEntry:[NSString stringWithFormat:@"Connecting lock: %@", lock.name]];
     [self.databaseManger saveLockConnectedDate:lock];
@@ -327,7 +321,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (void)removeUnconnectedLocks
 {
     [self.bleManager removeNotConnectPeripherals];
-    [self.locksToAdd removeAllObjects];
 }
 
 - (NSArray *)orderedLocksByName
@@ -385,22 +378,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     //    }
 }
 
-- (NSArray *)unaddedLocks
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSMutableArray *unaddedKeys = [NSMutableArray arrayWithArray:self.locksToAdd.allKeys];
-    [unaddedKeys sortUsingComparator:^NSComparisonResult(SLLock *lock1, SLLock *lock2) {
-        return [lock1.name compare:lock2.name];
-    }];
-    
-    __block NSMutableArray *locks = [NSMutableArray new];
-    [unaddedKeys enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [locks addObject:self.locksToAdd[unaddedKeys[idx]]];
-    }];
-    
-    return locks;
-}
-
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values
 {
     [lock updateProperties:values];
@@ -435,6 +412,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         NSLog(@"lock in database: %@", lock.name);
     }
     
+    self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
+    
     [self.bleManager powerOn];
     [self.bleManager setDeviceNameFragmentsToConnect:self.deviceNameFragmentsToConnect];
     [self.bleManager setServiceToReadFrom:self.servicesToSubcribeTo];
@@ -462,9 +441,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
 }
 
-- (void)shouldEnterSearchMode:(BOOL)shouldSearch
+- (void)shouldEnterActiveSearchMode:(BOOL)shouldSearch
 {
-    self.shouldSearch = shouldSearch;
+    self.shouldEnterActiveSearch = shouldSearch;
 }
 
 - (void)setLockStateForLock:(SLLock *)lock
@@ -605,7 +584,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             characteristicString = @"5EC3";
             break;
         case SLLockManagerCharacteristicAccelerometer:
-            characteristicString = @"5EC4";
+            characteristicString = @"5E46";
             break;
         case SLLockManagerCharacteristicSignedMessage:
             characteristicString = @"5E01";
@@ -676,6 +655,17 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (NSString *)uuidStringForFirstPart:(BOOL)isFirstPart
 {
     return isFirstPart ? @"D399" : @"-FA57-11E4-AE59-0002A5D5C51B";
+}
+
+- (void)checkLockOpenOrClosed
+{
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    [self readValueFromPeripheralForMacAddress:self.selectedLock.macAddress
+                                       service:SLLockManagerServiceHardware
+                                characteristic:SLLockManagerCharacteristicLock];
 }
 
 - (void)handleHardwareServiceForMacAddress:(NSString*)macAddress data:(NSData *)data
@@ -770,9 +760,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     u_int8_t *bytes = (u_int8_t *)data.bytes;
     u_int8_t value = bytes[0];
     
-    NSNumber *phaseNumber = self.lockConnectionPhases[macAddress];
-    SLLockManagerConnectionPhase phase = (SLLockManagerConnectionPhase)phaseNumber.unsignedIntegerValue;
-    NSLog(@"handle secturity state update has value of %@ for phase %@", @(value), @(phase));
+    NSLog(@"handle secturity state update has value of %@ for phase %@", @(value), @(self.currentConnectionPhase));
     
     if (value != 0 && value != 1 && value != 2 && value != 3 && value != 4) {
         NSLog(@"Error: updating security state got value: %@", @(value));
@@ -782,13 +770,14 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
     
     if (value == 0) {
-        if (phase == SLLockManagerConnectionPhaseChallengeKey) {
-            self.lockConnectionPhases[macAddress] = @(SLLockManagerConnectionPhaseSignedMessage);
+        if (self.currentConnectionPhase == SLLockManagerConnectionPhaseChallengeKey) {
+            self.currentConnectionPhase = SLLockManagerConnectionPhaseSignedMessage;
             [self handleChallengeKeyConnectionPhase:macAddress];
-        } else if (phase == SLLockManagerConnectionPhaseSignedMessage) {
+        } else if (self.currentConnectionPhase == SLLockManagerConnectionPhaseSignedMessage) {
+            // TODO update current connection phase for this case
             [self handleSignedMessageConnectionPhase:macAddress];
         } else {
-            NSLog(@"handle security state has value of %@ but the phase %@ is not correct", @(value), @(phase));
+            NSLog(@"handle security state has value of %@ but the phase %@ is not correct", @(value), @(self.currentConnectionPhase));
         }
         
         return;
@@ -809,42 +798,38 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [SLDatabaseManager.sharedManager saveLogEntry:
      [NSString stringWithFormat:@"Successfully wrote challenge data to %@", macAddress]];
     
-    SLLock *lock = self.locks[macAddress];
-    if (lock.isInFactoryMode) {
-        NSLog(@"lock name before saving: %@", lock.macAddress);
+    if (self.selectedLock.isInFactoryMode) {
+        NSLog(@"lock name before saving: %@", self.selectedLock.macAddress);
         
         NSLog(@"all locks in db...");
         for (SLLock *dbLock in [self.databaseManger allLocks]) {
             NSLog(@"%@", dbLock.name);
         }
         
-        [lock switchLockNameToProvisioned];
-        NSLog(@"lock name after switching name: %@", lock.name);
-        [self.databaseManger saveLockToDb:lock withCompletion:nil];
+        [self.selectedLock switchLockNameToProvisioned];
+        NSLog(@"lock name after switching name: %@", self.selectedLock.name);
+        [self.databaseManger saveLockToDb:self.selectedLock withCompletion:nil];
         
         NSLog(@"locks in db after saving...");
         for (SLLock *dbLock in [self.databaseManger allLocks]) {
             NSLog(@"%@", dbLock.name);
         }
         
-        [self.locks removeObjectForKey:macAddress];
-        self.locks[lock.macAddress] = lock;
-        [self.bleManager updateConnectPeripheralKey:macAddress newKey:lock.macAddress];
+        [self.bleManager updateConnectPeripheralKey:macAddress newKey:self.selectedLock.macAddress];
     }
     
-    NSNumber *currentPhase = self.lockConnectionPhases[macAddress];
-    if (currentPhase.unsignedIntegerValue == SLLockManagerConnectionPhaseConnected) {
+    if (self.currentConnectionPhase == SLLockManagerConnectionPhaseConnected) {
         [self handleCommandStatusUpdate:macAddress data:data];
     } else {
-        self.lockConnectionPhases[macAddress] = @(SLLockManagerConnectionPhaseConnected);
+        self.currentConnectionPhase = SLLockManagerConnectionPhaseConnected;
         
         [self.bleManager stopScan];
-        [self setCurrentLock:lock];
+        [self setCurrentLock:self.selectedLock];
         
         [self checkCommandStatusForLockWithMacAddress:macAddress];
         
         [NSNotificationCenter.defaultCenter postNotificationName:kSLNotificationLockPaired
-                                                          object:@{@"lock": lock}];
+                                                          object:@{@"lock": self.selectedLock}];
     }
 }
 
@@ -948,7 +933,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                      characteristic:SLLockManagerCharacteristicPublicKey
                                data:publicKey.bytesString];
     
-    self.lockConnectionPhases[macAddress] = @(SLLockManagerConnectionPhaseChallengeKey);
+    self.currentConnectionPhase = SLLockManagerConnectionPhaseChallengeKey;
 }
 
 - (void)handleChallengeKeyConnectionPhase:(NSString *)macAddress
@@ -983,7 +968,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                    characteristic:SLLockManagerCharacteristicChallengeKey
                                                              data:challengeKey.bytesString];
                                   
-                                  self.lockConnectionPhases[macAddress] = @(SLLockManagerConnectionPhaseSignedMessage);
+                                  self.currentConnectionPhase = SLLockManagerConnectionPhaseSignedMessage;
                               }];
 }
 
@@ -1191,14 +1176,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     if ([self.selectedLock.macAddress isEqualToString:macAddress]) {
         self.selectedLock = nil;
+        [self.bleManager startScan];
     }
     
     if (self.locks[macAddress]) {
         [self.locks removeObjectForKey:macAddress];
-    }
-    
-    if (self.locksToAdd[macAddress]) {
-        [self.locksToAdd removeObjectForKey:macAddress];
     }
     
     [self.bleManager removeNotConnectPeripheralForKey:macAddress];
@@ -1245,6 +1227,10 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
+    if (!self.selectedLock) {
+        self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
+    }
+    
     NSString *name = (advertisementData && advertisementData[@"kCBAdvDataLocalName"]) ?
     advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
     NSLog(@"found peripheral: %@", name);
@@ -1252,60 +1238,68 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
      [NSString stringWithFormat:@"found peripheral: %@", name]];
     NSString *macAddress = name.macAddress;
     
-    if 
-    if (self.locksToAdd[macAddress]) {
-        NSLog(@"Lock %@ already in connection process...", name);
+    NSString *message;
+    BOOL shouldConnect = YES;
+    if (_shouldEnterActiveSearch) {
+        message = [NSString stringWithFormat:@"In active search mode and will try to connect to: %@",
+                   name];
+    } else if (!self.selectedLock || ![macAddress isEqualToString:self.selectedLock.macAddress]) {
+        message = [NSString stringWithFormat:@"Current lock is %@. Will not connect to %@",
+                   self.selectedLock ? self.selectedLock.name : @"nil",
+                   name];
+        shouldConnect = NO;
+    } else {
+        message = [NSString stringWithFormat:@"Current lock is %@. Found peripheral with matching id: %@",
+                   self.selectedLock.name,
+                   name];
+    }
+        
+    NSLog(@"%@", message);
+    [self.databaseManger saveLogEntry:message];
+    
+    if (!shouldConnect) {
         return;
     }
     
-    if (self.locks[macAddress]) {
-        [self removeLockWithMacAddress:macAddress];
-    }
     
-    SLLockManagerConnectionPhase phase;
     SLUser *currentUser = [self.databaseManger currentUser];
-    SLLock *lock = [self.databaseManger getLockWithMacAddress:name.macAddress];
-    if (lock) {
-        lock.name = name;
-        [self saveLockToDatabase:lock];
+    if (self.selectedLock) {
+        self.selectedLock.name = name;
+        [self saveLockToDatabase:self.selectedLock];
         
-        if (lock.isInFactoryMode) {
-            phase = SLLockManagerConnectionPhasePublicKey;
+        if (self.selectedLock.isInFactoryMode) {
+            self.currentConnectionPhase = SLLockManagerConnectionPhasePublicKey;
         } else {
             if ([self.keychainHandler getItemForUsername:currentUser.userId
-                                    additionalSeviceInfo:lock.macAddress
+                                    additionalSeviceInfo:self.selectedLock.macAddress
                                              handlerCase:SLKeychainHandlerCasePublicKey] &&
                 [self.keychainHandler getItemForUsername:currentUser.userId
-                                    additionalSeviceInfo:lock.macAddress
+                                    additionalSeviceInfo:self.selectedLock.macAddress
                                              handlerCase:SLKeychainHandlerCaseSignedMessage])
             {
-                phase = SLLockManagerConnectionPhaseSignedMessage;
+                self.currentConnectionPhase = SLLockManagerConnectionPhaseSignedMessage;
             } else {
-                phase = SLLockManagerConnectionPhaseChallengeKey;
+                self.currentConnectionPhase = SLLockManagerConnectionPhaseChallengeKey;
             }
         }
         
-        self.lockConnectionPhases[lock.macAddress] = @(phase);
-        self.locksToAdd[lock.macAddress] = lock;
-        [self.bleManager setNotConnectedPeripheral:peripheral forKey:lock.macAddress];
-        [self addLock:lock];
+        [self.bleManager setNotConnectedPeripheral:peripheral forKey:self.selectedLock.macAddress];
+        [self addLock:self.selectedLock];
         
-        NSString *message = [NSString stringWithFormat:@"found %@ in database...connecting", lock.name];
+        NSString *message = [NSString stringWithFormat:@"found %@ in database...connecting", self.selectedLock.name];
         NSLog(@"%@", message);
         [self.databaseManger saveLogEntry:message];
         
         return;
     }
     
-    lock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
-    [lock setInitialProperties:@{}];
-    phase = lock.isInFactoryMode ?
+    self.selectedLock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
+    [self.selectedLock setInitialProperties:@{}];
+    self.currentConnectionPhase = self.selectedLock.isInFactoryMode ?
     SLLockManagerConnectionPhaseChallengeKey : SLLockManagerConnectionPhaseSignedMessage;
     
     //[lock setCurrentLocation:currentUser.location];
-    [self.bleManager setNotConnectedPeripheral:peripheral forKey:lock.macAddress];
-    self.lockConnectionPhases[macAddress] = @(phase);
-    self.locksToAdd[lock.macAddress] = lock;
+    [self.bleManager setNotConnectedPeripheral:peripheral forKey:self.selectedLock.macAddress];
     
     SLRestManager *restManager = [SLRestManager sharedManager];
     NSString *token = [self.keychainHandler getItemForUsername:currentUser.userId
@@ -1314,7 +1308,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSString *authValue = [restManager basicAuthorizationHeaderValueUsername:token password:@""];
     NSDictionary *additionalHeaders = @{@"Authorization": authValue};
     NSArray *subRoutes = @[currentUser.userId, @"keys"];
-    NSDictionary *lockData = @{@"mac_id": lock.macAddress};
+    NSDictionary *lockData = @{@"mac_id": self.selectedLock.macAddress};
     
     [restManager postObject:lockData
                   serverKey:SLRestManagerServerKeyMain
@@ -1322,28 +1316,30 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                   subRoutes:subRoutes
           additionalHeaders:additionalHeaders
                  completion:^(NSDictionary *responseDict) {
+                     NSString *infoMessage;
                      if (responseDict && responseDict[@"signed_message"] &&
                          responseDict[@"public_key"] &&
                          responseDict[@"message"])
                      {
-                         NSLog(@"messages for lock %@", lock.name);
                          [self.keychainHandler setItemForUsername:currentUser.userId
                                                        inputValue:responseDict[@"signed_message"]
-                                             additionalSeviceInfo:lock.macAddress
+                                             additionalSeviceInfo:self.selectedLock.macAddress
                                                       handlerCase:SLKeychainHandlerCaseSignedMessage];
                          [self.keychainHandler setItemForUsername:currentUser.userId
                                                        inputValue:responseDict[@"public_key"]
-                                             additionalSeviceInfo:lock.macAddress
+                                             additionalSeviceInfo:self.selectedLock.macAddress
                                                       handlerCase:SLKeychainHandlerCasePublicKey];
                          
-                         [SLDatabaseManager.sharedManager saveLogEntry:
-                          [NSString stringWithFormat:@"received signed message and public key from server for: %@", name]];
+                         infoMessage = [NSString stringWithFormat:@"received signed message and public key from server for: %@",
+                                        name];
+                         NSLog(@"%@", infoMessage);
+                         [SLDatabaseManager.sharedManager saveLogEntry:infoMessage];
                          
-                         [self addLock:lock];
+                         [self addLock:self.selectedLock];
                      } else {
-                         NSString *message = @"Error: failed to retreive keys from server";
-                         NSLog(@"%@", message);
-                         [self.databaseManger saveLogEntry:message];
+                         infoMessage = @"Error: failed to retreive keys from server";
+                         NSLog(@"%@", infoMessage);
+                         [self.databaseManger saveLogEntry:infoMessage];
                      }
                  }];
 }
@@ -1447,7 +1443,6 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
     
     SLUser *user = [self.databaseManger currentUser];
     if (user && user.locks.count > 0) {
-        self.shouldSearch = YES;
         [self.bleManager startScan];
     }
 }
@@ -1467,22 +1462,18 @@ changedUpdateStateForCharacteristic:(NSString *)characteristicUUID
 {
     if ([characteristicUUID isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState]]) {
         NSString *macAddress = peripheralName.macAddress;
-        if (self.lockConnectionPhases[macAddress]) {
-            NSNumber *phaseNumber = self.lockConnectionPhases[macAddress];
-            SLLockManagerConnectionPhase phase = (SLLockManagerConnectionPhase)phaseNumber.unsignedIntegerValue;
-            switch (phase) {
-                case SLLockManagerConnectionPhasePublicKey:
-                    [self handlePublicKeyConnectionPhase:macAddress];
-                    break;
-                case SLLockManagerConnectionPhaseChallengeKey:
-                    [self handleChallengeKeyConnectionPhase:macAddress];
-                    break;
-                case SLLockManagerConnectionPhaseSignedMessage:
-                    [self handleSignedMessageConnectionPhase:macAddress];
-                    break;
-                default:
-                    break;
-            }
+        switch (self.currentConnectionPhase) {
+            case SLLockManagerConnectionPhasePublicKey:
+                [self handlePublicKeyConnectionPhase:macAddress];
+                break;
+            case SLLockManagerConnectionPhaseChallengeKey:
+                [self handleChallengeKeyConnectionPhase:macAddress];
+                break;
+            case SLLockManagerConnectionPhaseSignedMessage:
+                [self handleSignedMessageConnectionPhase:macAddress];
+                break;
+            default:
+                break;
         }
     }
 }

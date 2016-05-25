@@ -38,5 +38,4 @@
 - (NSArray *)getAllLogs;
 - (void)saveLogEntry:(NSString *)entry;
 - (void)saveLockConnectedDate:(SLLock *)lock;
-
 @end

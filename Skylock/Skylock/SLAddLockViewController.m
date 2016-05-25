@@ -71,24 +71,24 @@
 
 - (void)lockDiscovered
 {
-    NSArray *unaddedLocks = [SLLockManager.sharedManager unaddedLocks];
-    __block NSMutableArray *paths = [NSMutableArray new];
-    
-    [unaddedLocks enumerateObjectsUsingBlock:^(SLLock *unaddedLock, NSUInteger idx, BOOL *stop) {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", unaddedLock.name];
-        NSArray *results = [self.locks filteredArrayUsingPredicate:predicate];
-        if (results.count == 0) {
-            NSIndexPath *path = [NSIndexPath indexPathForRow:idx inSection:0];
-            [paths addObject:path];
-        }
-    }];
-    
-    if (paths.count > 0) {
-        self.locks = [NSArray arrayWithArray:unaddedLocks];
-        [self.tableView beginUpdates];
-        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationLeft];
-        [self.tableView endUpdates];
-    }
+//    NSArray *unaddedLocks = [SLLockManager.sharedManager unaddedLocks];
+//    __block NSMutableArray *paths = [NSMutableArray new];
+//    
+//    [unaddedLocks enumerateObjectsUsingBlock:^(SLLock *unaddedLock, NSUInteger idx, BOOL *stop) {
+//        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name == %@", unaddedLock.name];
+//        NSArray *results = [self.locks filteredArrayUsingPredicate:predicate];
+//        if (results.count == 0) {
+//            NSIndexPath *path = [NSIndexPath indexPathForRow:idx inSection:0];
+//            [paths addObject:path];
+//        }
+//    }];
+//    
+//    if (paths.count > 0) {
+//        self.locks = [NSArray arrayWithArray:unaddedLocks];
+//        [self.tableView beginUpdates];
+//        [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationLeft];
+//        [self.tableView endUpdates];
+//    }
 }
 
 - (void)backButtonPressed
