@@ -309,7 +309,7 @@
     
     if (!self.lockInfoViewController.isUp && [SLLockManager.sharedManager selectedLock] && self.isInitialLoad) {
         self.lockInfoViewController.lock = [SLLockManager.sharedManager selectedLock];
-        [self.lockInfoViewController setUpView];
+        [self.lockInfoViewController setUpViewAndChangeSize:NO moveUp:NO];
     }
 }
 
@@ -339,6 +339,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(lockAdded:)
                                                  name:kSLNotificationLockPaired
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockRemoved:)
+                                                 name:kSLNotificationLockManagerDisconnectedLock
                                                object:nil];
 }
 
@@ -427,30 +432,30 @@
     }];
 }
 
-- (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    self.lockInfoViewController.lock = self.selectedLock;
-    [self.lockInfoViewController setUpView];
-    
-    CGRect viewFrame = self.lockInfoViewController.isUp ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-    
-    if ([self.childViewControllers containsObject:self.lockInfoViewController]) {
-        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-            self.lockInfoViewController.view.frame = viewFrame;
-        } completion:^(BOOL finished) {
-            if (completion) {
-                completion();
-            }
-        }];
-    } else {
-        self.lockInfoViewController.view.frame = viewFrame;
-        [self addChildViewController:self.lockInfoViewController];
-        [self.view addSubview:self.lockInfoViewController.view];
-        [self.view bringSubviewToFront:self.lockInfoViewController.view];
-        [self.lockInfoViewController didMoveToParentViewController:self];
-    }
-}
+//- (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
+//{
+//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+//    self.lockInfoViewController.lock = self.selectedLock;
+//    [self.lockInfoViewController setUpView];
+//    
+//    CGRect viewFrame = self.lockInfoViewController.isUp ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
+//    
+//    if ([self.childViewControllers containsObject:self.lockInfoViewController]) {
+//        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+//            self.lockInfoViewController.view.frame = viewFrame;
+//        } completion:^(BOOL finished) {
+//            if (completion) {
+//                completion();
+//            }
+//        }];
+//    } else {
+//        self.lockInfoViewController.view.frame = viewFrame;
+//        [self addChildViewController:self.lockInfoViewController];
+//        [self.view addSubview:self.lockInfoViewController.view];
+//        [self.view bringSubviewToFront:self.lockInfoViewController.view];
+//        [self.lockInfoViewController didMoveToParentViewController:self];
+//    }
+//}
 
 - (void)dismissNotificationViewControllerWithCompletion:(void(^)(void))completion
 {
@@ -641,42 +646,43 @@
     //[self setupLockInfoViewControllerView:YES];
     self.lockInfoViewController.lock = self.selectedLock;
     
-    [self.lockInfoViewController setUpView];
+    //[self.lockInfoViewController setUpView];
 }
 
-- (void)setupLockInfoViewControllerView:(BOOL)shouldBeLarge
+- (void)lockRemoved:(NSNotification *)notification
 {
-    BOOL isShowingSlideVC = NO;
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass: [SLSlideViewController class]]) {
-            isShowingSlideVC = YES;
-            break;
-        }
-    }
     
-    if ([self.presentedViewController class] == [SLWalkthroughViewController class] || isShowingSlideVC) {
-        return;
-    }
+}
+
+- (void)setupLockInfoViewControllerView
+{
+//    BOOL isShowingSlideVC = NO;
+//    for (UIViewController *vc in self.childViewControllers) {
+//        if ([vc isMemberOfClass: [SLSlideViewController class]]) {
+//            isShowingSlideVC = YES;
+//            break;
+//        }
+//    }
     
-    if (!shouldBeLarge) {
-        self.locationButton.hidden = NO;
-    }
+//    if ([self.presentedViewController class] == [SLWalkthroughViewController class] || isShowingSlideVC) {
+//        return;
+//    }
+    
+    self.locationButton.hidden = self.lockInfoViewController.isUp;
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        self.lockInfoViewController.view.frame = shouldBeLarge ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-        self.locationButton.alpha = shouldBeLarge ? 0.0f : 1.0f;
+        self.lockInfoViewController.view.frame = self.lockInfoViewController.isUp ?
+            self.lockInfoLargeFrame : self.lockInfoSmallFrame;
+        self.locationButton.alpha = self.lockInfoViewController.isUp ? 0.0f : 1.0f;
     } completion:^(BOOL finished) {
-        if (shouldBeLarge) {
+        if (self.lockInfoViewController.isUp) {
             self.locationButton.hidden = NO;
-            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue))
-            {
-                [self presentCoachMarkViewController];
-            }
+//            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+//            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
+//            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)){
+//                [self presentCoachMarkViewController];
+//            }
         }
-        
-        self.lockInfoViewController.isUp = shouldBeLarge;
     }];
 }
 
@@ -795,7 +801,17 @@
 #pragma mark - SLLockInfoViewController Delegate Methods
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
 {
-    [self setupLockInfoViewControllerView:shouldIncreaseSize];
+    //[self setupLockInfoViewControllerView:shouldIncreaseSize];
+}
+
+- (void)lockInfoViewControllerWantsToBeLarge:(SLLockInfoViewController *)livc
+{
+    [self setupLockInfoViewControllerView];
+}
+
+- (void)lockInfoViewControllerWantsToBeSmall:(SLLockInfoViewController *)livc
+{
+    [self setupLockInfoViewControllerView];
 }
 
 #pragma mark - SLDirectionsViewController Delegate Methods
@@ -887,8 +903,8 @@
     [self.directionDrawingHelper drawDirections:^{
         self.directionsButton.hidden = NO;
         
-        if (!self.lockInfoViewController.isUp) {
-            [self.lockInfoViewController setUpView];
+        if (self.lockInfoViewController.isUp) {
+            [self.lockInfoViewController setUpViewAndChangeSize:YES moveUp:NO];
         }
     }];
 }

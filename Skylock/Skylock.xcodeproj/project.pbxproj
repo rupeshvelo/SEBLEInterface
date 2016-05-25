@@ -24,7 +24,6 @@
 		DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */; };
 		DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */; };
 		DC156BD71C5D240D00015B53 /* SLUser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD11C5D240D00015B53 /* SLUser.m */; };
-		DC156BD81C5D240D00015B53 /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */; };
 		DC156BD91C5D240D00015B53 /* SLLock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC156BD51C5D240D00015B53 /* SLLock.m */; };
 		DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACAD1B5C3C3B0090BE8A /* SLPicManager.m */; };
 		DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */; };
@@ -391,7 +390,6 @@
 		DC85F3B31BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
 		DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */; };
 		DC8ECED81C437A3D00708CA3 /* SLWalkthoughFourViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8ECED71C437A3D00708CA3 /* SLWalkthoughFourViewController.swift */; };
-		DC974D171C38962600797CF1 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DC974D161C38962600797CF1 /* KeychainWrapper.m */; };
 		DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D191C38976600797CF1 /* SLKeychainHandler.swift */; };
 		DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */; };
 		DC974D251C3A1BB000797CF1 /* SLWalkthroughViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D241C3A1BB000797CF1 /* SLWalkthroughViewController.swift */; };
@@ -442,6 +440,7 @@
 		DCD3CBC01C5BD015009E1435 /* directions_walking_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD3CBB61C5BD015009E1435 /* directions_walking_icon@3x.png */; };
 		DCD3CBC11C5BD015009E1435 /* icon_directions_collapse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD3CBB71C5BD015009E1435 /* icon_directions_collapse@2x.png */; };
 		DCD3CBC21C5BD015009E1435 /* icon_directions_collapse@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD3CBB81C5BD015009E1435 /* icon_directions_collapse@3x.png */; };
+		DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD511DA1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m */; };
 		DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDA1B1FCBBC00B38910 /* main.m */; };
 		DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* SLAppDelegate.m */; };
 		DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDF1B1FCBBC00B38910 /* Skylock.xcdatamodeld */; };
@@ -556,8 +555,6 @@
 		DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoginTextField.swift; sourceTree = "<group>"; };
 		DC156BD01C5D240D00015B53 /* SLUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLUser.h; sourceTree = "<group>"; };
 		DC156BD11C5D240D00015B53 /* SLUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLUser.m; sourceTree = "<group>"; };
-		DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataProperties.h"; sourceTree = "<group>"; };
-		DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLock+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC156BD41C5D240D00015B53 /* SLLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLock.h; sourceTree = "<group>"; };
 		DC156BD51C5D240D00015B53 /* SLLock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLock.m; sourceTree = "<group>"; };
 		DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLPicManager.h; sourceTree = "<group>"; };
@@ -935,8 +932,6 @@
 		DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAnnotationDirectionCalloutView.m; sourceTree = "<group>"; };
 		DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash2_6_plus@3x.png"; sourceTree = "<group>"; };
 		DC8ECED71C437A3D00708CA3 /* SLWalkthoughFourViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthoughFourViewController.swift; sourceTree = "<group>"; };
-		DC974D151C38962600797CF1 /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
-		DC974D161C38962600797CF1 /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
 		DC974D191C38976600797CF1 /* SLKeychainHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLKeychainHandler.swift; sourceTree = "<group>"; };
 		DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageViewController.swift; sourceTree = "<group>"; };
 		DC974D241C3A1BB000797CF1 /* SLWalkthroughViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWalkthroughViewController.swift; sourceTree = "<group>"; };
@@ -997,6 +992,8 @@
 		DCD3CBB61C5BD015009E1435 /* directions_walking_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "directions_walking_icon@3x.png"; sourceTree = "<group>"; };
 		DCD3CBB71C5BD015009E1435 /* icon_directions_collapse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_collapse@2x.png"; sourceTree = "<group>"; };
 		DCD3CBB81C5BD015009E1435 /* icon_directions_collapse@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_directions_collapse@3x.png"; sourceTree = "<group>"; };
+		DCD511D91CF2A16200CFAEAA /* SLLock+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DCD511DA1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLock+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DCD554401B27D65E0035B78C /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1256,6 +1253,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				DCD511D91CF2A16200CFAEAA /* SLLock+CoreDataProperties.h */,
+				DCD511DA1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m */,
 				DCF41CA41CE7F56C008C17DE /* SLLog+CoreDataProperties.h */,
 				DCF41CA51CE7F56C008C17DE /* SLLog+CoreDataProperties.m */,
 				DCF41CA61CE7F56C008C17DE /* SLLog.h */,
@@ -1264,12 +1263,8 @@
 				DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */,
 				DC156BD01C5D240D00015B53 /* SLUser.h */,
 				DC156BD11C5D240D00015B53 /* SLUser.m */,
-				DC156BD21C5D240D00015B53 /* SLLock+CoreDataProperties.h */,
-				DC156BD31C5D240D00015B53 /* SLLock+CoreDataProperties.m */,
 				DC156BD41C5D240D00015B53 /* SLLock.h */,
 				DC156BD51C5D240D00015B53 /* SLLock.m */,
-				DC974D151C38962600797CF1 /* KeychainWrapper.h */,
-				DC974D161C38962600797CF1 /* KeychainWrapper.m */,
 				DCDAC22D1BA9FE8400396951 /* SLDirectionAPIHelper.swift */,
 				DC3CCE061BA334F800528992 /* SLDirectionDrawingHelper.swift */,
 				DC4402701B9BAE5900D1C2B9 /* SLDbLockSharedContact.h */,
@@ -2547,11 +2542,11 @@
 				DC43C71D1B27E6E200CEA7CF /* SLSlideViewController.m in Sources */,
 				DCB7A0941B417AD100636D8E /* SLLockDidShareTableViewCell.m in Sources */,
 				DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */,
+				DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */,
 				DC763D371CB471C800037EF9 /* SLContactViewController.swift in Sources */,
 				DC43C7201B2894B500CEA7CF /* SLLocationManager.m in Sources */,
 				DCF41CA21CE7C679008C17DE /* SLLogViewController.swift in Sources */,
 				DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */,
-				DC974D171C38962600797CF1 /* KeychainWrapper.m in Sources */,
 				DC3AE90B1B75838A009287DA /* SLSharingTableViewCell.m in Sources */,
 				DC7E70CD1B8C27DF006E74DC /* SLNotificationCrashView.m in Sources */,
 				DCA07CE31B61F7ED0057AA26 /* SLEditLockTableViewCell.m in Sources */,
@@ -2583,7 +2578,6 @@
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
-				DC156BD81C5D240D00015B53 /* SLLock+CoreDataProperties.m in Sources */,
 				DC156BD91C5D240D00015B53 /* SLLock.m in Sources */,
 				DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */,
 				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,

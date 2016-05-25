@@ -123,27 +123,34 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
+    
+    SLKeychainHandler *keychainHandler = [SLKeychainHandler new];
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *modifiedInfo = [NSMutableDictionary dictionaryWithDictionary:info];
+    NSString *pushToken = nil;
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
-        modifiedInfo[@"googlePushId"] = [ud objectForKey:SLUserDefaultsPushNotificationToken];
-        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
+        pushToken = [ud objectForKey:SLUserDefaultsPushNotificationToken];
     } else {
-        // TODO this googlePushId should not be here. Only placing it here for testing purpose
-        NSString *testPushId = @"dkdkododkdkdnfkdkdodwlslslsolslsldkdfjdffididlslapepkeke9";
-        modifiedInfo[@"googlePushId"] = testPushId;
-        [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
+        [SLDatabaseManager.sharedManager saveLogEntry:
+         @"No google push token retreived. Creating a false token"];
     }
+    
+    NSAssert(pushToken != nil, @"Push notification is not defined");
+    
+    modifiedInfo[@"googlePushId"] = pushToken;
+    [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     
     NSString *userId = info[@"id"];
     [SLPicManager.sharedManager facebookPicForFBUserId:userId completion:nil];
     
-    [ud setObject:userId forKey:SLUserDefaultsPassword];
-    [ud synchronize];
-    
     SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asDictionary];
     userDict[@"password"] = userId;
+    
+    [keychainHandler setItemForUsername:user.userId
+                             inputValue:userId
+                   additionalSeviceInfo:nil
+                            handlerCase:SLKeychainHandlerCasePassword];
     
     [SLRestManager.sharedManager postObject:userDict
                                   serverKey:SLRestManagerServerKeyMain
@@ -158,14 +165,17 @@
                                          return;
                                      }
                                      
-                                     NSLog(@"got response saving facebook userId: %@ Response Info: %@", userDict, responseDict);
-                                     [ud setObject:responseDict[@"token"] forKey:SLUserDefaultsUserToken];
-                                     [ud synchronize];
+                                     NSString *message = [NSString stringWithFormat:
+                                                          @"got response saving facebook userId: %@ Response Info: %@",
+                                                          userDict,
+                                                          responseDict];
+                                     NSLog(@"%@", message);
+                                     [SLDatabaseManager.sharedManager saveLogEntry:message];
                                      
-                                     [SLDatabaseManager.sharedManager saveLogEntry:
-                                      [NSString stringWithFormat:@"got response saving facebook userId: %@ Response Info: %@",
-                                       userDict,
-                                       responseDict]];
+                                     [keychainHandler setItemForUsername:user.userId
+                                                              inputValue:responseDict[@"token"]
+                                                    additionalSeviceInfo:nil
+                                                             handlerCase:SLKeychainHandlerCaseRestToken];;
                                  }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
@@ -180,7 +190,10 @@
     [SLRestManager.sharedManager getPictureFromUrl:url withCompletion:^(NSData *data) {
         if (data) {
             UIImage *image = [UIImage imageWithData:data];
-            if (completion) completion(image);
+            if (completion) {
+                completion(image);
+            }
+            
             return;
         }
         

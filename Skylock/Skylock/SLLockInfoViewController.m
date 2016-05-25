@@ -41,9 +41,11 @@
 
 @property (nonatomic, strong) UIButton *lockButton;
 @property (nonatomic, assign) CGFloat arrowButtonLeftOrigin;
+@property (nonatomic, assign) CGFloat arrowButtonDx;
 
 @property (nonatomic, strong) NSArray *transientViews;
 @property (nonatomic, assign) CGFloat topViewsCenter;
+@property (nonatomic, assign) BOOL isTransitioning;
 
 @end
 
@@ -112,7 +114,7 @@
                                                                   4*image.size.width,
                                                                   5*image.size.height)];
         [_arrowButton addTarget:self
-                         action:@selector(arrowButtonPressed)
+                         action:@selector(arrowButtonPushed)
                forControlEvents:UIControlEventTouchDown];
         [_arrowButton setImage:image forState:UIControlStateNormal];
         _arrowButton.enabled = !!self.lock;
@@ -295,7 +297,7 @@
     self.view.clipsToBounds = YES;
     
     self.bottomHeight = -1.0;
-    
+    self.arrowButtonLeftOrigin = CGFLOAT_MAX;
     [self hideViews:!self.lock];
     
     // notifications
@@ -318,6 +320,16 @@
                                              selector:@selector(lockClosed:)
                                                  name:kSLNotificationLockClosed
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockAdded:)
+                                                 name:kSLNotificationLockPaired
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(lockRemoved:)
+                                                 name:kSLNotificationLockManagerDisconnectedLock
+                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -326,12 +338,16 @@
     
     self.topViewsCenter = kSLLockInfoViewControllerPadding + .5*self.lockNameLabel.bounds.size.height;
     
-    self.arrowButtonLeftOrigin = self.view.bounds.size.width - self.arrowButton.bounds.size.width;
+    if (self.arrowButtonLeftOrigin == CGFLOAT_MAX) {
+        self.arrowButtonLeftOrigin = self.view.bounds.size.width - self.arrowButton.bounds.size.width;
+        self.arrowButtonDx = .5*self.view.bounds.size.width - .5*self.arrowButton.bounds.size.width;
+        self.arrowButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.arrowButton.bounds.size.width),
+                                            self.topViewsCenter -.5*self.arrowButton.bounds.size.height,
+                                            self.arrowButton.bounds.size.width,
+                                            self.arrowButton.bounds.size.height);
+    }
     
-    self.arrowButton.frame = CGRectMake(.5*(self.view.bounds.size.width - self.arrowButton.bounds.size.width),
-                                        self.topViewsCenter -.5*self.arrowButton.bounds.size.height,
-                                        self.arrowButton.bounds.size.width,
-                                        self.arrowButton.bounds.size.height);
+    
     
     self.crashButton.frame = CGRectMake(kSLLockInfoViewControllerPadding,
                                         53.0f,
@@ -379,6 +395,32 @@
     }
 }
 
+- (void)setUpViewAndChangeSize:(BOOL)changeSize moveUp:(BOOL)moveUp
+{
+    if (self.lock) {
+        [SLLockManager.sharedManager checkLockOpenOrClosed];
+    }
+    
+    if (changeSize) {
+        moveUp ? [self transitionToLargeView] : [self transitionToSmallView];
+    }
+}
+
+- (void)arrowButtonPushed
+{
+    [self setUpViewAndChangeSize:YES moveUp:!self.isUp];
+}
+
+- (void)lockRemoved:(NSNotification *)notification
+{
+    self.lock = nil;
+    self.arrowButton.enabled = NO;
+    self.lockButton.enabled = NO;
+    self.lockButton.selected = NO;
+    
+    [self setUpViewAndChangeSize:YES moveUp:NO];
+}
+
 - (void)setLockRelatedViewFrames
 {
     UIFont *font = [UIFont fontWithName:@"Helvetica" size:13.0f];
@@ -404,6 +446,13 @@
                                           wifiImage.size.width,
                                           wifiImage.size.height);
 
+}
+
+- (void)removeReleatedViewFrames
+{
+    [self.lockNameLabel removeFromSuperview];
+    [self.batteryImageView removeFromSuperview];
+    [self.wifiImageView removeFromSuperview];
 }
 
 - (void)addSubView:(UIView *)view
@@ -612,6 +661,72 @@
     }];
 }
 
+- (void)transitionToLargeView
+{
+    if (self.isUp || self.isTransitioning || !self.lock) {
+        return;
+    }
+    
+    self.isUp = YES;
+    self.isTransitioning = YES;
+    [self setLockRelatedViewFrames];
+    [self hideViews:NO];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.arrowButton.transform = CGAffineTransformRotate(self.arrowButton.transform, M_PI);
+        self.arrowButton.frame = CGRectOffset(self.arrowButton.frame,
+                                              self.arrowButtonDx,
+                                              0.0f);
+    } completion:^(BOOL finished) {
+        if ([self.delegate respondsToSelector:@selector(lockInfoViewControllerWantsToBeLarge:)]) {
+            [self.delegate lockInfoViewControllerWantsToBeLarge:self];
+        }
+        
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.lockButton.frame = CGRectOffset(self.lockButton.frame,
+                                                 0.0f,
+                                                 kSLLockInfoViewControllerViewSizeDelta);
+            [self fadeViews:NO];
+        } completion:^(BOOL finished) {
+            self.isTransitioning = NO;
+        }];
+    }];
+}
+
+- (void)transitionToSmallView
+{
+    if (!self.isUp || self.isTransitioning) {
+        return;
+    }
+    
+    self.isUp = NO;
+    self.isTransitioning = YES;
+    [self removeReleatedViewFrames];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        if ([self.delegate respondsToSelector:@selector(lockInfoViewControllerWantsToBeSmall:)]) {
+            [self.delegate lockInfoViewControllerWantsToBeSmall:self];
+        }
+        
+        [self fadeViews:YES];
+    } completion:^(BOOL finished) {
+        [self hideViews:YES];
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.lockButton.frame = CGRectOffset(self.lockButton.frame,
+                                                 0.0f,
+                                                 -107.0f);
+            self.arrowButton.transform = CGAffineTransformRotate(self.arrowButton.transform, M_PI);
+            self.arrowButton.frame = CGRectOffset(self.arrowButton.frame,
+                                                  -self.arrowButtonDx,
+                                                  0.0f);
+            
+            
+        } completion:^(BOOL finished) {
+            self.isTransitioning = NO;
+        }];
+    }];
+}
+
 - (void)hideViews:(BOOL)shouldHide
 {
     [self.transientViews enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
@@ -662,11 +777,24 @@
 - (void)lockOpened:(NSNotification *)notification
 {
     self.lockButton.selected = YES;
+    self.lockButton.enabled = YES;
+    self.arrowButton.enabled = YES;
 }
 
 - (void)lockClosed:(NSNotification *)notification
 {
     self.lockButton.selected = NO;
+    self.lockButton.enabled = YES;
+    self.arrowButton.enabled = YES;
+}
+     
+- (void)lockAdded:(NSNotification *)notification
+{
+    NSDictionary *info = (NSDictionary *)notification.object;
+    if (info[@"lock"]) {
+        self.lock = (SLLock *)info[@"lock"];
+        [SLLockManager.sharedManager checkLockOpenOrClosed];
+    }
 }
 
 - (void)crashOn:(NSNotification *)notification

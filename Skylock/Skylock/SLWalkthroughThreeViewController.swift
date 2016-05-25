@@ -120,14 +120,14 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         databaseManager.saveLogEntry("bluetooth button pressed on walkthrough")
         
         let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterSearchMode(true)
+        lockManager.shouldEnterActiveSearchMode(true)
         lockManager.startScan()
     }
     
     func foundLock(notification: NSNotification) {
         print("found lock")
         let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterSearchMode(false)
+        lockManager.shouldEnterActiveSearchMode(false)
     }
     
     func pairedLock(notification: NSNotification) {

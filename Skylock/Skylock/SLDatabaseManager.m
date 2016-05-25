@@ -146,7 +146,12 @@
 - (NSArray *)locksForCurrentUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    return self.currentUser.locks.allObjects;
+    NSMutableArray *locks = [NSMutableArray arrayWithArray:self.currentUser.locks.allObjects];
+    [locks sortUsingComparator:^NSComparisonResult(SLLock * _Nonnull lock1, SLLock*  _Nonnull lock2) {
+        return [lock1.lastConnected compare:lock2.lastConnected];
+    }];
+    
+    return locks;
 }
 
 - (SLLock *)getLockWithUUID:(NSString *)uuid
@@ -205,14 +210,17 @@
 
 - (void)deleteLock:(SLLock *)lock withCompletion:(void (^)(BOOL))completion
 {
-    BOOL didSucceed = NO;
+    [self.context deleteObject:lock];
     
-    if (lock) {
-        [self.context deleteObject:lock];
-        didSucceed = YES;
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (error) {
+        NSLog(@"Failed to delete lock from database with error: %@", error.localizedDescription);
     }
     
-    completion(didSucceed);
+    if (completion) {
+        completion(success);
+    }
 }
 
 - (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser
@@ -337,6 +345,35 @@
     } else {
         NSLog(@"Failed to save log with error: %@", error.localizedDescription);
     }
+}
+
+- (void)saveLockConnectedDate:(SLLock *)lock
+{
+    lock.lastConnected = [NSDate date];
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (success) {
+        NSLog(@"update the last connected time for lock: %@", lock.name);
+    } else {
+        NSLog(@"Failed to save last connected time for lock %@ with error: %@",
+              lock.name,
+              error.localizedDescription);
+    }
+}
+
+- (SLLock *)getCurrentLockForCurrentUser
+{
+    if (!self.currentUser) {
+        return nil;
+    }
+    
+    for (SLLock *lock in self.currentUser.locks.allObjects) {
+        if (lock.isCurrentLock.boolValue) {
+            return lock;
+        }
+    }
+    
+    return nil;
 }
 
 @end

@@ -2,7 +2,7 @@
 //  SLLock+CoreDataProperties.h
 //  Skylock
 //
-//  Created by Andre Green on 3/4/16.
+//  Created by Andre Green on 5/22/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,13 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SLLock (CoreDataProperties)
 
+@property (nullable, nonatomic, retain) NSString *givenName;
 @property (nullable, nonatomic, retain) NSNumber *isCurrentLock;
 @property (nullable, nonatomic, retain) NSNumber *latitude;
 @property (nullable, nonatomic, retain) NSNumber *longitude;
+@property (nullable, nonatomic, retain) NSString *macAddress;
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSString *uuid;
-@property (nullable, nonatomic, retain) NSString *macAddress;
-@property (nullable, nonatomic, retain) NSString *givenName;
+@property (nullable, nonatomic, retain) NSDate *lastConnected;
 @property (nullable, nonatomic, retain) NSSet<SLDbLockSharedContact *> *sharedContacts;
 @property (nullable, nonatomic, retain) SLUser *user;
 
