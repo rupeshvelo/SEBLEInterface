@@ -113,11 +113,16 @@
              //return;
          }
          
-         NSString *tempToken = @"00000000000000000000000000000000000000";
-         NSLog(@"using token: %@", token ? token : tempToken);
-         NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-         [ud setObject:token ? token: tempToken forKey:SLUserDefaultsPushNotificationToken];
-         [ud synchronize];
+         if (!token) {
+             token = @"00000000000000000000000000000";
+         }
+         
+         NSLog(@"got token: %@", token);
+         dispatch_async(dispatch_get_main_queue(), ^{
+             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+             [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
+             [ud synchronize];
+         });
      }];
 }
 

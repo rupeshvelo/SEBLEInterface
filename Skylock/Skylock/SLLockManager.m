@@ -777,7 +777,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             // TODO update current connection phase for this case
             [self handleSignedMessageConnectionPhase:macAddress];
         } else {
-            NSLog(@"handle security state has value of %@ but the phase %@ is not correct", @(value), @(self.currentConnectionPhase));
+            NSLog(@"handle security state has value of %@ but the phase %@ is not correct",
+                  @(value),
+                  @(self.currentConnectionPhase));
         }
         
         return;
@@ -815,7 +817,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             NSLog(@"%@", dbLock.name);
         }
         
-        [self.bleManager updateConnectPeripheralKey:macAddress newKey:self.selectedLock.macAddress];
+        [self.bleManager updateConnectPeripheralKey:macAddress
+                                             newKey:self.selectedLock.macAddress];
     }
     
     if (self.currentConnectionPhase == SLLockManagerConnectionPhaseConnected) {
@@ -827,6 +830,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         [self setCurrentLock:self.selectedLock];
         
         [self checkCommandStatusForLockWithMacAddress:macAddress];
+        
+        [self flashLEDs];
         
         [NSNotificationCenter.defaultCenter postNotificationName:kSLNotificationLockPaired
                                                           object:@{@"lock": self.selectedLock}];
@@ -1220,6 +1225,44 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                 characteristic:SLLockManagerCharacteristicCommandStatus];
 }
 
+- (void)flashLEDs
+{
+    if (!self.selectedLock) {
+        return;
+    }
+    
+//    u_int8_t values[4] = {0x01, 0x00, 0x20, 0x20};
+//    [self writeToLockWithMacAddress:self.selectedLock.macAddress
+//                            service:SLLockManagerServiceHardware
+//                     characteristic:SLLockManagerCharacteristicLed
+//                               data:[NSData dataWithBytes:&values length:4]];
+    
+    [self writeToLockWithMacAddress:self.selectedLock.macAddress
+                            service:SLLockManagerServiceHardware
+                     characteristic:SLLockManagerCharacteristicLed
+                             turnOn:YES];
+    
+    [NSTimer scheduledTimerWithTimeInterval:2.0
+                                     target:self
+                                   selector:@selector(turnLEDsOff:)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+- (void)turnLEDsOff:(NSTimer *)timer
+{
+    [timer invalidate];
+    
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    [self writeToLockWithMacAddress:self.selectedLock.macAddress
+                            service:SLLockManagerServiceHardware
+                     characteristic:SLLockManagerCharacteristicLed
+                             turnOn:NO];
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
@@ -1240,7 +1283,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     NSString *message;
     BOOL shouldConnect = YES;
-    if (_shouldEnterActiveSearch) {
+    if (self.shouldEnterActiveSearch) {
         message = [NSString stringWithFormat:@"In active search mode and will try to connect to: %@",
                    name];
     } else if (!self.selectedLock || ![macAddress isEqualToString:self.selectedLock.macAddress]) {

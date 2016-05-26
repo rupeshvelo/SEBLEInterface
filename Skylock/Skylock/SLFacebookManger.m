@@ -131,11 +131,10 @@
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
         pushToken = [ud objectForKey:SLUserDefaultsPushNotificationToken];
     } else {
+        pushToken = @"111111111111111111111";
         [SLDatabaseManager.sharedManager saveLogEntry:
          @"No google push token retreived. Creating a false token"];
     }
-    
-    NSAssert(pushToken != nil, @"Push notification is not defined");
     
     modifiedInfo[@"googlePushId"] = pushToken;
     [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
