@@ -260,18 +260,15 @@
               originalUrl:(NSURL *)originalUrl
                completion:(void (^)(NSDictionary *responseDict))completion
 {
+    NSString *message;
     if (error) {
     // TODO -- add error handling
-        NSLog(@"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
-              originalUrl.absoluteString,
-              error,
-              response
-              );
-        [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
-         @"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
-          originalUrl.absoluteString,
-          error,
-          response]];
+        message = [NSString stringWithFormat:@"Error could not fetch request from: %@. Failed with error: %@. Complete reponse: %@",
+                   originalUrl.absoluteString,
+                   error,
+                   response];
+        NSLog(@"%@", message);
+        [SLDatabaseManager.sharedManager saveLogEntry:message];
         completion(nil);
         return;
     }
@@ -298,7 +295,10 @@
     
     if ([status isKindOfClass:[NSString class]]) {
         if (![status isEqualToString:@"success"]) {
-            NSLog(@"Error in response from server: %@", serverReply[@"message"]);
+            message = [NSString stringWithFormat:@"Error in response from server: %@",
+                       serverReply[@"message"]];
+            NSLog(@"%@", message);
+            [SLDatabaseManager.sharedManager saveLogEntry:message];
             completion(nil);
             return;
         }
