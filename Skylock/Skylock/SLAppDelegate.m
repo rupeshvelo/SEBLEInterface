@@ -51,6 +51,11 @@
                                                  name:kSLNotificationAlertOccured
                                                object:nil];
     
+    UIPageControl *pageControl = [UIPageControl appearance];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:215 green:215 blue:215];;
+    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:102 green:177 blue:227];
+    pageControl.backgroundColor = [UIColor clearColor];
+    
     return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
 
@@ -139,12 +144,16 @@
                     SLMapViewController *mvc = [SLMapViewController new];
                     initialVC = mvc;
                 } else {
-                    SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-                    initialVC = wtvc;
+//                    SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+//                    initialVC = wtvc;
+                    SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+                    initialVC = opvc;
                 }
             } else {
-                SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-                initialVC = wtvc;
+//                SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
+//                initialVC = wtvc;
+                SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+                initialVC = opvc;
             }
         } else {
             SLLoginViewController *lvc = [SLLoginViewController new];

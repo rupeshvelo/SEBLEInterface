@@ -76,7 +76,8 @@ class SLWalkthroughThreeViewController: SLWalkthroughCardViewController {
         headerLabel.numberOfLines = 0
         cardView.addSubview(headerLabel)
         
-        let detailText = NSLocalizedString("Wait for the light to start blinking on your Skylock. This means the device is connecting to your phone.", comment: "")
+        let detailText = NSLocalizedString("Wait for the light to start blinking on your Skylock. " +
+            "This means the device is connecting to your phone.", comment: "")
         let detailFont = UIFont(name:"Helvetica", size:15)
         let detailSize = utility.sizeForLabel(
             detailFont!,

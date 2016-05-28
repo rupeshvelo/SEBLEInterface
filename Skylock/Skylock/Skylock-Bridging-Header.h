@@ -14,3 +14,4 @@
 #import "SLUser.h"
 #import "SLLog.h"
 #import "SLNotifications.h"
+#import "SLFacebookManger.h"

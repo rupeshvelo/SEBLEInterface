@@ -629,22 +629,13 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
         if (isTutorialComplete.boolValue) {
             [self presentViewController:mvc animated:YES completion:nil];
         } else {
-            SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-            __weak typeof(wtvc) weekWtcv = wtvc;
-            wtvc.onExit = ^{
-                [weekWtcv presentViewController:mvc animated:YES completion:nil];
-            };
-            
-            [self presentViewController:wtvc animated:YES completion:nil];
+            SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+            [self presentViewController:opvc animated:YES completion:nil];
         }
     } else {
         [ud setObject:@(NO) forKey:SLUserDefaultsTutorialComplete];
-        SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-        __weak typeof(wtvc) weekWtcv = wtvc;
-        wtvc.onExit = ^{
-            [weekWtcv presentViewController:mvc animated:YES completion:nil];
-        };
-        [self presentViewController:wtvc animated:YES completion:nil];
+        SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+        [self presentViewController:opvc animated:YES completion:nil];
     }
     
     [ud synchronize];
