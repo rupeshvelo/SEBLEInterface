@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SLSignInViewController: UIViewController {
+class SLSignInViewController: UIViewController {    
     lazy var logoView:UIImageView = {
         let image = UIImage(named: "placeholder_logo_animation")!
         let view = UIImageView(image: image)
@@ -94,11 +94,13 @@ class SLSignInViewController: UIViewController {
     }
     
     func existingUserButtonPressed() {
-        print("existing user button pressed")
+        let createAccountVC = SLCreateAccountViewController()
+        self.presentViewController(createAccountVC, animated: true, completion: nil)
     }
     
     func signUpWithEmailButtonPressed() {
-        print("sign up with email button pressed")
+        let createAccountVC = SLCreateAccountViewController()
+        self.presentViewController(createAccountVC, animated: true, completion: nil)
     }
     
     func signUpWithFacebookButtonPressed() {

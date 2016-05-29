@@ -156,12 +156,16 @@
                 initialVC = opvc;
             }
         } else {
-            SLLoginViewController *lvc = [SLLoginViewController new];
-            initialVC = lvc;
+//            SLLoginViewController *lvc = [SLLoginViewController new];
+//            initialVC = lvc;
+            SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+            initialVC = opvc;
         }
     } else {
-        SLLoginViewController *lvc = [SLLoginViewController new];
-        initialVC = lvc;
+//        SLLoginViewController *lvc = [SLLoginViewController new];
+//        initialVC = lvc;
+        SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+        initialVC = opvc;
     }
     
     return initialVC;

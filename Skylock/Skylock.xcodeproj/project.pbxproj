@@ -477,6 +477,8 @@
 		DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE2CE111B37AE10007C4AC5 /* SLBackButton.m */; };
 		DCE33AC81B5F4CD300750813 /* SLAccountInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */; };
 		DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE33ACB1B5F4DB600750813 /* SLAccountInfoFieldView.m */; };
+		DCE5C1C81CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C1C71CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift */; };
+		DCE5C1CB1CFA62020084F8A2 /* SLUnderlineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C1CA1CFA62020084F8A2 /* SLUnderlineTextView.swift */; };
 		DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */; };
 		DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */; };
 		DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BA71B52425400070F11 /* SLLoginViewController.m */; };
@@ -1032,6 +1034,8 @@
 		DCE33AC71B5F4CD300750813 /* SLAccountInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAccountInfoViewController.m; sourceTree = "<group>"; };
 		DCE33ACA1B5F4DB600750813 /* SLAccountInfoFieldView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAccountInfoFieldView.h; sourceTree = "<group>"; };
 		DCE33ACB1B5F4DB600750813 /* SLAccountInfoFieldView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAccountInfoFieldView.m; sourceTree = "<group>"; };
+		DCE5C1C71CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLCreateAccountViewController.swift; sourceTree = "<group>"; };
+		DCE5C1CA1CFA62020084F8A2 /* SLUnderlineTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUnderlineTextView.swift; sourceTree = "<group>"; };
 		DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLFacebookManger.h; sourceTree = "<group>"; };
 		DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLFacebookManger.m; sourceTree = "<group>"; };
 		DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddLockViewController.h; sourceTree = "<group>"; };
@@ -1135,6 +1139,7 @@
 		DC0520C41B4C0E8D00FBAAB7 /* views */ = {
 			isa = PBXGroup;
 			children = (
+				DCE5C1CA1CFA62020084F8A2 /* SLUnderlineTextView.swift */,
 				DC3CCE281BA3534000528992 /* SLDirectionsTableViewCell.h */,
 				DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */,
 				DC85F3B01BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.h */,
@@ -1189,6 +1194,7 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DCE5C1C71CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift */,
 				DCF41CAA1CE8D91C008C17DE /* SLLogDetailViewController.swift */,
 				DCF41CA11CE7C679008C17DE /* SLLogViewController.swift */,
 				DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */,
@@ -2496,6 +2502,7 @@
 				DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */,
 				DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */,
 				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
+				DCE5C1CB1CFA62020084F8A2 /* SLUnderlineTextView.swift in Sources */,
 				DC974D251C3A1BB000797CF1 /* SLWalkthroughViewController.swift in Sources */,
 				DC23872A1B30516600BB28F3 /* SLLockInfoViewController.m in Sources */,
 				DCF41CAB1CE8D91C008C17DE /* SLLogDetailViewController.swift in Sources */,
@@ -2552,6 +2559,7 @@
 				DC6F1CE31CBB007900D44739 /* SLUnderlinedCharacterView.swift in Sources */,
 				DCF36BBC1B5356B900070F11 /* SLCoachMarkViewController.m in Sources */,
 				DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */,
+				DCE5C1C81CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift in Sources */,
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
 				DC156BD91C5D240D00015B53 /* SLLock.m in Sources */,
