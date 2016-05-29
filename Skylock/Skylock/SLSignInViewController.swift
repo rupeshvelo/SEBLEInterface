@@ -94,12 +94,12 @@ class SLSignInViewController: UIViewController {
     }
     
     func existingUserButtonPressed() {
-        let createAccountVC = SLCreateAccountViewController()
+        let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
         self.presentViewController(createAccountVC, animated: true, completion: nil)
     }
     
     func signUpWithEmailButtonPressed() {
-        let createAccountVC = SLCreateAccountViewController()
+        let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
         self.presentViewController(createAccountVC, animated: true, completion: nil)
     }
     

@@ -432,31 +432,6 @@
     }];
 }
 
-//- (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
-//{
-//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-//    self.lockInfoViewController.lock = self.selectedLock;
-//    [self.lockInfoViewController setUpView];
-//    
-//    CGRect viewFrame = self.lockInfoViewController.isUp ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-//    
-//    if ([self.childViewControllers containsObject:self.lockInfoViewController]) {
-//        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-//            self.lockInfoViewController.view.frame = viewFrame;
-//        } completion:^(BOOL finished) {
-//            if (completion) {
-//                completion();
-//            }
-//        }];
-//    } else {
-//        self.lockInfoViewController.view.frame = viewFrame;
-//        [self addChildViewController:self.lockInfoViewController];
-//        [self.view addSubview:self.lockInfoViewController.view];
-//        [self.view bringSubviewToFront:self.lockInfoViewController.view];
-//        [self.lockInfoViewController didMoveToParentViewController:self];
-//    }
-//}
-
 - (void)dismissNotificationViewControllerWithCompletion:(void(^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -656,18 +631,6 @@
 
 - (void)setupLockInfoViewControllerView
 {
-//    BOOL isShowingSlideVC = NO;
-//    for (UIViewController *vc in self.childViewControllers) {
-//        if ([vc isMemberOfClass: [SLSlideViewController class]]) {
-//            isShowingSlideVC = YES;
-//            break;
-//        }
-//    }
-    
-//    if ([self.presentedViewController class] == [SLWalkthroughViewController class] || isShowingSlideVC) {
-//        return;
-//    }
-    
     self.locationButton.hidden = self.lockInfoViewController.isUp;
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
@@ -675,14 +638,7 @@
             self.lockInfoLargeFrame : self.lockInfoSmallFrame;
         self.locationButton.alpha = self.lockInfoViewController.isUp ? 0.0f : 1.0f;
     } completion:^(BOOL finished) {
-        if (self.lockInfoViewController.isUp) {
-            self.locationButton.hidden = NO;
-//            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-//            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-//            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)){
-//                [self presentCoachMarkViewController];
-//            }
-        }
+        self.locationButton.hidden = !self.lockInfoViewController.isUp;
     }];
 }
 

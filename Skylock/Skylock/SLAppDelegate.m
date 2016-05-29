@@ -144,26 +144,18 @@
                     SLMapViewController *mvc = [SLMapViewController new];
                     initialVC = mvc;
                 } else {
-//                    SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-//                    initialVC = wtvc;
                     SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
                     initialVC = opvc;
                 }
             } else {
-//                SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-//                initialVC = wtvc;
                 SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
                 initialVC = opvc;
             }
         } else {
-//            SLLoginViewController *lvc = [SLLoginViewController new];
-//            initialVC = lvc;
             SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
             initialVC = opvc;
         }
     } else {
-//        SLLoginViewController *lvc = [SLLoginViewController new];
-//        initialVC = lvc;
         SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
         initialVC = opvc;
     }
