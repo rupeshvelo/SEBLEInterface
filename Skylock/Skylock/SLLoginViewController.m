@@ -586,8 +586,8 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
 - (void)facebookButtonPressed
 {
     NSLog(@"facebook login button pressed");
-    [SLFacebookManger.sharedManager loginFromViewController:self withCompletion:^{
-        NSLog(@"user loging completed!!! Yay!!");
+    [SLFacebookManger.sharedManager loginFromViewController:self withCompletion:^(BOOL success) {
+        
     }];
 }
 

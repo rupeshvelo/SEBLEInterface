@@ -87,19 +87,25 @@
     return [FBSDKAccessToken currentAccessToken];
 }
 
-- (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(void))completion
+- (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(BOOL success))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
     [login logInWithReadPermissions:self.permissions
                  fromViewController:fromViewController
                             handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+                                BOOL success = NO;
                                 if (error) {
                                     NSLog(@"Error logging into facebook %@", error.description);
                                 } else if (result.isCancelled) {
                                     NSLog(@"Canceled login to facebook");
                                 } else {
                                     [self getFBUserInfo];
+                                    success = YES;
+                                }
+                                
+                                if (completion) {
+                                    completion(success);
                                 }
                             }];
 }

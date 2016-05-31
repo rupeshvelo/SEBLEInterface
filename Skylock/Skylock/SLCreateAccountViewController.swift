@@ -346,7 +346,8 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     }
     
     func sendTextButtonPressed() {
-        
+        let clvc = SLConnectLockInfoViewController()
+        self.presentViewController(clvc, animated: true, completion: nil)
     }
     
     func getTextFieldsSectionHeight() -> CGFloat {
@@ -511,7 +512,6 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             let tempText:NSString = text as NSString
             let newText = tempText.stringByReplacingCharactersInRange(range, withString: string)
             self.fieldValues[fieldName] = newText as String
-            print(fieldValues)
         }
         
         return true

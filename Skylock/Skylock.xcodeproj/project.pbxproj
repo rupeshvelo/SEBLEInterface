@@ -478,8 +478,8 @@
 		DCE5C2001CFB48B60084F8A2 /* login_use_location_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C1F21CFB48B60084F8A2 /* login_use_location_background@2x.png */; };
 		DCE5C2011CFB48B60084F8A2 /* login_use_location_background@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C1F31CFB48B60084F8A2 /* login_use_location_background@3x.png */; };
 		DCE5C2031CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C2021CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift */; };
-		DCE5C2151CFB5D910084F8A2 /* Bitmap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2051CFB5D910084F8A2 /* Bitmap@2x.png */; };
-		DCE5C2161CFB5D910084F8A2 /* Bitmap@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2061CFB5D910084F8A2 /* Bitmap@3x.png */; };
+		DCE5C2151CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2051CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png */; };
+		DCE5C2161CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2061CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png */; };
 		DCE5C2171CFB5D910084F8A2 /* button_connect_device_Onboarding@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2071CFB5D910084F8A2 /* button_connect_device_Onboarding@2x.png */; };
 		DCE5C2181CFB5D910084F8A2 /* button_connect_device_Onboarding@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2081CFB5D910084F8A2 /* button_connect_device_Onboarding@3x.png */; };
 		DCE5C2191CFB5D910084F8A2 /* button_continue_Onboarding@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2091CFB5D910084F8A2 /* button_continue_Onboarding@2x.png */; };
@@ -494,6 +494,7 @@
 		DCE5C2221CFB5D910084F8A2 /* button_yes_small_Onboarding@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2121CFB5D910084F8A2 /* button_yes_small_Onboarding@3x.png */; };
 		DCE5C2231CFB5D910084F8A2 /* skylock_press_button_onboarding@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2131CFB5D910084F8A2 /* skylock_press_button_onboarding@2x.png */; };
 		DCE5C2241CFB5D910084F8A2 /* skylock_press_button_onboarding@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCE5C2141CFB5D910084F8A2 /* skylock_press_button_onboarding@3x.png */; };
+		DCE5C2261CFB6E510084F8A2 /* SLAvailableLocksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE5C2251CFB6E510084F8A2 /* SLAvailableLocksViewController.swift */; };
 		DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */; };
 		DCEDDE351B47532A00E3A2EE /* SLAddLockViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEDDE341B47532A00E3A2EE /* SLAddLockViewController.m */; };
 		DCF36BA81B52425400070F11 /* SLLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF36BA71B52425400070F11 /* SLLoginViewController.m */; };
@@ -1050,8 +1051,8 @@
 		DCE5C1F21CFB48B60084F8A2 /* login_use_location_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login_use_location_background@2x.png"; sourceTree = "<group>"; };
 		DCE5C1F31CFB48B60084F8A2 /* login_use_location_background@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "login_use_location_background@3x.png"; sourceTree = "<group>"; };
 		DCE5C2021CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLConnectLockInfoViewController.swift; sourceTree = "<group>"; };
-		DCE5C2051CFB5D910084F8A2 /* Bitmap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bitmap@2x.png"; sourceTree = "<group>"; };
-		DCE5C2061CFB5D910084F8A2 /* Bitmap@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Bitmap@3x.png"; sourceTree = "<group>"; };
+		DCE5C2051CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table_cell_lock_pic_onboarding@2x.png"; sourceTree = "<group>"; };
+		DCE5C2061CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table_cell_lock_pic_onboarding@3x.png"; sourceTree = "<group>"; };
 		DCE5C2071CFB5D910084F8A2 /* button_connect_device_Onboarding@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_connect_device_Onboarding@2x.png"; sourceTree = "<group>"; };
 		DCE5C2081CFB5D910084F8A2 /* button_connect_device_Onboarding@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_connect_device_Onboarding@3x.png"; sourceTree = "<group>"; };
 		DCE5C2091CFB5D910084F8A2 /* button_continue_Onboarding@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_continue_Onboarding@2x.png"; sourceTree = "<group>"; };
@@ -1066,6 +1067,7 @@
 		DCE5C2121CFB5D910084F8A2 /* button_yes_small_Onboarding@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_yes_small_Onboarding@3x.png"; sourceTree = "<group>"; };
 		DCE5C2131CFB5D910084F8A2 /* skylock_press_button_onboarding@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "skylock_press_button_onboarding@2x.png"; sourceTree = "<group>"; };
 		DCE5C2141CFB5D910084F8A2 /* skylock_press_button_onboarding@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "skylock_press_button_onboarding@3x.png"; sourceTree = "<group>"; };
+		DCE5C2251CFB6E510084F8A2 /* SLAvailableLocksViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLAvailableLocksViewController.swift; sourceTree = "<group>"; };
 		DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLFacebookManger.h; sourceTree = "<group>"; };
 		DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLFacebookManger.m; sourceTree = "<group>"; };
 		DCEDDE331B47532A00E3A2EE /* SLAddLockViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAddLockViewController.h; sourceTree = "<group>"; };
@@ -1224,6 +1226,7 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DCE5C2251CFB6E510084F8A2 /* SLAvailableLocksViewController.swift */,
 				DCE5C2021CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift */,
 				DCE5C1C71CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift */,
 				DCF41CAA1CE8D91C008C17DE /* SLLogDetailViewController.swift */,
@@ -1930,8 +1933,8 @@
 		DCE5C2041CFB5D910084F8A2 /* add_lock */ = {
 			isa = PBXGroup;
 			children = (
-				DCE5C2051CFB5D910084F8A2 /* Bitmap@2x.png */,
-				DCE5C2061CFB5D910084F8A2 /* Bitmap@3x.png */,
+				DCE5C2051CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png */,
+				DCE5C2061CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png */,
 				DCE5C2071CFB5D910084F8A2 /* button_connect_device_Onboarding@2x.png */,
 				DCE5C2081CFB5D910084F8A2 /* button_connect_device_Onboarding@3x.png */,
 				DCE5C2091CFB5D910084F8A2 /* button_continue_Onboarding@2x.png */,
@@ -2329,7 +2332,7 @@
 				DC7A116C1B5714B100F3336E /* bg_splash1.png in Resources */,
 				DCE5C21F1CFB5D910084F8A2 /* button_yes_Onboarding@2x.png in Resources */,
 				DCD3CBC01C5BD015009E1435 /* directions_walking_icon@3x.png in Resources */,
-				DCE5C2151CFB5D910084F8A2 /* Bitmap@2x.png in Resources */,
+				DCE5C2151CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png in Resources */,
 				DC7A11F11B5714B100F3336E /* icon_chevron_up@3x.png in Resources */,
 				DC7A118C1B5714B100F3336E /* btn_help.png in Resources */,
 				DC7A11901B5714B100F3336E /* btn_ignore@2x.png in Resources */,
@@ -2416,7 +2419,7 @@
 				DC7A122C1B5714B100F3336E /* icon_wifi_2@2x.png in Resources */,
 				DC7A11BA1B5714B100F3336E /* btn_theftalert_off@2x.png in Resources */,
 				DC7A11821B5714B100F3336E /* btn_crashalert_on@3x.png in Resources */,
-				DCE5C2161CFB5D910084F8A2 /* Bitmap@3x.png in Resources */,
+				DCE5C2161CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png in Resources */,
 				DC7A12561B5714B100F3336E /* img_theft_white_low@2x.png in Resources */,
 				DCD3CBA91C5AA57C009E1435 /* icon_directions_expand@2x.png in Resources */,
 				DC7A12291B5714B100F3336E /* icon_wifi_1@2x.png in Resources */,
@@ -2624,6 +2627,7 @@
 				DC39B2AF1B58859E0001973B /* SLSlideTableViewHeader.m in Sources */,
 				DC156BD91C5D240D00015B53 /* SLLock.m in Sources */,
 				DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */,
+				DCE5C2261CFB6E510084F8A2 /* SLAvailableLocksViewController.swift in Sources */,
 				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

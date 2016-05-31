@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SLSignInViewController: UIViewController {    
+class SLSignInViewController: UIViewController {
     lazy var logoView:UIImageView = {
         let image = UIImage(named: "placeholder_logo_animation")!
         let view = UIImageView(image: image)
@@ -106,8 +106,12 @@ class SLSignInViewController: UIViewController {
     func signUpWithFacebookButtonPressed() {
         print("sign up with facebook button pressed")
         let facebookManager:SLFacebookManger = SLFacebookManger.sharedManager() as! SLFacebookManger
-        facebookManager.loginFromViewController(self) { 
-            print("loggin from facebook manager successful")
+        facebookManager.loginFromViewController(self) { (success) in
+            if success {
+                let clvc = SLConnectLockInfoViewController()
+                let navController:UINavigationController = UINavigationController(rootViewController: clvc)
+                self.presentViewController(navController, animated: true, completion: nil)
+            }
         }
     }
 }

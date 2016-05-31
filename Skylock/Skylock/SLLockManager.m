@@ -101,6 +101,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 @property (nonatomic, assign) SLLockManagerConnectionPhase currentConnectionPhase;
 @property (nonatomic, assign) BOOL shouldEnterActiveSearch;
 @property (nonatomic, strong) SLKeychainHandler *keychainHandler;
+@property (nonatomic, strong) NSMutableArray *unaddedLocks;
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -123,6 +124,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         _bleIsPoweredOn             = NO;
         _shouldEnterActiveSearch    = NO;
         _currentConnectionPhase     = SLLockManagerConnectionPhaseNone;
+        _unaddedLocks               = [NSMutableArray new];
     }
     
     return self;
@@ -399,6 +401,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [self.bleManager stopScan];
     [SLDatabaseManager.sharedManager saveLogEntry:
      [NSString stringWithFormat:@"Stopping bluetooth scan"]];
+}
+
+- (NSArray *)availableLocks
+{
+    return self.unaddedLocks;
 }
 
 - (void)startBlueToothManager
@@ -1263,6 +1270,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                              turnOn:NO];
 }
 
+- (void)connectToSelectedLock
+{
+    
+}
+
 #pragma mark - SEBLEInterfaceManager Delegate Methods
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
        discoveredPeripheral:(SEBLEPeripheral *)peripheral
@@ -1286,6 +1298,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     if (self.shouldEnterActiveSearch) {
         message = [NSString stringWithFormat:@"In active search mode and will try to connect to: %@",
                    name];
+        SLLock *unaddedLock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
+        [self.unaddedLocks addObject:unaddedLock];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                            object:nil];
+        return;
     } else if (!self.selectedLock || ![macAddress isEqualToString:self.selectedLock.macAddress]) {
         message = [NSString stringWithFormat:@"Current lock is %@. Will not connect to %@",
                    self.selectedLock ? self.selectedLock.name : @"nil",
@@ -1299,11 +1316,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         
     NSLog(@"%@", message);
     [self.databaseManger saveLogEntry:message];
-    
-    if (!shouldConnect) {
-        return;
-    }
-    
     
     SLUser *currentUser = [self.databaseManger currentUser];
     if (self.selectedLock) {
