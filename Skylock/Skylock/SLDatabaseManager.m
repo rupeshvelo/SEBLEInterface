@@ -331,6 +331,7 @@
 
 - (void)saveLogEntry:(NSString *)entry
 {
+    NSLog(@"%@", entry);
     SLLog *newLog = [NSEntityDescription insertNewObjectForEntityForName:KSLDatabaseManagerEnityLog
                                                   inManagedObjectContext:self.context];
     newLog.entry = entry;

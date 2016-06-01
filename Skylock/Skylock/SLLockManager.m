@@ -102,6 +102,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 @property (nonatomic, assign) BOOL shouldEnterActiveSearch;
 @property (nonatomic, strong) SLKeychainHandler *keychainHandler;
 @property (nonatomic, strong) NSMutableArray *unaddedLocks;
+@property (nonatomic, strong) NSMutableDictionary *notConnectPeripherals;
 
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
@@ -125,6 +126,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         _shouldEnterActiveSearch    = NO;
         _currentConnectionPhase     = SLLockManagerConnectionPhaseNone;
         _unaddedLocks               = [NSMutableArray new];
+        _notConnectPeripherals      = [NSMutableDictionary new];
     }
     
     return self;
@@ -406,6 +408,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 - (NSArray *)availableLocks
 {
     return self.unaddedLocks;
+}
+
+- (void)clearAvaliableLocks
+{
+    [self.unaddedLocks removeAllObjects];
+    [self.notConnectPeripherals removeAllObjects];
 }
 
 - (void)startBlueToothManager
@@ -1270,84 +1278,57 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                              turnOn:NO];
 }
 
-- (void)connectToSelectedLock
+- (void)connectToSelectedLockWithName:(NSString *)name
 {
+    SLUser *currentUser = [self.databaseManger currentUser];
+    self.selectedLock.name = name;
+    [self saveLockToDatabase:self.selectedLock];
     
-}
-
-#pragma mark - SEBLEInterfaceManager Delegate Methods
-- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
-       discoveredPeripheral:(SEBLEPeripheral *)peripheral
-       withAdvertisemntData:(NSDictionary *)advertisementData
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    if (!self.selectedLock) {
-        self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
-    }
-    
-    NSString *name = (advertisementData && advertisementData[@"kCBAdvDataLocalName"]) ?
-    advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
-    NSLog(@"found peripheral: %@", name);
-    [SLDatabaseManager.sharedManager saveLogEntry:
-     [NSString stringWithFormat:@"found peripheral: %@", name]];
-    NSString *macAddress = name.macAddress;
-    
-    NSString *message;
-    BOOL shouldConnect = YES;
-    if (self.shouldEnterActiveSearch) {
-        message = [NSString stringWithFormat:@"In active search mode and will try to connect to: %@",
-                   name];
-        SLLock *unaddedLock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
-        [self.unaddedLocks addObject:unaddedLock];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                            object:nil];
-        return;
-    } else if (!self.selectedLock || ![macAddress isEqualToString:self.selectedLock.macAddress]) {
-        message = [NSString stringWithFormat:@"Current lock is %@. Will not connect to %@",
-                   self.selectedLock ? self.selectedLock.name : @"nil",
-                   name];
-        shouldConnect = NO;
+    if (self.selectedLock.isInFactoryMode) {
+        self.currentConnectionPhase = SLLockManagerConnectionPhasePublicKey;
     } else {
-        message = [NSString stringWithFormat:@"Current lock is %@. Found peripheral with matching id: %@",
-                   self.selectedLock.name,
-                   name];
+        if ([self.keychainHandler getItemForUsername:currentUser.userId
+                                additionalSeviceInfo:self.selectedLock.macAddress
+                                         handlerCase:SLKeychainHandlerCasePublicKey] &&
+            [self.keychainHandler getItemForUsername:currentUser.userId
+                                additionalSeviceInfo:self.selectedLock.macAddress
+                                         handlerCase:SLKeychainHandlerCaseSignedMessage])
+        {
+            self.currentConnectionPhase = SLLockManagerConnectionPhaseSignedMessage;
+        } else {
+            self.currentConnectionPhase = SLLockManagerConnectionPhaseChallengeKey;
+        }
     }
-        
+    
+    SEBLEPeripheral *peripheral = self.notConnectPeripherals[name.macAddress];
+    [self.bleManager setNotConnectedPeripheral:peripheral forKey:self.selectedLock.macAddress];
+    [self addLock:self.selectedLock];
+    
+    NSString *message = [NSString stringWithFormat:@"found %@ in database...connecting", self.selectedLock.name];
     NSLog(@"%@", message);
     [self.databaseManger saveLogEntry:message];
     
-    SLUser *currentUser = [self.databaseManger currentUser];
-    if (self.selectedLock) {
-        self.selectedLock.name = name;
-        [self saveLockToDatabase:self.selectedLock];
-        
-        if (self.selectedLock.isInFactoryMode) {
-            self.currentConnectionPhase = SLLockManagerConnectionPhasePublicKey;
-        } else {
-            if ([self.keychainHandler getItemForUsername:currentUser.userId
-                                    additionalSeviceInfo:self.selectedLock.macAddress
-                                             handlerCase:SLKeychainHandlerCasePublicKey] &&
-                [self.keychainHandler getItemForUsername:currentUser.userId
-                                    additionalSeviceInfo:self.selectedLock.macAddress
-                                             handlerCase:SLKeychainHandlerCaseSignedMessage])
-            {
-                self.currentConnectionPhase = SLLockManagerConnectionPhaseSignedMessage;
-            } else {
-                self.currentConnectionPhase = SLLockManagerConnectionPhaseChallengeKey;
-            }
-        }
-        
-        [self.bleManager setNotConnectedPeripheral:peripheral forKey:self.selectedLock.macAddress];
-        [self addLock:self.selectedLock];
-        
-        NSString *message = [NSString stringWithFormat:@"found %@ in database...connecting", self.selectedLock.name];
-        NSLog(@"%@", message);
-        [self.databaseManger saveLogEntry:message];
-        
-        return;
-    }
+}
+
+- (void)foundLockWhileInActiveSearchForName:(NSString *)name
+{
+    NSString *message = [NSString stringWithFormat:@"In active search mode and will notify that: %@ is nearby",
+                         name];
+    [self.databaseManger saveLogEntry:message];
+    NSLog(@"%@", message);
     
+    SEBLEPeripheral *peripheral = self.notConnectPeripherals[name.macAddress];
+    SLLock *unaddedLock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
+    [self.unaddedLocks addObject:unaddedLock];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
+                                                        object:nil];
+}
+
+- (void)connectToNewLockNamed:(NSString *)name
+{
+    SLUser *currentUser = [self.databaseManger currentUser];
+    
+    SEBLEPeripheral *peripheral = self.notConnectPeripherals[name.macAddress];
     self.selectedLock = [self lockWithName:name CBUUID:peripheral.CBUUIDAsString];
     [self.selectedLock setInitialProperties:@{}];
     self.currentConnectionPhase = self.selectedLock.isInFactoryMode ?
@@ -1397,6 +1378,64 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                          [self.databaseManger saveLogEntry:infoMessage];
                      }
                  }];
+}
+
+- (void)connectToLockWithName:(NSString *)lockName
+{
+    NSArray *dbLocks = [self.databaseManger locksForCurrentUser];
+    SLLock *lock;
+    NSString *macAddress = lockName.macAddress;
+    for (SLLock *dbLock in dbLocks) {
+        if ([dbLock.macAddress isEqualToString:macAddress]) {
+            lock = dbLock;
+            break;
+        }
+    }
+    
+    if (lock) {
+        // TODO: should add a check if the keys for this lock are in the user's keychain
+        self.selectedLock = lock;
+        [self connectToSelectedLockWithName:self.selectedLock.name];
+        return;
+    }
+    
+    [self connectToNewLockNamed:lockName];
+}
+
+#pragma mark - SEBLEInterfaceManager Delegate Methods
+- (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManger
+       discoveredPeripheral:(SEBLEPeripheral *)peripheral
+       withAdvertisemntData:(NSDictionary *)advertisementData
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    
+    NSString *name = (advertisementData && advertisementData[@"kCBAdvDataLocalName"]) ?
+    advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
+    NSLog(@"found peripheral: %@", name);
+    [SLDatabaseManager.sharedManager saveLogEntry:
+     [NSString stringWithFormat:@"found peripheral: %@", name]];
+    NSString *macAddress = name.macAddress;
+    self.notConnectPeripherals[macAddress] = peripheral;
+    
+    if (!self.selectedLock) {
+        self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
+    }
+    
+    if (self.shouldEnterActiveSearch) {
+        [self foundLockWhileInActiveSearchForName:name];
+    } else if (self.selectedLock || [macAddress isEqualToString:self.selectedLock.macAddress]) {
+        [self.databaseManger saveLogEntry:[NSString stringWithFormat:
+                                           @"Current lock is %@. Found peripheral with matching id: %@",
+                                           self.selectedLock.name,
+                                           name]];
+        [self connectToSelectedLockWithName:name];
+    } else {
+        [self.databaseManger saveLogEntry:[NSString stringWithFormat:
+                                           @"Current lock is %@. Will not connect to %@",
+                                           self.selectedLock ? self.selectedLock.name : @"nil",
+                                           name]];
+    }
+        
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager

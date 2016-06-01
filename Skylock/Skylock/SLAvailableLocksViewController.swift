@@ -9,7 +9,7 @@
 import UIKit
 
 class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    var locks:[SLLock] = SLLockManager.sharedManager().availableLocks() as! [SLLock]
+    var locks:[SLLock] = [SLLock]()
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.Plain)
         table.rowHeight = 75.0
@@ -40,7 +40,12 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func foundLock() {
-        
+        let managerLocks = SLLockManager.sharedManager().availableLocks() as! [SLLock]
+        self.locks = managerLocks.reverse()
+        let indexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+        self.tableView.beginUpdates()
+        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+        self.tableView.endUpdates()
     }
     
     func addLockButtonPressed() {
@@ -86,7 +91,7 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let labelHeight:CGFloat = 15.0
+        let labelHeight:CGFloat = 18.0
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -106,7 +111,7 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         let label:UILabel = UILabel(frame: frame)
         label.text = NSLocalizedString("We've found the following Ellipses", comment: "")
         label.textAlignment = .Center
-        label.font = UIFont.systemFontOfSize(labelHeight)
+        label.font = UIFont.systemFontOfSize(15)
         label.textColor = UIColor(red: 102, green: 177, blue: 227)
         
         view.addSubview(label)
@@ -124,5 +129,10 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         view.addSubview(lineView)
         
         return view
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let ccvc = SLConcentricCirclesViewController()
+        self.navigationController?.pushViewController(ccvc, animated: true)
     }
 }

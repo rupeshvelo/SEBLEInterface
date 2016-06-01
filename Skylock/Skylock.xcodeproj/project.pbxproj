@@ -376,6 +376,7 @@
 		DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D21B8C34A6006E74DC /* SLNotification.m */; };
 		DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */; };
 		DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */; };
+		DC80915B1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */; };
 		DC85F3B21BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
 		DC85F3B31BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
 		DC8C73931B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */; };
@@ -926,6 +927,7 @@
 		DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationEmergencyView.m; sourceTree = "<group>"; };
 		DC7E70D71B8D1DC9006E74DC /* SLNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNotificationViewController.h; sourceTree = "<group>"; };
 		DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationViewController.m; sourceTree = "<group>"; };
+		DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLConcentricCirclesViewController.swift; sourceTree = "<group>"; };
 		DC85F3B01BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAnnotationDirectionCalloutView.h; sourceTree = "<group>"; };
 		DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAnnotationDirectionCalloutView.m; sourceTree = "<group>"; };
 		DC8C73921B7EC7FE003EB5A3 /* bg_splash2_6_plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_splash2_6_plus@3x.png"; sourceTree = "<group>"; };
@@ -1226,6 +1228,7 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */,
 				DCE5C2251CFB6E510084F8A2 /* SLAvailableLocksViewController.swift */,
 				DCE5C2021CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift */,
 				DCE5C1C71CFA5F4E0084F8A2 /* SLCreateAccountViewController.swift */,
@@ -2559,6 +2562,7 @@
 				DC3141211B93849E00492C4D /* SLTouchPadViewController.swift in Sources */,
 				DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */,
 				DCB7A0971B417B2400636D8E /* SLShareingBaseTableViewCell.m in Sources */,
+				DC80915B1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift in Sources */,
 				DCAB642C1B560FD60074BBF4 /* SLLockInfoViewBase.m in Sources */,
 				DCE2CE121B37AE10007C4AC5 /* SLBackButton.m in Sources */,
 				DCDAC22E1BA9FE8400396951 /* SLDirectionAPIHelper.swift in Sources */,

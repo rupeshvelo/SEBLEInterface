@@ -54,12 +54,14 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)deleteLockFromCurrentUserAccountWithMacAddress:(NSString *)macAddress;
 - (void)checkLockOpenOrClosed;
 - (void)flashLEDs;
+- (NSArray *)availableLocks;
+- (void)clearAvaliableLocks;
+- (void)connectToLockWithName:(NSString *)lockName;
 
 // temporary methods for testing
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
 - (void)checkCommandStatusForLockWithMacAddress:(NSString *)macAddress;
 - (void)getCommandStatusForLockWithMacAddress:(NSString *)macAddress;
-- (NSArray *)availableLocks;
 
 /**
  * returns a dictionary with keys "factory" and "nonFactory"
