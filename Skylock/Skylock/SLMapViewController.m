@@ -12,7 +12,6 @@
 #import "SLLockInfoViewController.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
-#import "SLCoachMarkViewController.h"
 #import "SLUserDefaults.h"
 #import "SLDropDownLabel.h"
 #import <QuartzCore/QuartzCore.h>
@@ -24,7 +23,6 @@
 #import "SLNavigationViewController.h"
 #import "SLAccountInfoViewController.h"
 #import <CoreLocation/CoreLocation.h>
-#import "SLSharingViewController.h"
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
 #import "SLDirectionsViewController.h"
@@ -469,51 +467,6 @@
     }];
 }
 
-- (void)presentSharingViewControllerWithLock:(SLLock *)lock
-{
-    SLSharingViewController *svc = [SLSharingViewController new];
-    svc.lock = lock;
-    
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    [self presentViewController:nc animated:YES completion:nil];
-}
-
-- (NSDictionary *)coachMarkParameters
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSDictionary *params;
-    if (self.selectedLock && self.lockInfoViewController.isUp) {
-        static NSString *button = @"button";
-        static NSString *label = @"label";
-        
-        CGRect crashButtonFrame = [self.view convertRect:self.lockInfoViewController.crashButtonFrame
-                                                fromView:self.lockInfoViewController.view];
-        CGRect crashLabelFrame = [self.view convertRect:self.lockInfoViewController.crashLabelFrame
-                                               fromView:self.lockInfoViewController.view];
-        CGRect theftButtonFrame = [self.view convertRect:self.lockInfoViewController.theftButtonFrame
-                                                   fromView:self.lockInfoViewController.view];
-        CGRect securityLabelFrame = [self.view convertRect:self.lockInfoViewController.theftLabelFrame
-                                                  fromView:self.lockInfoViewController.view];
-        CGRect sharingButtonFrame = [self.view convertRect:self.lockInfoViewController.sharingButtonFrame
-                                                  fromView:self.lockInfoViewController.view];
-        CGRect sharingLabelFrame = [self.view convertRect:self.lockInfoViewController.sharingLabelFrame
-                                                 fromView:self.lockInfoViewController.view];
-        
-        params = @{@(SLCoachMarkPageCrash):@{button:[NSValue valueWithCGRect:crashButtonFrame],
-                                             label:[NSValue valueWithCGRect:crashLabelFrame]
-                                             },
-                   @(SLCoachMarkPageSharing):@{button:[NSValue valueWithCGRect:sharingButtonFrame],
-                                               label:[NSValue valueWithCGRect:sharingLabelFrame]
-                                               },
-                   @(SLCoachMarkPageTheft):@{button:[NSValue valueWithCGRect:theftButtonFrame],
-                                             label:[NSValue valueWithCGRect:securityLabelFrame]
-                                             }
-                   };
-    }
-    
-    return params;
-}
-
 - (void)touchStopperViewTapped:(UITapGestureRecognizer *)tgr
 {
     NSLog(@"touch stopper view tapped");
@@ -686,17 +639,9 @@
     } else if (action == SLSlideViewControllerButtonActionLockDeselected){
         self.selectedLock = nil;
     } else if (action == SLSlideViewControllerButtonActionAddLock){
-        SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-        __weak typeof(wtvc) weekWtcv = wtvc;
-        wtvc.onExit = ^{
-            [weekWtcv dismissViewControllerAnimated:YES completion:nil];
-        };
-        
-        [self presentViewController:wtvc animated:YES completion:nil];
+
     } else if (action == SLSlideViewControllerButtonActionSharing) {
-        SLSharingViewController *svc = [SLSharingViewController new];
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-        [self presentViewController:nc animated:YES completion:nil];
+
     } else if (action == SLSlideViewControllerButtonActionViewAccount) {
         SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:aivc];
@@ -724,13 +669,13 @@
 
 - (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock
 {
-    [self presentSharingViewControllerWithLock:lock];
+
 }
 
 #pragma mark - SLLockInfoViewController Delegate Methods
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
 {
-    //[self setupLockInfoViewControllerView:shouldIncreaseSize];
+    
 }
 
 - (void)lockInfoViewControllerWantsToBeLarge:(SLLockInfoViewController *)livc

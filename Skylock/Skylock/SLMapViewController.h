@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "SLSlideViewController.h"
 #import "SLLocationManager.h"
-#import "SLCoachMarkViewController.h"
 #import "SLLockInfoViewController.h"
 #import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
@@ -20,7 +19,6 @@
 
 @interface SLMapViewController : UIViewController <
 SLSlideViewControllerDelegate,
-SLCoachMarkViewControllerDelegate,
 SLLockInfoViewControllerDelegate,
 UIAlertViewDelegate,
 CLLocationManagerDelegate,

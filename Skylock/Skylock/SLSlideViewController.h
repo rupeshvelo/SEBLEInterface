@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SLAddLockViewController.h"
 #import "SLSlideTableViewHeader.h"
 #import "SLCirclePicView.h"
 #import "SLLockTableViewCell.h"
@@ -36,7 +35,7 @@ typedef NS_ENUM(NSUInteger, SLSlideViewControllerButtonAction) {
 @end
 
 
-@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLAddLockViewControllerDelegate, SLSlideTableViewHeaderDelegate, SLLockTableViewCellDelegate, SLEditLockTableViewCellDelegate>
+@interface SLSlideViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, SLSlideTableViewHeaderDelegate, SLLockTableViewCellDelegate, SLEditLockTableViewCellDelegate>
 
 @property (nonatomic, weak) id <SLSlideViewControllerDelegate>delegate;
 

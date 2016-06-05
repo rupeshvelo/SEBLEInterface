@@ -9,7 +9,6 @@
 #import "SLAppDelegate.h"
 #import "SLDatabaseManager.h"
 #import "SLFacebookManger.h"
-#import "SLLoginViewController.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"

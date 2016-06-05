@@ -12,7 +12,6 @@
 #import "SLConstants.h"
 //#import "SLSettingsViewController.h"
 #import "SLNavigationViewController.h"
-#import "SLAddLockViewController.h"
 #import "SLCirclePicView.h"
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
@@ -411,22 +410,6 @@
     
 }
 
-- (void)dismissAddLockViewController:(SLAddLockViewController *)alvc withCompletion:(void(^)(void))completion
-{
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        alvc.view.frame = CGRectMake(-alvc.view.bounds.size.width,
-                                     0.0f,
-                                     alvc.view.bounds.size.width,
-                                     alvc.view.bounds.size.height);
-    } completion:^(BOOL finished) {
-        [alvc.view removeFromSuperview];
-        [alvc removeFromParentViewController];
-        if (completion) {
-            completion();
-        }
-    }];
-}
-
 - (NSArray *)indexPathsForSection:(NSUInteger)section
 {
     NSMutableArray *paths = [NSMutableArray new];
@@ -436,35 +419,6 @@
     }
     
     return paths;
-}
-
-#pragma mark - SLAddLockViewController Delegate Methods
-- (void)addLockViewController:(SLAddLockViewController *)alvc didAddLock:(SLLock *)lock
-{
-    [self dismissAddLockViewController:alvc withCompletion:^{
-        self.locks = [SLLockManager.sharedManager orderedLocksByName];
-        NSUInteger target = NSUIntegerMax;
-        for (NSUInteger i=0; i < self.locks.count; i++) {
-            SLLock *aLock = self.locks[i];
-            if ([aLock.name isEqualToString:lock.name]) {
-                target = i;
-                break;
-            }
-        }
-        
-        if (target != NSUIntegerMax) {
-            NSIndexPath *path = [NSIndexPath indexPathForRow:target inSection:0];
-            [self.tableView beginUpdates];
-            [self.tableView insertRowsAtIndexPaths:@[path]
-                                  withRowAnimation:UITableViewRowAnimationLeft];
-            [self.tableView endUpdates];
-        }
-    }];
-}
-
-- (void)addLockViewControllerWantsDismiss:(SLAddLockViewController *)alvc
-{
-    [self dismissAddLockViewController:alvc withCompletion:nil];
 }
 
 #pragma mark - Slide Tableview Header Delegate Methods
