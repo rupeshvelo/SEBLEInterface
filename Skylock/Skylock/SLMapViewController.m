@@ -41,7 +41,7 @@
 #define kSLMapViewControllerCalloutOffsetScaler     0.65f
 #define kSLMapViewControllerCalloutYOffset          40.0f
 
-@interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
+@interface SLMapViewController() <SLMapCalloutViewControllerDelegate, SLAcceptNotificationsViewControllerDelegate>
 
 @property (nonatomic, strong) UIView *touchStopperView;
 @property (nonatomic, strong) UIButton *menuButton;
@@ -248,8 +248,6 @@
     
     [SLDatabaseManager.sharedManager setCurrentUser];
     
-    [self.locationManager requestWhenInUseAuthorization];
-    
     self.lockMarkers = [NSMutableDictionary new];
     self.isInitialLoad = YES;
     [self registerNotifications];
@@ -293,6 +291,7 @@
     [self.view bringSubviewToFront:self.lockInfoViewController.view];
     [self.lockInfoViewController didMoveToParentViewController:self];
     
+    
 //    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
 //                                                                            self.view.center.y,
 //                                                                            100,
@@ -301,6 +300,21 @@
 //    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
 //    [testActionButton setBackgroundColor:[UIColor purpleColor]];
 //    [self.view addSubview:testActionButton];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
+        NSNumber *complete = [ud objectForKey:SLUserDefaultsOnBoardingComplete];
+        if (!complete.boolValue) {
+            [self presentNotificationsController];
+        }
+    } else {
+        [self presentNotificationsController];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -363,6 +377,13 @@
     
     [self presentViewController:nc animated:YES completion:nil];
 
+}
+
+- (void)presentNotificationsController
+{
+    SLAcceptNotificationsViewController *anvc = [SLAcceptNotificationsViewController new];
+    anvc.delegate = self;
+    [self presentViewController:anvc animated:NO completion:nil];
 }
 
 - (void)presentSlideViewController
@@ -446,38 +467,6 @@
             completion();
         }
     }];
-}
-
-- (void)presentCoachMarkViewController
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLCoachMarkViewController *cmvc = nil;
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if ([ud objectForKey:SLUserDefaultsCoachMarksComplete]) {
-        NSNumber *complete = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-        if (!complete.boolValue) {
-            cmvc = [SLCoachMarkViewController new];
-        }
-    } else {
-        cmvc = [SLCoachMarkViewController new];
-    }
-    
-    if (cmvc) {
-        cmvc.delegate = self;
-        cmvc.buttonPositions = self.coachMarkParameters;
-
-        cmvc.view.frame = self.view.bounds;
-        cmvc.view.alpha = 0.0f;
-        
-        [self addChildViewController:cmvc];
-        [self.view addSubview:cmvc.view];
-        [self.view bringSubviewToFront:cmvc.view];
-        [cmvc didMoveToParentViewController:self];
-        
-        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-            cmvc.view.alpha = 1.0f;
-        }];
-    }
 }
 
 - (void)presentSharingViewControllerWithLock:(SLLock *)lock
@@ -738,22 +727,6 @@
     [self presentSharingViewControllerWithLock:lock];
 }
 
-#pragma mark - SLCoachMarkViewController Delegate Methods
-- (void)coachMarkViewControllerDoneButtonPressed:(SLCoachMarkViewController *)cmvc
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        cmvc.view.alpha = 0.0f;
-    } completion:^(BOOL finished) {
-        [cmvc.view removeFromSuperview];
-        [cmvc removeFromParentViewController];
-        
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        [ud setObject:@(YES) forKey:SLUserDefaultsCoachMarksComplete];
-        [ud synchronize];
-    }];
-}
-
 #pragma mark - SLLockInfoViewController Delegate Methods
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
 {
@@ -813,16 +786,16 @@
 {
     self.userMarker.position = self.userLocation;
 
-    if (self.isInitialLoad) {
-        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-        
-        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
-        if (userPic) {
-            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
-            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
-            self.userMarker.icon = maskedImage;
-        }
-    }
+//    if (self.isInitialLoad) {
+//        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+//        
+//        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
+//        if (userPic) {
+//            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
+//            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
+//            self.userMarker.icon = maskedImage;
+//        }
+//    }
 }
 
 - (void)getDirectionsForTransportation:(SLMapCalloutVCPane)pane
@@ -1007,6 +980,12 @@
 - (void)rightCalloutViewTapped:(SLMapCalloutViewController *)calloutController
 {
     [self getDirectionsForTransportation:SLMapCalloutVCPaneRight];
+}
+
+#pragma mark - SLAcceptNotificationsViewController delegate methods
+- (void)userAcceptsLocationUse:(SLAcceptNotificationsViewController *)acceptNotificationsVC
+{
+    [self.locationManager requestWhenInUseAuthorization];
 }
 
 @end

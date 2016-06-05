@@ -1062,8 +1062,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)handleLockSequenceWriteForMacAddress:(NSString *)macAddress data:(NSData *)data
 {
-    // TODO post notification that new sequence was accepted or declined
-    NSLog(@"updated lock sequence successfully");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockSequenceWritten
+                                                        object:nil];
 }
 
 - (void)handleCommandStatusUpdate:(NSString *)macAddress data:(NSData *)data
@@ -1137,7 +1137,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                           NSLog(@"%@", part);
                                                       }
                                                   }
-                                                  
                                               }];
 }
 
@@ -1166,13 +1165,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                      u_int8_t value = (u_int8_t)SLLockManagerValueRemoveLock;
                                      NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
                                      
-                                     [self removeLock:lock];
-                                     
                                      [self writeToLockWithMacAddress:lock.macAddress
                                                              service:SLLockManagerServiceConfiguration
                                                       characteristic:SLLockManagerCharacteristicRemoveLock
                                                                 data:data];
-                                     
+                                     [self removeLock:lock];
                                  }];
 }
 
@@ -1322,6 +1319,16 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [self.unaddedLocks addObject:unaddedLock];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
                                                         object:nil];
+}
+
+- (void)changeCurrentLockGivenNameToName:(NSString *)newName
+{
+    if (!self.selectedLock || !newName) {
+        return;
+    }
+    
+    self.selectedLock.givenName = newName;
+    [self.databaseManger saveLock:self.selectedLock];
 }
 
 - (void)connectToNewLockNamed:(NSString *)name

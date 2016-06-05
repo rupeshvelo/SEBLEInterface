@@ -43,9 +43,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.initialViewController;
     [self.window makeKeyAndVisible];
-    
-    [self setUpNotficationSettings:application];
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNotification:)
                                                  name:kSLNotificationAlertOccured
@@ -138,8 +136,8 @@
     if ([ud objectForKey:SLUserDefaultsSignedIn]) {
         NSNumber *isSignedIn = [ud objectForKey:SLUserDefaultsSignedIn];
         if (isSignedIn.boolValue) {
-            if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
-                NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
+            if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
+                NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsOnBoardingComplete];
                 if (isTutorialComplete.boolValue) {
                     SLMapViewController *mvc = [SLMapViewController new];
                     initialVC = mvc;
@@ -163,8 +161,10 @@
     return initialVC;
 }
 
-- (void)setUpNotficationSettings:(UIApplication *)application
+- (void)setUpNotficationSettings
 {
+    UIApplication *application = [UIApplication sharedApplication];
+    
     [[GCMService sharedInstance] startWithConfig:[GCMConfig defaultConfig]];
     
     UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];

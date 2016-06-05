@@ -93,6 +93,13 @@ class SLSignInViewController: UIViewController {
         self.view.addSubview(self.signUpWithFacebookButton)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let mvc = SLMapViewController()
+        self.presentViewController(mvc, animated: false, completion: nil)
+    }
+    
     func existingUserButtonPressed() {
         let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
         self.presentViewController(createAccountVC, animated: true, completion: nil)

@@ -134,5 +134,9 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let ccvc = SLConcentricCirclesViewController()
         self.navigationController?.pushViewController(ccvc, animated: true)
+        
+        let lock = self.locks[indexPath.row]
+        let lockManager = SLLockManager.sharedManager()
+        lockManager.connectToLockWithName(lock.name)
     }
 }

@@ -624,8 +624,8 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     [ud setObject:@(YES) forKey:SLUserDefaultsSignedIn];
     SLMapViewController *mvc = [SLMapViewController new];
-    if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
-        NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
+    if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
+        NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsOnBoardingComplete];
         if (isTutorialComplete.boolValue) {
             [self presentViewController:mvc animated:YES completion:nil];
         } else {
@@ -633,7 +633,7 @@ typedef NS_ENUM(NSUInteger, SLLoginStage) {
             [self presentViewController:opvc animated:YES completion:nil];
         }
     } else {
-        [ud setObject:@(NO) forKey:SLUserDefaultsTutorialComplete];
+        [ud setObject:@(NO) forKey:SLUserDefaultsOnBoardingComplete];
         SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
         [self presentViewController:opvc animated:YES completion:nil];
     }
