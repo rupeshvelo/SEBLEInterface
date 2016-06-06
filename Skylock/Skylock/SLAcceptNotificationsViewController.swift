@@ -11,6 +11,10 @@ import UIKit
 @objc protocol SLAcceptNotificationsViewControllerDelegate {
     func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController)
+    func acceptsNotificationsControllerWantsExit(
+        acceptNotiticationViewController: SLAcceptNotificationsViewController,
+        animated: Bool
+    )
 }
 
 @objc class SLAcceptNotificationsViewController: UIViewController {
@@ -143,7 +147,8 @@ import UIKit
             userDefaults.setBool(true, forKey: "SLUserDefaultsOnBoardingComplete")
             userDefaults.synchronize()
             
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismissViewControllerAnimated(false, completion: nil)
+            self.delegate?.acceptsNotificationsControllerWantsExit(self, animated: false)
         }
     }
 }

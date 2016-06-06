@@ -675,7 +675,7 @@
 #pragma mark - SLLockInfoViewController Delegate Methods
 - (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
 {
-    
+
 }
 
 - (void)lockInfoViewControllerWantsToBeLarge:(SLLockInfoViewController *)livc
@@ -931,6 +931,12 @@
 - (void)userAcceptsLocationUse:(SLAcceptNotificationsViewController *)acceptNotificationsVC
 {
     [self.locationManager requestWhenInUseAuthorization];
+}
+
+- (void)acceptsNotificationsControllerWantsExit:(SLAcceptNotificationsViewController *)acceptNotiticationViewController
+                                       animated:(BOOL)animated
+{
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

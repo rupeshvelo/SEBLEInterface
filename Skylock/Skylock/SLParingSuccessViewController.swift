@@ -174,6 +174,7 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1)
         field.textAlignment = .Center
         field.delegate = self
+        field.autocapitalizationType = .Words
         
         return field
     }()
@@ -252,6 +253,11 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
     
     func continueButtonPressed() {
         self.saveNewLockName()
+        
+        let lvc = SLLockViewController()
+        self.presentViewController(lvc, animated: false, completion: {
+            lvc.presentMapViewController(false)
+        })
     }
     
     func dismissKeyboardButtonPressed() {

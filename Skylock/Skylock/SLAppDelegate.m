@@ -136,14 +136,8 @@
         NSNumber *isSignedIn = [ud objectForKey:SLUserDefaultsSignedIn];
         if (isSignedIn.boolValue) {
             if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
-                NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsOnBoardingComplete];
-                if (isTutorialComplete.boolValue) {
-                    SLMapViewController *mvc = [SLMapViewController new];
-                    initialVC = mvc;
-                } else {
-                    SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
-                    initialVC = opvc;
-                }
+                SLLockViewController *lvc = [SLLockViewController new];
+                initialVC = lvc;
             } else {
                 SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
                 initialVC = opvc;

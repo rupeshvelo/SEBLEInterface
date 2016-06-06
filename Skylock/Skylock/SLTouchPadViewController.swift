@@ -261,7 +261,10 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func lockCodeWritten() {
-        
+        let lvc = SLLockViewController()
+        self.presentViewController(lvc, animated: false) { 
+            lvc.presentMapViewController(false)
+        }
     }
     
     // SLTouchPadView delegate methods

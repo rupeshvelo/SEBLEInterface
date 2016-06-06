@@ -16,7 +16,7 @@ class SLConnectLockInfoViewController: UIViewController {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(14)
-        let text = NSLocalizedString("Do you want to connect  your new Ellipse?", comment: "")
+        let text = NSLocalizedString("Do you want to connect your new Ellipse?", comment: "")
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,

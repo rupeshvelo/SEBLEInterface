@@ -93,13 +93,6 @@ class SLSignInViewController: UIViewController {
         self.view.addSubview(self.signUpWithFacebookButton)
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        let mvc = SLMapViewController()
-        self.presentViewController(mvc, animated: false, completion: nil)
-    }
-    
     func existingUserButtonPressed() {
         let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
         self.presentViewController(createAccountVC, animated: true, completion: nil)
@@ -115,9 +108,19 @@ class SLSignInViewController: UIViewController {
         let facebookManager:SLFacebookManger = SLFacebookManger.sharedManager() as! SLFacebookManger
         facebookManager.loginFromViewController(self) { (success) in
             if success {
-                let clvc = SLConnectLockInfoViewController()
-                let navController:UINavigationController = UINavigationController(rootViewController: clvc)
-                self.presentViewController(navController, animated: true, completion: nil)
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                userDefaults.synchronize()
+                
+                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                if lockManager.hasLocksForCurrentUser() {
+                    let lvc = SLLockViewController()
+                    self.presentViewController(lvc, animated: true, completion: nil)
+                } else {
+                    let clvc = SLConnectLockInfoViewController()
+                    let navController:UINavigationController = UINavigationController(rootViewController: clvc)
+                    self.presentViewController(navController, animated: true, completion: nil)
+                }
             }
         }
     }

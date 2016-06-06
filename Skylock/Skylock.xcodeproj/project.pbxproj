@@ -89,6 +89,24 @@
 		DC44028D1B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC4402811B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png */; };
 		DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */; };
 		DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */; };
+		DC6DB57F1D04DFE700B159B3 /* SLLockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DB57E1D04DFE700B159B3 /* SLLockViewController.swift */; };
+		DC6DB5911D06010A00B159B3 /* lock_disconnected_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5811D06010A00B159B3 /* lock_disconnected_button@2x.png */; };
+		DC6DB5921D06010A00B159B3 /* lock_disconnected_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5821D06010A00B159B3 /* lock_disconnected_button@3x.png */; };
+		DC6DB5931D06010A00B159B3 /* lock_locked_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5831D06010A00B159B3 /* lock_locked_button@2x.png */; };
+		DC6DB5941D06010A00B159B3 /* lock_locked_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5841D06010A00B159B3 /* lock_locked_button@3x.png */; };
+		DC6DB5951D06010A00B159B3 /* lock_screen_close_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5851D06010A00B159B3 /* lock_screen_close_icon@2x.png */; };
+		DC6DB5961D06010A00B159B3 /* lock_screen_close_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5861D06010A00B159B3 /* lock_screen_close_icon@3x.png */; };
+		DC6DB5971D06010A00B159B3 /* lock_screen_crash_detection_inactive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5871D06010A00B159B3 /* lock_screen_crash_detection_inactive@2x.png */; };
+		DC6DB5981D06010A00B159B3 /* lock_screen_crash_detection_inactive@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5881D06010A00B159B3 /* lock_screen_crash_detection_inactive@3x.png */; };
+		DC6DB5991D06010A00B159B3 /* lock_screen_hamburger_menu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5891D06010A00B159B3 /* lock_screen_hamburger_menu@2x.png */; };
+		DC6DB59A1D06010A00B159B3 /* lock_screen_hamburger_menu@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58A1D06010A00B159B3 /* lock_screen_hamburger_menu@3x.png */; };
+		DC6DB59B1D06010A00B159B3 /* lock_screen_theft_detection_active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58B1D06010A00B159B3 /* lock_screen_theft_detection_active@2x.png */; };
+		DC6DB59C1D06010A00B159B3 /* lock_screen_theft_detection_active@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58C1D06010A00B159B3 /* lock_screen_theft_detection_active@3x.png */; };
+		DC6DB59D1D06010A00B159B3 /* lock_unlocked_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58D1D06010A00B159B3 /* lock_unlocked_button@2x.png */; };
+		DC6DB59E1D06010A00B159B3 /* lock_unlocked_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58E1D06010A00B159B3 /* lock_unlocked_button@3x.png */; };
+		DC6DB59F1D06010A00B159B3 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB58F1D06010A00B159B3 /* temp_phone_info@2x.png */; };
+		DC6DB5A01D06010A00B159B3 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6DB5901D06010A00B159B3 /* temp_phone_info@3x.png */; };
+		DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DB5A11D060C8900B159B3 /* SLSlideViewController.swift */; };
 		DC6F1CD51CB9A84100D44739 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */; };
 		DC6F1CDD1CBAEBD800D44739 /* settings_change_pin_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CD91CBAEBD800D44739 /* settings_change_pin_button@2x.png */; };
 		DC6F1CDE1CBAEBD800D44739 /* settings_change_pin_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC6F1CDA1CBAEBD800D44739 /* settings_change_pin_button@3x.png */; };
@@ -636,6 +654,24 @@
 		DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutViewController.swift; sourceTree = "<group>"; };
 		DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutView.swift; sourceTree = "<group>"; };
 		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		DC6DB57E1D04DFE700B159B3 /* SLLockViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockViewController.swift; sourceTree = "<group>"; };
+		DC6DB5811D06010A00B159B3 /* lock_disconnected_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_disconnected_button@2x.png"; sourceTree = "<group>"; };
+		DC6DB5821D06010A00B159B3 /* lock_disconnected_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_disconnected_button@3x.png"; sourceTree = "<group>"; };
+		DC6DB5831D06010A00B159B3 /* lock_locked_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_locked_button@2x.png"; sourceTree = "<group>"; };
+		DC6DB5841D06010A00B159B3 /* lock_locked_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_locked_button@3x.png"; sourceTree = "<group>"; };
+		DC6DB5851D06010A00B159B3 /* lock_screen_close_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_close_icon@2x.png"; sourceTree = "<group>"; };
+		DC6DB5861D06010A00B159B3 /* lock_screen_close_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_close_icon@3x.png"; sourceTree = "<group>"; };
+		DC6DB5871D06010A00B159B3 /* lock_screen_crash_detection_inactive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_crash_detection_inactive@2x.png"; sourceTree = "<group>"; };
+		DC6DB5881D06010A00B159B3 /* lock_screen_crash_detection_inactive@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_crash_detection_inactive@3x.png"; sourceTree = "<group>"; };
+		DC6DB5891D06010A00B159B3 /* lock_screen_hamburger_menu@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_hamburger_menu@2x.png"; sourceTree = "<group>"; };
+		DC6DB58A1D06010A00B159B3 /* lock_screen_hamburger_menu@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_hamburger_menu@3x.png"; sourceTree = "<group>"; };
+		DC6DB58B1D06010A00B159B3 /* lock_screen_theft_detection_active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_theft_detection_active@2x.png"; sourceTree = "<group>"; };
+		DC6DB58C1D06010A00B159B3 /* lock_screen_theft_detection_active@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_screen_theft_detection_active@3x.png"; sourceTree = "<group>"; };
+		DC6DB58D1D06010A00B159B3 /* lock_unlocked_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_unlocked_button@2x.png"; sourceTree = "<group>"; };
+		DC6DB58E1D06010A00B159B3 /* lock_unlocked_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lock_unlocked_button@3x.png"; sourceTree = "<group>"; };
+		DC6DB58F1D06010A00B159B3 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
+		DC6DB5901D06010A00B159B3 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
+		DC6DB5A11D060C8900B159B3 /* SLSlideViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSlideViewController.swift; sourceTree = "<group>"; };
 		DC6F1CD31CB9A84100D44739 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
 		DC6F1CD41CB9A84100D44739 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC6F1CD91CBAEBD800D44739 /* settings_change_pin_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings_change_pin_button@2x.png"; sourceTree = "<group>"; };
@@ -1269,6 +1305,8 @@
 				DCD679751CF779920081D225 /* SLOnboardingPageViewController.swift */,
 				DCD679771CF77A030081D225 /* SLOnboardingViewController.swift */,
 				DCD679801CFA444E0081D225 /* SLSignInViewController.swift */,
+				DC6DB57E1D04DFE700B159B3 /* SLLockViewController.swift */,
+				DC6DB5A11D060C8900B159B3 /* SLSlideViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1365,6 +1403,29 @@
 			name = extenstions;
 			sourceTree = "<group>";
 		};
+		DC6DB5801D06010A00B159B3 /* lock_screen */ = {
+			isa = PBXGroup;
+			children = (
+				DC6DB5811D06010A00B159B3 /* lock_disconnected_button@2x.png */,
+				DC6DB5821D06010A00B159B3 /* lock_disconnected_button@3x.png */,
+				DC6DB5831D06010A00B159B3 /* lock_locked_button@2x.png */,
+				DC6DB5841D06010A00B159B3 /* lock_locked_button@3x.png */,
+				DC6DB5851D06010A00B159B3 /* lock_screen_close_icon@2x.png */,
+				DC6DB5861D06010A00B159B3 /* lock_screen_close_icon@3x.png */,
+				DC6DB5871D06010A00B159B3 /* lock_screen_crash_detection_inactive@2x.png */,
+				DC6DB5881D06010A00B159B3 /* lock_screen_crash_detection_inactive@3x.png */,
+				DC6DB5891D06010A00B159B3 /* lock_screen_hamburger_menu@2x.png */,
+				DC6DB58A1D06010A00B159B3 /* lock_screen_hamburger_menu@3x.png */,
+				DC6DB58B1D06010A00B159B3 /* lock_screen_theft_detection_active@2x.png */,
+				DC6DB58C1D06010A00B159B3 /* lock_screen_theft_detection_active@3x.png */,
+				DC6DB58D1D06010A00B159B3 /* lock_unlocked_button@2x.png */,
+				DC6DB58E1D06010A00B159B3 /* lock_unlocked_button@3x.png */,
+				DC6DB58F1D06010A00B159B3 /* temp_phone_info@2x.png */,
+				DC6DB5901D06010A00B159B3 /* temp_phone_info@3x.png */,
+			);
+			path = lock_screen;
+			sourceTree = "<group>";
+		};
 		DC6F1CD81CBAEBD800D44739 /* settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1388,6 +1449,7 @@
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
 			isa = PBXGroup;
 			children = (
+				DC6DB5801D06010A00B159B3 /* lock_screen */,
 				DCBEA33C1D02449F00AFF48F /* touch_pad */,
 				DCE5C2041CFB5D910084F8A2 /* add_lock */,
 				DCE5C1E51CFB48B60084F8A2 /* login */,
@@ -2147,6 +2209,7 @@
 				DC7A11C21B5714B100F3336E /* btn_toggle_on.png in Resources */,
 				DC4402841B9C8E1100D1C2B9 /* btn_lock_grey@1x.png in Resources */,
 				DC7A11B41B5714B100F3336E /* btn_sharing_on@2x.png in Resources */,
+				DC6DB5A01D06010A00B159B3 /* temp_phone_info@3x.png in Resources */,
 				DC7A12231B5714B100F3336E /* icon_timer_white@2x.png in Resources */,
 				DCE5C2001CFB48B60084F8A2 /* login_use_location_background@2x.png in Resources */,
 				DC7A120E1B5714B100F3336E /* icon_rename@2x.png in Resources */,
@@ -2161,6 +2224,7 @@
 				DC7A11781B5714B100F3336E /* btn_borrow@2x.png in Resources */,
 				DC7A12081B5714B100F3336E /* icon_navigate_on@2x.png in Resources */,
 				DC7A12691B5714B100F3336E /* img_userav_big@3x.png in Resources */,
+				DC6DB5931D06010A00B159B3 /* lock_locked_button@2x.png in Resources */,
 				DC44028C1B9C8E1100D1C2B9 /* btn_unlock_grey@1x.png in Resources */,
 				DC7A12481B5714B100F3336E /* img_logo1@3x.png in Resources */,
 				DC7A11741B5714B100F3336E /* btn_back.png in Resources */,
@@ -2170,6 +2234,7 @@
 				DC7A12121B5714B100F3336E /* icon_settings_large@3x.png in Resources */,
 				DCF36BC31B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf in Resources */,
 				DC7A11D61B5714B100F3336E /* icon_battery_33@3x.png in Resources */,
+				DC6DB5961D06010A00B159B3 /* lock_screen_close_icon@3x.png in Resources */,
 				DCD6797F1CF9FFB50081D225 /* placeholder_logo_animation@3x.png in Resources */,
 				DC7A12611B5714B100F3336E /* img_theftalert_yellow.png in Resources */,
 				DC7A117E1B5714B100F3336E /* btn_cancel@2x.png in Resources */,
@@ -2198,6 +2263,7 @@
 				DCC0D3E81C6021C1006AE5B6 /* pagination_white3@3x.png in Resources */,
 				DCC0D3DE1C6021C1006AE5B6 /* pagination_green2@3x.png in Resources */,
 				DC7A11761B5714B100F3336E /* btn_back@3x.png in Resources */,
+				DC6DB59D1D06010A00B159B3 /* lock_unlocked_button@2x.png in Resources */,
 				DC7A12391B5714B100F3336E /* img_bike@3x.png in Resources */,
 				DCD679711CF774210081D225 /* onboarding_main_image_4@2x.png in Resources */,
 				DCBEA3501D02449F00AFF48F /* button_close_window_large_Onboarding@3x.png in Resources */,
@@ -2270,6 +2336,7 @@
 				DC7A12511B5714B100F3336E /* img_theft_low@3x.png in Resources */,
 				DCBEA3551D02449F00AFF48F /* button_keypad_x_Onboarding@2x.png in Resources */,
 				DC7A122B1B5714B100F3336E /* icon_wifi_2.png in Resources */,
+				DC6DB5921D06010A00B159B3 /* lock_disconnected_button@3x.png in Resources */,
 				DC7A120A1B5714B100F3336E /* icon_remove.png in Resources */,
 				DCC0D3E51C6021C1006AE5B6 /* pagination_white2@2x.png in Resources */,
 				DC7A12301B5714B100F3336E /* icon_wifi_3@3x.png in Resources */,
@@ -2280,11 +2347,13 @@
 				DC7A12441B5714B100F3336E /* img_lock@2x.png in Resources */,
 				DC0250761B59D539007D2D6A /* btn_crashalert_off.png in Resources */,
 				DC7A124C1B5714B100F3336E /* img_theft_high.png in Resources */,
+				DC6DB5971D06010A00B159B3 /* lock_screen_crash_detection_inactive@2x.png in Resources */,
 				DCE5C1F91CFB48B60084F8A2 /* button_ok_onboarding@3x.png in Resources */,
 				DC7A11F91B5714B100F3336E /* icon_lock@2x.png in Resources */,
 				DC7A125E1B5714B100F3336E /* img_theftalert_yelllow.png in Resources */,
 				DCC0D3E61C6021C1006AE5B6 /* pagination_white2@3x.png in Resources */,
 				DC7A11EC1B5714B100F3336E /* icon_chevron_right.png in Resources */,
+				DC6DB59B1D06010A00B159B3 /* lock_screen_theft_detection_active@2x.png in Resources */,
 				DCBEA3511D02449F00AFF48F /* button_keypad_a_Onboarding@2x.png in Resources */,
 				DC7A12001B5714B100F3336E /* icon_mylock_off@3x.png in Resources */,
 				DC7A11E01B5714B100F3336E /* icon_bt.png in Resources */,
@@ -2292,6 +2361,7 @@
 				DC7A11C61B5714B100F3336E /* btn_unlock@2x.png in Resources */,
 				DC7A119C1B5714B100F3336E /* btn_next@2x.png in Resources */,
 				DC7A123B1B5714B100F3336E /* img_crashalert_red@2x.png in Resources */,
+				DC6DB5911D06010A00B159B3 /* lock_disconnected_button@2x.png in Resources */,
 				DC2848971CB8865100B0BBF3 /* contacts_dismiss_button@2x.png in Resources */,
 				DC7A119E1B5714B100F3336E /* btn_ok.png in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
@@ -2322,6 +2392,8 @@
 				DC7A12451B5714B100F3336E /* img_lock@3x.png in Resources */,
 				DC7A116E1B5714B100F3336E /* bg_splash1@3x.png in Resources */,
 				DCBEA34D1D02449F00AFF48F /* button_backspace_Onboarding@2x.png in Resources */,
+				DC6DB5941D06010A00B159B3 /* lock_locked_button@3x.png in Resources */,
+				DC6DB5991D06010A00B159B3 /* lock_screen_hamburger_menu@2x.png in Resources */,
 				DCE5C1F51CFB48B60084F8A2 /* button_close_window_extra_large_Onboarding@3x.png in Resources */,
 				DCBEA34E1D02449F00AFF48F /* button_backspace_Onboarding@3x.png in Resources */,
 				DC7A12201B5714B100F3336E /* icon_timer@2x.png in Resources */,
@@ -2339,15 +2411,18 @@
 				DCBEA3531D02449F00AFF48F /* button_keypad_b_Onboarding@2x.png in Resources */,
 				DC7A11EF1B5714B100F3336E /* icon_chevron_up.png in Resources */,
 				DC7A12021B5714B100F3336E /* icon_mylock_on@2x.png in Resources */,
+				DC6DB59C1D06010A00B159B3 /* lock_screen_theft_detection_active@3x.png in Resources */,
 				DC7A11721B5714B100F3336E /* bg_splash2_6@2x.png in Resources */,
 				DCC0D3E31C6021C1006AE5B6 /* pagination_white1@2x.png in Resources */,
 				DC7025191C51AE080038D412 /* logo2@2x.png in Resources */,
 				DC7A12111B5714B100F3336E /* icon_settings_large@2x.png in Resources */,
 				DC7A11AB1B5714B100F3336E /* btn_savepin@2x.png in Resources */,
+				DC6DB5981D06010A00B159B3 /* lock_screen_crash_detection_inactive@3x.png in Resources */,
 				DC7A12241B5714B100F3336E /* icon_timer_white@3x.png in Resources */,
 				DCE5C2231CFB5D910084F8A2 /* skylock_press_button_onboarding@2x.png in Resources */,
 				DCE5C1F81CFB48B60084F8A2 /* button_ok_onboarding@2x.png in Resources */,
 				DC3CCE201BA3436A00528992 /* icon_gps@2x.png in Resources */,
+				DC6DB5951D06010A00B159B3 /* lock_screen_close_icon@2x.png in Resources */,
 				DCD3CBBE1C5BD015009E1435 /* directions_icon_finished@3x.png in Resources */,
 				DC0250801B59D5FD007D2D6A /* img_walkthrough1@2x.png in Resources */,
 				DC7A12751B5714B100F3336E /* img_walkthrough3@3x.png in Resources */,
@@ -2420,10 +2495,12 @@
 				DC7A12531B5714B100F3336E /* img_theft_medium@2x.png in Resources */,
 				DC28489A1CB8865100B0BBF3 /* contacts_done_button@3x.png in Resources */,
 				DC7A12031B5714B100F3336E /* icon_mylock_on@3x.png in Resources */,
+				DC6DB59F1D06010A00B159B3 /* temp_phone_info@2x.png in Resources */,
 				DCC0D3DC1C6021C1006AE5B6 /* pagination_green1@3x.png in Resources */,
 				DC7A11FF1B5714B100F3336E /* icon_mylock_off@2x.png in Resources */,
 				DC7A12501B5714B100F3336E /* img_theft_low@2x.png in Resources */,
 				DCC0D3E41C6021C1006AE5B6 /* pagination_white1@3x.png in Resources */,
+				DC6DB59E1D06010A00B159B3 /* lock_unlocked_button@3x.png in Resources */,
 				DC6F1CDF1CBAEBD800D44739 /* settings_change_pin_button_dissabled@2x.png in Resources */,
 				DC7A122D1B5714B100F3336E /* icon_wifi_2@3x.png in Resources */,
 				DC7A11B31B5714B100F3336E /* btn_sharing_on.png in Resources */,
@@ -2465,6 +2542,7 @@
 				DCE5C21C1CFB5D910084F8A2 /* button_invitation_to_share_Onboarding@3x.png in Resources */,
 				DC7A12641B5714B100F3336E /* img_user.png in Resources */,
 				DCE5C21E1CFB5D910084F8A2 /* button_no_small_Onboarding@3x.png in Resources */,
+				DC6DB59A1D06010A00B159B3 /* lock_screen_hamburger_menu@3x.png in Resources */,
 				DCE5C1FE1CFB48B60084F8A2 /* button_text_confirmation_code_Onboarding@2x.png in Resources */,
 				DC7A12471B5714B100F3336E /* img_logo1@2x.png in Resources */,
 				DC7A11B01B5714B100F3336E /* btn_sharing_off.png in Resources */,
@@ -2580,6 +2658,7 @@
 				DC763D391CB4C31B00037EF9 /* SLAddContactTableViewCell.swift in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
 				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
+				DC6DB57F1D04DFE700B159B3 /* SLLockViewController.swift in Sources */,
 				DC6F1CD51CB9A84100D44739 /* SLUser+CoreDataProperties.m in Sources */,
 				DCE33ACC1B5F4DB600750813 /* SLAccountInfoFieldView.m in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
@@ -2611,6 +2690,7 @@
 				DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */,
 				DCA71B021CFFC73F000517CC /* SLParingSuccessViewController.swift in Sources */,
 				DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */,
+				DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */,
 				DC44027A1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */,
 				DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */,
 				DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */,

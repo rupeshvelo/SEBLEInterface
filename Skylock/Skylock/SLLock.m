@@ -196,12 +196,15 @@
 
 - (NSString *)displayName
 {
-    static NSInteger maxLength = 8;
-    if (self.name.length <= maxLength) {
+    if (self.givenName && self.givenName.length > 0) {
+        return self.givenName;
+    }
+    
+    if (self.name) {
         return self.name;
     }
     
-    return [self.name substringToIndex:maxLength];
+    return @"";
 }
 
 - (BOOL)isInFactoryMode

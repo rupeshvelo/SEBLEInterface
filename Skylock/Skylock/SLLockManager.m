@@ -530,6 +530,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
           macAddress,
           serviceUUID,
           characteristicUUID);
+    
     [self.bleManager readValueForPeripheralWithKey:macAddress
                                     forServiceUUID:serviceUUID
                              andCharacteristicUUID:characteristicUUID];
