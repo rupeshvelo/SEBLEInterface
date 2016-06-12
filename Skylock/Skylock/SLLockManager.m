@@ -47,7 +47,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicChallengeKey,
     SLLockManagerCharacteristicCodeVersion,
     SLLockManagerCharacteristicButtonLockSequence,
-    SLLockManagerCharacteristicRemoveLock,
+    SLLockManagerCharacteristicResetLock,
     SLLockManagerCharacteristicCommandStatus
 };
 
@@ -80,7 +80,7 @@ typedef enum {
     SLLockManagerValueRightButton       = 0x02,
     SLLockManagerValueBottomButton      = 0x04,
     SLLockManagerValueLeftButton        = 0x08,
-    SLLockManagerValueRemoveLock        = 0xBC
+    SLLockManagerValueResetLock         = 0xBC
 } SLLockMangerValue;
 
 typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
@@ -181,7 +181,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                            [self uuidForCharacteristic:SLLockManagerCharacteristicChallengeKey],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicCodeVersion],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence],
-                           [self uuidForCharacteristic:SLLockManagerCharacteristicRemoveLock],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicResetLock],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicCommandStatus]
                            ];
     
@@ -577,6 +577,23 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
 }
 
+- (NSArray *)unconnectedLocksForCurrentUser
+{
+    NSArray *locks = [self.databaseManger locksForCurrentUser];
+    if (!self.selectedLock) {
+        return locks;
+    }
+    
+    NSMutableArray *unconnectedLocks = [NSMutableArray new];
+    for (SLLock *dbLock in locks) {
+        if (![self.selectedLock.macAddress isEqualToString:dbLock.macAddress]) {
+            [unconnectedLocks addObject:dbLock];
+        }
+    }
+    
+    return unconnectedLocks;
+}
+
 - (NSString *)uuidForCharacteristic:(SLLockManagerCharacteristic)characteristic
 {
     NSString *characteristicString;
@@ -623,7 +640,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         case SLLockManagerCharacteristicButtonLockSequence:
             characteristicString = @"5E84";
             break;
-        case SLLockManagerCharacteristicRemoveLock:
+        case SLLockManagerCharacteristicResetLock:
             characteristicString = @"5E81";
             break;
         case SLLockManagerCharacteristicCommandStatus:
@@ -1163,15 +1180,30 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                      // and the server is always returning an error. When that is fixed,
                                      // this should be updated
                                      
-                                     u_int8_t value = (u_int8_t)SLLockManagerValueRemoveLock;
+                                     u_int8_t value = (u_int8_t)SLLockManagerValueResetLock;
                                      NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
                                      
                                      [self writeToLockWithMacAddress:lock.macAddress
                                                              service:SLLockManagerServiceConfiguration
-                                                      characteristic:SLLockManagerCharacteristicRemoveLock
+                                                      characteristic:SLLockManagerCharacteristicResetLock
                                                                 data:data];
                                      [self removeLock:lock];
                                  }];
+}
+
+- (void)factoryResetCurrentLock
+{
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    u_int8_t value = (u_int8_t)SLLockManagerValueResetLock;
+    NSData *data = [NSData dataWithBytes:&value length:sizeof(value)];
+    
+    [self writeToLockWithMacAddress:self.selectedLock.macAddress
+                            service:SLLockManagerServiceConfiguration
+                     characteristic:SLLockManagerCharacteristicResetLock
+                               data:data];
 }
 
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress
@@ -1330,6 +1362,24 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     self.selectedLock.givenName = newName;
     [self.databaseManger saveLock:self.selectedLock];
+}
+
+- (void)handleLockRemovedByUserWithAddress:(NSString *)macAddress success:(BOOL)success
+{
+    if (!self.locks[macAddress]) {
+        NSLog(@"Could not remove lock: %@. It is not in lock manager's locks", macAddress);
+        return;
+    }
+
+    NSDictionary *info = @{@"macAddress": macAddress,
+                           @"succes": @(success)
+                           };
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationRemoveLockForUser
+                                                        object:info];
+    
+    SLLock *lock = self.locks[macAddress];
+    [self removeLock:lock];
 }
 
 - (void)connectToNewLockNamed:(NSString *)name
@@ -1530,9 +1580,8 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
                                  andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicLed]];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence]]) {
         [self readButtonLockSequenceForLock:self.selectedLock];
-    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicRemoveLock]]) {
-        NSLog(success ? @"Successfully wrote message to remove lock" :
-              @"Failed to write message to remove lock");
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicResetLock]]) {
+        [self handleLockRemovedByUserWithAddress:macAddress success:success];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicCommandStatus]]) {
         [self handleCommandStatusUpdate:macAddress data:nil];
     }

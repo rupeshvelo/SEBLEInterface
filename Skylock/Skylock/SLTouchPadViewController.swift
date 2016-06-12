@@ -19,6 +19,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     var delegate: SLTouchPadViewControllerDelegate?
     var letterIndex:Int = 0
     var pushes:[UInt8] = []
+    var onExit:(() -> Void)?
     
     lazy var xExitButton:UIButton = {
         let image:UIImage = UIImage(named: "button_close_window_large_Onboarding")!
@@ -212,7 +213,6 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func savePinButtonPressed() {
-        print(self.pushes)
         let lockManager = SLLockManager.sharedManager()
         let lock = lockManager.getCurrentLock()
         lockManager.writeTouchPadButtonPushes(&self.pushes, size: Int32(self.pushes.count), lock:lock)
@@ -240,7 +240,9 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func xExitButtonPressed() {
-        
+        if let exitClosure = self.onExit {
+            exitClosure()
+        }
     }
     
     func deleteButtonPressed() {
@@ -261,9 +263,8 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func lockCodeWritten() {
-        let lvc = SLLockViewController()
-        self.presentViewController(lvc, animated: false) { 
-            lvc.presentMapViewController(false)
+        if let exitClosure = self.onExit {
+            exitClosure()
         }
     }
     

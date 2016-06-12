@@ -15,3 +15,5 @@
 #import "SLLog.h"
 #import "SLNotifications.h"
 #import "SLFacebookManger.h"
+#import "SLNotifications.h"
+#import "SLPicManager.h"

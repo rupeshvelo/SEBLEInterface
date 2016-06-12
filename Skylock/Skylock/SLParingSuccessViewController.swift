@@ -247,6 +247,12 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
     
     func enterPinButtonPressed() {
         let tpvc = SLTouchPadViewController()
+        tpvc.onExit = {[weak tpvc] in
+            let lvc = SLLockViewController()
+            tpvc!.presentViewController(lvc, animated: false) {
+                lvc.presentMapViewController(false)
+            }
+        }
         self.presentViewController(tpvc, animated: true, completion: nil)
         self.saveNewLockName()
     }
@@ -256,7 +262,9 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
         
         let lvc = SLLockViewController()
         self.presentViewController(lvc, animated: false, completion: {
-            lvc.presentMapViewController(false)
+            dispatch_async(dispatch_get_main_queue(), {
+                lvc.presentMapViewController(false)
+            })
         })
     }
     

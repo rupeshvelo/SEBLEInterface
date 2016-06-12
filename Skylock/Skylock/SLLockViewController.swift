@@ -8,11 +8,11 @@
 
 import UIKit
 
-@objc class SLLockViewController: UIViewController {
+@objc class SLLockViewController: UIViewController, SLSlideViewControllerDelegate {
     let xPadding:CGFloat = 13.0
     var lock:SLLock?
     let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-    
+
     lazy var menuButton:UIButton = {
         let image:UIImage = UIImage(named: "lock_screen_hamburger_menu")!
         let frame = CGRect(
@@ -30,7 +30,6 @@ import UIKit
     
     lazy var lockNameLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
-        let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(18)
         let frame = CGRectMake(
             0.5*(self.view.bounds.size.width - labelWidth),
@@ -112,7 +111,6 @@ import UIKit
     
     lazy var lockStateLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
-        let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(34)
         let height:CGFloat = 36.0
         let frame = CGRectMake(
@@ -153,9 +151,28 @@ import UIKit
         return button
     }()
     
-    let mapViewController:SLMapViewController = {
+    lazy var mapViewController:SLMapViewController = {
         let mvc:SLMapViewController = SLMapViewController()
         return mvc
+    }()
+    
+    lazy var slideViewController:SLSlideViewController = {
+        let slvc = SLSlideViewController()
+        slvc.delegate = self
+        
+        return slvc
+    }()
+    
+    lazy var touchCatcherView:UIView = {
+        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(touchCatcherViewTapped)
+        )
+        let view:UIView = UIView(frame: self.view.bounds)
+        view.addGestureRecognizer(tgr)
+        view.backgroundColor = UIColor.clearColor()
+        
+        return view
     }()
 
     deinit {
@@ -181,6 +198,12 @@ import UIKit
         self.registerForNotifications()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.lockManager.checkLockOpenOrClosed()
+    }
+    
     func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -192,41 +215,74 @@ import UIKit
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(crashTurnedOff(_:)),
-            name: "kSLNotificationLedTurnedOff",
+            name: kSLNotificationLedTurnedOff,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
-            name: "kSLNotificationLockOpened",
+            name: kSLNotificationLockOpened,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockLocked(_:)),
-            name: "kSLNotificationLockClosed",
+            name: kSLNotificationLockClosed,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockDisconneted(_:)),
-            name: "kSLNotificationLockManagerDisconnectedLock",
+            name: kSLNotificationLockManagerDisconnectedLock,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self, selector:
             #selector(lockPaired(_:)),
-            name: "kSLNotificationLockPaired",
+            name: kSLNotificationLockPaired,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self, selector:
+            #selector(lockPaired(_:)),
+            name: kSLNotificationRemoveLockForUser,
             object: nil
         )
     }
     
     func menuButtonPressed() {
         print("menu button pressed")
+        let width:CGFloat = self.view.bounds.size.width - 80.0
+        self.slideViewController.view.frame = CGRect(
+            x: -width,
+            y: 0.0,
+            width: width,
+            height: self.view.bounds.size.height
+        )
+        
+        self.addChildViewController(self.slideViewController)
+        self.view.addSubview(self.slideViewController.view)
+        self.view.bringSubviewToFront(self.slideViewController.view)
+        self.slideViewController.didMoveToParentViewController(self)
+        
+        UIView.animateWithDuration(0.4, animations: {
+            self.slideViewController.view.frame = CGRect(
+                x: 0.0,
+                y: 0.0,
+                width: width,
+                height: self.view.bounds.size.height
+            )
+        }) { (finished) in
+            self.view.insertSubview(
+                self.touchCatcherView,
+                belowSubview: self.slideViewController.view
+            )
+        }
     }
     
     func theftButtonPressed() {
@@ -263,6 +319,10 @@ import UIKit
         self.lockStateLabel.text = self.lockStateText()
     }
     
+    func lockRemoved(notification: NSNotification) {
+        self.setLockDisabled()
+    }
+    
     func crashTurnedOn(notification: NSNotification) {
         self.crashButton.selected = true
     }
@@ -287,10 +347,15 @@ import UIKit
             let currentLock = self.lock
             where lock.macAddress == currentLock.macAddress
         {
-            self.lock = nil
-            self.lockButton.enabled = false
-            // Insert move views to disabled mode here
+            self.setLockDisabled()
         }
+    }
+    
+    func setLockDisabled() {
+        self.lock = nil
+        self.lockButton.enabled = false
+        self.lockStateLabel.text = self.lockStateText()
+        // Insert move views to disabled mode here
     }
     
     func presentMapViewController(animated: Bool) {
@@ -310,5 +375,37 @@ import UIKit
         }
         
         return text
+    }
+    
+    func touchCatcherViewTapped() {
+        UIView.animateWithDuration(0.4, animations: {
+            self.slideViewController.view.frame = CGRect(
+                x: -self.slideViewController.view.bounds.size.width,
+                y: 0.0,
+                width: self.slideViewController.view.bounds.size.width,
+                height: self.slideViewController.view.bounds.size.height
+            )
+        }) { (finished) in
+            self.slideViewController.view.removeFromSuperview()
+            self.slideViewController.removeFromParentViewController()
+            self.touchCatcherView.removeFromSuperview()
+        }
+    }
+    
+    func handleAction(svc: SLSlideViewController, action: SLSlideViewControllerAction) {
+        switch action {
+        case .EllipsesPressed:
+            let ldvc:SLLockDetailsViewController = SLLockDetailsViewController()
+            let nc = UINavigationController(rootViewController: ldvc)
+            self.presentViewController(nc, animated: true, completion: nil)
+        case .FindMyEllipsePressed:
+            print("find my elipse pressed")
+        case .ProfileAndSettingPressed:
+            print("profile and setting pressed")
+        case .HelpPressed:
+            print("help pressed")
+        case .RateTheAppPressed:
+            print("rate the app pressed")
+        }
     }
 }

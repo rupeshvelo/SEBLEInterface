@@ -130,12 +130,16 @@ class SLConnectLockInfoViewController: UIViewController {
     }
     
     func yesButtonPressed() {
-        let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterActiveSearchMode(true)
-        lockManager.startScan()
+        let vc = SLProfileViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
         
-        let alvc = SLAvailableLocksViewController()
-        self.navigationController?.pushViewController(alvc, animated: true)
+        
+//        let lockManager = SLLockManager.sharedManager()
+//        lockManager.shouldEnterActiveSearchMode(true)
+//        lockManager.startScan()
+//        
+//        let alvc = SLAvailableLocksViewController()
+//        self.navigationController?.pushViewController(alvc, animated: true)
     }
     
     func invitationButtonPressed() {

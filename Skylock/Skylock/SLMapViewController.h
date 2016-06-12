@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SLSlideViewController.h"
 #import "SLLocationManager.h"
-#import "SLLockInfoViewController.h"
 #import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "SLAnnotationDirectionCalloutView.h"
@@ -18,8 +16,6 @@
 @import GoogleMaps;
 
 @interface SLMapViewController : UIViewController <
-SLSlideViewControllerDelegate,
-SLLockInfoViewControllerDelegate,
 UIAlertViewDelegate,
 CLLocationManagerDelegate,
 SLNotificationViewControllerDelegate,

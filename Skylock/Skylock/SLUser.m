@@ -9,9 +9,6 @@
 #import "SLUser.h"
 #import "SLLock.h"
 
-#define kSLUserTypeFacebook @"facebook"
-#define kSLUserTypePhone    @"phone"
-
 @implementation SLUser
 
 @synthesize location;

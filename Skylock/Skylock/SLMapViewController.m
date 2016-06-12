@@ -7,9 +7,7 @@
 //
 
 #import "SLMapViewController.h"
-#import "SLSlideViewController.h"
 #import "SLLocationManager.h"
-#import "SLLockInfoViewController.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
 #import "SLUserDefaults.h"
@@ -41,10 +39,6 @@
 
 @interface SLMapViewController() <SLMapCalloutViewControllerDelegate, SLAcceptNotificationsViewControllerDelegate>
 
-@property (nonatomic, strong) UIView *touchStopperView;
-@property (nonatomic, strong) UIButton *menuButton;
-@property (nonatomic, strong) UIButton *settingsButton;
-
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
@@ -61,8 +55,6 @@
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
-@property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
-
 @property (nonatomic, strong) NSArray *directions;
 @property (nonatomic, copy) NSString *directionEndAddress;
 
@@ -77,60 +69,6 @@
 @end
 
 @implementation SLMapViewController
-
-- (UIView *)touchStopperView
-{
-    if (!_touchStopperView) {
-        UITapGestureRecognizer *tgr = [UITapGestureRecognizer new];
-        tgr.numberOfTapsRequired = 1;
-        [tgr addTarget:self action:@selector(touchStopperViewTapped:)];
-        
-        UIColor *color = [UIColor colorWithRed:51 green:51 blue:51];
-        _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
-        _touchStopperView.userInteractionEnabled = YES;
-        _touchStopperView.backgroundColor = [color colorWithAlphaComponent:.8f];
-        [_touchStopperView addGestureRecognizer:tgr];
-    }
-    
-    return _touchStopperView;
-}
-
-- (UIButton *)menuButton
-{
-    if (!_menuButton) {
-        UIImage *menuButtonImage = [UIImage imageNamed:@"icon_menu"];
-        _menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                 0.0f,
-                                                                 2*menuButtonImage.size.width,
-                                                                 2*menuButtonImage.size.height)];
-        [_menuButton setImage:menuButtonImage forState:UIControlStateNormal];
-        [_menuButton addTarget:self
-                        action:@selector(menuButtonPressed)
-              forControlEvents:UIControlEventTouchDown];
-        [self.view addSubview:_menuButton];
-    }
-    
-    return _menuButton;
-}
-
-- (UIButton *)settingsButton
-{
-    if (!_settingsButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_settings_large"];
-        _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                     0.0f,
-                                                                     2*image.size.width,
-                                                                     2*image.size.height)];
-        [_settingsButton setImage:image forState:UIControlStateNormal];
-        [_settingsButton addTarget:self
-                            action:@selector(settingsButtonPressed)
-                  forControlEvents:UIControlEventTouchDown];
-        //_settingsButton.enabled = NO;
-        [self.view addSubview:_settingsButton];
-    }
-    
-    return _settingsButton;
-}
 
 - (GMSMapView *)mapView
 {
@@ -162,16 +100,6 @@
     }
     
     return _locationManager;
-}
-
-- (SLLockInfoViewController *)lockInfoViewController
-{
-    if (!_lockInfoViewController) {
-        _lockInfoViewController = [SLLockInfoViewController new];
-        _lockInfoViewController.delegate = self;
-    }
-    
-    return _lockInfoViewController;
 }
 
 - (UIButton *)locationButton
@@ -263,16 +191,6 @@
                                          width,
                                          kSLMapViewControllerLockInfoViewSmallHeight);
     
-    self.menuButton.frame = CGRectMake(15.0f,
-                                       30.0f,
-                                       self.menuButton.bounds.size.width,
-                                       self.menuButton.bounds.size.height);
-    
-    self.settingsButton.frame = CGRectMake(self.view.bounds.size.width - self.settingsButton.bounds.size.width - 15.0f,
-                                           CGRectGetMidY(self.menuButton.frame) - .5*self.settingsButton.bounds.size.height,
-                                           self.settingsButton.bounds.size.width,
-                                           self.settingsButton.bounds.size.height);
-    
     self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
                                            self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
                                            self.locationButton.bounds.size.width,
@@ -282,12 +200,6 @@
                                              self.locationButton.frame.origin.y,
                                              self.directionsButton.bounds.size.width,
                                              self.directionsButton.bounds.size.height);
-    
-    self.lockInfoViewController.view.frame = self.lockInfoSmallFrame;
-    [self addChildViewController:self.lockInfoViewController];
-    [self.view addSubview:self.lockInfoViewController.view];
-    [self.view bringSubviewToFront:self.lockInfoViewController.view];
-    [self.lockInfoViewController didMoveToParentViewController:self];
     
     
 //    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
@@ -315,16 +227,6 @@
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    if (!self.lockInfoViewController.isUp && [SLLockManager.sharedManager selectedLock] && self.isInitialLoad) {
-        self.lockInfoViewController.lock = [SLLockManager.sharedManager selectedLock];
-        [self.lockInfoViewController setUpViewAndChangeSize:NO moveUp:NO];
-    }
-}
-
 - (void)testAction
 {
     NSLog(@"test action button pressed");
@@ -347,34 +249,6 @@
                                              selector:@selector(presentEmergencyText:)
                                                  name:kSLNotificationSendEmergecyText
                                                object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(lockAdded:)
-                                                 name:kSLNotificationLockPaired
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(lockRemoved:)
-                                                 name:kSLNotificationLockManagerDisconnectedLock
-                                               object:nil];
-}
-
-- (void)menuButtonPressed
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self presentSlideViewController];
-}
-
-- (void)settingsButtonPressed
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLSettingsViewController *svc = [SLSettingsViewController new];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    nc.modalPresentationStyle = UIModalPresentationFullScreen;
-    
-    [self presentViewController:nc animated:YES completion:nil];
-
 }
 
 - (void)presentNotificationsController
@@ -382,52 +256,6 @@
     SLAcceptNotificationsViewController *anvc = [SLAcceptNotificationsViewController new];
     anvc.delegate = self;
     [self presentViewController:anvc animated:NO completion:nil];
-}
-
-- (void)presentSlideViewController
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self.view addSubview:self.touchStopperView];
-    
-    static CGFloat width = 150.0f;
-    SLSlideViewController *slvc = [SLSlideViewController new];
-    slvc.delegate = self;
-    slvc.view.frame = CGRectMake(-width,
-                                 0.0f,
-                                 width,
-                                 self.view.bounds.size.height);
-    
-    [self addChildViewController:slvc];
-    [self.view addSubview:slvc.view];
-    [self.view bringSubviewToFront:slvc.view];
-    [slvc didMoveToParentViewController:self];
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        slvc.view.frame = CGRectMake(0.0f,
-                                     0.0f,
-                                     width,
-                                     slvc.view.bounds.size.height);
-    } completion:nil];
-}
-
-- (void)removeSlideViewController:(SLSlideViewController *)slvc withCompletion:(void(^)(void))completion
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
-                                     0.0f,
-                                     slvc.view.bounds.size.width,
-                                     slvc.view.bounds.size.height);
-    } completion:^(BOOL finished) {
-        [slvc.view removeFromSuperview];
-        [slvc removeFromParentViewController];
-        [self.touchStopperView removeFromSuperview];
-        
-        if (completion) {
-            completion();
-        }
-    }];
 }
 
 - (void)presentDirectionsViewController
@@ -465,22 +293,6 @@
             completion();
         }
     }];
-}
-
-- (void)touchStopperViewTapped:(UITapGestureRecognizer *)tgr
-{
-    NSLog(@"touch stopper view tapped");
-    SLSlideViewController *svc;
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass:[SLSlideViewController class]]) {
-            svc = (SLSlideViewController *)vc;
-            break;
-        }
-    }
-    
-    if (svc) {
-        [self removeSlideViewController:svc withCompletion:nil];
-    }
 }
 
 - (void)handleCrashAndTheftAlerts:(NSNotification *)notification
@@ -552,38 +364,6 @@
     [self presentViewController:cvc animated:YES completion:nil];
 }
 
-- (void)lockAdded:(NSNotification *)notification
-{
-    NSDictionary *info = (NSDictionary *)notification.object;
-    if (!info || !info[@"lock"]) {
-        return;
-    }
-    
-    self.selectedLock = info[@"lock"];
-    //[self setupLockInfoViewControllerView:YES];
-    self.lockInfoViewController.lock = self.selectedLock;
-    
-    //[self.lockInfoViewController setUpView];
-}
-
-- (void)lockRemoved:(NSNotification *)notification
-{
-    
-}
-
-- (void)setupLockInfoViewControllerView
-{
-    self.locationButton.hidden = self.lockInfoViewController.isUp;
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        self.lockInfoViewController.view.frame = self.lockInfoViewController.isUp ?
-            self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-        self.locationButton.alpha = self.lockInfoViewController.isUp ? 0.0f : 1.0f;
-    } completion:^(BOOL finished) {
-        self.locationButton.hidden = !self.lockInfoViewController.isUp;
-    }];
-}
-
 - (void)locationButtonPressed
 {
     [self centerOnUser];
@@ -596,7 +376,6 @@
 
 - (void)lockSelected
 {
-    self.settingsButton.enabled = YES;
     
     // TODO - clear lock annotations that are no longer active
     self.selectedLock = [SLLockManager.sharedManager selectedLock];
@@ -626,66 +405,6 @@
     } else if (buttonIndex == 1) {
         // user has granted location services
     }
-}
-
-#pragma mark - SLSlideViewController Delegate Methods
-- (void)slideViewController:(SLSlideViewController *)slvc
-              actionOccured:(SLSlideViewControllerButtonAction)action
-                    options:(NSDictionary *)options
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (action == SLSlideViewControllerButtonActionLockSelected) {
-        [self lockSelected];
-    } else if (action == SLSlideViewControllerButtonActionLockDeselected){
-        self.selectedLock = nil;
-    } else if (action == SLSlideViewControllerButtonActionAddLock){
-
-    } else if (action == SLSlideViewControllerButtonActionSharing) {
-
-    } else if (action == SLSlideViewControllerButtonActionViewAccount) {
-        SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:aivc];
-        nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-        nc.modalPresentationStyle = UIModalPresentationFullScreen;
-        
-        [self presentViewController:nc animated:YES completion:nil];
-    } else if (action == SLSlideViewControllerButtonActionRemoveLock) {
-        if (options && options[@"lock"]) {
-            SLLock *lock = (SLLock *)options[@"lock"];
-            [SLLockManager.sharedManager
-             deleteLockFromCurrentUserAccountWithMacAddress:lock.macAddress];
-        }
-    }
-}
-
-- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLUser *)user
-{
-    SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
-    aivc.user = user;
-    
-    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:aivc];
-    [self presentViewController:navController animated:YES completion:nil];
-}
-
-- (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock
-{
-
-}
-
-#pragma mark - SLLockInfoViewController Delegate Methods
-- (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
-{
-
-}
-
-- (void)lockInfoViewControllerWantsToBeLarge:(SLLockInfoViewController *)livc
-{
-    [self setupLockInfoViewControllerView];
-}
-
-- (void)lockInfoViewControllerWantsToBeSmall:(SLLockInfoViewController *)livc
-{
-    [self setupLockInfoViewControllerView];
 }
 
 #pragma mark - SLDirectionsViewController Delegate Methods
@@ -776,10 +495,6 @@
                                                                          directions:self.directions];
     [self.directionDrawingHelper drawDirections:^{
         self.directionsButton.hidden = NO;
-        
-        if (self.lockInfoViewController.isUp) {
-            [self.lockInfoViewController setUpViewAndChangeSize:YES moveUp:NO];
-        }
     }];
 }
 
