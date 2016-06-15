@@ -46,6 +46,11 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         if !self.view.subviews.contains(self.tableView) {
             self.view.addSubview(self.tableView)
         }
+        
+        if let path = self.tableView.indexPathForSelectedRow {
+            let cell = self.tableView.cellForRowAtIndexPath(path)
+            cell?.selected = false
+        }
     }
     
     func cellInfo(indexPath: NSIndexPath) -> [String:String] {

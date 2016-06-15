@@ -23,7 +23,7 @@ class SLSignInViewController: UIViewController {
     }()
 
     lazy var existingUserButton:UIButton = {
-        let image = UIImage(named: "button_log_in_Onboarding")!
+        let image = UIImage(named: "button_existing_user_Onboarding")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
             y: CGRectGetMaxY(self.logoView.frame) + 63.0,
@@ -43,7 +43,7 @@ class SLSignInViewController: UIViewController {
     }()
 
     lazy var signUpWithEmailButton:UIButton = {
-        let image = UIImage(named: "button_sign_up_email_Onboarding")!
+        let image = UIImage(named: "button_log_in_email_Onboarding")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
             y: self.view.bounds.size.height - image.size.height - 24.0,
@@ -85,7 +85,7 @@ class SLSignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor(red: 74, green: 80, blue: 97)
         
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.existingUserButton)
@@ -94,7 +94,7 @@ class SLSignInViewController: UIViewController {
     }
     
     func existingUserButtonPressed() {
-        let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
+        let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.SignIn)    
         self.presentViewController(createAccountVC, animated: true, completion: nil)
     }
     

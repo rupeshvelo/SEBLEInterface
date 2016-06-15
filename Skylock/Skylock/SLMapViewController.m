@@ -7,7 +7,6 @@
 //
 
 #import "SLMapViewController.h"
-#import "SLLocationManager.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
 #import "SLUserDefaults.h"
@@ -29,15 +28,11 @@
 #import "Skylock-Swift.h"
 
 
-#define kSLMapViewControllerLockInfoViewWidth       295.0f
-#define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
-#define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
-#define kSLMapViewControllerLockInfoViewPadding     12.0f
 #define kSLMapViewControllerCalloutScaler           4.0f
 #define kSLMapViewControllerCalloutOffsetScaler     0.65f
 #define kSLMapViewControllerCalloutYOffset          40.0f
 
-@interface SLMapViewController() <SLMapCalloutViewControllerDelegate, SLAcceptNotificationsViewControllerDelegate>
+@interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
 
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
@@ -180,16 +175,13 @@
     
     [self.view addSubview:self.mapView];
     
-    CGFloat width = self.view.bounds.size.width - 2*kSLMapViewControllerLockInfoViewPadding;
-    self.lockInfoLargeFrame =  CGRectMake(kSLMapViewControllerLockInfoViewPadding,
-                                          self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewPadding,
-                                          width,
-                                          kSLMapViewControllerLockInfoViewLargeHeight);
     
-    self.lockInfoSmallFrame = CGRectMake(kSLMapViewControllerLockInfoViewPadding,
-                                         self.lockInfoLargeFrame.origin.y + kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewSmallHeight ,
-                                         width,
-                                         kSLMapViewControllerLockInfoViewSmallHeight);
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed: @"lock_screen_hamburger_menu"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(menuButtonPressed)];
+    self.navigationItem.leftBarButtonItem = menuButton;
+    self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
     self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
                                            self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
@@ -210,21 +202,6 @@
 //    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
 //    [testActionButton setBackgroundColor:[UIColor purpleColor]];
 //    [self.view addSubview:testActionButton];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
-        NSNumber *complete = [ud objectForKey:SLUserDefaultsOnBoardingComplete];
-        if (!complete.boolValue) {
-            [self presentNotificationsController];
-        }
-    } else {
-        [self presentNotificationsController];
-    }
 }
 
 - (void)testAction
@@ -249,13 +226,6 @@
                                              selector:@selector(presentEmergencyText:)
                                                  name:kSLNotificationSendEmergecyText
                                                object:nil];
-}
-
-- (void)presentNotificationsController
-{
-    SLAcceptNotificationsViewController *anvc = [SLAcceptNotificationsViewController new];
-    anvc.delegate = self;
-    [self presentViewController:anvc animated:NO completion:nil];
 }
 
 - (void)presentDirectionsViewController
@@ -318,6 +288,11 @@
             self.notificationViewController.view.alpha = 1.0f;
         }];
     }
+}
+
+- (void)menuButtonPressed
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)removeCrashAndTheftViewController
@@ -397,15 +372,6 @@
 //    }
 }
 
-#pragma mark - Alert view delegate methods
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        // user has not given access
-    } else if (buttonIndex == 1) {
-        // user has granted location services
-    }
-}
 
 #pragma mark - SLDirectionsViewController Delegate Methods
 - (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController

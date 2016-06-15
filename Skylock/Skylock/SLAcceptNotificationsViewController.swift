@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc protocol SLAcceptNotificationsViewControllerDelegate {
+protocol SLAcceptNotificationsViewControllerDelegate {
     func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func acceptsNotificationsControllerWantsExit(
@@ -17,20 +17,51 @@ import UIKit
     )
 }
 
-@objc class SLAcceptNotificationsViewController: UIViewController {
+class SLAcceptNotificationsViewController: UIViewController {
     enum NotificationStep {
         case Location
         case Notifications
         case Done
     }
-
     
+    enum UIElement {
+        case BackgroundImageName
+        case MainText
+        case DetailText
+    }
+
     let xPadding:CGFloat = 35.0
     var delegate:SLAcceptNotificationsViewControllerDelegate?
     var currentNotificationStep:NotificationStep = .Location
     
+    let elements:[NotificationStep:[UIElement:String]] = [
+        .Location: [
+            .BackgroundImageName: "login_use_location_background",
+            .DetailText: NSLocalizedString(
+                "We use geo-tracking to locate your Ellipse and any shared bikes " +
+                "you have access to. When we know where you are, we can show you nearby " +
+                "bikes, and help you locate them with precise directions.",
+                comment: ""
+            ),
+            .MainText: NSLocalizedString("Ellipse would like to use your location", comment: "")
+        ],
+        .Notifications: [
+            .BackgroundImageName: "notifications_background",
+            .DetailText: NSLocalizedString(
+                "To help you get the most out of your Ellipse, we need your permission " +
+                "to send you notifications, such as in the event of a theft or crash, or if " +
+                "someone wants to share your bike.",
+                comment: ""
+            ),
+            .MainText: NSLocalizedString(
+                "Ellipse would like to send you notifications including theft and crash alerts.",
+                comment: ""
+            )
+        ]
+    ]
+    
     lazy var backgroundView:UIImageView = {
-        let image:UIImage = UIImage(named: "login_use_location_background")!
+        let image:UIImage = UIImage(named: self.elements[.Location]![.BackgroundImageName]!)!
         let imageView:UIImageView = UIImageView(image: image)
         imageView.frame = self.view.bounds
         
@@ -61,12 +92,7 @@ import UIKit
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(12)
-        let text = NSLocalizedString(
-            "We use geo-tracking to locate your Ellipse and any shared bikes " +
-            "you have access to. When we know where you are, we can show you nearby " +
-            "bikes, and help you locate them with precise directions.",
-            comment: ""
-        )
+        let text = self.longestTextLength(.MainText)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -96,7 +122,7 @@ import UIKit
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(17)
-        let text = NSLocalizedString("Ellipse would like to use your location", comment: "")
+        let text = self.longestTextLength(.DetailText)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -117,7 +143,7 @@ import UIKit
         label.text = text
         label.textAlignment = NSTextAlignment.Center
         label.font = font
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         
         return label
     }()
@@ -150,5 +176,35 @@ import UIKit
             self.dismissViewControllerAnimated(false, completion: nil)
             self.delegate?.acceptsNotificationsControllerWantsExit(self, animated: false)
         }
+        
+        self.setBackgroundImageForStep(self.currentNotificationStep)
+    }
+    
+    func setBackgroundImageForStep(step: NotificationStep) {
+        if step != .Location || step != .Notifications {
+            return
+        }
+        
+        let image:UIImage = UIImage(named: self.elements[step]![.BackgroundImageName]!)!
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - image.size.width),
+            y: 0.5*(self.view.bounds.size.height - image.size.height),
+            width: image.size.width,
+            height: image.size.height
+        )
+        
+        self.backgroundView.frame = frame
+        self.backgroundView.image = image
+    }
+    
+    func longestTextLength(element: UIElement) -> String {
+        var longestText:String = ""
+        for elementsDict in self.elements.values {
+            if let text = elementsDict[element] where longestText.characters.count < text.characters.count {
+                longestText = text
+            }
+        }
+        
+        return longestText
     }
 }

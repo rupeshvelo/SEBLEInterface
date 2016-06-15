@@ -8,7 +8,10 @@
 
 import UIKit
 
-class SLProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SLLabelAndSwitchCellDelegate {
+class SLProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SLLabelAndSwitchCellDelegate, SLOpposingLabelsTableViewCellDelegate {
+    var selectedPath:NSIndexPath?
+    var keyboardShowing:Bool = false
+    
     let tableInfo:[[String]] = [
         [
             NSLocalizedString("First name", comment: ""),
@@ -72,12 +75,41 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
         return table
     }()
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.addSubview(self.tableView)
         
+        let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
+        let menuButton:UIBarButtonItem = UIBarButtonItem(
+            image: menuImage,
+            style: .Plain,
+            target: self,
+            action: #selector(menuButtonPressed)
+        )
+        
+        self.navigationItem.leftBarButtonItem = menuButton
+        self.navigationItem.title = NSLocalizedString("MY PROFILE", comment: "")
+        
         self.setPictureForUser()
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIKeyboardWillShowNotification,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIKeyboardWillHideNotification,
+            object: nil
+        )
     }
 
     func cameraButtonPressed() {
@@ -124,6 +156,63 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
         return nil
     }
     
+    func keyboardWillShow(notification: NSNotification) {
+        if let userInfo:[NSObject:AnyObject] = notification.userInfo where !self.keyboardShowing {
+            let frameValue:NSValue = userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue
+            let offset = frameValue.CGRectValue().size.height + tableView(self.tableView, heightForHeaderInSection: 0)
+                + (self.navigationController?.navigationBar.bounds.size.height)!
+                + UIApplication.sharedApplication().statusBarFrame.size.height
+            self.tableView.contentOffset = CGPoint(x: 0.0, y: offset)
+//            if let path = self.selectedPath {
+//                self.tableView.scrollToRowAtIndexPath(path, atScrollPosition: .Top, animated: true)
+//            }
+            self.keyboardShowing = true
+            
+            let rightButton:UIBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem:
+                .Done, target: self,
+                       action: #selector(doneButtonPressed)
+            )
+            self.navigationItem.rightBarButtonItem = rightButton
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
+    }
+    
+    func doneButtonPressed() {
+//        print("section: \(self.selectedPath!.section) row: \(self.selectedPath!.row)")
+//        if let path = self.selectedPath,
+//            let cell:SLOpposingLabelsTableViewCell =
+//                tableView(self.tableView, cellForRowAtIndexPath: path) as? SLOpposingLabelsTableViewCell
+//            //where cell.rightField.isFirstResponder()
+//        {
+//            print("text \(cell.leftLabel.text)")
+//            cell.rightField.resignFirstResponder()
+//        }
+        
+        for i in 0...self.tableInfo[0].count - 1 {
+            let path:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
+            if let cell:SLOpposingLabelsTableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: path) as? SLOpposingLabelsTableViewCell
+            {
+                print("cell: \(cell.leftLabel.text)")
+                if cell.isTextFieldFirstResponder() {
+                    cell.haveFieldResignFirstReponder()
+                } else {
+                    print("\(i) is not first responder")
+                }
+            }
+        }
+    }
+    
+    func menuButtonPressed() {
+        let transitionHandler = SLViewControllerTransitionHandler()
+        self.modalPresentationStyle = .Custom
+        self.transitioningDelegate = transitionHandler
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     // MARK tableview delegate & datasource methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
@@ -153,12 +242,15 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
             }
             
+            cell?.delegate = self
+            cell?.selectionStyle = .None
             cell?.setProperties(
                 leftText,
                 rightLabelText: rightText,
                 leftLabelTextColor: greyTextColor,
                 rightLabelTextColor: (indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2) ?
-                    greyTextColor : blueTextColor
+                    greyTextColor : blueTextColor,
+                shouldEnableTextField: false
             )
             
             return cell!
@@ -185,6 +277,10 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
         return 0.0001
     }
     
+    func tableView(tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return self.tableView(tableView, heightForHeaderInSection: section)
+    }
+    
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0,
@@ -192,7 +288,6 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
             width: tableView.bounds.size.width,
             height: self.tableView(tableView, heightForHeaderInSection: section)
         )
-        
         
         let view:UIView = UIView(frame: viewFrame)
         view.backgroundColor = UIColor(white: 239.0/255.0, alpha: 1.0)
@@ -226,8 +321,27 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
         return view
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.section == 0 {
+            if let cell:SLOpposingLabelsTableViewCell =
+                self.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as? SLOpposingLabelsTableViewCell
+            {
+                dispatch_async(dispatch_get_main_queue(), {
+                    cell.setTextFieldEnabled(true)
+                    cell.haveFieldBecomeFirstResponder()
+                })
+            }
+        }
+    }
+    
     // MARK: SLLabelAndSwitchCellDelegate methods
     func switchFlippedForCell(cell: SLLabelAndSwitchTableViewCell, isNowOn: Bool) {
         print("switch flipped to value: \(isNowOn)")
+    }
+    
+    // MARK: SLOpposingLabelsTableViewCellDelegate methods
+    func cellWantsFirstResponder(cell: SLOpposingLabelsTableViewCell) {
+        self.selectedPath = self.tableView.indexPathForCell(cell)
+        print("section: \(self.selectedPath!.section) row: \(self.selectedPath!.row)")
     }
 }

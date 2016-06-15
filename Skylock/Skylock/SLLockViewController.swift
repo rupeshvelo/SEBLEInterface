@@ -8,11 +8,30 @@
 
 import UIKit
 
-@objc class SLLockViewController: UIViewController, SLSlideViewControllerDelegate {
+@objc class SLLockViewController:
+UIViewController,
+SLSlideViewControllerDelegate,
+SLLocationManagerDelegate,
+SLAcceptNotificationsViewControllerDelegate
+{
     let xPadding:CGFloat = 13.0
     var lock:SLLock?
     let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
 
+    lazy var acceptNotificationViewController:SLAcceptNotificationsViewController = {
+        let anvc:SLAcceptNotificationsViewController = SLAcceptNotificationsViewController()
+        anvc.delegate = self
+        
+        return anvc
+    }()
+    
+    lazy var locationManager:SLLocationManager = {
+        let locManager:SLLocationManager = SLLocationManager()
+        locManager.delegate = self
+        
+        return locManager
+    }()
+    
     lazy var menuButton:UIButton = {
         let image:UIImage = UIImage(named: "lock_screen_hamburger_menu")!
         let frame = CGRect(
@@ -202,6 +221,7 @@ import UIKit
         super.viewWillAppear(animated)
         
         self.lockManager.checkLockOpenOrClosed()
+        self.showAcceptNotificaitonViewController()
     }
     
     func registerForNotifications() {
@@ -254,6 +274,26 @@ import UIKit
             object: nil
         )
     }
+    
+    func showAcceptNotificaitonViewController() {
+        let ud = NSUserDefaults.standardUserDefaults();
+        if let isComplete:Bool = ud.boolForKey(SLUserDefaultsOnBoardingComplete) {
+            if !isComplete {
+                self.presentViewController(
+                    self.acceptNotificationViewController,
+                    animated: true,
+                    completion: nil
+                )
+            }
+        } else {
+            self.presentViewController(
+                self.acceptNotificationViewController,
+                animated: true,
+                completion: nil
+            )
+        }
+    }
+    
     
     func menuButtonPressed() {
         print("menu button pressed")
@@ -358,10 +398,6 @@ import UIKit
         // Insert move views to disabled mode here
     }
     
-    func presentMapViewController(animated: Bool) {
-        self.presentViewController(self.mapViewController, animated: animated, completion: nil)
-    }
-    
     func lockStateText() -> String {
         let text:String
         if let lock = self.lock {
@@ -392,20 +428,52 @@ import UIKit
         }
     }
     
+    func presentViewControllerWithNavigationController(viewController: UIViewController) {
+        //let transitionHandler = SLViewControllerTransitionHandler()
+        let nc = UINavigationController(rootViewController: viewController)
+        //nc.modalPresentationStyle = .Custom
+        //nc.transitioningDelegate = transitionHandler
+        self.presentViewController(nc, animated: true, completion: nil)
+    }
+    
+    // MARK: SLSLideViewControllerDelegate methods
     func handleAction(svc: SLSlideViewController, action: SLSlideViewControllerAction) {
         switch action {
         case .EllipsesPressed:
             let ldvc:SLLockDetailsViewController = SLLockDetailsViewController()
-            let nc = UINavigationController(rootViewController: ldvc)
-            self.presentViewController(nc, animated: true, completion: nil)
+            self.presentViewControllerWithNavigationController(ldvc)
         case .FindMyEllipsePressed:
-            print("find my elipse pressed")
+            let mvc:SLMapViewController = SLMapViewController()
+            self.presentViewControllerWithNavigationController(mvc)
         case .ProfileAndSettingPressed:
-            print("profile and setting pressed")
+            let pvc = SLProfileViewController()
+            self.presentViewControllerWithNavigationController(pvc)
         case .HelpPressed:
             print("help pressed")
         case .RateTheAppPressed:
             print("rate the app pressed")
         }
+    }
+    
+    // MARK: SLLocationManagerDelegate methods
+    func locationManagerUpdatedUserPosition(userLocation: CLLocation) {
+        
+    }
+    
+    func locationManagerDidAcceptedLocationAuthoriation(didAccept: Bool) {
+        
+    }
+    
+    // MARK: SLAcceptNotificationViewControllerDelegate Methods
+    func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        
+    }
+    
+    func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        
+    }
+    
+    func acceptsNotificationsControllerWantsExit(acceptNotiticationViewController: SLAcceptNotificationsViewController, animated: Bool) {
+        
     }
 }

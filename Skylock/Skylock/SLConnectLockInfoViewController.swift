@@ -114,6 +114,8 @@ class SLConnectLockInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = NSLocalizedString("CONNECT YOUR ELLIPSE", comment: "")
+        
         self.view.backgroundColor = UIColor.whiteColor()
         
         let buttonImage:UIImage = UIImage(named: "button_yes_Onboarding")!
@@ -130,16 +132,16 @@ class SLConnectLockInfoViewController: UIViewController {
     }
     
     func yesButtonPressed() {
-        let vc = SLProfileViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let vc = SLProfileViewController()
+//        self.navigationController?.pushViewController(vc, animated: true)
         
         
-//        let lockManager = SLLockManager.sharedManager()
-//        lockManager.shouldEnterActiveSearchMode(true)
-//        lockManager.startScan()
-//        
-//        let alvc = SLAvailableLocksViewController()
-//        self.navigationController?.pushViewController(alvc, animated: true)
+        let lockManager = SLLockManager.sharedManager()
+        lockManager.shouldEnterActiveSearchMode(true)
+        lockManager.startScan()
+        
+        let alvc = SLAvailableLocksViewController()
+        self.navigationController?.pushViewController(alvc, animated: true)
     }
     
     func invitationButtonPressed() {

@@ -11,6 +11,7 @@ import UIKit
 class SLUnderlineTextView: UIView {
     let color:UIColor
     let lineHeight:CGFloat = 1.0
+    let placeHolder:String
     
     lazy var underlineView:UIView = {
         let frame = CGRect(
@@ -33,18 +34,19 @@ class SLUnderlineTextView: UIView {
             height: self.bounds.size.height - self.lineHeight
         )
         let field:UITextField = UITextField(frame: frame)
-//        field.attributedPlaceholder = NSAttributedString(
-//            string:field.placeholder!,
-//            attributes: [NSForegroundColorAttributeName: self.color]
-//        )
+        let text = self.placeHolder
+        field.attributedPlaceholder = NSAttributedString(
+            string: self.placeHolder,
+            attributes: [NSForegroundColorAttributeName: self.color]
+        )
         field.textColor = self.color
         field.font = UIFont.systemFontOfSize(14)
-        
         return field
     }()
     
-    init(frame: CGRect, color: UIColor) {
+    init(frame: CGRect, color: UIColor, placeHolder: String) {
         self.color = color
+        self.placeHolder = placeHolder
         
         super.init(frame: frame)
     }

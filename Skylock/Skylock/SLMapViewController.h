@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SLLocationManager.h"
 #import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
 #import "SLAnnotationDirectionCalloutView.h"

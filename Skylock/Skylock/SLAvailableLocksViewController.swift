@@ -10,6 +10,7 @@ import UIKit
 
 class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var locks:[SLLock] = [SLLock]()
+    let buttonTagShift:Int = 1000
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.Plain)
         table.rowHeight = 75.0
@@ -26,6 +27,8 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.title = NSLocalizedString("SELECT AN ELLIPSE", comment: "")
         
         self.view.backgroundColor = UIColor.whiteColor()
         
@@ -48,11 +51,28 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         self.tableView.endUpdates()
     }
     
-    func addLockButtonPressed() {
-        print("add lock button pressed")
-        
+    func blinkLockButtonPressed(button: UIButton) {
+        for (i, lock) in self.locks.enumerate() {
+            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
+            let cell:UITableViewCell = tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+            print("\(cell.textLabel?.text!)")
+            
+            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+                let accessoryButtonTag = accessoryButton.tag
+                let buttonTag = button.tag
+                if accessoryButtonTag == buttonTag {
+                    self.blinkLock(lock)
+                    break
+                }
+            }
+        }
     }
 
+    func blinkLock(lock: SLLock) {
+        let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+        lockManager.flashLEDsForLock(lock)
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -69,7 +89,7 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         }
         
         let lock = self.locks[indexPath.row]
-        let image:UIImage = UIImage(named: "button_connect_device_Onboarding")!
+        let image:UIImage = UIImage(named: "button_blink_device_Onboarding")!
         let button:UIButton = UIButton(frame: CGRect(
             x: 0,
             y: 0,
@@ -77,7 +97,8 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
             height: image.size.height)
         )
         button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(addLockButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(blinkLockButtonPressed(_:)), forControlEvents: .TouchDown)
+        button.tag = indexPath.row + self.buttonTagShift
         
         cell?.textLabel?.text = lock.name
         cell?.imageView?.image = UIImage(named: "table_cell_lock_pic_onboarding")!

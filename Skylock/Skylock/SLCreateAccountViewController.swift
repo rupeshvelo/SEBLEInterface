@@ -19,15 +19,14 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         case LastName
         case Email
         case Password
-        case ConfirmPassword
         case CountryCode
         case PhoneNumber
     }
     
     var textFieldSize:CGSize = CGSizeZero
     let xPadding:CGFloat = 15.0
-    let textColor = UIColor(red: 102, green: 177, blue: 227)
-    let yFieldSpacer:CGFloat = 20.0
+    let textColor = UIColor.whiteColor()
+    let yFieldSpacer:CGFloat = 25.0
     var currentPhase:SLCreateAccountFieldPhase
     var fields:[SLUnderlineTextView] = [SLUnderlineTextView]()
     var currentField:FieldName?
@@ -38,7 +37,6 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         .LastName: "",
         .Email: "",
         .Password: "",
-        .ConfirmPassword: "",
         .CountryCode: "",
         .PhoneNumber: ""
     ]
@@ -52,7 +50,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     }()
     
     lazy var exitButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_close_window_extra_large_Onboarding")!
+        let image:UIImage = UIImage(named: "sign_in_close_icon")!
         let frame:CGRect = CGRect(
             x: self.view.bounds.size.width - image.size.width - 10.0,
             y: UIApplication.sharedApplication().statusBarFrame.size.height + 10.0,
@@ -70,16 +68,17 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         return button
     }()
     
-    lazy var createAccountLabel:UILabel = {
+    lazy var topLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
             y: 88.0,
             width: self.view.bounds.size.width - self.xPadding,
-            height: 32.0
+            height: 34.0
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.text = NSLocalizedString("Create an account", comment: "")
+        label.text = self.currentPhase == .Create ? NSLocalizedString("Create an account", comment: "") :
+            NSLocalizedString("Log in", comment: "")
         label.textColor = self.textColor
         label.font = UIFont.systemFontOfSize(32.0)
         
@@ -89,13 +88,16 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     lazy var firstNameField:SLUnderlineTextView = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.createAccountLabel.frame) + 2*self.yFieldSpacer,
+            y: CGRectGetMaxY(self.topLabel.frame) + 2*self.yFieldSpacer,
             width: self.textFieldSize.width,
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("First Name", comment: "")
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("First name", comment: "")
+        )
         field.textField.delegate = self
         
         return field
@@ -109,8 +111,11 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("Last Name", comment: "")
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("Last name", comment: "")
+        )
         field.textField.delegate = self
         
         return field
@@ -124,8 +129,11 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("Email", comment: "")
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("Email address", comment: "")
+        )
         field.textField.delegate = self
         field.textField.autocapitalizationType = UITextAutocapitalizationType.None
         
@@ -140,25 +148,11 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("Password", comment: "")
-        field.textField.delegate = self
-        field.textField.secureTextEntry = true
-        field.textField.autocapitalizationType = UITextAutocapitalizationType.None
-        
-        return field
-    }()
-    
-    lazy var confirmPasswordField:SLUnderlineTextView = {
-        let frame = CGRect(
-            x: self.xPadding,
-            y: CGRectGetMaxY(self.passwordField.frame) + self.yFieldSpacer,
-            width: self.textFieldSize.width,
-            height: self.textFieldSize.height
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("Password", comment: "")
         )
-        
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("Confirm Password", comment: "")
         field.textField.delegate = self
         field.textField.secureTextEntry = true
         field.textField.autocapitalizationType = UITextAutocapitalizationType.None
@@ -169,13 +163,16 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     lazy var countryCodeField:SLUnderlineTextView = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.confirmPasswordField.frame) + self.yFieldSpacer,
+            y: CGRectGetMaxY(self.passwordField.frame) + self.yFieldSpacer,
             width: 45.0,
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("+", comment: "")
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("+", comment: "")
+        )
         field.textField.delegate = self
         
         return field
@@ -185,13 +182,16 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         let xSpacer:CGFloat = 10.0
         let frame = CGRect(
             x: CGRectGetMaxX(self.countryCodeField.frame) + xSpacer,
-            y: CGRectGetMaxY(self.confirmPasswordField.frame) + self.yFieldSpacer,
+            y: CGRectGetMaxY(self.passwordField.frame) + self.yFieldSpacer,
             width: self.textFieldSize.width - self.countryCodeField.bounds.size.width - xSpacer,
             height: self.textFieldSize.height
         )
         
-        let field:SLUnderlineTextView = SLUnderlineTextView(frame: frame, color: self.textColor)
-        field.textField.placeholder = NSLocalizedString("Phone Number", comment: "")
+        let field:SLUnderlineTextView = SLUnderlineTextView(
+            frame: frame,
+            color: self.textColor,
+            placeHolder: NSLocalizedString("Mobile number", comment: "")
+        )
         field.textField.delegate = self
         
         return field
@@ -216,8 +216,8 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         
         let frame = CGRectMake(
             padding,
-            CGRectGetMaxY(self.phoneNumberField.frame) + 2*self.yFieldSpacer,
-            labelWidth,
+            CGRectGetMaxY(self.countryCodeField.frame) + 2*self.yFieldSpacer,
+            labelSize.width,
             labelSize.height
         )
         
@@ -232,7 +232,9 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     }()
     
     lazy var sendTextButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_text_confirmation_code_Onboarding")!
+        let image:UIImage = self.currentPhase == .Create ?
+            UIImage(named: "button_text_confirmation_code_Onboarding")! :
+            UIImage(named: "sign_in_existing_user_login_button")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
             y: self.view.bounds.size.height - image.size.height - 20.0,
@@ -240,7 +242,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             height: image.size.height
         )
         let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
+        button.setImage(image, forState: .Normal)
         button.addTarget(
             self,
             action: #selector(sendTextButtonPressed),
@@ -272,7 +274,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
         
         self.textFieldSize = CGSize(
             width: self.view.bounds.size.width - 2*self.xPadding,
@@ -280,15 +282,23 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         )
         
         self.view.addSubview(self.scrollView)
-        self.scrollView.addSubview(self.createAccountLabel)
-        self.scrollView.addSubview(self.firstNameField)
-        self.scrollView.addSubview(self.lastNameField)
-        self.scrollView.addSubview(self.emailField)
-        self.scrollView.addSubview(self.passwordField)
-        self.scrollView.addSubview(self.confirmPasswordField)
-        self.scrollView.addSubview(self.countryCodeField)
-        self.scrollView.addSubview(self.phoneNumberField)
-        self.scrollView.addSubview(self.infoLabel)
+
+        self.scrollView.addSubview(self.topLabel)
+
+        if self.currentPhase == .Create {
+            self.scrollView.addSubview(self.firstNameField)
+            self.scrollView.addSubview(self.lastNameField)
+            self.scrollView.addSubview(self.emailField)
+            self.scrollView.addSubview(self.passwordField)
+            self.scrollView.addSubview(self.countryCodeField)
+            self.scrollView.addSubview(self.phoneNumberField)
+            self.scrollView.addSubview(self.infoLabel)
+        } else {
+            self.scrollView.addSubview(self.countryCodeField)
+            self.scrollView.addSubview(self.phoneNumberField)
+            self.scrollView.addSubview(self.passwordField)
+        }
+        
         self.view.addSubview(self.exitButton)
         self.view.addSubview(self.sendTextButton)
         
@@ -318,16 +328,14 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
                 self.lastNameField,
                 self.emailField,
                 self.passwordField,
-                self.confirmPasswordField,
                 self.countryCodeField,
                 self.phoneNumberField
             ]
         case .SignIn:
             self.fields = [
-                self.emailField,
-                self.passwordField,
                 self.countryCodeField,
-                self.phoneNumberField
+                self.phoneNumberField,
+                self.passwordField
             ]
         }
     }
@@ -346,8 +354,25 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     }
     
     func sendTextButtonPressed() {
-        let clvc = SLConnectLockInfoViewController()
-        self.presentViewController(clvc, animated: true, completion: nil)
+        let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        if let pushId = ud.objectForKey(SLUserDefaultsPushNotificationToken) {
+            let userProperties:[NSObject:AnyObject] = [
+                "firstName": self.firstNameField.textField.text!,
+                "lastName": self.lastNameField.textField.text!,
+                "userId": self.countryCodeField.textField.text! + self.phoneNumberField.textField.text!,
+                "password": self.passwordField.textField.text!,
+                "googlePushId": pushId
+            ]
+            
+            let user = SLUser()
+            user.setPropertiesWithDictionary(userProperties, isFacebookUser: false)
+            
+//            let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
+//            restManager.
+            let clvc = SLConnectLockInfoViewController()
+            self.presentViewController(clvc, animated: true, completion: nil)
+        }
+        
     }
     
     func getTextFieldsSectionHeight() -> CGFloat {
@@ -375,8 +400,14 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             
             // hack to get phone number country code and
             // phone number field on same line
-            if index < self.fields.count - 2 {
-                y0 += self.yFieldSpacer + field.bounds.size.height
+            if self.currentPhase == .Create {
+                if index < self.fields.count - 2 {
+                    y0 += self.yFieldSpacer + field.bounds.size.height
+                }
+            } else {
+                if index > 0 {
+                    y0 += self.yFieldSpacer + field.bounds.size.height
+                }
             }
         }
     }
@@ -398,13 +429,10 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             return false
         }
         
-        if self.currentPhase == .Create {
-            if let password = self.fieldValues[.Password],
-                let confirmedPassword = self.fieldValues[.ConfirmPassword]
-                where (password != confirmedPassword && password.characters.count >= self.passwordLength)
-            {
-                return false
-            }
+        if let password = self.fieldValues[.Password]
+            where password.characters.count < self.passwordLength
+        {
+            return false
         }
         
         return true
@@ -420,8 +448,6 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             fieldName = .Email
         } else if textField == self.passwordField.textField {
             fieldName = .Password
-        } else if textField == self.confirmPasswordField.textField {
-            fieldName = .ConfirmPassword
         } else if textField == self.countryCodeField.textField {
             fieldName = .CountryCode
         } else {
@@ -458,7 +484,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             options: UIViewAnimationOptions(rawValue: curve.unsignedIntegerValue),
             animations: {
                 self.scrollView.contentOffset = CGPoint(x: 0, y: self.keyboardOffset())
-                self.createAccountLabel.alpha = 0.0
+                self.topLabel.alpha = 0.0
             },
             completion: nil
         )
@@ -486,7 +512,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             options: UIViewAnimationOptions(rawValue: curve.unsignedIntegerValue),
             animations: {
                 self.scrollView.contentOffset = CGPoint(x: 0, y: offset)
-                self.createAccountLabel.alpha = 1.0
+                self.topLabel.alpha = 1.0
             },
             completion: nil
         )
@@ -495,15 +521,15 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     func textFieldDidBeginEditing(textField: UITextField) {
         let keyboardType:UIKeyboardType
         if textField == self.countryCodeField.textField || textField == self.phoneNumberField.textField {
-            keyboardType = UIKeyboardType.NumberPad
+            keyboardType = .NumberPad
         } else if textField == self.emailField.textField {
-            keyboardType = UIKeyboardType.EmailAddress
+            keyboardType = .EmailAddress
         } else {
-            keyboardType = UIKeyboardType.Default
+            keyboardType = .Default
         }
         
         textField.keyboardType = keyboardType
-        textField.returnKeyType = UIReturnKeyType.Done
+        textField.returnKeyType = .Done
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {

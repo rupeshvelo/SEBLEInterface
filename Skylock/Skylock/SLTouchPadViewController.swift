@@ -20,6 +20,8 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     var letterIndex:Int = 0
     var pushes:[UInt8] = []
     var onExit:(() -> Void)?
+    var arrowInputViews:[UIView] = [UIView]()
+    var arrowButtonSize:CGSize = CGSizeZero
     
     lazy var xExitButton:UIButton = {
         let image:UIImage = UIImage(named: "button_close_window_large_Onboarding")!
@@ -101,29 +103,25 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         return label
     }()
     
-    lazy var pinEntryLabel:UILabel = {
-        let xSpacer:CGFloat = 40.0
+    lazy var pinEntryView:UIView = {
+        let width = CGFloat(self.maximunCodeNumber) * self.arrowButtonSize.width
         let frame = CGRectMake(
-            xSpacer,
+            0.5*(self.view.bounds.size.width - width),
             CGRectGetMaxY(self.subInfoLabel.frame) + 5.0,
-            self.view.bounds.size.width - 2*xSpacer,
+            width,
             38.0
         )
         
-        let label: UILabel = UILabel(frame: frame)
-        label.text = ""
-        label.textColor = UIColor(red: 155, green: 155, blue: 155)
-        label.font = UIFont.systemFontOfSize(36)
-        label.textAlignment = NSTextAlignment.Center
+        let view: UIView = UIView(frame: frame)
         
-        return label
+        return view
     }()
     
     lazy var deleteButton:UIButton = {
         let image:UIImage = UIImage(named: "button_backspace_Onboarding")!
         let frame = CGRect(
-            x: CGRectGetMaxX(self.pinEntryLabel.frame) + 5.0,
-            y: CGRectGetMinY(self.pinEntryLabel.frame) + 0.5*(self.pinEntryLabel.bounds.size.height - image.size.height),
+            x: CGRectGetMaxX(self.pinEntryView.frame) + 5.0,
+            y: CGRectGetMinY(self.subInfoLabel.frame) + 0.5*(self.pinEntryView.bounds.size.height - image.size.height),
             width: image.size.width,
             height: image.size.height
         )
@@ -138,9 +136,9 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     
     lazy var underlineView:UIView = {
         let frame = CGRect(
-            x: CGRectGetMinX(self.pinEntryLabel.frame),
-            y: CGRectGetMaxY(self.pinEntryLabel.frame) + 3.0,
-            width: self.pinEntryLabel.bounds.size.width,
+            x: CGRectGetMinX(self.pinEntryView.frame),
+            y: CGRectGetMaxY(self.pinEntryView.frame) + 3.0,
+            width: self.pinEntryView.bounds.size.width,
             height: 1
         )
         
@@ -195,11 +193,13 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         
         self.view.backgroundColor = UIColor.whiteColor()
         
+        self.setArrowButtonSize()
+
         self.view.addSubview(self.xExitButton)
         self.view.addSubview(self.enterPinLabel)
         self.view.addSubview(self.deleteButton)
         self.view.addSubview(self.subInfoLabel)
-        self.view.addSubview(self.pinEntryLabel)
+        self.view.addSubview(self.pinEntryView)
         self.view.addSubview(self.underlineView)
         self.view.addSubview(self.savePinButton)
         self.view.addSubview(self.touchPadView)
@@ -207,36 +207,55 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         NSNotificationCenter.defaultCenter().addObserver(
             self, selector:
             #selector(lockCodeWritten),
-            name: "kSLNotificationLockSequenceWritten",
+            name: kSLNotificationLockSequenceWritten,
             object: nil
+        )
+    }
+    
+    func setArrowButtonSize() {
+        guard let upArrowImage:UIImage = UIImage(named: "touch_pad_up_arrow") else {
+            return
+        }
+        
+        guard let rightArrowImage:UIImage = UIImage(named: "touch_pad_right_arrow") else {
+            return
+        }
+        
+        self.arrowButtonSize = CGSize(
+            width: upArrowImage.size.width,
+            height: rightArrowImage.size.height
         )
     }
     
     func savePinButtonPressed() {
         let lockManager = SLLockManager.sharedManager()
         let lock = lockManager.getCurrentLock()
-        lockManager.writeTouchPadButtonPushes(&self.pushes, size: Int32(self.pushes.count), lock:lock)
+        lockManager.writeTouchPadButtonPushes(
+            &self.pushes,
+            size: Int32(self.pushes.count),
+            lock:lock
+        )
     }
     
-    func numberAndLetterForTouchPadLocation(location: SLTouchPadLocation) -> [UInt8:String] {
-        let letter: String
+    func numberAndImageNameForTouchPadLocation(location: SLTouchPadLocation) -> [UInt8:String] {
+        let imageName: String
         let number: UInt8
         switch location {
         case .Top:
-            letter = NSLocalizedString("Y", comment: "")
+            imageName = "touch_pad_up_arrow"
             number = 0x01
         case .Right:
-            letter = NSLocalizedString("B", comment: "")
+            imageName = "touch_pad_right_arrow"
             number = 0x02
         case .Bottom:
-            letter = NSLocalizedString("A", comment: "")
+            imageName = "touch_pad_down_arrow"
             number = 0x04
         case .Left:
-            letter = NSLocalizedString("X", comment: "")
+            imageName = "touch_pad_left_arrow"
             number = 0x08
         }
         
-        return [number: letter]
+        return [number:imageName]
     }
     
     func xExitButtonPressed() {
@@ -246,54 +265,83 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func deleteButtonPressed() {
-        if var text:String = self.pinEntryLabel.text where text.characters.count > 0 {
-            text.removeAtIndex(text.endIndex.advancedBy(-1))
-            self.pinEntryLabel.text = text
-            
-            self.pushes.removeLast()
-            
-            if text.characters.count == 0 {
-                self.deleteButton.hidden = true
-            }
-            
-            if self.savePinButton.enabled && text.characters.count < self.minimumCodeNumber {
-                self.savePinButton.enabled = false
-            }
+        if self.arrowInputViews.isEmpty {
+            return
+        }
+        
+        let lastView = self.arrowInputViews.popLast()!
+        lastView.removeFromSuperview()
+        
+        self.pushes.removeLast()
+        
+        if self.pushes.count == 0 {
+            self.deleteButton.hidden = true
+        }
+        
+        if self.savePinButton.enabled && self.pushes.count < self.minimumCodeNumber {
+            self.savePinButton.enabled = false
         }
     }
     
     func lockCodeWritten() {
-        if let exitClosure = self.onExit {
-            exitClosure()
+        if self.onExit != nil {
+            self.onExit!()
         }
     }
     
-    // SLTouchPadView delegate methods
+    func addImageToPinEntryView(imageName: String) {
+        guard let image:UIImage = UIImage(named: imageName) else {
+            return
+        }
+        
+        let xSpacer:CGFloat = 0.0
+        let x0 = self.arrowInputViews.isEmpty ? 0.0 :
+            CGFloat(self.arrowInputViews.count) * (self.arrowButtonSize.width + xSpacer)
+        let frame = CGRect(
+            x: x0,
+            y: 0.5*(self.pinEntryView.bounds.size.height - self.arrowButtonSize.height),
+            width: arrowButtonSize.width,
+            height: arrowButtonSize.height
+        )
+        
+        let view:UIView = UIView(frame: frame)
+        
+        let imageFrame = CGRect(
+            x: 0.5*(view.bounds.size.width - image.size.width),
+            y: 0.5*(view.bounds.size.height - image.size.height),
+            width: image.size.width,
+            height: image.size.height
+        )
+        
+        let imageView:UIImageView = UIImageView(frame: imageFrame)
+        imageView.image = image
+        
+        view.addSubview(imageView)
+        self.pinEntryView.addSubview(view)
+        
+        self.arrowInputViews.append(view)
+    }
+    
+    //MARK: SLTouchPadViewDelegate methods
     func touchPadViewLocationSelected(touchPadViewController: SLTouchPadView, location: SLTouchPadLocation) {
-        if self.pinEntryLabel.text?.characters.count == self.maximunCodeNumber {
+        if self.pushes.count == self.maximunCodeNumber {
             return
         }
         
-        let numberAndLetter = self.numberAndLetterForTouchPadLocation(location)
-        guard let number = numberAndLetter.keys.first else {
+        let numberAndImageName = self.numberAndImageNameForTouchPadLocation(location)
+        guard let number = numberAndImageName.keys.first else {
             return
         }
         
-        guard let letter = numberAndLetter.values.first else {
+        guard let imageName = numberAndImageName.values.first else {
             return
         }
         
-        if let text = self.pinEntryLabel.text {
-            self.pinEntryLabel.text = text + letter
-        } else {
-            self.pinEntryLabel.text = letter
-        }
-        
+        self.addImageToPinEntryView(imageName)
         self.pushes.append(number)
         self.deleteButton.hidden = false
-        if !self.savePinButton.enabled  && self.pinEntryLabel.text?.characters.count >= self.minimumCodeNumber {
+        if !self.savePinButton.enabled  && self.arrowInputViews.count >= self.minimumCodeNumber {
             self.savePinButton.enabled = true
         }
     }
-
 }

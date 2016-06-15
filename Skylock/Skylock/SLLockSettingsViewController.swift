@@ -153,7 +153,8 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                 leftText,
                 rightLabelText: rightText,
                 leftLabelTextColor: leftTextColor,
-                rightLabelTextColor: rightTextColor
+                rightLabelTextColor: rightTextColor,
+                shouldEnableTextField: false
             )
             
             return cell!

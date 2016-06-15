@@ -8,14 +8,15 @@
 
 import UIKit
 
-class SLOpposingLabelsTableViewCell: UITableViewCell {
+protocol SLOpposingLabelsTableViewCellDelegate {
+    func cellWantsFirstResponder(cell: SLOpposingLabelsTableViewCell)
+}
+
+class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     let xPadding:CGFloat = 5.0
     let labelHeight:CGFloat = 14.0
     let labelFont:UIFont = UIFont.systemFontOfSize(12.0)
-    var leftText:String?
-    var rightText:String?
-    var leftTextColor:UIColor?
-    var rightTextColor:UIColor?
+    var delegate:SLOpposingLabelsTableViewCellDelegate?
     
     lazy var leftLabel:UILabel = {
         let frame = CGRect(
@@ -27,13 +28,12 @@ class SLOpposingLabelsTableViewCell: UITableViewCell {
         
         let label:UILabel = UILabel(frame: frame)
         label.font = self.labelFont
-        label.text = self.leftText
-        label.textColor = self.leftTextColor
+        label.text = ""
         
         return label
     }()
     
-    lazy var rightLabel:UILabel = {
+    lazy var rightField:UITextField = {
         let frame = CGRect(
             x: 0.5*self.bounds.size.width,
             y: 0.5*(self.bounds.size.height - self.labelHeight),
@@ -41,12 +41,13 @@ class SLOpposingLabelsTableViewCell: UITableViewCell {
             height: self.labelHeight
         )
         
-        let label:UILabel = UILabel(frame: frame)
-        label.font = self.labelFont
-        label.text = self.rightText
-        label.textColor = self.rightTextColor
+        let field:UITextField = UITextField(frame: frame)
+        field.font = self.labelFont
+        field.text = ""
+        field.textAlignment = .Right
+        field.delegate = self
         
-        return label
+        return field
     }()
     
     override func layoutSubviews() {
@@ -59,7 +60,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell {
             height: self.labelHeight
         )
         
-        self.rightLabel.frame = CGRect(
+        self.rightField.frame = CGRect(
             x: 0.5*self.bounds.size.width,
             y: 0.5*(self.bounds.size.height - self.labelHeight),
             width: 0.5*self.bounds.size.width - self.xPadding,
@@ -67,17 +68,48 @@ class SLOpposingLabelsTableViewCell: UITableViewCell {
         )
         
         self.contentView.addSubview(self.leftLabel)
-        self.contentView.addSubview(self.rightLabel)
+        self.contentView.addSubview(self.rightField)
     }
     
-    func setProperties(leftLabelText:String, rightLabelText:String?, leftLabelTextColor:UIColor, rightLabelTextColor:UIColor) {
+    override func setSelected(selected: Bool, animated: Bool) {
+        let view:UIView = UIView(frame: self.bounds)
+        view.backgroundColor = UIColor.clearColor()
         
+        self.selectedBackgroundView = view
+    }
+    
+    func setProperties(leftLabelText:String, rightLabelText:String?, leftLabelTextColor:UIColor, rightLabelTextColor:UIColor, shouldEnableTextField: Bool) {
         self.leftLabel.text = leftLabelText
         self.leftLabel.textColor = leftLabelTextColor
-        self.rightLabel.text = rightLabelText
-        self.rightLabel.textColor = rightLabelTextColor
-        
-        self.leftLabel.setNeedsDisplay()
-        self.rightLabel.setNeedsDisplay()
+        self.rightField.text = rightLabelText
+        self.rightField.textColor = rightLabelTextColor
+        self.rightField.enabled = shouldEnableTextField
     }
+    
+    func haveFieldResignFirstReponder() {
+        self.rightField.resignFirstResponder()
+    }
+    
+    func isTextFieldFirstResponder() -> Bool {
+        return self.rightField.isFirstResponder()
+    }
+    
+    func setTextFieldEnabled(shouldEnable: Bool) {
+        self.rightField.enabled = shouldEnable
+    }
+    
+    func haveFieldBecomeFirstResponder() {
+        self.rightField.becomeFirstResponder()
+    }
+    
+    // MARK: UITextFieldDelegate methods
+    func textFieldDidBeginEditing(textField: UITextField) {
+        //self.delegate?.cellWantsFirstResponder(self)
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+       //textField.resignFirstResponder()
+    }
+    
+    
 }

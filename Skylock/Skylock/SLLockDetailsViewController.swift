@@ -41,6 +41,13 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         
         self.view.backgroundColor = UIColor.whiteColor()
         
+        let addLockButton:UIBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .Add,
+            target: self,
+            action: #selector(addLock)
+        )
+        self.navigationItem.rightBarButtonItem = addLockButton
+        
         let lockManager = SLLockManager.sharedManager() as! SLLockManager
         self.connectedLock = lockManager.getCurrentLock()
         
@@ -59,7 +66,19 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func menuButtonPressed() {
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        self.dismissViewControllerAnimated(true, completion: nil)
+//        let transitionHandler = SLViewControllerTransitionHandler()
+//        self.navigationController?.modalPresentationStyle = .Custom
+//        self.navigationController?.transitioningDelegate = transitionHandler
+//        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func addLock() {
+        let lockManager:SLLockManager = SLLockManager()
+        lockManager.shouldEnterActiveSearchMode(true)
+        
+        let alvc = SLAvailableLocksViewController()
+        self.navigationController?.pushViewController(alvc, animated: true)
     }
     
     func rowActionTextForIndexPath(indexPath: NSIndexPath) -> String {

@@ -31,7 +31,7 @@ class SLTouchPadView: UIView {
     var delegate: SLTouchPadViewDelegate?
     
     lazy var topButton: UIButton = {
-        let image:UIImage = UIImage(named: "button_keypad_y_Onboarding")!
+        let image:UIImage = UIImage(named: "button_keypad_up_Onboarding")!
         let frame = CGRectMake(
             0.5*(self.bounds.size.width - image.size.width),
             0,
@@ -51,7 +51,7 @@ class SLTouchPadView: UIView {
     }()
     
     lazy var rightButton: UIButton = {
-        let image:UIImage = UIImage(named: "button_keypad_b_Onboarding")!
+        let image:UIImage = UIImage(named: "button_keypad_right_Onboarding")!
         let frame = CGRectMake(
             self.bounds.size.width - image.size.width,
             CGRectGetMidY(self.bounds) - 0.5*image.size.height,
@@ -71,7 +71,7 @@ class SLTouchPadView: UIView {
     }()
     
     lazy var bottomButton: UIButton = {
-        let image:UIImage = UIImage(named: "button_keypad_a_Onboarding")!
+        let image:UIImage = UIImage(named: "button_keypad_down_Onboarding")!
         let frame = CGRectMake(
             0.5*(self.bounds.size.width - image.size.width),
             self.bounds.size.height - image.size.height,
@@ -91,7 +91,7 @@ class SLTouchPadView: UIView {
     }()
     
     lazy var leftButton: UIButton = {
-        let image:UIImage = UIImage(named: "button_keypad_x_Onboarding")!
+        let image:UIImage = UIImage(named: "button_keypad_left_Onboarding")!
         let frame = CGRectMake(
             0,
             CGRectGetMidY(self.bounds) - 0.5*image.size.width,

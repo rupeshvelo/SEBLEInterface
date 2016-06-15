@@ -1276,13 +1276,48 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         return;
     }
     
+    [self flashLEDsForLock:self.selectedLock];
 //    u_int8_t values[4] = {0x01, 0x00, 0x20, 0x20};
 //    [self writeToLockWithMacAddress:self.selectedLock.macAddress
 //                            service:SLLockManagerServiceHardware
 //                     characteristic:SLLockManagerCharacteristicLed
 //                               data:[NSData dataWithBytes:&values length:4]];
+}
+
+- (void)turnLEDsOff:(NSTimer *)timer
+{
+    NSDictionary *info = timer.userInfo;
+    if (!info[@"lock"]) {
+        return;
+    }
     
-    [self writeToLockWithMacAddress:self.selectedLock.macAddress
+    SLLock *lock = info[@"lock"];
+    BOOL shouldBlink = NO;
+    if ([self.selectedLock.macAddress isEqualToString:lock.macAddress]) {
+        shouldBlink = YES;
+    } else {
+        for (SLLock *unaddedLock in self.unaddedLocks) {
+            if ([unaddedLock.macAddress isEqualToString:lock.macAddress]) {
+                shouldBlink = YES;
+                break;
+            }
+        }
+    }
+    
+    if (shouldBlink) {
+        [self writeToLockWithMacAddress:self.selectedLock.macAddress
+                                service:SLLockManagerServiceHardware
+                         characteristic:SLLockManagerCharacteristicLed
+                                 turnOn:NO];
+    }
+    
+    [timer invalidate];
+}
+
+- (void)flashLEDsForLock:(SLLock *)lock
+{
+    NSString *macAddress = lock.macAddress;
+    [self writeToLockWithMacAddress:lock.macAddress
                             service:SLLockManagerServiceHardware
                      characteristic:SLLockManagerCharacteristicLed
                              turnOn:YES];
@@ -1290,22 +1325,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [NSTimer scheduledTimerWithTimeInterval:2.0
                                      target:self
                                    selector:@selector(turnLEDsOff:)
-                                   userInfo:nil
+                                   userInfo:@{@"lock": lock}
                                     repeats:NO];
-}
-
-- (void)turnLEDsOff:(NSTimer *)timer
-{
-    [timer invalidate];
-    
-    if (!self.selectedLock) {
-        return;
-    }
-    
-    [self writeToLockWithMacAddress:self.selectedLock.macAddress
-                            service:SLLockManagerServiceHardware
-                     characteristic:SLLockManagerCharacteristicLed
-                             turnOn:NO];
 }
 
 - (void)connectToSelectedLockWithName:(NSString *)name
@@ -1481,7 +1502,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     if (self.shouldEnterActiveSearch) {
         [self foundLockWhileInActiveSearchForName:name];
-    } else if (self.selectedLock || [macAddress isEqualToString:self.selectedLock.macAddress]) {
+    } else if (self.selectedLock && [macAddress isEqualToString:self.selectedLock.macAddress]) {
         [self.databaseManger saveLogEntry:[NSString stringWithFormat:
                                            @"Current lock is %@. Found peripheral with matching id: %@",
                                            self.selectedLock.name,
@@ -1611,8 +1632,8 @@ disconnectedPeripheralNamed:(NSString *)peripheralName
              peripheralName:(NSString *)peripheralName
 changedUpdateStateForCharacteristic:(NSString *)characteristicUUID
 {
+    NSString *macAddress = peripheralName.macAddress;
     if ([characteristicUUID isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState]]) {
-        NSString *macAddress = peripheralName.macAddress;
         switch (self.currentConnectionPhase) {
             case SLLockManagerConnectionPhasePublicKey:
                 [self handlePublicKeyConnectionPhase:macAddress];
@@ -1626,6 +1647,8 @@ changedUpdateStateForCharacteristic:(NSString *)characteristicUUID
             default:
                 break;
         }
+    } else if ([characteristicUUID isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicLock]]) {
+        [self checkLockOpenOrClosed];
     }
 }
 

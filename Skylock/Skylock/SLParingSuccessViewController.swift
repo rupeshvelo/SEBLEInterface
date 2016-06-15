@@ -11,6 +11,7 @@ import UIKit
 class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
     let xPadding:CGFloat = 30.0
     let lightBlueColor = UIColor(red: 102, green: 177, blue: 227)
+    let buttonSeperation:CGFloat = 20.0
     
     lazy var dismissKeyboardButton:UIButton = {
         let image:UIImage = UIImage(named: "button_close_window_extra_large_Onboarding")!
@@ -193,44 +194,76 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
-    lazy var continueButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_continue_Onboarding")!
+    lazy var noButton:UIButton = {
+        let image:UIImage = UIImage(named: "button_no_small_Onboarding")!
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
+            x: 0.5*(self.view.bounds.size.width - self.buttonSeperation) - image.size.width,
             y: self.view.bounds.size.height - image.size.height - 20.0,
             width: image.size.width,
             height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(continueButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(noButtonPressed), forControlEvents: .TouchDown)
         button.setImage(image, forState: .Normal)
         
         return button
     }()
     
-    lazy var enterPinButton:UIButton = {
-        let size = CGSize(
-            width: 0.5*(self.view.bounds.size.width - 2*self.xPadding),
-            height: 14.0
-        )
+    lazy var yesButton:UIButton = {
+        let image:UIImage = UIImage(named: "button_yes_small_Onboarding")!
         let frame = CGRect(
-            x: self.xPadding,
-            y: CGRectGetMinY(self.continueButton.frame) - size.height - 20.0,
-            width: self.view.bounds.size.width - 2*self.xPadding,
-            height: size.height
+            x: 0.5*(self.view.bounds.size.width + self.buttonSeperation),
+            y: CGRectGetMinY(self.noButton.frame),
+            width: image.size.width,
+            height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(self.enterPinButtonPressed), forControlEvents: .TouchDown)
-        button.setTitle(NSLocalizedString("Set a PIN for this lock", comment: ""), forState: .Normal)
-        button.setTitleColor(self.lightBlueColor, forState: .Normal)
+        button.addTarget(self, action: #selector(yesButtonPressed), forControlEvents: .TouchDown)
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
     
+    lazy var setPinNowLabel:UILabel = {
+        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
+        let utility = SLUtilities()
+        let font = UIFont.systemFontOfSize(14)
+        let text = NSLocalizedString(
+            "Would you like to set a PIN now?",
+            comment: ""
+        )
+        let labelSize:CGSize = utility.sizeForLabel(
+            font,
+            text: text,
+            maxWidth: labelWidth,
+            maxHeight: CGFloat.max,
+            numberOfLines: 0
+        )
+        
+        let frame = CGRectMake(
+            self.xPadding,
+            CGRectGetMinY(self.noButton.frame) - 25.0,
+            labelWidth,
+            labelSize.height
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = self.lightBlueColor
+        label.text = text
+        label.textAlignment = NSTextAlignment.Center
+        label.font = font
+        label.numberOfLines = 0
+        
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.navigationItem.title = NSLocalizedString("NAME YOUR ELLIPSE", comment: "")
+        self.navigationItem.hidesBackButton = true
         
         self.view.backgroundColor = UIColor.whiteColor()
         
@@ -240,32 +273,26 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
         self.view.addSubview(self.chooseNameLabel)
         self.view.addSubview(self.nameField)
         self.view.addSubview(self.underlineView)
-        self.view.addSubview(self.continueButton)
-        self.view.addSubview(self.enterPinButton)
+        self.view.addSubview(self.noButton)
+        self.view.addSubview(self.yesButton)
+        self.view.addSubview(self.setPinNowLabel)
         self.view.addSubview(self.dismissKeyboardButton)
     }
     
-    func enterPinButtonPressed() {
+    func yesButtonPressed() {
         let tpvc = SLTouchPadViewController()
-        tpvc.onExit = {[weak tpvc] in
-            let lvc = SLLockViewController()
-            tpvc!.presentViewController(lvc, animated: false) {
-                lvc.presentMapViewController(false)
-            }
+        tpvc.onExit = {
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
         self.presentViewController(tpvc, animated: true, completion: nil)
         self.saveNewLockName()
     }
     
-    func continueButtonPressed() {
+    func noButtonPressed() {
         self.saveNewLockName()
         
         let lvc = SLLockViewController()
-        self.presentViewController(lvc, animated: false, completion: {
-            dispatch_async(dispatch_get_main_queue(), {
-                lvc.presentMapViewController(false)
-            })
-        })
+        self.presentViewController(lvc, animated: false, completion: nil)
     }
     
     func dismissKeyboardButtonPressed() {
@@ -285,5 +312,10 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
     
     func textFieldDidEndEditing(textField: UITextField) {
         self.dismissKeyboardButton.hidden = true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
