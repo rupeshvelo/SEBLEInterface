@@ -31,81 +31,81 @@ class SLTouchPadView: UIView {
     var delegate: SLTouchPadViewDelegate?
     
     lazy var topButton: UIButton = {
-        let button:UIButton = UIButton(frame: CGRectMake(
-            0.5*(self.bounds.size.width - self.buttonDiameter),
+        let image:UIImage = UIImage(named: "button_keypad_up_Onboarding")!
+        let frame = CGRectMake(
+            0.5*(self.bounds.size.width - image.size.width),
             0,
-            self.buttonDiameter,
-            self.buttonDiameter
-            )
+            image.size.width,
+            image.size.height
         )
+        
+        let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.setTitle(NSLocalizedString("B", comment: ""), forState: UIControlState.Normal)
-        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
-        button.titleLabel?.font = self.font
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
     
     lazy var rightButton: UIButton = {
-        let button:UIButton = UIButton(frame: CGRectMake(
-            self.bounds.size.width - self.buttonDiameter,
-            CGRectGetMidY(self.bounds) - 0.5*self.buttonDiameter,
-            self.buttonDiameter,
-            self.buttonDiameter
-            )
+        let image:UIImage = UIImage(named: "button_keypad_right_Onboarding")!
+        let frame = CGRectMake(
+            self.bounds.size.width - image.size.width,
+            CGRectGetMidY(self.bounds) - 0.5*image.size.height,
+            image.size.width,
+            image.size.height
         )
+        
+        let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.setTitle(NSLocalizedString("Y", comment: ""), forState: UIControlState.Normal)
-        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
-        button.titleLabel?.font = self.font
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
     
     lazy var bottomButton: UIButton = {
-        let button:UIButton = UIButton(frame: CGRectMake(
-            0.5*(self.bounds.size.width - self.buttonDiameter),
-            self.bounds.size.height - self.buttonDiameter,
-            self.buttonDiameter,
-            self.buttonDiameter
-            )
+        let image:UIImage = UIImage(named: "button_keypad_down_Onboarding")!
+        let frame = CGRectMake(
+            0.5*(self.bounds.size.width - image.size.width),
+            self.bounds.size.height - image.size.height,
+            image.size.width,
+            image.size.height
         )
+        
+        let button:UIButton = UIButton(frame:frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.setTitle(NSLocalizedString("X", comment: ""), forState: UIControlState.Normal)
-        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
-        button.titleLabel?.font = self.font
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
     
     lazy var leftButton: UIButton = {
-        let button:UIButton = UIButton(frame: CGRectMake(
+        let image:UIImage = UIImage(named: "button_keypad_left_Onboarding")!
+        let frame = CGRectMake(
             0,
-            CGRectGetMidY(self.bounds) - 0.5*self.buttonDiameter,
-            self.buttonDiameter,
-            self.buttonDiameter
-            )
+            CGRectGetMidY(self.bounds) - 0.5*image.size.width,
+            image.size.width,
+            image.size.width
         )
+
+        let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.setTitle(NSLocalizedString("A", comment: ""), forState: UIControlState.Normal)
-        button.setTitleColor(self.buttonGreenColor, forState: UIControlState.Normal)
-        button.titleLabel?.font = self.font
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
@@ -116,7 +116,7 @@ class SLTouchPadView: UIView {
         self.addSubview(self.topButton)
         self.addSubview(self.rightButton)
         self.addSubview(self.bottomButton)
-        self.addSubview(self.leftButton)
+        self.addSubview(self.leftButton)        
     }
     
     func touchPadButtonPressed(sender: UIButton) {
@@ -125,16 +125,15 @@ class SLTouchPadView: UIView {
         let location: SLTouchPadLocation
         switch sender {
         case self.topButton:
-            location = SLTouchPadLocation.Top
+            location = .Top
         case self.rightButton:
-            location = SLTouchPadLocation.Right
+            location = .Right
         case self.bottomButton:
-            location = SLTouchPadLocation.Bottom
+            location = .Bottom
         case self.leftButton:
-            location = SLTouchPadLocation.Left
+            location = .Left
         default:
-            print("Error: Button did not map to SLTouchPadLocation")
-            return;
+            location = .Top
         }
     
         self.delegate?.touchPadViewLocationSelected(self, location: location)

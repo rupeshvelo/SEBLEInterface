@@ -9,7 +9,6 @@
 #import "SLAppDelegate.h"
 #import "SLDatabaseManager.h"
 #import "SLFacebookManger.h"
-#import "SLLoginViewController.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
@@ -43,13 +42,16 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.initialViewController;
     [self.window makeKeyAndVisible];
-    
-    [self setUpNotficationSettings:application];
-    
+        
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleNotification:)
                                                  name:kSLNotificationAlertOccured
                                                object:nil];
+    
+    UIPageControl *pageControl = [UIPageControl appearance];
+    pageControl.pageIndicatorTintColor = [UIColor colorWithRed:215 green:215 blue:215];;
+    pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:102 green:177 blue:227];
+    pageControl.backgroundColor = [UIColor clearColor];
     
     return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
@@ -133,33 +135,29 @@
     if ([ud objectForKey:SLUserDefaultsSignedIn]) {
         NSNumber *isSignedIn = [ud objectForKey:SLUserDefaultsSignedIn];
         if (isSignedIn.boolValue) {
-            if ([ud objectForKey:SLUserDefaultsTutorialComplete]) {
-                NSNumber *isTutorialComplete = [ud objectForKey:SLUserDefaultsTutorialComplete];
-                if (isTutorialComplete.boolValue) {
-                    SLMapViewController *mvc = [SLMapViewController new];
-                    initialVC = mvc;
-                } else {
-                    SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-                    initialVC = wtvc;
-                }
+            if ([ud objectForKey:SLUserDefaultsOnBoardingComplete]) {
+                SLLockViewController *lvc = [SLLockViewController new];
+                initialVC = lvc;
             } else {
-                SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-                initialVC = wtvc;
+                SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+                initialVC = opvc;
             }
         } else {
-            SLLoginViewController *lvc = [SLLoginViewController new];
-            initialVC = lvc;
+            SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+            initialVC = opvc;
         }
     } else {
-        SLLoginViewController *lvc = [SLLoginViewController new];
-        initialVC = lvc;
+        SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
+        initialVC = opvc;
     }
     
     return initialVC;
 }
 
-- (void)setUpNotficationSettings:(UIApplication *)application
+- (void)setUpNotficationSettings
 {
+    UIApplication *application = [UIApplication sharedApplication];
+    
     [[GCMService sharedInstance] startWithConfig:[GCMConfig defaultConfig]];
     
     UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];

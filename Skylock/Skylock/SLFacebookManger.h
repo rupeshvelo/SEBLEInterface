@@ -20,7 +20,7 @@
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation;
 - (BOOL)currentToken;
-- (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(void))completion;
+- (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(BOOL))completion;
 - (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *image))completion;
 
 @end

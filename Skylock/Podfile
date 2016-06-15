@@ -5,3 +5,4 @@ pod "FBSDKCoreKit"
 pod "FBSDKLoginKit"
 pod 'Google/CloudMessaging'
 pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
+pod 'SWTableViewCell', '~> 0.3.7'

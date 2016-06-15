@@ -331,6 +331,7 @@
 
 - (void)saveLogEntry:(NSString *)entry
 {
+    NSLog(@"%@", entry);
     SLLog *newLog = [NSEntityDescription insertNewObjectForEntityForName:KSLDatabaseManagerEnityLog
                                                   inManagedObjectContext:self.context];
     newLog.entry = entry;
@@ -350,15 +351,7 @@
 - (void)saveLockConnectedDate:(SLLock *)lock
 {
     lock.lastConnected = [NSDate date];
-    NSError *error = nil;
-    BOOL success = [self.context save:&error];
-    if (success) {
-        NSLog(@"update the last connected time for lock: %@", lock.name);
-    } else {
-        NSLog(@"Failed to save last connected time for lock %@ with error: %@",
-              lock.name,
-              error.localizedDescription);
-    }
+    [self saveLock:lock];
 }
 
 - (SLLock *)getCurrentLockForCurrentUser
@@ -374,6 +367,19 @@
     }
     
     return nil;
+}
+
+- (void)saveLock:(SLLock *)lock
+{
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (success) {
+        NSLog(@"saved lock: %@ to db", lock.name);
+    } else {
+        NSLog(@"Failed to save lock %@ to db with error: %@",
+              lock.name,
+              error.localizedDescription);
+    }
 }
 
 @end

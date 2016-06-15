@@ -1,0 +1,78 @@
+//
+//  SLLabelAndSwitchTableViewCell.swift
+//  Skylock
+//
+//  Created by Andre Green on 6/9/16.
+//  Copyright © 2016 Andre Green. All rights reserved.
+//
+
+import UIKit
+
+enum SLLabelAndSwitchTableViewCellAccessoryType {
+    case ToggleSwitch
+    case Arrow
+}
+
+protocol SLLabelAndSwitchCellDelegate {
+    func switchFlippedForCell(cell: SLLabelAndSwitchTableViewCell, isNowOn:Bool)
+}
+
+class SLLabelAndSwitchTableViewCell: UITableViewCell {
+    let xPadding:CGFloat = 5.0
+    let labelHeight:CGFloat = 14.0
+    var leftText:String?
+    var delegate:SLLabelAndSwitchCellDelegate?
+    var leftAccessoryType:SLLabelAndSwitchTableViewCellAccessoryType
+    
+    lazy var toggleSwitch:UISwitch = {
+        let toggle:UISwitch = UISwitch(frame: CGRectZero)
+        toggle.addTarget(self, action: #selector(switchFlipped(_:)), forControlEvents: .ValueChanged)
+        toggle.onTintColor = UIColor(red: 102, green: 177, blue: 227)
+        
+        return toggle
+    }()
+    
+    lazy var arrowView:UIImageView = {
+        let image:UIImage = UIImage(named: "lock_settings_right_arrow")!
+        let imageView = UIImageView(image: image)
+        
+        return imageView
+    }()
+    
+    init(accessoryType: SLLabelAndSwitchTableViewCellAccessoryType, reuseId: String) {
+        self.leftAccessoryType = accessoryType
+        super.init(style: .Default, reuseIdentifier: reuseId)
+    }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        self.leftAccessoryType = .ToggleSwitch
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.textLabel?.font = UIFont.systemFontOfSize(12)
+        self.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        
+        self.setAccessoryView()
+    }
+    
+    func switchFlipped(toggleSwitch: UISwitch) {
+        print("switch flipped to \(toggleSwitch.on)")
+        self.delegate?.switchFlippedForCell(self, isNowOn: toggleSwitch.on)
+    }
+    
+    func setAccessoryView() {
+        switch self.leftAccessoryType {
+        case .Arrow:
+            self.accessoryView = self.arrowView
+        case .ToggleSwitch:
+            self.accessoryView = self.toggleSwitch
+        }
+    }
+}

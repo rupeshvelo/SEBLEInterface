@@ -26,5 +26,7 @@
 #define kSLNotificationLockOpened                   @"kSLNotificationLockOpened"
 #define kSLNotificationLockClosed                   @"kSLNotificationLockClosed"
 #define kSLNotificationLogUpdated                   @"kSLNotificationLogUpdated"
+#define kSLNotificationLockSequenceWritten          @"kSLNotificationLockSequenceWritten"
+#define kSLNotificationRemoveLockForUser            @"kSLNotificationRemoveLockForUser"
 
 #endif

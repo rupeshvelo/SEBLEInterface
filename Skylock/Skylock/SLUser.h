@@ -14,6 +14,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+#define kSLUserTypeFacebook @"facebook"
+#define kSLUserTypePhone    @"phone"
+
 @interface SLUser : NSManagedObject
 
 @property (nonatomic, assign) CLLocationCoordinate2D location;

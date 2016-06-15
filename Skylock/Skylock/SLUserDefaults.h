@@ -10,8 +10,7 @@
 #define Skylock_SLUserDefaults_h
 
 #define SLUserDefaultsSignedIn              @"SLUserDefaultsSignedIn"
-#define SLUserDefaultsTutorialComplete      @"SLUserDefaultsTutorialComplete"
-#define SLUserDefaultsCoachMarksComplete    @"SLUserDefaultsCoachMarksComplete"
+#define SLUserDefaultsOnBoardingComplete    @"SLUserDefaultsOnBoardingComplete"
 #define SLUserDefaultsProfilePicCacheDate   @"SLUserDefaultsProfilePicCacheDate"
 #define SLUserDefaultsPushNotificationToken @"SLUserDefaultsPushNotificationToken"
 #define SLUserDefaultsUserToken             @"SLUserDefaultsUserToken"

@@ -24,6 +24,7 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)postNotification:(SLNotification *)notification;
+- (void)setUpNotficationSettings;
 
 @end
 

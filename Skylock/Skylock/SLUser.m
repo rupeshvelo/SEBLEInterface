@@ -9,9 +9,6 @@
 #import "SLUser.h"
 #import "SLLock.h"
 
-#define kSLUserTypeFacebook @"facebook"
-#define kSLUserTypePhone    @"phone"
-
 @implementation SLUser
 
 @synthesize location;
@@ -52,7 +49,6 @@
              @"email": self.email ? self.email : [NSNull null],
              @"fb_flag": @([self.userType isEqualToString:@"facebook"]),
              @"reg_id": self.googlePushId,
-             
              };
 }
 

@@ -7,12 +7,8 @@
 //
 
 #import "SLMapViewController.h"
-#import "SLSlideViewController.h"
-#import "SLLocationManager.h"
-#import "SLLockInfoViewController.h"
 #import "SLConstants.h"
 #import "SLLockManager.h"
-#import "SLCoachMarkViewController.h"
 #import "SLUserDefaults.h"
 #import "SLDropDownLabel.h"
 #import <QuartzCore/QuartzCore.h>
@@ -24,7 +20,6 @@
 #import "SLNavigationViewController.h"
 #import "SLAccountInfoViewController.h"
 #import <CoreLocation/CoreLocation.h>
-#import "SLSharingViewController.h"
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"
 #import "SLDirectionsViewController.h"
@@ -33,19 +28,11 @@
 #import "Skylock-Swift.h"
 
 
-#define kSLMapViewControllerLockInfoViewWidth       295.0f
-#define kSLMapViewControllerLockInfoViewLargeHeight 217.0f
-#define kSLMapViewControllerLockInfoViewSmallHeight 110.0f
-#define kSLMapViewControllerLockInfoViewPadding     12.0f
 #define kSLMapViewControllerCalloutScaler           4.0f
 #define kSLMapViewControllerCalloutOffsetScaler     0.65f
 #define kSLMapViewControllerCalloutYOffset          40.0f
 
 @interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
-
-@property (nonatomic, strong) UIView *touchStopperView;
-@property (nonatomic, strong) UIButton *menuButton;
-@property (nonatomic, strong) UIButton *settingsButton;
 
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
@@ -63,8 +50,6 @@
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
-@property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
-
 @property (nonatomic, strong) NSArray *directions;
 @property (nonatomic, copy) NSString *directionEndAddress;
 
@@ -79,60 +64,6 @@
 @end
 
 @implementation SLMapViewController
-
-- (UIView *)touchStopperView
-{
-    if (!_touchStopperView) {
-        UITapGestureRecognizer *tgr = [UITapGestureRecognizer new];
-        tgr.numberOfTapsRequired = 1;
-        [tgr addTarget:self action:@selector(touchStopperViewTapped:)];
-        
-        UIColor *color = [UIColor colorWithRed:51 green:51 blue:51];
-        _touchStopperView = [[UIView alloc] initWithFrame:self.view.bounds];
-        _touchStopperView.userInteractionEnabled = YES;
-        _touchStopperView.backgroundColor = [color colorWithAlphaComponent:.8f];
-        [_touchStopperView addGestureRecognizer:tgr];
-    }
-    
-    return _touchStopperView;
-}
-
-- (UIButton *)menuButton
-{
-    if (!_menuButton) {
-        UIImage *menuButtonImage = [UIImage imageNamed:@"icon_menu"];
-        _menuButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                 0.0f,
-                                                                 2*menuButtonImage.size.width,
-                                                                 2*menuButtonImage.size.height)];
-        [_menuButton setImage:menuButtonImage forState:UIControlStateNormal];
-        [_menuButton addTarget:self
-                        action:@selector(menuButtonPressed)
-              forControlEvents:UIControlEventTouchDown];
-        [self.view addSubview:_menuButton];
-    }
-    
-    return _menuButton;
-}
-
-- (UIButton *)settingsButton
-{
-    if (!_settingsButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_settings_large"];
-        _settingsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                     0.0f,
-                                                                     2*image.size.width,
-                                                                     2*image.size.height)];
-        [_settingsButton setImage:image forState:UIControlStateNormal];
-        [_settingsButton addTarget:self
-                            action:@selector(settingsButtonPressed)
-                  forControlEvents:UIControlEventTouchDown];
-        //_settingsButton.enabled = NO;
-        [self.view addSubview:_settingsButton];
-    }
-    
-    return _settingsButton;
-}
 
 - (GMSMapView *)mapView
 {
@@ -164,16 +95,6 @@
     }
     
     return _locationManager;
-}
-
-- (SLLockInfoViewController *)lockInfoViewController
-{
-    if (!_lockInfoViewController) {
-        _lockInfoViewController = [SLLockInfoViewController new];
-        _lockInfoViewController.delegate = self;
-    }
-    
-    return _lockInfoViewController;
 }
 
 - (UIButton *)locationButton
@@ -248,34 +169,19 @@
     
     [SLDatabaseManager.sharedManager setCurrentUser];
     
-    [self.locationManager requestWhenInUseAuthorization];
-    
     self.lockMarkers = [NSMutableDictionary new];
     self.isInitialLoad = YES;
     [self registerNotifications];
     
     [self.view addSubview:self.mapView];
     
-    CGFloat width = self.view.bounds.size.width - 2*kSLMapViewControllerLockInfoViewPadding;
-    self.lockInfoLargeFrame =  CGRectMake(kSLMapViewControllerLockInfoViewPadding,
-                                          self.view.bounds.size.height - kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewPadding,
-                                          width,
-                                          kSLMapViewControllerLockInfoViewLargeHeight);
     
-    self.lockInfoSmallFrame = CGRectMake(kSLMapViewControllerLockInfoViewPadding,
-                                         self.lockInfoLargeFrame.origin.y + kSLMapViewControllerLockInfoViewLargeHeight - kSLMapViewControllerLockInfoViewSmallHeight ,
-                                         width,
-                                         kSLMapViewControllerLockInfoViewSmallHeight);
-    
-    self.menuButton.frame = CGRectMake(15.0f,
-                                       30.0f,
-                                       self.menuButton.bounds.size.width,
-                                       self.menuButton.bounds.size.height);
-    
-    self.settingsButton.frame = CGRectMake(self.view.bounds.size.width - self.settingsButton.bounds.size.width - 15.0f,
-                                           CGRectGetMidY(self.menuButton.frame) - .5*self.settingsButton.bounds.size.height,
-                                           self.settingsButton.bounds.size.width,
-                                           self.settingsButton.bounds.size.height);
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed: @"lock_screen_hamburger_menu"]
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(menuButtonPressed)];
+    self.navigationItem.leftBarButtonItem = menuButton;
+    self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
     self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
                                            self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
@@ -287,11 +193,6 @@
                                              self.directionsButton.bounds.size.width,
                                              self.directionsButton.bounds.size.height);
     
-    self.lockInfoViewController.view.frame = self.lockInfoSmallFrame;
-    [self addChildViewController:self.lockInfoViewController];
-    [self.view addSubview:self.lockInfoViewController.view];
-    [self.view bringSubviewToFront:self.lockInfoViewController.view];
-    [self.lockInfoViewController didMoveToParentViewController:self];
     
 //    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
 //                                                                            self.view.center.y,
@@ -301,16 +202,6 @@
 //    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
 //    [testActionButton setBackgroundColor:[UIColor purpleColor]];
 //    [self.view addSubview:testActionButton];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    
-    if (!self.lockInfoViewController.isUp && [SLLockManager.sharedManager selectedLock] && self.isInitialLoad) {
-        self.lockInfoViewController.lock = [SLLockManager.sharedManager selectedLock];
-        [self.lockInfoViewController setUpViewAndChangeSize:NO moveUp:NO];
-    }
 }
 
 - (void)testAction
@@ -335,80 +226,6 @@
                                              selector:@selector(presentEmergencyText:)
                                                  name:kSLNotificationSendEmergecyText
                                                object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(lockAdded:)
-                                                 name:kSLNotificationLockPaired
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(lockRemoved:)
-                                                 name:kSLNotificationLockManagerDisconnectedLock
-                                               object:nil];
-}
-
-- (void)menuButtonPressed
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self presentSlideViewController];
-}
-
-- (void)settingsButtonPressed
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLSettingsViewController *svc = [SLSettingsViewController new];
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    nc.modalPresentationStyle = UIModalPresentationFullScreen;
-    
-    [self presentViewController:nc animated:YES completion:nil];
-
-}
-
-- (void)presentSlideViewController
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self.view addSubview:self.touchStopperView];
-    
-    static CGFloat width = 150.0f;
-    SLSlideViewController *slvc = [SLSlideViewController new];
-    slvc.delegate = self;
-    slvc.view.frame = CGRectMake(-width,
-                                 0.0f,
-                                 width,
-                                 self.view.bounds.size.height);
-    
-    [self addChildViewController:slvc];
-    [self.view addSubview:slvc.view];
-    [self.view bringSubviewToFront:slvc.view];
-    [slvc didMoveToParentViewController:self];
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        slvc.view.frame = CGRectMake(0.0f,
-                                     0.0f,
-                                     width,
-                                     slvc.view.bounds.size.height);
-    } completion:nil];
-}
-
-- (void)removeSlideViewController:(SLSlideViewController *)slvc withCompletion:(void(^)(void))completion
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        slvc.view.frame = CGRectMake(-slvc.view.bounds.size.width,
-                                     0.0f,
-                                     slvc.view.bounds.size.width,
-                                     slvc.view.bounds.size.height);
-    } completion:^(BOOL finished) {
-        [slvc.view removeFromSuperview];
-        [slvc removeFromParentViewController];
-        [self.touchStopperView removeFromSuperview];
-        
-        if (completion) {
-            completion();
-        }
-    }];
 }
 
 - (void)presentDirectionsViewController
@@ -432,31 +249,6 @@
     }];
 }
 
-//- (void)adjustLockInfoViewControllerWithCompletion:(void(^)(void))completion
-//{
-//    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-//    self.lockInfoViewController.lock = self.selectedLock;
-//    [self.lockInfoViewController setUpView];
-//    
-//    CGRect viewFrame = self.lockInfoViewController.isUp ? self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-//    
-//    if ([self.childViewControllers containsObject:self.lockInfoViewController]) {
-//        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-//            self.lockInfoViewController.view.frame = viewFrame;
-//        } completion:^(BOOL finished) {
-//            if (completion) {
-//                completion();
-//            }
-//        }];
-//    } else {
-//        self.lockInfoViewController.view.frame = viewFrame;
-//        [self addChildViewController:self.lockInfoViewController];
-//        [self.view addSubview:self.lockInfoViewController.view];
-//        [self.view bringSubviewToFront:self.lockInfoViewController.view];
-//        [self.lockInfoViewController didMoveToParentViewController:self];
-//    }
-//}
-
 - (void)dismissNotificationViewControllerWithCompletion:(void(^)(void))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
@@ -471,99 +263,6 @@
             completion();
         }
     }];
-}
-
-- (void)presentCoachMarkViewController
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLCoachMarkViewController *cmvc = nil;
-    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-    if ([ud objectForKey:SLUserDefaultsCoachMarksComplete]) {
-        NSNumber *complete = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-        if (!complete.boolValue) {
-            cmvc = [SLCoachMarkViewController new];
-        }
-    } else {
-        cmvc = [SLCoachMarkViewController new];
-    }
-    
-    if (cmvc) {
-        cmvc.delegate = self;
-        cmvc.buttonPositions = self.coachMarkParameters;
-
-        cmvc.view.frame = self.view.bounds;
-        cmvc.view.alpha = 0.0f;
-        
-        [self addChildViewController:cmvc];
-        [self.view addSubview:cmvc.view];
-        [self.view bringSubviewToFront:cmvc.view];
-        [cmvc didMoveToParentViewController:self];
-        
-        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-            cmvc.view.alpha = 1.0f;
-        }];
-    }
-}
-
-- (void)presentSharingViewControllerWithLock:(SLLock *)lock
-{
-    SLSharingViewController *svc = [SLSharingViewController new];
-    svc.lock = lock;
-    
-    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-    [self presentViewController:nc animated:YES completion:nil];
-}
-
-- (NSDictionary *)coachMarkParameters
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSDictionary *params;
-    if (self.selectedLock && self.lockInfoViewController.isUp) {
-        static NSString *button = @"button";
-        static NSString *label = @"label";
-        
-        CGRect crashButtonFrame = [self.view convertRect:self.lockInfoViewController.crashButtonFrame
-                                                fromView:self.lockInfoViewController.view];
-        CGRect crashLabelFrame = [self.view convertRect:self.lockInfoViewController.crashLabelFrame
-                                               fromView:self.lockInfoViewController.view];
-        CGRect theftButtonFrame = [self.view convertRect:self.lockInfoViewController.theftButtonFrame
-                                                   fromView:self.lockInfoViewController.view];
-        CGRect securityLabelFrame = [self.view convertRect:self.lockInfoViewController.theftLabelFrame
-                                                  fromView:self.lockInfoViewController.view];
-        CGRect sharingButtonFrame = [self.view convertRect:self.lockInfoViewController.sharingButtonFrame
-                                                  fromView:self.lockInfoViewController.view];
-        CGRect sharingLabelFrame = [self.view convertRect:self.lockInfoViewController.sharingLabelFrame
-                                                 fromView:self.lockInfoViewController.view];
-        
-        params = @{@(SLCoachMarkPageCrash):@{button:[NSValue valueWithCGRect:crashButtonFrame],
-                                             label:[NSValue valueWithCGRect:crashLabelFrame]
-                                             },
-                   @(SLCoachMarkPageSharing):@{button:[NSValue valueWithCGRect:sharingButtonFrame],
-                                               label:[NSValue valueWithCGRect:sharingLabelFrame]
-                                               },
-                   @(SLCoachMarkPageTheft):@{button:[NSValue valueWithCGRect:theftButtonFrame],
-                                             label:[NSValue valueWithCGRect:securityLabelFrame]
-                                             }
-                   };
-    }
-    
-    return params;
-}
-
-- (void)touchStopperViewTapped:(UITapGestureRecognizer *)tgr
-{
-    NSLog(@"touch stopper view tapped");
-    SLSlideViewController *svc;
-    for (UIViewController *vc in self.childViewControllers) {
-        if ([vc isMemberOfClass:[SLSlideViewController class]]) {
-            svc = (SLSlideViewController *)vc;
-            break;
-        }
-    }
-    
-    if (svc) {
-        [self removeSlideViewController:svc withCompletion:nil];
-    }
 }
 
 - (void)handleCrashAndTheftAlerts:(NSNotification *)notification
@@ -589,6 +288,11 @@
             self.notificationViewController.view.alpha = 1.0f;
         }];
     }
+}
+
+- (void)menuButtonPressed
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)removeCrashAndTheftViewController
@@ -635,57 +339,6 @@
     [self presentViewController:cvc animated:YES completion:nil];
 }
 
-- (void)lockAdded:(NSNotification *)notification
-{
-    NSDictionary *info = (NSDictionary *)notification.object;
-    if (!info || !info[@"lock"]) {
-        return;
-    }
-    
-    self.selectedLock = info[@"lock"];
-    //[self setupLockInfoViewControllerView:YES];
-    self.lockInfoViewController.lock = self.selectedLock;
-    
-    //[self.lockInfoViewController setUpView];
-}
-
-- (void)lockRemoved:(NSNotification *)notification
-{
-    
-}
-
-- (void)setupLockInfoViewControllerView
-{
-//    BOOL isShowingSlideVC = NO;
-//    for (UIViewController *vc in self.childViewControllers) {
-//        if ([vc isMemberOfClass: [SLSlideViewController class]]) {
-//            isShowingSlideVC = YES;
-//            break;
-//        }
-//    }
-    
-//    if ([self.presentedViewController class] == [SLWalkthroughViewController class] || isShowingSlideVC) {
-//        return;
-//    }
-    
-    self.locationButton.hidden = self.lockInfoViewController.isUp;
-    
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        self.lockInfoViewController.view.frame = self.lockInfoViewController.isUp ?
-            self.lockInfoLargeFrame : self.lockInfoSmallFrame;
-        self.locationButton.alpha = self.lockInfoViewController.isUp ? 0.0f : 1.0f;
-    } completion:^(BOOL finished) {
-        if (self.lockInfoViewController.isUp) {
-            self.locationButton.hidden = NO;
-//            NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-//            NSNumber *haveShownCoachmarks = [ud objectForKey:SLUserDefaultsCoachMarksComplete];
-//            if (!haveShownCoachmarks || (haveShownCoachmarks && !haveShownCoachmarks.boolValue)){
-//                [self presentCoachMarkViewController];
-//            }
-        }
-    }];
-}
-
 - (void)locationButtonPressed
 {
     [self centerOnUser];
@@ -698,7 +351,6 @@
 
 - (void)lockSelected
 {
-    self.settingsButton.enabled = YES;
     
     // TODO - clear lock annotations that are no longer active
     self.selectedLock = [SLLockManager.sharedManager selectedLock];
@@ -720,99 +372,6 @@
 //    }
 }
 
-#pragma mark - Alert view delegate methods
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        // user has not given access
-    } else if (buttonIndex == 1) {
-        // user has granted location services
-    }
-}
-
-#pragma mark - SLSlideViewController Delegate Methods
-- (void)slideViewController:(SLSlideViewController *)slvc
-              actionOccured:(SLSlideViewControllerButtonAction)action
-                    options:(NSDictionary *)options
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    if (action == SLSlideViewControllerButtonActionLockSelected) {
-        [self lockSelected];
-    } else if (action == SLSlideViewControllerButtonActionLockDeselected){
-        self.selectedLock = nil;
-    } else if (action == SLSlideViewControllerButtonActionAddLock){
-        SLWalkthroughViewController *wtvc = [SLWalkthroughViewController new];
-        __weak typeof(wtvc) weekWtcv = wtvc;
-        wtvc.onExit = ^{
-            [weekWtcv dismissViewControllerAnimated:YES completion:nil];
-        };
-        
-        [self presentViewController:wtvc animated:YES completion:nil];
-    } else if (action == SLSlideViewControllerButtonActionSharing) {
-        SLSharingViewController *svc = [SLSharingViewController new];
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:svc];
-        [self presentViewController:nc animated:YES completion:nil];
-    } else if (action == SLSlideViewControllerButtonActionViewAccount) {
-        SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
-        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:aivc];
-        nc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-        nc.modalPresentationStyle = UIModalPresentationFullScreen;
-        
-        [self presentViewController:nc animated:YES completion:nil];
-    } else if (action == SLSlideViewControllerButtonActionRemoveLock) {
-        if (options && options[@"lock"]) {
-            SLLock *lock = (SLLock *)options[@"lock"];
-            [SLLockManager.sharedManager
-             deleteLockFromCurrentUserAccountWithMacAddress:lock.macAddress];
-        }
-    }
-}
-
-- (void)slideViewControllerViewAccountPressed:(SLSlideViewController *)slvc forUser:(SLUser *)user
-{
-    SLAccountInfoViewController *aivc = [SLAccountInfoViewController new];
-    aivc.user = user;
-    
-    SLNavigationViewController *navController = [[SLNavigationViewController alloc] initWithRootViewController:aivc];
-    [self presentViewController:navController animated:YES completion:nil];
-}
-
-- (void)slideViewControllerSharingPressed:(SLSlideViewController *)slvc withLock:(SLLock *)lock
-{
-    [self presentSharingViewControllerWithLock:lock];
-}
-
-#pragma mark - SLCoachMarkViewController Delegate Methods
-- (void)coachMarkViewControllerDoneButtonPressed:(SLCoachMarkViewController *)cmvc
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        cmvc.view.alpha = 0.0f;
-    } completion:^(BOOL finished) {
-        [cmvc.view removeFromSuperview];
-        [cmvc removeFromParentViewController];
-        
-        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-        [ud setObject:@(YES) forKey:SLUserDefaultsCoachMarksComplete];
-        [ud synchronize];
-    }];
-}
-
-#pragma mark - SLLockInfoViewController Delegate Methods
-- (void)lockInfoViewController:(SLLockInfoViewController *)livc shouldIncreaseSize:(BOOL)shouldIncreaseSize
-{
-    //[self setupLockInfoViewControllerView:shouldIncreaseSize];
-}
-
-- (void)lockInfoViewControllerWantsToBeLarge:(SLLockInfoViewController *)livc
-{
-    [self setupLockInfoViewControllerView];
-}
-
-- (void)lockInfoViewControllerWantsToBeSmall:(SLLockInfoViewController *)livc
-{
-    [self setupLockInfoViewControllerView];
-}
 
 #pragma mark - SLDirectionsViewController Delegate Methods
 - (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController
@@ -857,16 +416,16 @@
 {
     self.userMarker.position = self.userLocation;
 
-    if (self.isInitialLoad) {
-        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-        
-        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
-        if (userPic) {
-            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
-            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
-            self.userMarker.icon = maskedImage;
-        }
-    }
+//    if (self.isInitialLoad) {
+//        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+//        
+//        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
+//        if (userPic) {
+//            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
+//            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
+//            self.userMarker.icon = maskedImage;
+//        }
+//    }
 }
 
 - (void)getDirectionsForTransportation:(SLMapCalloutVCPane)pane
@@ -902,10 +461,6 @@
                                                                          directions:self.directions];
     [self.directionDrawingHelper drawDirections:^{
         self.directionsButton.hidden = NO;
-        
-        if (self.lockInfoViewController.isUp) {
-            [self.lockInfoViewController setUpViewAndChangeSize:YES moveUp:NO];
-        }
     }];
 }
 
@@ -1051,6 +606,18 @@
 - (void)rightCalloutViewTapped:(SLMapCalloutViewController *)calloutController
 {
     [self getDirectionsForTransportation:SLMapCalloutVCPaneRight];
+}
+
+#pragma mark - SLAcceptNotificationsViewController delegate methods
+- (void)userAcceptsLocationUse:(SLAcceptNotificationsViewController *)acceptNotificationsVC
+{
+    [self.locationManager requestWhenInUseAuthorization];
+}
+
+- (void)acceptsNotificationsControllerWantsExit:(SLAcceptNotificationsViewController *)acceptNotiticationViewController
+                                       animated:(BOOL)animated
+{
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end
