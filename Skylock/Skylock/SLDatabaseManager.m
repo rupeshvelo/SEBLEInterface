@@ -66,6 +66,7 @@
         lock.name = name;
         lock.uuid = uuid;
         lock.macAddress = name.macAddress;
+        lock.isShallowConnection = @(NO);
     }
     
     return lock;

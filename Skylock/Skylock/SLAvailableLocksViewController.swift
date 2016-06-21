@@ -10,7 +10,11 @@ import UIKit
 
 class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var locks:[SLLock] = [SLLock]()
+    
     let buttonTagShift:Int = 1000
+    
+    var tempButtons:[UIButton] = [UIButton]()
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.Plain)
         table.rowHeight = 75.0
@@ -37,13 +41,21 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(foundLock),
-            name: "kSLNotificationLockManagerDiscoverdLock",
+            name: kSLNotificationLockManagerDiscoverdLock,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self, selector:
+            #selector(lockShallowlyConntected(_:)),
+            name: kSLNotificationLockManagerShallowlyConnectedLock,
             object: nil
         )
     }
     
     func foundLock() {
-        let managerLocks = SLLockManager.sharedManager().availableLocks() as! [SLLock]
+        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        let managerLocks = lockManager.locksDiscovereInSearch() as! [SLLock]
         self.locks = managerLocks.reverse()
         let indexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
         self.tableView.beginUpdates()
@@ -51,17 +63,28 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         self.tableView.endUpdates()
     }
     
+    func lockShallowlyConntected(notificaiton: NSNotification) {
+        if let connectedLock:SLLock = notificaiton.object?["lock"] as? SLLock {
+            for lock in self.locks {
+                if lock.macAddress == connectedLock.macAddress {
+                    self.blinkLock(lock)
+                    break
+                }
+            }
+        }
+    }
+    
     func blinkLockButtonPressed(button: UIButton) {
         for (i, lock) in self.locks.enumerate() {
             let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            let cell:UITableViewCell = tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
             print("\(cell.textLabel?.text!)")
             
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
-                    self.blinkLock(lock)
+                    SLLockManager.sharedManager().shallowConnectLock(lock)
                     break
                 }
             }
@@ -99,6 +122,7 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         button.setImage(image, forState: .Normal)
         button.addTarget(self, action: #selector(blinkLockButtonPressed(_:)), forControlEvents: .TouchDown)
         button.tag = indexPath.row + self.buttonTagShift
+        self.tempButtons.append(button)
         
         cell?.textLabel?.text = lock.name
         cell?.imageView?.image = UIImage(named: "table_cell_lock_pic_onboarding")!

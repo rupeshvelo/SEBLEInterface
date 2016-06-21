@@ -9,8 +9,8 @@
 import UIKit
 
 protocol SLAcceptNotificationsViewControllerDelegate {
-    func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController)
-    func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController)
+    func userWantsToAcceptLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController)
+    func userWantsToAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func acceptsNotificationsControllerWantsExit(
         acceptNotiticationViewController: SLAcceptNotificationsViewController,
         animated: Bool
@@ -162,30 +162,25 @@ class SLAcceptNotificationsViewController: UIViewController {
     func okButtonPressed() {
         switch self.currentNotificationStep {
         case .Location:
-            self.delegate?.userAcceptsLocationUse(self)
             self.currentNotificationStep = .Notifications
+            self.delegate?.userWantsToAcceptLocationUse(self)
         case .Notifications:
-            let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
-            appDelegate.setUpNotficationSettings()
             self.currentNotificationStep = .Done
+            self.delegate?.userWantsToAcceptsNotifications(self)
         case .Done:
-            let userDefaults = NSUserDefaults.standardUserDefaults()
-            userDefaults.setBool(true, forKey: "SLUserDefaultsOnBoardingComplete")
-            userDefaults.synchronize()
-            
-            self.dismissViewControllerAnimated(false, completion: nil)
             self.delegate?.acceptsNotificationsControllerWantsExit(self, animated: false)
         }
-        
-        self.setBackgroundImageForStep(self.currentNotificationStep)
     }
     
-    func setBackgroundImageForStep(step: NotificationStep) {
-        if step != .Location || step != .Notifications {
+    func setBackgroundImageForCurrentStep() {
+        if self.currentNotificationStep != .Location && self.currentNotificationStep != .Notifications {
             return
         }
         
-        let image:UIImage = UIImage(named: self.elements[step]![.BackgroundImageName]!)!
+        let image:UIImage = UIImage(
+            named: self.elements[self.currentNotificationStep]![.BackgroundImageName]!
+            )!
+        
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
             y: 0.5*(self.view.bounds.size.height - image.size.height),

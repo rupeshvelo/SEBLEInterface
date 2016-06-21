@@ -35,7 +35,7 @@ class SLLockResetOrDeleteViewController: UIViewController {
                 "Deleting this lock from the app resets the Ellipse to it's factory " +
                 "settings and will remove the Ellipse from your account.  You'll need to do " +
                 "this if you sell or give your lock to someone else. Your Ellipse " +
-                "must unlocked to perform this action.",
+                "must be unlocked to perform this action.",
                 comment: ""
             )
         }
@@ -50,7 +50,8 @@ class SLLockResetOrDeleteViewController: UIViewController {
         
         let frame = CGRectMake(
             0.5*(self.view.bounds.size.width - labelSize.width),
-            (self.navigationController?.navigationBar.bounds.size.height)! + UIApplication.sharedApplication().statusBarFrame.size.height + 33.0,
+            (self.navigationController?.navigationBar.bounds.size.height)!
+                + UIApplication.sharedApplication().statusBarFrame.size.height + 33.0,
             labelSize.width,
             labelSize.height
         )
@@ -83,7 +84,13 @@ class SLLockResetOrDeleteViewController: UIViewController {
         return button
     }()
     
-    init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, type: SLLockResetOrDeleteViewControllerType, lock: SLLock) {
+    init(
+        nibName nibNameOrNil: String?,
+                bundle nibBundleOrNil: NSBundle?,
+                       type: SLLockResetOrDeleteViewControllerType,
+                       lock: SLLock
+        )
+    {
         self.lock = lock
         self.type = type
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)

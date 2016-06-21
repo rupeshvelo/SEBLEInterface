@@ -14,6 +14,7 @@
 
 @implementation SLLock
 
+@synthesize isShallowConnection;
 @synthesize batteryVoltage;
 @synthesize wifiStrength;
 @synthesize cellStrength;
@@ -40,6 +41,7 @@
     self.isCrashOn = dictionary[@"isCrashOn"] ? dictionary[@"isCrashOn"] : @(NO);
     self.isSharingOn = dictionary[@"isSharingOn"] ? dictionary[@"isSharingOn"] : @(NO);
     self.isSecurityOn = dictionary[@"isSecurityOn"] ? dictionary[@"isSecurityOn"] : @(NO);
+    self.isShallowConnection = dictionary[@"isShallowConnection"] ? dictionary[@"isShallowConnection"] : @(NO);
 }
 
 - (void)updateProperties:(NSDictionary *)dictionary

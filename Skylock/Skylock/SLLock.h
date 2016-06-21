@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
     SLLockWifiSignalState5
 };
 
-
+@property (nonatomic, copy) NSNumber * isShallowConnection;
 @property (nonatomic, copy) NSNumber *batteryVoltage;
 @property (nonatomic, copy) NSNumber *wifiStrength;
 @property (nonatomic, copy) NSNumber *cellStrength;

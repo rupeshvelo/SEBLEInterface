@@ -105,7 +105,7 @@ class SLConcentricCirclesViewController: UIViewController {
             object: nil
         )
         
-        self.finalDiamter = 1.5*pow(pow(self.view.bounds.size.width, 2) + pow(self.view.bounds.size.height, 2), 0.5)
+        self.finalDiamter = pow(pow(self.view.bounds.size.width, 2) + pow(self.view.bounds.size.height, 2), 0.5)
         
         self.view.addSubview(self.connectingEllipseLabel)
         self.view.addSubview(self.getHelpButton)
@@ -165,7 +165,7 @@ class SLConcentricCirclesViewController: UIViewController {
     }
     
     func connectedLock() {
-        let psvc = SLParingSuccessViewController()
+        let psvc = SLPairingSuccessViewController()
         self.navigationController?.pushViewController(psvc, animated: true)
     }
 }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
+class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     let xPadding:CGFloat = 30.0
     let lightBlueColor = UIColor(red: 102, green: 177, blue: 227)
     let buttonSeperation:CGFloat = 20.0
@@ -301,8 +301,9 @@ class SLParingSuccessViewController: UIViewController, UITextFieldDelegate {
     
     func saveNewLockName() {
         if let lockName = self.nameField.text where lockName != "" {
+            let trimmedString = lockName.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
             let lockManager = SLLockManager.sharedManager() as! SLLockManager
-            lockManager.changeCurrentLockGivenNameToName(lockName)
+            lockManager.changeCurrentLockGivenNameToName(trimmedString)
         }
     }
     

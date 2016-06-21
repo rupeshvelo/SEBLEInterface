@@ -456,24 +456,29 @@ SLAcceptNotificationsViewControllerDelegate
     }
     
     // MARK: SLLocationManagerDelegate methods
-    func locationManagerUpdatedUserPosition(userLocation: CLLocation) {
-        
+    func locationManagerUpdatedUserPosition(locationManager: SLLocationManager, userLocation: CLLocation) {
+    
     }
     
-    func locationManagerDidAcceptedLocationAuthoriation(didAccept: Bool) {
-        
+    func locationManagerDidAcceptedLocationAuthorization(locationManager: SLLocationManager, didAccept: Bool) {
+       self.acceptNotificationViewController.setBackgroundImageForCurrentStep()
     }
     
     // MARK: SLAcceptNotificationViewControllerDelegate Methods
-    func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController) {
-        
+    func userWantsToAcceptLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        self.locationManager.requestAuthorization()
     }
     
-    func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController) {
-        
+    func userWantsToAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
+        appDelegate.setUpNotficationSettings()
     }
     
     func acceptsNotificationsControllerWantsExit(acceptNotiticationViewController: SLAcceptNotificationsViewController, animated: Bool) {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setBool(true, forKey: "SLUserDefaultsOnBoardingComplete")
+        userDefaults.synchronize()
         
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

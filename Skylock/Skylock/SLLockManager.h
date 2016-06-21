@@ -56,11 +56,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)checkLockOpenOrClosed;
 - (void)flashLEDs;
 - (void)flashLEDsForLock:(SLLock *)lock;
-- (NSArray *)availableLocks;
+- (NSArray *)locksDiscovereInSearch;
 - (void)clearAvaliableLocks;
 - (void)connectToLockWithName:(NSString *)lockName;
 - (void)changeCurrentLockGivenNameToName:(NSString *)newName;
 - (NSArray *)unconnectedLocksForCurrentUser;
+- (void)shallowConnectLock:(SLLock *)lock;
 
 // temporary methods for testing
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
