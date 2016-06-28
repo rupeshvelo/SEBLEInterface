@@ -87,12 +87,12 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         return button
     }()
- 
-    lazy var infoLabel:UILabel = {
+    
+    lazy var detailLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(12)
-        let text = self.longestTextLength(.MainText)
+        let text = self.longestTextLength(.DetailText)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -110,19 +110,19 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.text = self.elements[self.currentNotificationStep]![.DetailText]
+        label.textAlignment = .Center
         label.font = font
         label.numberOfLines = 0
         
         return label
     }()
-    
-    lazy var useLocationLabel:UILabel = {
+ 
+    lazy var mainLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(17)
-        let text = self.longestTextLength(.DetailText)
+        let text = self.longestTextLength(.MainText)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -133,20 +133,24 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         let frame = CGRectMake(
             0.5*(self.view.bounds.size.width - labelSize.width),
-            CGRectGetMinY(self.infoLabel.frame) - labelSize.height - 25.0,
+            CGRectGetMinY(self.detailLabel.frame) - labelSize.height - 25.0,
             labelSize.width,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(red: 102, green: 177, blue: 227)
-        label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.text = self.elements[self.currentNotificationStep]![.MainText]
+        label.textAlignment = .Center
         label.font = font
         label.numberOfLines = 0
         
         return label
     }()
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -155,8 +159,15 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         self.view.addSubview(self.backgroundView)
         self.view.addSubview(self.okButton)
-        self.view.addSubview(self.infoLabel)
-        self.view.addSubview(self.useLocationLabel)
+        self.view.addSubview(self.detailLabel)
+        self.view.addSubview(self.mainLabel)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(userAccpetedNotifications),
+            name: kSLNotificationUserAcceptedNotifications,
+            object: nil
+        )
     }
     
     func okButtonPressed() {
@@ -179,7 +190,7 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         let image:UIImage = UIImage(
             named: self.elements[self.currentNotificationStep]![.BackgroundImageName]!
-            )!
+        )!
         
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
@@ -190,6 +201,9 @@ class SLAcceptNotificationsViewController: UIViewController {
         
         self.backgroundView.frame = frame
         self.backgroundView.image = image
+        
+        self.mainLabel.text = self.elements[self.currentNotificationStep]![.MainText]
+        self.detailLabel.text = self.elements[self.currentNotificationStep]![.DetailText]
     }
     
     func longestTextLength(element: UIElement) -> String {
@@ -201,5 +215,9 @@ class SLAcceptNotificationsViewController: UIViewController {
         }
         
         return longestText
+    }
+    
+    func userAccpetedNotifications() {
+        self.delegate?.acceptsNotificationsControllerWantsExit(self, animated: true)
     }
 }

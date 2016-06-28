@@ -19,12 +19,19 @@ import Security
 
 @objc public class SLKeychainHandler: NSObject {
     private let kSecClassValue = NSString(format: kSecClass) as String
+    
     private let kSecAttrAccountValue = NSString(format: kSecAttrAccount) as String
+    
     private let kSecValueDataValue = NSString(format: kSecValueData) as String
+    
     private let kSecClassGenericPasswordValue = NSString(format: kSecClassGenericPassword) as String
+    
     private let kSecAttrServiceValue = NSString(format: kSecAttrService) as String
+    
     private let kSecMatchLimitValue = NSString(format: kSecMatchLimit) as String
+    
     private let kSecReturnDataValue = NSString(format: kSecReturnData) as String
+    
     private let kSecMatchLimitOneValue = NSString(format: kSecMatchLimitOne) as String
     
     private let prefix = "skylock."

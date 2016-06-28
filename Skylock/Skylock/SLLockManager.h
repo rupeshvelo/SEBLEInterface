@@ -32,6 +32,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
 - (void)stopScan;
+- (BOOL)isScanning;
+- (BOOL)isBlePoweredOn;
 - (void)setCurrentLock:(SLLock *)lock;
 - (SLLock *)getCurrentLock;
 - (void)setLockStateForLock:(SLLock *)lock;
@@ -48,7 +50,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (BOOL)hasLocksForCurrentUser;
 - (void)deselectAllLocks;
 - (void)updateFirmware;
-- (void)deleteLockFromCurrentUserAccount:(NSString *)lockName;
 - (void)writeTouchPadButtonPushes:(UInt8 *)pushes size:(int)size lock:(SLLock *)lock;
 - (void)readButtonLockSequenceForLock:(SLLock *)lock;
 - (void)deleteLockFromCurrentUserAccountWithMacAddress:(NSString *)macAddress;
@@ -56,7 +57,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)checkLockOpenOrClosed;
 - (void)flashLEDs;
 - (void)flashLEDsForLock:(SLLock *)lock;
-- (NSArray *)locksDiscovereInSearch;
+- (NSArray *)locksDiscoveredInSearch;
 - (void)clearAvaliableLocks;
 - (void)connectToLockWithName:(NSString *)lockName;
 - (void)changeCurrentLockGivenNameToName:(NSString *)newName;
@@ -66,7 +67,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 // temporary methods for testing
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
 - (void)checkCommandStatusForLockWithMacAddress:(NSString *)macAddress;
-- (void)getCommandStatusForLockWithMacAddress:(NSString *)macAddress;
 
 /**
  * returns a dictionary with keys "factory" and "nonFactory"

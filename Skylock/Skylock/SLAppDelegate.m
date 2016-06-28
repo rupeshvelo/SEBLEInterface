@@ -95,6 +95,9 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserAcceptedNotifications
+                                                        object:nil];
+    
     GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
     instanceIDConfig.delegate = self;
     
@@ -139,8 +142,9 @@
                 SLLockViewController *lvc = [SLLockViewController new];
                 initialVC = lvc;
             } else {
-                SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
-                initialVC = opvc;
+                SLAvailableLocksViewController *alvc = [SLAvailableLocksViewController new];
+                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:alvc];
+                initialVC = nc;
             }
         } else {
             SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];

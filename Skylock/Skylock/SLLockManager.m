@@ -412,7 +412,17 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
      [NSString stringWithFormat:@"Stopping bluetooth scan"]];
 }
 
-- (NSArray *)locksDiscovereInSearch
+- (BOOL)isScanning
+{
+    return self.bleManager.isCurrentlyScanning;
+}
+
+- (BOOL)isBlePoweredOn
+{
+    return self.bleIsPoweredOn;
+}
+
+- (NSArray *)locksDiscoveredInSearch
 {
     return self.locksFoundInActiveSearch;
 }
@@ -797,31 +807,33 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         return;
     }
     
-    SLLock *lock;
-    if (self.selectedLock && [self.selectedLock.macAddress isEqualToString:lock.macAddress]) {
-        lock = self.selectedLock;
-    } else {
-        for (SLLock *unaddedLock in self.locksFoundInActiveSearch) {
-            if ([unaddedLock.macAddress isEqualToString:macAddress]) {
-                lock = unaddedLock;
-                break;
-            }
-        }
-    }
+//    SLLock *lock;
+//    if (self.selectedLock && [self.selectedLock.macAddress isEqualToString:lock.macAddress]) {
+//        lock = self.selectedLock;
+//    } else {
+//        for (SLLock *unaddedLock in self.locksFoundInActiveSearch) {
+//            if ([unaddedLock.macAddress isEqualToString:macAddress]) {
+//                lock = unaddedLock;
+//                break;
+//            }
+//        }
+//    }
+//    
+//    if (!lock) {
+//        NSLog(@"Failed while trying to update security state of an unknown lock %@", macAddress);
+//        return;
+//    }
+//    
+//    if (lock.isShallowConnection.boolValue) {
+//        NSLog(@"lock %@ is a shallow connetion. Will not read security info", lock.name);
+//        [self.notConnectPeripherals removeObjectForKey:lock.macAddress];
+//        [self.bleManager removeNotConnectPeripheralForKey:lock.macAddress];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerShallowlyConnectedLock
+//                                                            object:lock];
+//        return;
+//    }
     
-    if (!lock) {
-        NSLog(@"Failed while trying to update security state of an unknown lock %@", macAddress);
-        return;
-    }
-    
-    if (lock.isShallowConnection.boolValue) {
-        NSLog(@"lock %@ is a shallow connetion. Will not read security info", lock.name);
-        [self.notConnectPeripherals removeObjectForKey:lock.macAddress];
-        [self.bleManager removeNotConnectPeripheralForKey:lock.macAddress];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerShallowlyConnectedLock
-                                                            object:@{@"lock": lock}];
-        return;
-    }
+    SLLock *lock = self.selectedLock;
     
     u_int8_t *bytes = (u_int8_t *)data.bytes;
     u_int8_t value = bytes[0];
@@ -1338,7 +1350,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)flashLEDsForLock:(SLLock *)lock
 {
-    NSString *macAddress = lock.macAddress;
     [self writeToLockWithMacAddress:lock.macAddress
                             service:SLLockManagerServiceHardware
                      characteristic:SLLockManagerCharacteristicLed
@@ -1395,7 +1406,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [self.locksFoundInActiveSearch addObject:unaddedLock];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDiscoverdLock
-                                                        object:nil];
+                                                        object:unaddedLock];
 }
 
 - (void)changeCurrentLockGivenNameToName:(NSString *)newName
@@ -1576,6 +1587,13 @@ discoveredCharacteristicsForService:(CBService *)service
 {
     [self.bleManager discoverCharacteristicsForService:service
                                       forPeripheralKey:peripheralName.macAddress];
+    
+    if ([[self uuidForService:SLLockManagerServiceHardware] isEqualToString:
+         [NSString stringWithFormat:@"%@", service.UUID]])
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationHardwareServiceFound
+                                                            object:peripheralName.macAddress];
+    }
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager
@@ -1648,6 +1666,9 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
     if (user && user.locks.count > 0) {
         [self.bleManager startScan];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerBlePoweredOn
+                                                        object:nil];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager

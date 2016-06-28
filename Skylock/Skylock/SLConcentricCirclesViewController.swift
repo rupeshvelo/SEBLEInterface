@@ -9,7 +9,7 @@
 import UIKit
 
 class SLConcentricCirclesViewController: UIViewController {
-    let interval:Double = 3.0
+    let interval:Double = 2.3
     var circleIndex:Int = 0
     let startDiameter:CGFloat = 100.0
     var finalDiamter:CGFloat = 0.0
@@ -20,7 +20,8 @@ class SLConcentricCirclesViewController: UIViewController {
     lazy var connectingEllipseLabel:UILabel = {
         let frame = CGRect(
             x: 0,
-            y: UIApplication.sharedApplication().statusBarFrame.size.height + (self.navigationController?.navigationBar.bounds.size.height)! + 5.0,
+            y: UIApplication.sharedApplication().statusBarFrame.size.height +
+                (self.navigationController?.navigationBar.bounds.size.height)! + 5.0,
             width: self.view.bounds.size.width,
             height: 20
         )

@@ -135,11 +135,6 @@ class SLConnectLockInfoViewController: UIViewController {
 //        let vc = SLProfileViewController()
 //        self.navigationController?.pushViewController(vc, animated: true)
         
-        
-        let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterActiveSearchMode(true)
-        lockManager.startScan()
-        
         let alvc = SLAvailableLocksViewController()
         self.navigationController?.pushViewController(alvc, animated: true)
     }

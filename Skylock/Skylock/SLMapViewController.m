@@ -46,7 +46,6 @@
 @property (nonatomic, assign) BOOL isInitialLoad;
 
 @property (nonatomic, strong) SLLock *selectedLock;
-@property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
@@ -71,6 +70,7 @@
         GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:5];
         _mapView = [GMSMapView mapWithFrame:self.view.bounds camera:cameraPosition];
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _mapView.myLocationEnabled = YES;
         _mapView.delegate = self;
     }
     
@@ -87,20 +87,10 @@
     return _userMarker;
 }
 
-- (CLLocationManager *)locationManager
-{
-    if (!_locationManager) {
-        _locationManager = [CLLocationManager new];
-        _locationManager.delegate = self;
-    }
-    
-    return _locationManager;
-}
-
 - (UIButton *)locationButton
 {
     if (!_locationButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_gps"];
+        UIImage *image = [UIImage imageNamed:@"show_current location_button"];
         _locationButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                      0.0f,
                                                                      image.size.width,
@@ -183,16 +173,15 @@
     self.navigationItem.leftBarButtonItem = menuButton;
     self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
-    self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
-                                           self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
-                                           self.locationButton.bounds.size.width,
-                                           self.locationButton.bounds.size.height);
+    self.locationButton.frame = CGRectMake(self.view.bounds.size.width - self.locationButton.bounds.size.width - 10.0f,
+                                           self.view.bounds.size.height - self.locationButton.bounds.size.height - 50.0f,
+                                           self.locationButton.bounds.size.height,
+                                           self.locationButton.bounds.size.width);
     
     self.directionsButton.frame = CGRectMake(CGRectGetMaxX(self.lockInfoSmallFrame) - self.directionsButton.bounds.size.width,
                                              self.locationButton.frame.origin.y,
                                              self.directionsButton.bounds.size.width,
                                              self.directionsButton.bounds.size.height);
-    
     
 //    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
 //                                                                            self.view.center.y,
@@ -202,6 +191,14 @@
 //    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
 //    [testActionButton setBackgroundColor:[UIColor purpleColor]];
 //    [self.view addSubview:testActionButton];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationShowLockBar
+                                                        object:nil];
 }
 
 - (void)testAction
@@ -392,8 +389,7 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    // zoom should be 16
-    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:14];
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:16];
     [self.mapView animateToCameraPosition:cameraPosition];
 }
 
@@ -414,7 +410,7 @@
 
 - (void)updateUserLocation
 {
-    self.userMarker.position = self.userLocation;
+    //self.userMarker.position = self.userLocation;
 
 //    if (self.isInitialLoad) {
 //        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
@@ -473,6 +469,21 @@
         [self.mapCalloutViewController setCalloutViewUnselected];
 //        [self.directionDrawingHelper removeDirections];
 //        self.directionDrawingHelper = nil;
+    }
+}
+
+- (void)updateUserPosition:(CLLocationCoordinate2D)userPosition
+{
+    self.userLocation = userPosition;
+    
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+    user.location = self.userLocation;
+    
+    [self updateUserLocation];
+    
+    if (self.isInitialLoad) {
+        [self centerOnUser];
+        self.isInitialLoad = NO;
     }
 }
 
@@ -548,43 +559,6 @@
     }
 }
 
-#pragma mark - CLLocaiton manager delegate methods
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
-{
-    if (status == kCLAuthorizationStatusAuthorizedAlways ||
-        status == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        
-        [manager startUpdatingLocation];
-    } else if (status == kCLAuthorizationStatusDenied) {
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                               style:UIAlertActionStyleCancel
-                                                             handler:nil];
-        
-        NSString *message = NSLocalizedString(@"We use this stuff, man! It's important! Common--", nil);
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"We really need this!", nil)
-                                                                       message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:cancelAction];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation *location = locations[0];
-    self.userLocation = location.coordinate;
-
-    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-    user.location = self.userLocation;
-    
-    [self updateUserLocation];
-
-    if (self.isInitialLoad) {
-        [self centerOnUser];
-        self.isInitialLoad = NO;
-    }
-}
-
 #pragma mark - SLNotificationViewController delegate methods
 - (void)notificationVCWantsDismiss:(SLNotificationViewController *)notificationVC
 {
@@ -606,18 +580,6 @@
 - (void)rightCalloutViewTapped:(SLMapCalloutViewController *)calloutController
 {
     [self getDirectionsForTransportation:SLMapCalloutVCPaneRight];
-}
-
-#pragma mark - SLAcceptNotificationsViewController delegate methods
-- (void)userAcceptsLocationUse:(SLAcceptNotificationsViewController *)acceptNotificationsVC
-{
-    [self.locationManager requestWhenInUseAuthorization];
-}
-
-- (void)acceptsNotificationsControllerWantsExit:(SLAcceptNotificationsViewController *)acceptNotiticationViewController
-                                       animated:(BOOL)animated
-{
-    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 @end

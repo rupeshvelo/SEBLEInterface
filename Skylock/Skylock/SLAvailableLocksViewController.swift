@@ -8,15 +8,17 @@
 
 import UIKit
 
-class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objc class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var locks:[SLLock] = [SLLock]()
     
     let buttonTagShift:Int = 1000
     
     var tempButtons:[UIButton] = [UIButton]()
     
+    var hideBackButton:Bool = false
+    
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.Plain)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .Plain)
         table.rowHeight = 75.0
         table.backgroundColor = UIColor.clearColor()
         table.delegate = self
@@ -38,9 +40,17 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         
         self.view.addSubview(self.tableView)
         
+        self.navigationItem.hidesBackButton = self.hideBackButton
+        
+        let lockManager = SLLockManager.sharedManager()
+        if lockManager.isBlePoweredOn() && !lockManager.isScanning() {
+            lockManager.shouldEnterActiveSearchMode(true)
+            lockManager.startScan()
+        }
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(foundLock),
+            selector: #selector(foundLock(_:)),
             name: kSLNotificationLockManagerDiscoverdLock,
             object: nil
         )
@@ -51,27 +61,63 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
             name: kSLNotificationLockManagerShallowlyConnectedLock,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(hardwareServiceFoundForLock(_:)),
+            name: kSLNotificationHardwareServiceFound,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(bleHardwarePoweredOn(_:)),
+            name: kSLNotificationLockManagerBlePoweredOn,
+            object: nil
+        )
     }
     
-    func foundLock() {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-        let managerLocks = lockManager.locksDiscovereInSearch() as! [SLLock]
-        self.locks = managerLocks.reverse()
-        let indexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+    func foundLock(notification: NSNotification) {
+        guard let lock = notification.object as? SLLock else {
+            return
+        }
+        
+        self.locks.append(lock)
+        
+//        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+//        lockManager.shallowConnectLock(lock)
+        
+        let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
         self.tableView.beginUpdates()
         self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
         self.tableView.endUpdates()
     }
     
     func lockShallowlyConntected(notificaiton: NSNotification) {
-        if let connectedLock:SLLock = notificaiton.object?["lock"] as? SLLock {
-            for lock in self.locks {
-                if lock.macAddress == connectedLock.macAddress {
-                    self.blinkLock(lock)
-                    break
-                }
+        guard let connectedLock = notificaiton.object as? SLLock else {
+            return
+        }
+        
+        for (index, lock) in self.locks.enumerate() {
+            if lock.macAddress == connectedLock.macAddress {
+                self.enableButtonAtIndex(index)
+                break
             }
         }
+    }
+    
+    func hardwareServiceFoundForLock(notification: NSNotification) {
+        guard let macAddress = notification.object as? String else {
+            return
+        }
+        
+        print("hardware service for \(macAddress) found")
+    }
+    
+    func bleHardwarePoweredOn(notificaiton: NSNotification) {
+        let lockManager = SLLockManager.sharedManager()
+        lockManager.shouldEnterActiveSearchMode(true)
+        lockManager.startScan()
     }
     
     func blinkLockButtonPressed(button: UIButton) {
@@ -84,16 +130,19 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
-                    SLLockManager.sharedManager().shallowConnectLock(lock)
+                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                    lockManager.flashLEDsForLock(lock)
                     break
                 }
             }
         }
     }
-
-    func blinkLock(lock: SLLock) {
-        let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-        lockManager.flashLEDsForLock(lock)
+    
+    func enableButtonAtIndex(index: Int) {
+        if index < tempButtons.count {
+            let button:UIButton = self.tempButtons[index]
+            button.enabled = true
+        }
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -108,7 +157,7 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         let cellId = "SLAvaliableLocksViewControllerCell"
         var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellId)
         }
         
         let lock = self.locks[indexPath.row]
@@ -122,10 +171,11 @@ class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UIT
         button.setImage(image, forState: .Normal)
         button.addTarget(self, action: #selector(blinkLockButtonPressed(_:)), forControlEvents: .TouchDown)
         button.tag = indexPath.row + self.buttonTagShift
+        button.enabled = false
+        
         self.tempButtons.append(button)
         
-        cell?.textLabel?.text = lock.name
-        cell?.imageView?.image = UIImage(named: "table_cell_lock_pic_onboarding")!
+        cell?.textLabel?.text = lock.displayName()
         cell?.accessoryView = button
         
         return cell!

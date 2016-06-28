@@ -235,9 +235,13 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                     self.navigationController?.pushViewController(tdsvc, animated: true)
                 } else if indexPath.row == SettingFieldValue.PinCode.rawValue {
                     let tpvc = SLTouchPadViewController()
-                    tpvc.onExit = {[weak tpvc] in
-                        tpvc?.dismissViewControllerAnimated(true, completion: nil)
+                    tpvc.onCanelExit = {[weak weakTpvc = tpvc] in
+                        weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
+                    tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
+                        weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    
                     self.presentViewController(tpvc, animated: true, completion: nil)
                 } else if indexPath.row == SettingFieldValue.FactoryReset.rawValue {
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Reset, lock: lock)

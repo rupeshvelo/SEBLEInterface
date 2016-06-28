@@ -9,13 +9,16 @@
 import UIKit
 
 protocol SLOpposingLabelsTableViewCellDelegate {
-    func cellWantsFirstResponder(cell: SLOpposingLabelsTableViewCell)
+    func cellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell)
 }
 
 class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     let xPadding:CGFloat = 5.0
+    
     let labelHeight:CGFloat = 14.0
+    
     let labelFont:UIFont = UIFont.systemFontOfSize(12.0)
+    
     var delegate:SLOpposingLabelsTableViewCellDelegate?
     
     lazy var leftLabel:UILabel = {
@@ -99,16 +102,18 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func haveFieldBecomeFirstResponder() {
-        self.rightField.becomeFirstResponder()
+        dispatch_async(dispatch_get_main_queue()) { 
+            self.rightField.becomeFirstResponder()
+        }
     }
     
     // MARK: UITextFieldDelegate methods
     func textFieldDidBeginEditing(textField: UITextField) {
-        //self.delegate?.cellWantsFirstResponder(self)
+        self.delegate?.cellTextFieldBecameFirstResponder(self)
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
-       //textField.resignFirstResponder()
+       textField.resignFirstResponder()
     }
     
     

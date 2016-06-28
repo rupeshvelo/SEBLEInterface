@@ -13,6 +13,7 @@
 #define kSLNotificationLockManagerDisconnectedLock          @"kSLNotificationLockManagerDisconnectedLock"
 #define kSLNotificationLockManagerConnectedLock             @"kSLNotificationLockManagerConnectedLock"
 #define kSLNotificationLockManagerShallowlyConnectedLock    @"kSLNotificationLockManagerShallowlyConnectedLock"
+#define kSLNotificationLockManagerBlePoweredOn              @"kSLNotificationLockManagerBlePoweredOn"
 #define kSLNotificationUserSignedInFacebook                 @"kSLNotificationUserSignedInFacebook"
 #define kSLNotificationLockManagerUpdatedLock               @"kSLNotificationLockManagerUpdatedLock"
 #define kSLNotificationLockManagerUpdatedLockAlert          @"kSLNotificationLockManagerUpdatedLockAlert"
@@ -29,5 +30,9 @@
 #define kSLNotificationLogUpdated                           @"kSLNotificationLogUpdated"
 #define kSLNotificationLockSequenceWritten                  @"kSLNotificationLockSequenceWritten"
 #define kSLNotificationRemoveLockForUser                    @"kSLNotificationRemoveLockForUser"
+#define kSLNotificationHardwareServiceFound                 @"kSLNotificationHardwareServiceFound"
+#define kSLNotificationUserAcceptedNotifications            @"kSLNotificationUserAcceptedNotifications"
+#define kSLNotificationShowLockBar                          @"kSLNotificationShowLockBar"
+#define kSLNotificationHideLockBar                          @"kSLNotificationHideLockBar"
 
 #endif

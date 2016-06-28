@@ -33,6 +33,10 @@ import CoreLocation
         return self.manager.location
     }
     
+    func beginUpdatingLocation() {
+        self.manager.startUpdatingLocation()
+    }
+    
     // MARK: CLLocationMangerDelegate methods
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         var didAccept = false

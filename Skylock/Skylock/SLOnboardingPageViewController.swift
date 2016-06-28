@@ -159,15 +159,25 @@ import UIKit
         return self.onboardingControllers.indexOf(onboardingViewController)
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-        if let index = self.onboardingControllers.indexOf(viewController as! SLOnboardingViewController) where index < self.onboardingControllers.count - 1 {
+    public func pageViewController(
+        pageViewController: UIPageViewController,
+        viewControllerAfterViewController viewController: UIViewController
+        ) -> UIViewController?
+    {
+        if let index = self.onboardingControllers.indexOf(viewController as! SLOnboardingViewController) where
+            index < self.onboardingControllers.count - 1
+        {
             return self.onboardingControllers[index + 1]
         }
         
         return nil
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+    public func pageViewController(
+        pageViewController: UIPageViewController,
+        viewControllerBeforeViewController viewController: UIViewController
+        ) -> UIViewController?
+    {
         if let index = self.onboardingControllers.indexOf(viewController as! SLOnboardingViewController) where index > 0 {
             return self.onboardingControllers[index - 1]
         }
@@ -183,11 +193,21 @@ import UIKit
         return self.pageIndex
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    public func pageViewController(
+        pageViewController: UIPageViewController,
+        didFinishAnimating finished: Bool,
+                           previousViewControllers: [UIViewController],
+                           transitionCompleted completed: Bool
+        )
+    {
         
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [UIViewController]) {
+    public func pageViewController(
+        pageViewController: UIPageViewController,
+        willTransitionToViewControllers pendingViewControllers: [UIViewController]
+        )
+    {
         
     }
 }

@@ -281,8 +281,12 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     
     func yesButtonPressed() {
         let tpvc = SLTouchPadViewController()
-        tpvc.onExit = {
+        tpvc.onCanelExit = {
             self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
+            let lvc = SLLockViewController()
+            weakTpvc?.presentViewController(lvc, animated: false, completion: nil)
         }
         self.presentViewController(tpvc, animated: true, completion: nil)
         self.saveNewLockName()
