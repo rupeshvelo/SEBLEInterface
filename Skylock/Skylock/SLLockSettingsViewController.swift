@@ -14,8 +14,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         case CapacitiveTouchPad = 1
         case ProximityLockUnlock = 2
         case PinCode = 3
-        case FactoryReset = 4
-        case DeleteLock = 5
+        case DeleteLock = 4
     }
     
     var lock:SLLock?
@@ -25,7 +24,6 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         NSLocalizedString("Capacitive Touch Pad", comment: ""),
         NSLocalizedString("Proximity lock/unlock", comment: ""),
         NSLocalizedString("Pin Code", comment: ""),
-        NSLocalizedString("Factory reset", comment: ""),
         NSLocalizedString("Delete lock", comment: "")
     ]
     
@@ -35,6 +33,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         table.delegate = self
         table.rowHeight = 55.0
         table.backgroundColor = UIColor.whiteColor()
+        table.allowsSelection = true
         table.registerClass(
             SLOpposingLabelsTableViewCell.self,
             forCellReuseIdentifier: String(SLOpposingLabelsTableViewCell)
@@ -98,8 +97,6 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         case 3:
             value = .PinCode
         case 4:
-            value = .FactoryReset
-        case 5:
             value = .DeleteLock
         default:
             value = .TheftDetectionSettings
@@ -138,7 +135,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                 rightText = self.lock?.displayName()
             } else {
                 let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-                leftText = NSLocalizedString("Registered Owner", comment: "")
+                leftText = NSLocalizedString("Registered owner", comment: "")
                 rightText = dbManager.currentUser.fullName()
             }
             
@@ -149,6 +146,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                 cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
             }
             
+            //cell?.selectionStyle = .None
             cell?.setProperties(
                 leftText,
                 rightLabelText: rightText,
@@ -171,7 +169,8 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         }
         
         cellId = String(SLLabelAndSwitchTableViewCell)
-        var cell: SLLabelAndSwitchTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
+        var cell: SLLabelAndSwitchTableViewCell? =
+            tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
         if cell == nil {
             cell = SLLabelAndSwitchTableViewCell(accessoryType: accessoryType, reuseId: cellId)
         }
@@ -228,26 +227,28 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let lock = self.lock {
             if indexPath.section == 0 {
-                // TODO handle this case
+               
             } else {
                 if indexPath.row == SettingFieldValue.TheftDetectionSettings.rawValue {
                     let tdsvc = SLTheftDetectionSettingsViewController(lock: lock)
                     self.navigationController?.pushViewController(tdsvc, animated: true)
                 } else if indexPath.row == SettingFieldValue.PinCode.rawValue {
                     let tpvc = SLTouchPadViewController()
-                    tpvc.onExit = {[weak tpvc] in
-                        tpvc?.dismissViewControllerAnimated(true, completion: nil)
+                    tpvc.onCanelExit = {[weak weakTpvc = tpvc] in
+                        weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
+                    tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
+                        weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    
                     self.presentViewController(tpvc, animated: true, completion: nil)
-                } else if indexPath.row == SettingFieldValue.FactoryReset.rawValue {
-                    let lrodvc = SLLockResetOrDeleteViewController(type: .Reset, lock: lock)
-                    self.navigationController?.pushViewController(lrodvc, animated: true)
                 } else if indexPath.row == SettingFieldValue.DeleteLock.rawValue {
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)
                 }
             }
         }
+        // If there is no lock or the lock has disconnected, we should notify the user.
     }
     
     // MARK: SLLabelAndSwitchCellDelegate methods

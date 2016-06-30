@@ -16,11 +16,12 @@
 
 @interface SLMapViewController : UIViewController <
 UIAlertViewDelegate,
-CLLocationManagerDelegate,
 SLNotificationViewControllerDelegate,
 MFMessageComposeViewControllerDelegate,
 SLDirectionsViewControllerDelegate,
 GMSMapViewDelegate
 >
+
+- (void)updateUserPosition:(CLLocationCoordinate2D)userPosition;
 
 @end

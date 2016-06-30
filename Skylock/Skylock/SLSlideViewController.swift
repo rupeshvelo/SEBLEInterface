@@ -51,6 +51,11 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             let cell = self.tableView.cellForRowAtIndexPath(path)
             cell?.selected = false
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            kSLNotificationHideLockBar,
+            object: nil
+        )
     }
     
     func cellInfo(indexPath: NSIndexPath) -> [String:String] {

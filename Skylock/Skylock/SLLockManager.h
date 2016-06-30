@@ -28,17 +28,18 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 + (id)sharedManager;
 
 - (void)addLock:(SLLock *)lock;
-- (void)removeLock:(SLLock *)lock;
+- (void)permenantlyRemoveLock:(SLLock *)lock;
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
 - (void)stopScan;
+- (BOOL)isScanning;
+- (BOOL)isBlePoweredOn;
 - (void)setCurrentLock:(SLLock *)lock;
 - (SLLock *)getCurrentLock;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
 - (void)toggleSharingForLock:(SLLock *)lock;
-- (void)fetchLocks;
 - (void)startBlueToothManager;
 - (void)removeUnconnectedLocks;
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values;
@@ -48,7 +49,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (BOOL)hasLocksForCurrentUser;
 - (void)deselectAllLocks;
 - (void)updateFirmware;
-- (void)deleteLockFromCurrentUserAccount:(NSString *)lockName;
 - (void)writeTouchPadButtonPushes:(UInt8 *)pushes size:(int)size lock:(SLLock *)lock;
 - (void)readButtonLockSequenceForLock:(SLLock *)lock;
 - (void)deleteLockFromCurrentUserAccountWithMacAddress:(NSString *)macAddress;
@@ -56,16 +56,17 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)checkLockOpenOrClosed;
 - (void)flashLEDs;
 - (void)flashLEDsForLock:(SLLock *)lock;
-- (NSArray *)availableLocks;
+- (NSArray *)locksDiscoveredInSearch;
 - (void)clearAvaliableLocks;
 - (void)connectToLockWithName:(NSString *)lockName;
 - (void)changeCurrentLockGivenNameToName:(NSString *)newName;
 - (NSArray *)unconnectedLocksForCurrentUser;
+- (void)shallowConnectLock:(SLLock *)lock;
+- (void)disconnectFromLockWithAddress:(NSString *)macAddress;
 
 // temporary methods for testing
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
 - (void)checkCommandStatusForLockWithMacAddress:(NSString *)macAddress;
-- (void)getCommandStatusForLockWithMacAddress:(NSString *)macAddress;
 
 /**
  * returns a dictionary with keys "factory" and "nonFactory"

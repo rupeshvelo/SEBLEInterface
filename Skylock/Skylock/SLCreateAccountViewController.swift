@@ -24,20 +24,29 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     }
     
     var textFieldSize:CGSize = CGSizeZero
+    
     let xPadding:CGFloat = 15.0
+    
     let textColor = UIColor.whiteColor()
+    
     let yFieldSpacer:CGFloat = 25.0
+    
     var currentPhase:SLCreateAccountFieldPhase
+    
     var fields:[SLUnderlineTextView] = [SLUnderlineTextView]()
+    
     var currentField:FieldName?
+    
     let passwordLength:Int = 8
+    
     var isKeyboardShowing:Bool = false
+    
     var fieldValues:[FieldName: String] = [
         .FirstName: "",
         .LastName: "",
         .Email: "",
         .Password: "",
-        .CountryCode: "",
+        .CountryCode: "+",
         .PhoneNumber: ""
     ]
     
@@ -173,6 +182,7 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
             color: self.textColor,
             placeHolder: NSLocalizedString("+", comment: "")
         )
+        field.textField.text = "+"
         field.textField.delegate = self
         
         return field
@@ -355,24 +365,79 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     
     func sendTextButtonPressed() {
         let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
-        if let pushId = ud.objectForKey(SLUserDefaultsPushNotificationToken) {
-            let userProperties:[NSObject:AnyObject] = [
-                "firstName": self.firstNameField.textField.text!,
-                "lastName": self.lastNameField.textField.text!,
-                "userId": self.countryCodeField.textField.text! + self.phoneNumberField.textField.text!,
-                "password": self.passwordField.textField.text!,
-                "googlePushId": pushId
+        
+//        guard let pushId = ud.objectForKey(SLUserDefaultsPushNotificationToken) else {
+//            // TODO alert the user of this failure
+//            return
+//        }
+        let phoneNumber = self.countryCodeField.textField.text! + self.phoneNumberField.textField.text!
+        let userProperties:[NSObject:AnyObject] = [
+            "first_name": self.firstNameField.textField.text!,
+            "last_name": self.lastNameField.textField.text!,
+            "email": self.emailField.textField.text!,
+            "user_id": phoneNumber,
+            "password": self.passwordField.textField.text!,
+            "fb_flag": false,
+            "reg_id": "000000000000000000"
+        ]
+        
+        let restManager:SLRestManager = SLRestManager.sharedManager() as SLRestManager
+        restManager.postObject(
+        userProperties,
+        serverKey: .Main,
+        pathKey: .Users,
+        subRoutes: nil,
+        additionalHeaders: nil,
+        completion: { (responseDict:[NSObject: AnyObject]!) in
+            print("responseDict: \(responseDict))")
+            guard let response:[String:AnyObject] = responseDict as? [String:AnyObject] else {
+                print("response dictionary is not in the correct format")
+                return
+            }
+            
+            guard let userToken:String = response["token"] as? String else {
+                print("no rest token in server response")
+                return
+            }
+            
+            let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+            dbManager.saveUserWithDictionary(userProperties, isFacebookUser: false)
+            
+            let currentUser:SLUser = SLDatabaseManager.sharedManager().currentUser
+            let keyChainHandler = SLKeychainHandler()
+            keyChainHandler.setItemForUsername(
+                currentUser.userId!,
+                inputValue: userToken,
+                additionalSeviceInfo: nil,
+                handlerCase: .RestToken
+            )
+            
+            ud.setBool(true, forKey: SLUserDefaultsSignedIn)
+            ud.synchronize()
+            
+            dispatch_async(dispatch_get_main_queue(), { 
+                let ctcvc = SLConfirmTextCodeViewController()
+                self.presentViewController(ctcvc, animated: true, completion: nil)
+            })
+            
+            let subRoutes:[String] = [
+                currentUser.userId!,
+                restManager.pathAsString(.PhoneVerificaiton)
             ]
             
-            let user = SLUser()
-            user.setPropertiesWithDictionary(userProperties, isFacebookUser: false)
+            let headers = [
+                "Authorization": restManager.basicAuthorizationHeaderValueUsername(userToken, password: "")
+            ]
             
-//            let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
-//            restManager.
-            let clvc = SLConnectLockInfoViewController()
-            self.presentViewController(clvc, animated: true, completion: nil)
-        }
-        
+            restManager.getRequestWithServerKey(
+                .Main,
+                pathKey: .Users,
+                subRoutes: subRoutes,
+                additionalHeaders: headers,
+                completion: { (textResponseDict:[NSObject:AnyObject]!) in
+                    print("text response: \(textResponseDict)")
+            })
+        })
     }
     
     func getTextFieldsSectionHeight() -> CGFloat {
@@ -532,11 +597,20 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         textField.returnKeyType = .Done
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        textField: UITextField,
+        shouldChangeCharactersInRange range: NSRange,
+                                      replacementString string: String
+        ) -> Bool
+    {
         let fieldName = self.fieldNameFromTextField(textField)
         if let text = self.fieldValues[fieldName] {
             let tempText:NSString = text as NSString
             let newText = tempText.stringByReplacingCharactersInRange(range, withString: string)
+            if textField == self.countryCodeField.textField && (newText == "" || newText[newText.startIndex] != "+") {
+                return false
+            }
+           
             self.fieldValues[fieldName] = newText as String
         }
         

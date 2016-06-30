@@ -32,7 +32,7 @@
 #define kSLMapViewControllerCalloutOffsetScaler     0.65f
 #define kSLMapViewControllerCalloutYOffset          40.0f
 
-@interface SLMapViewController() <SLMapCalloutViewControllerDelegate>
+@interface SLMapViewController() <SLLockInfoViewControllerDelegate>
 
 @property (nonatomic, strong) SEBLEInterfaceMangager *bleManager;
 @property (nonatomic, assign) CGRect lockInfoSmallFrame;
@@ -46,7 +46,6 @@
 @property (nonatomic, assign) BOOL isInitialLoad;
 
 @property (nonatomic, strong) SLLock *selectedLock;
-@property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
@@ -54,12 +53,12 @@
 @property (nonatomic, copy) NSString *directionEndAddress;
 
 @property (nonatomic, strong) UIButton *locationButton;
-@property (nonatomic, strong) UIButton *directionsButton;
 
 @property (nonatomic, strong) SLDirectionsViewController *directionsViewController;
 
-@property (nonatomic, strong) SLMapCalloutViewController *mapCalloutViewController;
 @property (nonatomic, strong) SLDirectionDrawingHelper *directionDrawingHelper;
+@property (nonatomic, strong) SLNoEllipseConnectedView *noEllipseConnectedView;
+@property (nonatomic, strong) SLLockInfoViewController *lockInfoViewController;
 
 @end
 
@@ -71,6 +70,7 @@
         GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:5];
         _mapView = [GMSMapView mapWithFrame:self.view.bounds camera:cameraPosition];
         _mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+        _mapView.myLocationEnabled = YES;
         _mapView.delegate = self;
     }
     
@@ -87,20 +87,10 @@
     return _userMarker;
 }
 
-- (CLLocationManager *)locationManager
-{
-    if (!_locationManager) {
-        _locationManager = [CLLocationManager new];
-        _locationManager.delegate = self;
-    }
-    
-    return _locationManager;
-}
-
 - (UIButton *)locationButton
 {
     if (!_locationButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_gps"];
+        UIImage *image = [UIImage imageNamed:@"show_current location_button"];
         _locationButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
                                                                      0.0f,
                                                                      image.size.width,
@@ -115,25 +105,6 @@
     return _locationButton;
 }
 
-- (UIButton *)directionsButton
-{
-    if (!_directionsButton) {
-        UIImage *image = [UIImage imageNamed:@"icon_directions_expand"];
-        _directionsButton = [[UIButton alloc] initWithFrame:CGRectMake(0.0f,
-                                                                       0.0f,
-                                                                       image.size.width,
-                                                                       image.size.height)];
-        [_directionsButton addTarget:self
-                              action:@selector(directionsButtonPushed)
-                    forControlEvents:UIControlEventTouchDown];
-        [_directionsButton setImage:image forState:UIControlStateNormal];
-        _directionsButton.hidden = YES;
-        [self.view addSubview:_directionsButton];
-    }
-    
-    return _directionsButton;
-}
-
 - (SLDirectionsViewController *)directionsViewController
 {
     if (!_directionsViewController) {
@@ -146,15 +117,19 @@
     return _directionsViewController;
 }
 
-- (SLMapCalloutViewController *)mapCalloutViewController
+- (SLNoEllipseConnectedView *)noEllipseConnectedView
 {
-    if (!_mapCalloutViewController) {
-        _mapCalloutViewController = [SLMapCalloutViewController new];
-        [_mapCalloutViewController setProperties:NSLocalizedString(@"Navigate to", nil) lock:self.selectedLock];
-        _mapCalloutViewController.delegate = self;
+    if (!_noEllipseConnectedView) {
+        NSString *text = NSLocalizedString(@"You are not connected to an Ellipse. We can only show the location of locks that you are connected to.",
+                                           nil);
+        _noEllipseConnectedView = [[SLNoEllipseConnectedView alloc] initWithFrame:CGRectMake(0.0f,
+                                                                                             0.0f,
+                                                                                             self.view.bounds.size.width,
+                                                                                             156.0f)
+                                                                             text:text];
     }
     
-    return _mapCalloutViewController;
+    return _noEllipseConnectedView;
 }
 
 - (void)dealloc
@@ -183,32 +158,37 @@
     self.navigationItem.leftBarButtonItem = menuButton;
     self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
-    self.locationButton.frame = CGRectMake(self.lockInfoSmallFrame.origin.x,
-                                           self.lockInfoSmallFrame.origin.y - 1.5*self.locationButton.bounds.size.height,
-                                           self.locationButton.bounds.size.width,
-                                           self.locationButton.bounds.size.height);
-    
-    self.directionsButton.frame = CGRectMake(CGRectGetMaxX(self.lockInfoSmallFrame) - self.directionsButton.bounds.size.width,
-                                             self.locationButton.frame.origin.y,
-                                             self.directionsButton.bounds.size.width,
-                                             self.directionsButton.bounds.size.height);
-    
-    
-//    UIButton *testActionButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.center.x,
-//                                                                            self.view.center.y,
-//                                                                            100,
-//                                                                            50)];
-//    [testActionButton addTarget:self action:@selector(testAction) forControlEvents:UIControlEventTouchDown];
-//    [testActionButton setTitle:@"Test" forState:UIControlStateNormal];
-//    [testActionButton setBackgroundColor:[UIColor purpleColor]];
-//    [self.view addSubview:testActionButton];
+    self.locationButton.frame = CGRectMake(self.view.bounds.size.width - self.locationButton.bounds.size.width - 10.0f,
+                                           self.view.bounds.size.height - self.locationButton.bounds.size.height - 50.0f,
+                                           self.locationButton.bounds.size.height,
+                                           self.locationButton.bounds.size.width);
 }
 
-- (void)testAction
+- (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"test action button pressed");
-    //[SLLockManager.sharedManager tempDeleteLockFromCurrentUserAccount:@"Skylock DF928DD51C00"];
-    [SLLockManager.sharedManager tempReadFirmwareDataForLockAddress:@"E12E18E807D6"];
+    [super viewDidAppear:animated];
+    
+    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
+    if (self.selectedLock && !self.lockMarkers[self.selectedLock.macAddress]) {
+        [self addLockToMap:self.selectedLock];
+    } else if (!self.selectedLock) {
+        self.noEllipseConnectedView.frame = CGRectMake(0.0f,
+                                                       -self.noEllipseConnectedView.frame.size.height,
+                                                       self.noEllipseConnectedView.frame.size.width,
+                                                       self.noEllipseConnectedView.frame.size.height);
+        [self.view addSubview:self.noEllipseConnectedView];
+        
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.noEllipseConnectedView.frame = CGRectMake(0.0f,
+                                                           self.navigationController.navigationBar.bounds.size.height +
+                                                           [UIApplication sharedApplication].statusBarFrame.size.height,
+                                                           self.noEllipseConnectedView.frame.size.width,
+                                                           self.noEllipseConnectedView.frame.size.height);
+        }];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationShowLockBar
+                                                        object:nil];
 }
 
 - (void)registerNotifications
@@ -219,31 +199,31 @@
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(dismissAlert:)
-                                                 name:kSLNotificationAlertDismissed object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(presentEmergencyText:)
-                                                 name:kSLNotificationSendEmergecyText
+                                             selector:@selector(lockPaired:)
+                                                 name:kSLNotificationLockPaired
                                                object:nil];
 }
 
-- (void)presentDirectionsViewController
+- (void)presentDirectionsViewControllerWithDirections:(NSArray *)directions
 {
-    self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width,
-                                                          0.0f,
-                                                          .5f*self.view.bounds.size.width,
-                                                          self.view.bounds.size.height);
-    self.directionsViewController.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:.7f];
-    
+    SLLockViewController *lvc = (SLLockViewController *)self.presentingViewController;
+    CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
+    [UIApplication sharedApplication].statusBarFrame.size.height;
+    self.directionsViewController.directions = directions;
+    self.directionsViewController.view.frame = CGRectMake(-self.directionsViewController.view.bounds.size.width,
+                                                          y0,
+                                                          0.6f*self.view.bounds.size.width,
+                                                          self.view.bounds.size.height - [lvc lockBarHeight]);
+    self.directionsViewController.view.backgroundColor = [UIColor whiteColor];
+
     [self addChildViewController:self.directionsViewController];
     [self.view addSubview:self.directionsViewController.view];
     [self.view bringSubviewToFront:self.directionsViewController.view];
     [self.directionsViewController didMoveToParentViewController:self];
     
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        self.directionsViewController.view.frame = CGRectMake(self.view.bounds.size.width - self.directionsViewController.view.bounds.size.width,
-                                                              0.0f,
+        self.directionsViewController.view.frame = CGRectMake(0.0,
+                                                              self.directionsViewController.view.frame.origin.y,
                                                               self.directionsViewController.view.bounds.size.width,
                                                               self.directionsViewController.view.bounds.size.height);
     }];
@@ -290,8 +270,33 @@
     }
 }
 
+- (void)lockPaired:(NSNotification *)notification
+{
+    if (self.noEllipseConnectedView) {
+        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+            self.noEllipseConnectedView.frame = CGRectMake(0.0f,
+                                                           -self.noEllipseConnectedView.frame.size.height,
+                                                           self.noEllipseConnectedView.frame.size.width,
+                                                           self.noEllipseConnectedView.frame.size.height);
+        } completion:^(BOOL finished) {
+            [self.noEllipseConnectedView removeFromSuperview];
+            self.noEllipseConnectedView = nil;
+        }];
+    }
+    
+    SLLock *currentLock = [SLLockManager.sharedManager getCurrentLock];
+    if (currentLock && !self.lockMarkers[currentLock.macAddress]) {
+        [self addLockToMap:currentLock];
+    }
+}
+
 - (void)menuButtonPressed
 {
+    if ([self.view.subviews containsObject:self.noEllipseConnectedView]) {
+        [self.noEllipseConnectedView removeFromSuperview];
+    }
+    
+    self.noEllipseConnectedView = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -339,39 +344,46 @@
     [self presentViewController:cvc animated:YES completion:nil];
 }
 
+- (void)presentLockInfoViewController
+{
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
+    [UIApplication sharedApplication].statusBarFrame.size.height;
+    CGFloat height = 250.0f;
+    self.lockInfoViewController = [[SLLockInfoViewController alloc] initWithLock:self.selectedLock];
+    self.lockInfoViewController.delegate = self;
+    self.lockInfoViewController.view.frame = CGRectMake(0.0, -height, self.view.bounds.size.width, height);
+    
+    [self addChildViewController:self.lockInfoViewController];
+    [self.view addSubview:self.lockInfoViewController.view];
+    [self.view bringSubviewToFront:self.lockInfoViewController.view];
+    [self.lockInfoViewController didMoveToParentViewController:self];
+    
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.lockInfoViewController.view.frame = CGRectMake(0.0,
+                                                            y0,
+                                                            self.lockInfoViewController.view.bounds.size.width,
+                                                            height);
+    }];
+    
+}
+
 - (void)locationButtonPressed
 {
     [self centerOnUser];
 }
 
-- (void)directionsButtonPushed
-{
-    [self presentDirectionsViewController];
-}
-
 - (void)lockSelected
 {
-    
     // TODO - clear lock annotations that are no longer active
     self.selectedLock = [SLLockManager.sharedManager selectedLock];
     if (self.selectedLock) {
        [self addLockToMap:self.selectedLock];
     }
 }
-
-- (void)handleDirectionsMode
-{
-//    if (!self.lockInfoViewController.isUp &&
-//        //self.selectedLockAnnotation &&
-//        self.directions &&
-//        self.directions.count > 0 &&
-//        (self.leftCalloutButton.isSelected || self.rightCalloutButton.isSelected)) {
-//        self.directionsButton.hidden = NO;
-//    } else {
-//        self.directionsButton.hidden = YES;
-//    }
-}
-
 
 #pragma mark - SLDirectionsViewController Delegate Methods
 - (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController
@@ -392,43 +404,26 @@
 #pragma mark - MGL map view helper methods
 - (void)centerOnUser
 {
-    // zoom should be 16
-    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:14];
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.userLocation zoom:16];
     [self.mapView animateToCameraPosition:cameraPosition];
 }
 
 - (void)addLockToMap:(SLLock *)lock
 {
     // hard coding location for demo
-    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.761758, -122.421241);
-    //CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.767869, -122.453231);
+    //CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.761758, -122.421241);
+    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.357150, -120.619938);
     [self.selectedLock setCurrentLocation:postion];
     GMSMarker *lockMarker = [GMSMarker markerWithPosition:postion];
     lockMarker.title = lock.name;
-    lockMarker.icon = [UIImage imageNamed:@"img_lock"];
+    lockMarker.icon = [UIImage imageNamed:@"user_location_pin"];
     lockMarker.map = self.mapView;
     lockMarker.infoWindowAnchor = CGPointMake(0.0f, 0.0f);
     
     self.lockMarkers[lock.macAddress] = lockMarker;
 }
 
-- (void)updateUserLocation
-{
-    self.userMarker.position = self.userLocation;
-
-//    if (self.isInitialLoad) {
-//        SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-//        
-//        UIImage *userPic = [SLPicManager.sharedManager userImageForUserId:user.userId];
-//        if (userPic) {
-//            UIImage *userPicSmall = [userPic resizedImageWithSize:CGSizeMake(31, 35)];
-//            UIImage *maskedImage = [UIImage profilePicFromImage:userPicSmall];
-//            self.userMarker.icon = maskedImage;
-//        }
-//    }
-}
-
-- (void)getDirectionsForTransportation:(SLMapCalloutVCPane)pane
+- (void)getDirections
 {
     if (!self.selectedLock) {
         NSLog(@"Can't present directions");
@@ -437,7 +432,7 @@
 
     SLDirectionAPIHelper *directionsHelper = [[SLDirectionAPIHelper alloc] initWithStart:self.userLocation
                                                                                      end:self.selectedLock.location
-                                                                                isBiking:pane == SLMapCalloutVCPaneRight];
+                                                                                isBiking:NO];
     [directionsHelper getDirections:^(NSArray *directions, NSString *endAddress) {
         if (!directions || !endAddress) {
             NSLog(@"Error: could not retrieve directions");
@@ -446,7 +441,12 @@
         
         self.directionEndAddress = endAddress;
         self.directions = directions;
+        
         [self enterDirectionsMode];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentDirectionsViewControllerWithDirections:directions];
+        });
     }];
 }
 
@@ -459,31 +459,35 @@
     
     self.directionDrawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
                                                                          directions:self.directions];
-    [self.directionDrawingHelper drawDirections:^{
-        self.directionsButton.hidden = NO;
-    }];
+    [self.directionDrawingHelper drawDirections:^{}];
 }
 
 - (void)exitDirecitonMode
 {
     self.directions = nil;
     self.directionsViewController = nil;
+}
+
+- (void)updateUserPosition:(CLLocationCoordinate2D)userPosition
+{
+    self.userLocation = userPosition;
     
-    if (self.mapCalloutViewController) {
-        [self.mapCalloutViewController setCalloutViewUnselected];
-//        [self.directionDrawingHelper removeDirections];
-//        self.directionDrawingHelper = nil;
+    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+    user.location = self.userLocation;
+    
+    if (self.isInitialLoad) {
+        [self centerOnUser];
+        self.isInitialLoad = NO;
     }
 }
 
 #pragma mark - GMS map view delegate methods
-
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker
 {
-    if (marker != self.userMarker) {
-        self.directionsButton.hidden = NO;
+    if (marker != self.userMarker && !self.lockInfoViewController) {
         self.selectedLockMarker = marker;
         [mapView setSelectedMarker:marker];
+        [self presentLockInfoViewController];
     }
 
     return YES;
@@ -493,21 +497,6 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
-    self.mapCalloutViewController.view.frame = CGRectMake(0, 0, 180, 64);
-    self.mapCalloutViewController.lock = self.selectedLock;
-    
-    [self addChildViewController:self.mapCalloutViewController];
-    
-    [self.view addSubview:self.mapCalloutViewController.view];
-    [self.view bringSubviewToFront:self.mapCalloutViewController.view];
-    [self.mapCalloutViewController didMoveToParentViewController:self];
-    
-    CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
-    CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
-    point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
-    point.y -= kSLMapViewControllerCalloutYOffset;
-    self.mapCalloutViewController.view.center = point;
-    
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(.0f, .0f, .1f, .1f)];
     backgroundView.backgroundColor = [UIColor clearColor];
     
@@ -516,72 +505,13 @@
 
 - (void)mapView:(GMSMapView *)mapView didTapAtCoordinate:(CLLocationCoordinate2D)coordinate
 {
-    if (self.mapCalloutViewController) {
-        [self.mapCalloutViewController.view removeFromSuperview];
-        [self.mapCalloutViewController removeFromParentViewController];
-        self.mapCalloutViewController = nil;
-        self.directionsButton.hidden = YES;
-        if (self.directionDrawingHelper) {
-           [self.directionDrawingHelper removeDirections];
-            self.directionDrawingHelper = nil;
-        }
+    if (self.directionDrawingHelper) {
+        [self.directionDrawingHelper removeDirections];
+        self.directionDrawingHelper = nil;
     }
     
     if (self.selectedLockMarker) {
         self.selectedLockMarker = nil;
-    }
-}
-
-- (void)mapView:(GMSMapView *)mapView didTapInfoWindowOfMarker:(GMSMarker *)marker
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-}
-
-- (void)mapView:(GMSMapView *)mapView didChangeCameraPosition:(GMSCameraPosition *)position
-{
-    if (self.selectedLockMarker && self.mapCalloutViewController) {
-        CLLocationCoordinate2D anchor = [self.mapView.selectedMarker position];
-        CGPoint point = [self.mapView.projection pointForCoordinate:anchor];
-        point.x += kSLMapViewControllerCalloutOffsetScaler*self.mapCalloutViewController.view.bounds.size.width;
-        point.y -= kSLMapViewControllerCalloutYOffset;
-        self.mapCalloutViewController.view.center = point;
-    }
-}
-
-#pragma mark - CLLocaiton manager delegate methods
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
-{
-    if (status == kCLAuthorizationStatusAuthorizedAlways ||
-        status == kCLAuthorizationStatusAuthorizedWhenInUse) {
-        
-        [manager startUpdatingLocation];
-    } else if (status == kCLAuthorizationStatusDenied) {
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                               style:UIAlertActionStyleCancel
-                                                             handler:nil];
-        
-        NSString *message = NSLocalizedString(@"We use this stuff, man! It's important! Common--", nil);
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"We really need this!", nil)
-                                                                       message:message
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:cancelAction];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-    CLLocation *location = locations[0];
-    self.userLocation = location.coordinate;
-
-    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-    user.location = self.userLocation;
-    
-    [self updateUserLocation];
-
-    if (self.isInitialLoad) {
-        [self centerOnUser];
-        self.isInitialLoad = NO;
     }
 }
 
@@ -597,27 +527,10 @@
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - SLMapCalloutViewController Delegate methods
-- (void)leftCalloutViewTapped:(SLMapCalloutViewController *)calloutController
+#pragma mark - SLLockInfoViewControllerDelegate methods
+- (void)directionsButtonPressed:(SLLockInfoViewController *)livc
 {
-    [self getDirectionsForTransportation:SLMapCalloutVCPaneLeft];
-}
-
-- (void)rightCalloutViewTapped:(SLMapCalloutViewController *)calloutController
-{
-    [self getDirectionsForTransportation:SLMapCalloutVCPaneRight];
-}
-
-#pragma mark - SLAcceptNotificationsViewController delegate methods
-- (void)userAcceptsLocationUse:(SLAcceptNotificationsViewController *)acceptNotificationsVC
-{
-    [self.locationManager requestWhenInUseAuthorization];
-}
-
-- (void)acceptsNotificationsControllerWantsExit:(SLAcceptNotificationsViewController *)acceptNotiticationViewController
-                                       animated:(BOOL)animated
-{
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self getDirections];
 }
 
 @end

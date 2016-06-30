@@ -10,8 +10,8 @@ import Foundation
 import CoreLocation
 
 @objc protocol SLLocationManagerDelegate {
-    func locationManagerUpdatedUserPosition(userLocation: CLLocation)
-    func locationManagerDidAcceptedLocationAuthoriation(didAccept: Bool)
+    func locationManagerUpdatedUserPosition(locationManager:SLLocationManager, userLocation: CLLocation)
+    func locationManagerDidAcceptedLocationAuthorization(locationManager:SLLocationManager, didAccept: Bool)
 }
 
 @objc class SLLocationManager: NSObject, CLLocationManagerDelegate {
@@ -33,6 +33,10 @@ import CoreLocation
         return self.manager.location
     }
     
+    func beginUpdatingLocation() {
+        self.manager.startUpdatingLocation()
+    }
+    
     // MARK: CLLocationMangerDelegate methods
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         var didAccept = false
@@ -41,7 +45,7 @@ import CoreLocation
             didAccept = true
         }
         
-        self.delegate?.locationManagerDidAcceptedLocationAuthoriation(didAccept)
+        self.delegate?.locationManagerDidAcceptedLocationAuthorization(self, didAccept: didAccept)
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -49,6 +53,6 @@ import CoreLocation
             return
         }
         
-        self.delegate?.locationManagerUpdatedUserPosition(userLocation)
+        self.delegate?.locationManagerUpdatedUserPosition(self, userLocation: userLocation)
     }
 }

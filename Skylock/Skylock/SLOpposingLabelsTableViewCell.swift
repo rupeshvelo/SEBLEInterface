@@ -9,13 +9,16 @@
 import UIKit
 
 protocol SLOpposingLabelsTableViewCellDelegate {
-    func cellWantsFirstResponder(cell: SLOpposingLabelsTableViewCell)
+    func cellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell)
 }
 
 class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     let xPadding:CGFloat = 5.0
+    
     let labelHeight:CGFloat = 14.0
+    
     let labelFont:UIFont = UIFont.systemFontOfSize(12.0)
+    
     var delegate:SLOpposingLabelsTableViewCellDelegate?
     
     lazy var leftLabel:UILabel = {
@@ -73,12 +76,19 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     override func setSelected(selected: Bool, animated: Bool) {
         let view:UIView = UIView(frame: self.bounds)
-        view.backgroundColor = UIColor.clearColor()
-        
+        //view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.redColor()
         self.selectedBackgroundView = view
     }
     
-    func setProperties(leftLabelText:String, rightLabelText:String?, leftLabelTextColor:UIColor, rightLabelTextColor:UIColor, shouldEnableTextField: Bool) {
+    func setProperties(
+        leftLabelText:String,
+        rightLabelText:String?,
+        leftLabelTextColor:UIColor,
+        rightLabelTextColor:UIColor,
+        shouldEnableTextField: Bool
+        )
+    {
         self.leftLabel.text = leftLabelText
         self.leftLabel.textColor = leftLabelTextColor
         self.rightField.text = rightLabelText
@@ -99,17 +109,17 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func haveFieldBecomeFirstResponder() {
-        self.rightField.becomeFirstResponder()
+        dispatch_async(dispatch_get_main_queue()) { 
+            self.rightField.becomeFirstResponder()
+        }
     }
     
     // MARK: UITextFieldDelegate methods
     func textFieldDidBeginEditing(textField: UITextField) {
-        //self.delegate?.cellWantsFirstResponder(self)
+        self.delegate?.cellTextFieldBecameFirstResponder(self)
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
-       //textField.resignFirstResponder()
+       textField.resignFirstResponder()
     }
-    
-    
 }

@@ -149,7 +149,7 @@
     [SLPicManager.sharedManager facebookPicForFBUserId:userId completion:nil];
     
     SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-    NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asDictionary];
+    NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asRestDictionary];
     userDict[@"password"] = userId;
     
     [keychainHandler setItemForUsername:user.userId

@@ -37,13 +37,15 @@ class SLOnboardingViewController: UIViewController {
     
     lazy var pictureView:UIImageView = {
         let pic:UIImage = UIImage(named: self.picName)!
-        let picView:UIImageView = UIImageView(image: pic)
-        picView.frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - picView.bounds.size.width),
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - pic.size.width),
             y: 0.0,
-            width: picView.bounds.size.width,
-            height: picView.bounds.size.width
+            width: pic.size.width,
+            height: pic.size.height
         )
+        
+        let picView:UIImageView = UIImageView(frame: frame)
+        picView.image = pic
         
         return picView
     }()
@@ -117,8 +119,9 @@ class SLOnboardingViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        let y0:CGFloat = 0.5*(self.view.bounds.size.height - self.pictureView.bounds.size.height - (self.view.bounds.size.height - self.yBottomBound) -
-            self.topLabel.bounds.size.height - 20.0 - self.bottomLabel.bounds.size.height)
+        let y0:CGFloat = 0.5*(self.view.bounds.size.height - self.pictureView.bounds.size.height -
+            (self.view.bounds.size.height - self.yBottomBound) - self.topLabel.bounds.size.height -
+            20.0 - self.bottomLabel.bounds.size.height)
         self.topLabel.frame = CGRect(
             x: self.topLabel.frame.origin.x,
             y: CGRectGetMaxY(self.pictureView.frame) + y0,

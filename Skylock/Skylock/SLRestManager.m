@@ -64,6 +64,12 @@
         case SLRestManagerPathKeyFirmwareUpdate:
             url = @"updates/";
             break;
+        case SLRestManagerPathKeyPhoneVerificaiton:
+            url = @"phoneverification/";
+            break;
+        case SLRestManagerPathKeyPhoneCodeVerification:
+            url = @"phoneverify/";
+            break;
         default:
             break;
     }
@@ -103,6 +109,12 @@
     
     
     return [NSURL URLWithString:url];
+}
+
+- (NSString *)pathAsString:(SLRestManagerPathKey)pathKey
+{
+    NSString *path = [self pathUrl:pathKey];
+    return [path substringWithRange:NSMakeRange(0, path.length - 1)];
 }
 
 - (void)getRequestWithServerKey:(SLRestManagerServerKey)serverKey

@@ -73,11 +73,11 @@
 
 - (void)startCountdown
 {
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:1
-                                                      target:self
-                                                    selector:@selector(timerFired:)
-                                                    userInfo:nil
-                                                     repeats:YES];
+    [NSTimer scheduledTimerWithTimeInterval:1
+                                     target:self
+                                   selector:@selector(timerFired:)
+                                   userInfo:nil
+                                    repeats:YES];
     self.timerValue = kSLNotificationTimerValue;
 }
 

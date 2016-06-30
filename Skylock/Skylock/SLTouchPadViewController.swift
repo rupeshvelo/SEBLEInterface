@@ -14,13 +14,23 @@ protocol SLTouchPadViewControllerDelegate {
 
 class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     let xPadding:CGFloat = 25.0
+    
     let minimumCodeNumber:Int = 4
+    
     let maximunCodeNumber: Int = 8
+    
     var delegate: SLTouchPadViewControllerDelegate?
+    
     var letterIndex:Int = 0
+    
     var pushes:[UInt8] = []
-    var onExit:(() -> Void)?
+    
+    var onSaveExit:(() -> Void)?
+    
+    var onCanelExit:(() -> Void)?
+    
     var arrowInputViews:[UIView] = [UIView]()
+    
     var arrowButtonSize:CGSize = CGSizeZero
     
     lazy var xExitButton:UIButton = {
@@ -259,8 +269,8 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func xExitButtonPressed() {
-        if let exitClosure = self.onExit {
-            exitClosure()
+        if self.onCanelExit != nil {
+            self.onCanelExit!()
         }
     }
     
@@ -284,8 +294,8 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func lockCodeWritten() {
-        if self.onExit != nil {
-            self.onExit!()
+        if self.onSaveExit != nil {
+            self.onSaveExit!()
         }
     }
     

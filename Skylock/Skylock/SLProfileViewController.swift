@@ -8,8 +8,17 @@
 
 import UIKit
 
-class SLProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SLLabelAndSwitchCellDelegate, SLOpposingLabelsTableViewCellDelegate {
+class SLProfileViewController:
+    UIViewController,
+    UITableViewDelegate,
+    UITableViewDataSource,
+    SLLabelAndSwitchCellDelegate,
+    SLOpposingLabelsTableViewCellDelegate,
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate
+{
     var selectedPath:NSIndexPath?
+    
     var keyboardShowing:Bool = false
     
     let tableInfo:[[String]] = [
@@ -113,7 +122,13 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
     }
 
     func cameraButtonPressed() {
-        print("camera view pressed")
+        if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .PhotoLibrary;
+            imagePicker.allowsEditing = false
+            self.presentViewController(imagePicker, animated: true, completion: nil)
+        }
     }
     
     func setPictureForUser() {
@@ -182,26 +197,20 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func doneButtonPressed() {
-//        print("section: \(self.selectedPath!.section) row: \(self.selectedPath!.row)")
-//        if let path = self.selectedPath,
-//            let cell:SLOpposingLabelsTableViewCell =
-//                tableView(self.tableView, cellForRowAtIndexPath: path) as? SLOpposingLabelsTableViewCell
-//            //where cell.rightField.isFirstResponder()
-//        {
-//            print("text \(cell.leftLabel.text)")
-//            cell.rightField.resignFirstResponder()
-//        }
+        guard let selectedPath = self.selectedPath else {
+            return
+        }
         
-        for i in 0...self.tableInfo[0].count - 1 {
-            let path:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            if let cell:SLOpposingLabelsTableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: path) as? SLOpposingLabelsTableViewCell
-            {
-                print("cell: \(cell.leftLabel.text)")
-                if cell.isTextFieldFirstResponder() {
-                    cell.haveFieldResignFirstReponder()
-                } else {
-                    print("\(i) is not first responder")
-                }
+        self.tableView.resignFirstResponder()
+        self.resignFirstResponder() 
+        if let cell:SLOpposingLabelsTableViewCell =
+            self.tableView(self.tableView, cellForRowAtIndexPath: selectedPath) as? SLOpposingLabelsTableViewCell
+        {
+            if cell.rightField.canResignFirstResponder() {
+                print("\(cell.leftLabel.text) tag: \(cell.tag)")
+                dispatch_async(dispatch_get_main_queue(), { 
+                    cell.rightField.resignFirstResponder()
+                })
             }
         }
     }
@@ -250,14 +259,16 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
                 leftLabelTextColor: greyTextColor,
                 rightLabelTextColor: (indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2) ?
                     greyTextColor : blueTextColor,
-                shouldEnableTextField: false
+                shouldEnableTextField: true
             )
+            cell?.tag = indexPath.row
             
             return cell!
         }
         
         cellId = String(SLLabelAndSwitchTableViewCell)
-        var cell: SLLabelAndSwitchTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
+        var cell: SLLabelAndSwitchTableViewCell? =
+            tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
         if cell == nil {
             cell = SLLabelAndSwitchTableViewCell(accessoryType: .Arrow, reuseId: cellId)
         }
@@ -322,16 +333,7 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section == 0 {
-            if let cell:SLOpposingLabelsTableViewCell =
-                self.tableView(self.tableView, cellForRowAtIndexPath: indexPath) as? SLOpposingLabelsTableViewCell
-            {
-                dispatch_async(dispatch_get_main_queue(), {
-                    cell.setTextFieldEnabled(true)
-                    cell.haveFieldBecomeFirstResponder()
-                })
-            }
-        }
+        
     }
     
     // MARK: SLLabelAndSwitchCellDelegate methods
@@ -340,8 +342,22 @@ class SLProfileViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     // MARK: SLOpposingLabelsTableViewCellDelegate methods
-    func cellWantsFirstResponder(cell: SLOpposingLabelsTableViewCell) {
-        self.selectedPath = self.tableView.indexPathForCell(cell)
+    func cellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell) {
+        self.selectedPath = NSIndexPath(forRow: cell.tag, inSection: 0)
         print("section: \(self.selectedPath!.section) row: \(self.selectedPath!.row)")
+    }
+    
+    // MARK: UIImagePickerViewControllerDelegate methods
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+        self.profilePictureView.image = image
+        let user:SLUser = SLDatabaseManager.sharedManager().currentUser
+        let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
+        picManager.savePicture(image, forUserId: user.userId)
+        
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

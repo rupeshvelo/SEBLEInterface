@@ -18,5 +18,5 @@
 - (void)facebookPicForFBUserId:(NSString *)fbUserId
                     completion:(void(^)(UIImage *))completion;
 - (UIImage *)userImageForUserId:(NSString *)userId;
-
+- (void)savePicture:(UIImage *)image forUserId:(NSString *)userId;
 @end

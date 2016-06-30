@@ -6,6 +6,7 @@
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
+#import "SLUser+CoreDataProperties.h"
 #import "SLUser.h"
 #import "SLLock.h"
 
@@ -41,7 +42,7 @@
     return self;
 }
 
-- (NSDictionary *)asDictionary
+- (NSDictionary *)asRestDictionary
 {
     return @{@"first_name": self.firstName,
              @"user_id": self.userId,

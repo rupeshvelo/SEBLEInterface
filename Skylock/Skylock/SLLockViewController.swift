@@ -15,9 +15,15 @@ SLLocationManagerDelegate,
 SLAcceptNotificationsViewControllerDelegate
 {
     let xPadding:CGFloat = 13.0
+    
     var lock:SLLock?
+    
     let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-
+    
+    var isMapShowing:Bool = false
+    
+    var lockBarViewController:SLLockBarViewController?
+    
     lazy var acceptNotificationViewController:SLAcceptNotificationsViewController = {
         let anvc:SLAcceptNotificationsViewController = SLAcceptNotificationsViewController()
         anvc.delegate = self
@@ -81,34 +87,38 @@ SLAcceptNotificationsViewControllerDelegate
         return view
     }()
     
-    lazy var theftButton:UIButton = {
-        let image:UIImage = UIImage(named: "lock_screen_theft_detection_active")!
-        let frame = CGRect(
+    lazy var crashButton:SLLockScreenAlertButton = {
+        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
+            activeImageName: "lock_screen_crash_detection_button",
+            inactiveImageName: "lock_screen_crash_detection_button_inactive",
+            titleText: NSLocalizedString("Crash detection", comment: ""),
+            textColor: UIColor.whiteColor()
+        )
+        button.frame = CGRect(
             x: self.xPadding,
             y: CGRectGetMaxY(self.underLineView.frame) + 15.0,
-            width: image.size.width,
-            height: image.size.height
+            width: button.bounds.size.width,
+            height: button.bounds.size.height
         )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(theftButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.addTarget(self, action: #selector(crashButtonPressed), forControlEvents: .TouchDown)
         
         return button
     }()
     
-    lazy var crashButton:UIButton = {
-        let image:UIImage = UIImage(named: "lock_screen_crash_detection_inactive")!
-        let frame = CGRect(
-            x: CGRectGetMaxX(self.theftButton.frame) + 30.0,
-            y: CGRectGetMinY(self.theftButton.frame),
-            width: image.size.width,
-            height: image.size.height
+    lazy var theftButton:UIButton = {
+        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
+            activeImageName: "lock_screen_theft_detection_button",
+            inactiveImageName: "lock_screen_theft_detection_button_inactive",
+            titleText: NSLocalizedString("Theft detection", comment: ""),
+            textColor: UIColor.whiteColor()
         )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(crashButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.frame = CGRect(
+            x: CGRectGetMaxX(self.crashButton.frame) + 30.0,
+            y: CGRectGetMinY(self.crashButton.frame),
+            width: button.bounds.size.width,
+            height: button.bounds.size.height
+        )
+        button.addTarget(self, action: #selector(theftButtonPressed), forControlEvents: .TouchDown)
         
         return button
     }()
@@ -150,23 +160,23 @@ SLAcceptNotificationsViewControllerDelegate
     }()
     
     lazy var lockButton:UIButton = {
-        let image:UIImage = UIImage(named: "lock_unlocked_button")!
+        let lockedImage:UIImage = UIImage(named: "lock_unlocked_button")!
         let unlockImage:UIImage = UIImage(named: "lock_locked_button")!
         let disabledImage:UIImage = UIImage(named: "lock_disconnected_button")!
         let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - image.size.width),
-            CGRectGetMinY(self.lockStateLabel.frame) - image.size.height - 14.0,
-            image.size.width,
-            image.size.height
+            0.5*(self.view.bounds.size.width - lockedImage.size.width),
+            CGRectGetMinY(self.lockStateLabel.frame) - lockedImage.size.height - 14.0,
+            lockedImage.size.width,
+            lockedImage.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(lockButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.setImage(lockedImage, forState: .Normal)
         button.setImage(unlockImage, forState: .Selected)
-        button.setImage(disabledImage, forState: UIControlState.Disabled)
+        button.setImage(disabledImage, forState: .Disabled)
         button.enabled = false
-        
+
         return button
     }()
     
@@ -204,12 +214,13 @@ SLAcceptNotificationsViewControllerDelegate
         self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
         
         self.lock = self.lockManager.getCurrentLock()
+        self.locationManager.beginUpdatingLocation()
         
         self.view.addSubview(self.menuButton)
         self.view.addSubview(self.lockNameLabel)
         self.view.addSubview(self.underLineView)
-        self.view.addSubview(self.theftButton)
         self.view.addSubview(self.crashButton)
+        self.view.addSubview(self.theftButton)
         self.view.addSubview(self.tempStatsView)
         self.view.addSubview(self.lockStateLabel)
         self.view.addSubview(self.lockButton)
@@ -225,6 +236,7 @@ SLAcceptNotificationsViewControllerDelegate
     }
     
     func registerForNotifications() {
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(crashTurnedOn(_:)),
@@ -269,8 +281,15 @@ SLAcceptNotificationsViewControllerDelegate
         
         NSNotificationCenter.defaultCenter().addObserver(
             self, selector:
-            #selector(lockPaired(_:)),
-            name: kSLNotificationRemoveLockForUser,
+            #selector(showLockBar(_:)),
+            name: kSLNotificationShowLockBar,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self, selector:
+            #selector(hideLockBar(_:)),
+            name: kSLNotificationHideLockBar,
             object: nil
         )
     }
@@ -294,9 +313,7 @@ SLAcceptNotificationsViewControllerDelegate
         }
     }
     
-    
     func menuButtonPressed() {
-        print("menu button pressed")
         let width:CGFloat = self.view.bounds.size.width - 80.0
         self.slideViewController.view.frame = CGRect(
             x: -width,
@@ -326,11 +343,18 @@ SLAcceptNotificationsViewControllerDelegate
     }
     
     func theftButtonPressed() {
-        
+        if self.lock != nil && !self.crashButton.selected {
+            // remove the following line of code. The crash state of the lock 
+            // should be set in the callback not here. Just using for testing/demo purpose
+            self.lock?.isSecurityOn = NSNumber(bool: !(self.lock?.isSecurityOn.boolValue)!)
+            self.lockManager.toggleSecurityForLock(self.lock)
+        }
     }
     
     func crashButtonPressed() {
-        
+        if self.lock != nil && !self.theftButton.selected {
+            self.lockManager.toggleCrashForLock(self.lock)
+        }
     }
     
     func lockButtonPressed() {
@@ -365,10 +389,12 @@ SLAcceptNotificationsViewControllerDelegate
     
     func crashTurnedOn(notification: NSNotification) {
         self.crashButton.selected = true
+        self.lock?.isCrashOn = NSNumber(bool: true)
     }
     
     func crashTurnedOff(notification: NSNotification) {
         self.crashButton.selected = false
+        self.lock?.isCrashOn = NSNumber(bool: false)
     }
     
     func lockPaired(notification: NSNotification) {
@@ -378,23 +404,82 @@ SLAcceptNotificationsViewControllerDelegate
             self.lockManager.checkLockOpenOrClosed()
             self.lockButton.enabled = true
             self.lockStateLabel.text = self.lockStateText()
+            self.lockNameLabel.textColor = UIColor.whiteColor()
         }
     }
     
-    func lockDisconneted(notificaiton: NSNotification) {
+    func lockDisconneted(notification: NSNotification) {
         // TODO Set up view to handl when there is no lock
-        if let lock:SLLock = self.lockManager.getCurrentLock(),
-            let currentLock = self.lock
-            where lock.macAddress == currentLock.macAddress
-        {
+        guard let notificationObject = notification.object as? [String: String] else {
+            return
+        }
+        
+        guard let disconnectedAddress = notificationObject["lockName"] else {
+            return
+        }
+    
+        if self.lock == nil {
+            print("lock is nil")
+        } else {
+            print("lock address is: \(self.lock!.macAddress)")
+        }
+        
+        if let currentLock = self.lock where disconnectedAddress == currentLock.macAddress {
             self.setLockDisabled()
+        } else if self.lockManager.getCurrentLock() == nil {
+            self.setLockDisabled()
+        }
+    }
+    
+    func showLockBar(notification: NSNotification) {
+        if let lbvc = self.lockBarViewController {
+            self.view.bringSubviewToFront(lbvc.view)
+        } else if let presentedVC = self.presentedViewController {
+            if let lbvc = self.lockBarViewController {
+                presentedVC.view.bringSubviewToFront(lbvc.view)
+            } else {
+                let height:CGFloat = 48.0
+                self.lockBarViewController = SLLockBarViewController()
+                self.lockBarViewController!.view.frame = CGRect(
+                    x: 0.0,
+                    y: self.view.bounds.size.height,
+                    width: self.view.bounds.size.width,
+                    height: height
+                )
+                presentedVC.addChildViewController(self.lockBarViewController!)
+                presentedVC.view.addSubview(self.lockBarViewController!.view)
+                presentedVC.view.bringSubviewToFront(self.lockBarViewController!.view)
+                self.lockBarViewController!.didMoveToParentViewController(presentedVC)
+                
+                UIView.animateWithDuration(0.4, animations: {
+                    self.lockBarViewController!.view.frame = CGRect(
+                        x: 0.0,
+                        y: self.view.bounds.size.height - height,
+                        width: self.view.bounds.size.width,
+                        height: height
+                    )}, completion:{(success) in
+                        self.lockBarViewController!.setUpViews()
+                    }
+                )
+            }
+        }
+    }
+    
+    func hideLockBar(notification: NSNotification) {
+        if let lbvc = self.lockBarViewController {
+            lbvc.view.removeFromSuperview()
+            lbvc.removeFromParentViewController()
+            lbvc.view.removeFromSuperview()
+            self.lockBarViewController = nil
         }
     }
     
     func setLockDisabled() {
         self.lock = nil
         self.lockButton.enabled = false
+        self.lockButton.selected = false
         self.lockStateLabel.text = self.lockStateText()
+        self.lockNameLabel.text = ""
         // Insert move views to disabled mode here
     }
     
@@ -414,6 +499,7 @@ SLAcceptNotificationsViewControllerDelegate
     }
     
     func touchCatcherViewTapped() {
+        self.isMapShowing = false
         UIView.animateWithDuration(0.4, animations: {
             self.slideViewController.view.frame = CGRect(
                 x: -self.slideViewController.view.bounds.size.width,
@@ -436,6 +522,14 @@ SLAcceptNotificationsViewControllerDelegate
         self.presentViewController(nc, animated: true, completion: nil)
     }
     
+    func lockBarHeight() -> CGFloat {
+        if self.lockBarViewController == nil {
+            return 0.0
+        }
+        
+        return self.lockBarViewController!.view.bounds.size.height
+    }
+    
     // MARK: SLSLideViewControllerDelegate methods
     func handleAction(svc: SLSlideViewController, action: SLSlideViewControllerAction) {
         switch action {
@@ -443,8 +537,8 @@ SLAcceptNotificationsViewControllerDelegate
             let ldvc:SLLockDetailsViewController = SLLockDetailsViewController()
             self.presentViewControllerWithNavigationController(ldvc)
         case .FindMyEllipsePressed:
-            let mvc:SLMapViewController = SLMapViewController()
-            self.presentViewControllerWithNavigationController(mvc)
+            self.isMapShowing = true
+            self.presentViewControllerWithNavigationController(self.mapViewController)
         case .ProfileAndSettingPressed:
             let pvc = SLProfileViewController()
             self.presentViewControllerWithNavigationController(pvc)
@@ -456,24 +550,31 @@ SLAcceptNotificationsViewControllerDelegate
     }
     
     // MARK: SLLocationManagerDelegate methods
-    func locationManagerUpdatedUserPosition(userLocation: CLLocation) {
-        
+    func locationManagerUpdatedUserPosition(locationManager: SLLocationManager, userLocation: CLLocation) {
+        if self.isMapShowing {
+            self.mapViewController.updateUserPosition(userLocation.coordinate)
+        }
     }
     
-    func locationManagerDidAcceptedLocationAuthoriation(didAccept: Bool) {
-        
+    func locationManagerDidAcceptedLocationAuthorization(locationManager: SLLocationManager, didAccept: Bool) {
+       self.acceptNotificationViewController.setBackgroundImageForCurrentStep()
     }
     
     // MARK: SLAcceptNotificationViewControllerDelegate Methods
-    func userAcceptsLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController) {
-        
+    func userWantsToAcceptLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        self.locationManager.requestAuthorization()
     }
     
-    func userAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController) {
-        
+    func userWantsToAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController) {
+        let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
+        appDelegate.setUpNotficationSettings()
     }
     
     func acceptsNotificationsControllerWantsExit(acceptNotiticationViewController: SLAcceptNotificationsViewController, animated: Bool) {
+        let userDefaults = NSUserDefaults.standardUserDefaults()
+        userDefaults.setBool(true, forKey: "SLUserDefaultsOnBoardingComplete")
+        userDefaults.synchronize()
         
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
