@@ -149,6 +149,14 @@ import UIKit
         }
     }
     
+    func skipDatShit() {
+        if self.hideBackButton || self.navigationController?.viewControllers.first! == self {
+            let lvc = SLLockViewController()
+            self.presentViewController(lvc, animated: true, completion: nil)
+        }
+    }
+    
+    // MARK: UITableView delegate and datasource methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -226,6 +234,11 @@ import UIKit
         lineView.backgroundColor = tableView.separatorColor
         
         view.addSubview(lineView)
+        
+        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(skipDatShit))
+        tgr.numberOfTapsRequired = 5
+        view.addGestureRecognizer(tgr)
+        view.userInteractionEnabled = true
         
         return view
     }

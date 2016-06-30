@@ -6,12 +6,18 @@
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
+@objc protocol SLLockInfoViewControllerDelegate {
+    func directionsButtonPressed(livc: SLLockInfoViewController)
+}
+
 class SLLockInfoViewController: UIViewController {
     let xPadding:CGFloat = 20.0
     
     let lock:SLLock
     
     let titleColor:UIColor = UIColor(red: 76, green: 79, blue: 97)
+    
+    var delegate:SLLockInfoViewControllerDelegate?
     
     lazy var showLessButton:UIButton = {
         let image:UIImage = UIImage(named: "map_lock_info_x_button")!
@@ -208,6 +214,6 @@ class SLLockInfoViewController: UIViewController {
     }
     
     func getDirectionsButtonPressed() {
-        
+        self.delegate?.directionsButtonPressed(self)
     }
 }

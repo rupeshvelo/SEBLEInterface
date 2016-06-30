@@ -136,6 +136,7 @@ class SLConnectLockInfoViewController: UIViewController {
 //        self.navigationController?.pushViewController(vc, animated: true)
         
         let alvc = SLAvailableLocksViewController()
+        alvc.hideBackButton = true
         self.navigationController?.pushViewController(alvc, animated: true)
     }
     

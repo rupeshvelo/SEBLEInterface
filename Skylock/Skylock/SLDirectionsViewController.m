@@ -34,7 +34,7 @@
                                                                       self.view.bounds.size.width,
                                                                       kSLDirectionsVCHeaderHeight)];
         
-        UIImage *collapseDirectionsImage = [UIImage imageNamed:@"icon_directions_collapse"];
+        UIImage *collapseDirectionsImage = [UIImage imageNamed:@"button_close_window_large_Mapview"];
         UIButton *removeDirectionsButton = [[UIButton alloc] initWithFrame:CGRectMake(self.xPadding,
                                                                                       25.0f,
                                                                                       2.0f*collapseDirectionsImage.size.width,

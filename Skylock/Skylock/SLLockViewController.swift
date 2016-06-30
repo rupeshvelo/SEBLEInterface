@@ -424,7 +424,6 @@ SLAcceptNotificationsViewControllerDelegate
             print("lock address is: \(self.lock!.macAddress)")
         }
         
-        let lock = self.lockManager.getCurrentLock()
         if let currentLock = self.lock where disconnectedAddress == currentLock.macAddress {
             self.setLockDisabled()
         } else if self.lockManager.getCurrentLock() == nil {
@@ -480,7 +479,7 @@ SLAcceptNotificationsViewControllerDelegate
         self.lockButton.enabled = false
         self.lockButton.selected = false
         self.lockStateLabel.text = self.lockStateText()
-        self.lockNameLabel.textColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
+        self.lockNameLabel.text = ""
         // Insert move views to disabled mode here
     }
     
@@ -521,6 +520,14 @@ SLAcceptNotificationsViewControllerDelegate
         //nc.modalPresentationStyle = .Custom
         //nc.transitioningDelegate = transitionHandler
         self.presentViewController(nc, animated: true, completion: nil)
+    }
+    
+    func lockBarHeight() -> CGFloat {
+        if self.lockBarViewController == nil {
+            return 0.0
+        }
+        
+        return self.lockBarViewController!.view.bounds.size.height
     }
     
     // MARK: SLSLideViewControllerDelegate methods

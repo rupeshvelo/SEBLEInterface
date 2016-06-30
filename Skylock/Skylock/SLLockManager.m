@@ -103,7 +103,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 @property (nonatomic, strong) SLKeychainHandler *keychainHandler;
 @property (nonatomic, strong) NSMutableArray *locksFoundInActiveSearch;
 @property (nonatomic, strong) NSMutableDictionary *notConnectPeripherals;
-
+@property (nonatomic, strong) NSMutableSet *addressesToPermenantlyDelete;
 // testing
 @property (nonatomic, strong) NSArray *testLocks;
 
@@ -115,16 +115,17 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     self = [super init];
     if (self) {
-        _locks                      = [NSMutableDictionary new];
-        _lockValues                 = [NSMutableDictionary new];
-        _namesToConnect             = [NSMutableSet new];
-        _databaseManger             = [SLDatabaseManager sharedManager];
-        _keychainHandler            = [SLKeychainHandler new];
-        _bleIsPoweredOn             = NO;
-        _shouldEnterActiveSearch    = NO;
-        _currentConnectionPhase     = SLLockManagerConnectionPhaseNone;
-        _locksFoundInActiveSearch   = [NSMutableArray new];
-        _notConnectPeripherals      = [NSMutableDictionary new];
+        _locks                          = [NSMutableDictionary new];
+        _lockValues                     = [NSMutableDictionary new];
+        _namesToConnect                 = [NSMutableSet new];
+        _databaseManger                 = [SLDatabaseManager sharedManager];
+        _keychainHandler                = [SLKeychainHandler new];
+        _bleIsPoweredOn                 = NO;
+        _shouldEnterActiveSearch        = NO;
+        _currentConnectionPhase         = SLLockManagerConnectionPhaseNone;
+        _locksFoundInActiveSearch       = [NSMutableArray new];
+        _notConnectPeripherals          = [NSMutableDictionary new];
+        _addressesToPermenantlyDelete   = [NSMutableSet new];
     }
     
     return self;
@@ -300,31 +301,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
+    [self.addressesToPermenantlyDelete addObject:lock.macAddress];
     [self.bleManager removePeripheralForKey:lock.macAddress];
-
-    if ([self isLockConnected:lock]) {
-        [self.locks removeObjectForKey:lock.macAddress];
-    }
-    
-    if ([self.namesToConnect containsObject:lock.macAddress]) {
-        [self.namesToConnect removeObject:lock.macAddress];
-        [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
-    }
-    
-    [self.databaseManger deleteLock:lock withCompletion:nil];
-    
-    SLUser *user = [self.databaseManger currentUser];
-    [self.keychainHandler deleteItemForUsername:user.userId
-                          additionalServiceInfo:lock.macAddress
-                                    handlerCase:SLKeychainHandlerCaseChallengeKey];
-    
-    [self.keychainHandler deleteItemForUsername:user.userId
-                          additionalServiceInfo:lock.macAddress
-                                    handlerCase:SLKeychainHandlerCasePublicKey];
-    
-    [self.keychainHandler deleteItemForUsername:user.userId
-                          additionalServiceInfo:lock.macAddress
-                                    handlerCase:SLKeychainHandlerCaseSignedMessage];
 }
 
 - (void)removeUnconnectedLocks
@@ -1670,7 +1648,49 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
 disconnectedPeripheralNamed:(NSString *)peripheralName
 {
     NSString *macAddress = peripheralName.macAddress;
-    [self removeLockWithMacAddress:macAddress];
+    if (!self.locks[macAddress]) {
+        NSLog(@"Can't disconnect lock: %@. There is no matching address in locks", macAddress);
+        return;
+    }
+    
+    SLLock *lock = self.locks[macAddress];
+    if ([self isLockConnected:lock]) {
+        [self.locks removeObjectForKey:lock.macAddress];
+    }
+    
+    if ([self.selectedLock.macAddress isEqualToString:lock.macAddress]) {
+        self.selectedLock = nil;
+    }
+    
+    if ([self.addressesToPermenantlyDelete containsObject:lock.macAddress]) {
+        [self.addressesToPermenantlyDelete removeObject:lock.macAddress];
+    } else {
+        NSLog(@"lock: %@ was not set for deletion", lock.macAddress);
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
+                                                            object:@{@"lockName":macAddress}];
+        return;
+    }
+    
+    if ([self.namesToConnect containsObject:lock.macAddress]) {
+        [self.namesToConnect removeObject:lock.macAddress];
+        [self.bleManager setDeviceNamesToConnectTo:self.namesToConnect];
+    }
+    
+    [self.databaseManger deleteLock:lock withCompletion:nil];
+    
+    SLUser *user = [self.databaseManger currentUser];
+    [self.keychainHandler deleteItemForUsername:user.userId
+                          additionalServiceInfo:lock.macAddress
+                                    handlerCase:SLKeychainHandlerCaseChallengeKey];
+    
+    [self.keychainHandler deleteItemForUsername:user.userId
+                          additionalServiceInfo:lock.macAddress
+                                    handlerCase:SLKeychainHandlerCasePublicKey];
+    
+    [self.keychainHandler deleteItemForUsername:user.userId
+                          additionalServiceInfo:lock.macAddress
+                                    handlerCase:SLKeychainHandlerCaseSignedMessage];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
                                                         object:@{@"lockName":macAddress}];
 }
