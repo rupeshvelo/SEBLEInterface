@@ -121,7 +121,7 @@ class SLLockResetOrDeleteViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handleLockRemoved(_:)),
-            name: kSLNotificationRemoveLockForUser,
+            name: kSLNotificationLockManagerDisconnectedLock,
             object: nil
         )
     }
@@ -137,6 +137,6 @@ class SLLockResetOrDeleteViewController: UIViewController {
     }
     
     func handleLockRemoved(notifciation: NSNotification) {
-        
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

@@ -28,7 +28,7 @@ class SLLockBarViewController: UIViewController {
     private lazy var lockNameLabel:UILabel = {
         let width = 0.5*self.view.bounds.size.width - self.xPadding
         let height:CGFloat = 20.0
-        let font = UIFont.systemFontOfSize(18)
+        let font = UIFont.systemFontOfSize(16)
         let frame = CGRectMake(
             self.xPadding,
             0.5*(self.view.bounds.size.height - height),
@@ -91,6 +91,10 @@ class SLLockBarViewController: UIViewController {
         
         self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
         
+        let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(lockBarTapped))
+        tgr.numberOfTapsRequired = 1
+        self.view.addGestureRecognizer(tgr)
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
@@ -128,6 +132,8 @@ class SLLockBarViewController: UIViewController {
     }
     
     func setUpViews() {
+        self.lock = SLLockManager.sharedManager().getCurrentLock()
+        
         if !self.view.subviews.contains(self.lockNameLabel) {
             self.view.addSubview(self.lockNameLabel)
         }
@@ -210,6 +216,14 @@ class SLLockBarViewController: UIViewController {
         self.lockImageView.image = UIImage(named: self.valueForLockState(.Unlocked, element: .LockImageName))
         self.lockNameLabel.text = self.valueForLockState(.Unlocked, element: .LockNameText)
         self.tapActionLabel.text = self.valueForLockState(.Unlocked, element: .TapActionText)
+    }
+    
+    @objc private func lockBarTapped() {
+        guard let lock = self.lock else {
+            return
+        }
+        
+        SLLockManager.sharedManager().setLockStateForLock(lock)
     }
     
     @objc private func lockOpened(notification: NSNotification) {

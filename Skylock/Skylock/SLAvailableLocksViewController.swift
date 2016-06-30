@@ -48,6 +48,10 @@ import UIKit
             lockManager.startScan()
         }
         
+        if let currentLock = lockManager.getCurrentLock() {
+            lockManager.disconnectFromLockWithAddress(currentLock.macAddress)
+        }
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(foundLock(_:)),

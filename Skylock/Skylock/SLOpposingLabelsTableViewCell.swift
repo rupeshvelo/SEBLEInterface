@@ -76,12 +76,19 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     override func setSelected(selected: Bool, animated: Bool) {
         let view:UIView = UIView(frame: self.bounds)
-        view.backgroundColor = UIColor.clearColor()
-        
+        //view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.redColor()
         self.selectedBackgroundView = view
     }
     
-    func setProperties(leftLabelText:String, rightLabelText:String?, leftLabelTextColor:UIColor, rightLabelTextColor:UIColor, shouldEnableTextField: Bool) {
+    func setProperties(
+        leftLabelText:String,
+        rightLabelText:String?,
+        leftLabelTextColor:UIColor,
+        rightLabelTextColor:UIColor,
+        shouldEnableTextField: Bool
+        )
+    {
         self.leftLabel.text = leftLabelText
         self.leftLabel.textColor = leftLabelTextColor
         self.rightField.text = rightLabelText
@@ -115,6 +122,4 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     func textFieldDidEndEditing(textField: UITextField) {
        textField.resignFirstResponder()
     }
-    
-    
 }

@@ -34,7 +34,6 @@
     [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
     [SLDatabaseManager.sharedManager setCurrentUser];
     [SLLockManager.sharedManager startBlueToothManager];
-    [SLLockManager.sharedManager fetchLocks];
     
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
@@ -154,6 +153,9 @@
         SLOnboardingPageViewController *opvc = [SLOnboardingPageViewController new];
         initialVC = opvc;
     }
+    
+//    SLLockViewController *lvc = [SLLockViewController new];
+//    initialVC = lvc;
     
     return initialVC;
 }

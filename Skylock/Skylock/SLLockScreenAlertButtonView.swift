@@ -11,8 +11,7 @@ import UIKit
 class SLLockScreenAlertButton: UIButton {
     let ySpacer:CGFloat = 5
     
-    init(activeImageName: String, inactiveImageName:String, titleText: String) {
-        
+    init(activeImageName: String, inactiveImageName:String, titleText: String, textColor:UIColor) {
         let activeImage = UIImage(named: activeImageName)!
         let inactiveImage = UIImage(named: inactiveImageName)!
         
@@ -36,8 +35,8 @@ class SLLockScreenAlertButton: UIButton {
         super.init(frame: frame)
 
         self.setTitle(titleText, forState: .Normal)
-        self.setTitleColor(UIColor.whiteColor(), forState: .Selected)
-        self.setTitleColor(UIColor.whiteColor().colorWithAlphaComponent(0.6), forState: .Normal)
+        self.setTitleColor(textColor, forState: .Selected)
+        self.setTitleColor(textColor.colorWithAlphaComponent(0.4), forState: .Normal)
         self.titleLabel?.font = font
         self.contentVerticalAlignment = .Top
         self.contentHorizontalAlignment = .Center

@@ -88,11 +88,11 @@ SLAcceptNotificationsViewControllerDelegate
     }()
     
     lazy var crashButton:SLLockScreenAlertButton = {
-        
         let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
             activeImageName: "lock_screen_crash_detection_button",
             inactiveImageName: "lock_screen_crash_detection_button_inactive",
-            titleText: NSLocalizedString("Crash detection", comment: "")
+            titleText: NSLocalizedString("Crash detection", comment: ""),
+            textColor: UIColor.whiteColor()
         )
         button.frame = CGRect(
             x: self.xPadding,
@@ -109,7 +109,8 @@ SLAcceptNotificationsViewControllerDelegate
         let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
             activeImageName: "lock_screen_theft_detection_button",
             inactiveImageName: "lock_screen_theft_detection_button_inactive",
-            titleText: NSLocalizedString("Theft detection", comment: "")
+            titleText: NSLocalizedString("Theft detection", comment: ""),
+            textColor: UIColor.whiteColor()
         )
         button.frame = CGRect(
             x: CGRectGetMaxX(self.crashButton.frame) + 30.0,
@@ -417,7 +418,16 @@ SLAcceptNotificationsViewControllerDelegate
             return
         }
     
+        if self.lock == nil {
+            print("lock is nil")
+        } else {
+            print("lock address is: \(self.lock!.macAddress)")
+        }
+        
+        let lock = self.lockManager.getCurrentLock()
         if let currentLock = self.lock where disconnectedAddress == currentLock.macAddress {
+            self.setLockDisabled()
+        } else if self.lockManager.getCurrentLock() == nil {
             self.setLockDisabled()
         }
     }

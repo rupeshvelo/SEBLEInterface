@@ -28,7 +28,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 + (id)sharedManager;
 
 - (void)addLock:(SLLock *)lock;
-- (void)removeLock:(SLLock *)lock;
+- (void)permenantlyRemoveLock:(SLLock *)lock;
 - (NSArray *)orderedLocksByName;
 - (void)startScan;
 - (void)stopScan;
@@ -40,7 +40,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)toggleCrashForLock:(SLLock *)lock;
 - (void)toggleSecurityForLock:(SLLock *)lock;
 - (void)toggleSharingForLock:(SLLock *)lock;
-- (void)fetchLocks;
 - (void)startBlueToothManager;
 - (void)removeUnconnectedLocks;
 - (void)updateLock:(SLLock *)lock withValues:(NSDictionary *)values;
@@ -63,6 +62,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (void)changeCurrentLockGivenNameToName:(NSString *)newName;
 - (NSArray *)unconnectedLocksForCurrentUser;
 - (void)shallowConnectLock:(SLLock *)lock;
+- (void)disconnectFromLockWithAddress:(NSString *)macAddress;
 
 // temporary methods for testing
 - (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress;
