@@ -9,7 +9,6 @@
 import Foundation
 import Contacts
 
-
 enum SLUserDefaultsEmergencyContactId: String {
     case One = "SLUserDefaultsEmergencyContactIdOne"
     case Two = "SLUserDefaultsEmergencyContactIdTwo"
@@ -17,7 +16,6 @@ enum SLUserDefaultsEmergencyContactId: String {
 }
 
 @objc class SLContactHandler:NSObject {
-    
     private enum PredicateType {
         case Ids
         case Name
@@ -37,6 +35,28 @@ enum SLUserDefaultsEmergencyContactId: String {
     
     func getContactsWithName(name: String) throws -> [CNContact] {
         return try self.getContacts(PredicateType.Name, predicateArgument: name)
+    }
+    
+    func dbEmegencyContacts() -> [SLEmergencyContact]? {
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        let contacts:[SLEmergencyContact]? = dbManager.emergencyContacts() as? [SLEmergencyContact]
+        
+        return contacts
+    }
+    
+    func getActiveEmergencyContacts() -> [SLEmergencyContact]? {
+        guard let contacts = self.dbEmegencyContacts() else {
+            return nil
+        }
+        
+        var activeContacts:[SLEmergencyContact] = [SLEmergencyContact]()
+        for contact:SLEmergencyContact in contacts {
+            if let isCurrent = contact.isCurrentContact where isCurrent.boolValue {
+                activeContacts.append(contact)
+            }
+        }
+        
+        return activeContacts
     }
     
     func saveContactToUserDefaults(
@@ -127,8 +147,26 @@ enum SLUserDefaultsEmergencyContactId: String {
         return fullName
     }
     
+    func authorizedToAccessContacts() -> Bool {
+        let status:CNAuthorizationStatus = CNContactStore.authorizationStatusForEntityType(.Contacts)
+        return status == .Authorized
+    }
+    
+    func requestAuthorization(completion: ((allowedAccess:Bool) -> Void)?) {
+        CNContactStore().requestAccessForEntityType(.Contacts) { (didAllowAccess:Bool, error:NSError?) in
+            guard let completionBlock = completion else {
+                return
+            }
+            
+            if error == nil {
+                completionBlock(allowedAccess: didAllowAccess)
+            } else {
+                completionBlock(allowedAccess: false)
+            }
+        }
+    }
+    
     private func getContacts(predicateType: PredicateType, predicateArgument: AnyObject) throws -> [CNContact]  {
-        let store = CNContactStore()
         let predicate:NSPredicate
         
         switch predicateType {
@@ -138,7 +176,7 @@ enum SLUserDefaultsEmergencyContactId: String {
             predicate = CNContact.predicateForContactsMatchingName(predicateArgument as! String)
         }
 
-        let contacts = try store.unifiedContactsMatchingPredicate(
+        let contacts = try CNContactStore().unifiedContactsMatchingPredicate(
             predicate,
             keysToFetch: self.keysToFetch
         )

@@ -15,7 +15,7 @@ enum SLTouchPadLocation {
     case Left
 }
 
-protocol SLTouchPadViewDelegate {
+protocol SLTouchPadViewDelegate:class {
     func touchPadViewLocationSelected(
         touchPadViewController: SLTouchPadView,
         location:SLTouchPadLocation
@@ -28,7 +28,7 @@ class SLTouchPadView: UIView {
     let buttonGreenColor = UIColor.color(110, green: 223, blue: 158)
     let buttonGreyColor = UIColor.color(216, green: 216, blue: 216)
     let font = UIFont(name: "Helvetica Neue", size: 28)
-    var delegate: SLTouchPadViewDelegate?
+    weak var delegate: SLTouchPadViewDelegate?
     
     lazy var topButton: UIButton = {
         let image:UIImage = UIImage(named: "button_keypad_up_Onboarding")!

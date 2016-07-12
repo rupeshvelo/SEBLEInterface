@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SLAcceptNotificationsViewControllerDelegate {
+protocol SLAcceptNotificationsViewControllerDelegate:class {
     func userWantsToAcceptLocationUse(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func userWantsToAcceptsNotifications(acceptNotificationsVC: SLAcceptNotificationsViewController)
     func acceptsNotificationsControllerWantsExit(
@@ -31,7 +31,7 @@ class SLAcceptNotificationsViewController: UIViewController {
     }
 
     let xPadding:CGFloat = 35.0
-    var delegate:SLAcceptNotificationsViewControllerDelegate?
+    weak var delegate:SLAcceptNotificationsViewControllerDelegate?
     var currentNotificationStep:NotificationStep = .Location
     
     let elements:[NotificationStep:[UIElement:String]] = [

@@ -13,7 +13,7 @@ enum SLLabelAndSwitchTableViewCellAccessoryType {
     case Arrow
 }
 
-protocol SLLabelAndSwitchCellDelegate {
+protocol SLLabelAndSwitchCellDelegate:class {
     func switchFlippedForCell(cell: SLLabelAndSwitchTableViewCell, isNowOn:Bool)
 }
 
@@ -21,7 +21,7 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
     let xPadding:CGFloat = 5.0
     let labelHeight:CGFloat = 14.0
     var leftText:String?
-    var delegate:SLLabelAndSwitchCellDelegate?
+    weak var delegate:SLLabelAndSwitchCellDelegate?
     var leftAccessoryType:SLLabelAndSwitchTableViewCellAccessoryType
     
     lazy var toggleSwitch:UISwitch = {

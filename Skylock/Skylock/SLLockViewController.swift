@@ -66,7 +66,7 @@ SLAcceptNotificationsViewControllerDelegate
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor.whiteColor()
         label.text = self.lock?.displayName()
-        label.textAlignment = NSTextAlignment.Left
+        label.textAlignment = .Left
         label.font = font
         label.numberOfLines = 1
         
@@ -152,7 +152,7 @@ SLAcceptNotificationsViewControllerDelegate
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor.whiteColor()
         label.text = NSLocalizedString("NOT CONNECTED", comment: "")
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = .Center
         label.font = font
         label.numberOfLines = 1
         
@@ -197,6 +197,7 @@ SLAcceptNotificationsViewControllerDelegate
             target: self,
             action: #selector(touchCatcherViewTapped)
         )
+        
         let view:UIView = UIView(frame: self.view.bounds)
         view.addGestureRecognizer(tgr)
         view.backgroundColor = UIColor.clearColor()
@@ -516,10 +517,17 @@ SLAcceptNotificationsViewControllerDelegate
     
     func presentViewControllerWithNavigationController(viewController: UIViewController) {
         //let transitionHandler = SLViewControllerTransitionHandler()
-        let nc = UINavigationController(rootViewController: viewController)
+        let nc:UINavigationController
+        if let navController = self.navigationController {
+            navController.pushViewController(viewController, animated: true)
+        } else {
+            nc = UINavigationController(rootViewController: viewController)
+            self.presentViewController(nc, animated: true, completion: nil)
+        }
+
         //nc.modalPresentationStyle = .Custom
         //nc.transitioningDelegate = transitionHandler
-        self.presentViewController(nc, animated: true, completion: nil)
+        
     }
     
     func lockBarHeight() -> CGFloat {
@@ -542,6 +550,15 @@ SLAcceptNotificationsViewControllerDelegate
         case .ProfileAndSettingPressed:
             let pvc = SLProfileViewController()
             self.presentViewControllerWithNavigationController(pvc)
+        case .EmergencyContacts:
+            let contactHandler = SLContactHandler()
+            if contactHandler.authorizedToAccessContacts() {
+                let ecvc = SLEmergencyContactsViewController()
+                self.presentViewControllerWithNavigationController(ecvc)
+            } else {
+                let rcvc = SLRequestContactsAccessViewController()
+                self.presentViewControllerWithNavigationController(rcvc)
+            }
         case .HelpPressed:
             print("help pressed")
         case .RateTheAppPressed:

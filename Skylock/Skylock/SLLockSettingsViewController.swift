@@ -33,7 +33,6 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         table.delegate = self
         table.rowHeight = 55.0
         table.backgroundColor = UIColor.whiteColor()
-        table.allowsSelection = true
         table.registerClass(
             SLOpposingLabelsTableViewCell.self,
             forCellReuseIdentifier: String(SLOpposingLabelsTableViewCell)
@@ -56,6 +55,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
     }
     
     deinit {
+        print("doing the deinit thing")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -64,8 +64,9 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         
         self.view.backgroundColor = UIColor.whiteColor()
         
+        let backButton:UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Action, target: self, action: #selector(backButtonPressed))
+        self.navigationItem.leftBarButtonItem = backButton
         self.navigationItem.title = self.lock?.displayName()
-        
         self.view.addSubview(self.tableView)
         
         NSNotificationCenter.defaultCenter().addObserver(
@@ -110,6 +111,10 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         self.tableView.reloadData()
     }
     
+    func backButtonPressed() {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
@@ -152,7 +157,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                 rightLabelText: rightText,
                 leftLabelTextColor: leftTextColor,
                 rightLabelTextColor: rightTextColor,
-                shouldEnableTextField: false
+                shouldEnableTextField: true
             )
             
             return cell!

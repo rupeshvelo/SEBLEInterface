@@ -8,12 +8,12 @@
 
 import UIKit
 
-protocol SLTheftDetctionSliderViewDelegate {
+protocol SLTheftDetctionSliderViewDelegate:class {
     func sliderViewValueChanged(sliderView: SLTheftDetectionSliderView, value:Float)
 }
 class SLTheftDetectionSliderView: UIView {
     let xPadding:CGFloat = 32.0
-    var delegate:SLTheftDetctionSliderViewDelegate?
+    weak var delegate:SLTheftDetctionSliderViewDelegate?
     
     lazy var lowLabel:UILabel = {
         let labelWidth = self.bounds.size.width - 2*self.xPadding

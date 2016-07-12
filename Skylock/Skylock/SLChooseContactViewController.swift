@@ -9,79 +9,49 @@
 import UIKit
 import Contacts
 
-protocol SLContactViewControllerDelegate {
-    func contactViewControllerContactSelected(cvc: SLContactViewController, contact: CNContact)
-    func contactViewControllerWantsExit(cvc: SLContactViewController)
+protocol SLChooseContactViewControllerDelegate:class {
+    func contactViewControllerContactSelected(cvc: SLChooseContactViewController, contact: CNContact)
+    func contactViewControllerWantsExit(cvc: SLChooseContactViewController)
 }
 
-class SLContactViewController: UIViewController, UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate {
+class SLChooseContactViewController:
+UIViewController,
+UITableViewDataSource,
+UITableViewDelegate,
+SLContactsLetterViewControllerDelegate
+{
     var contacts:[CNContact] = [CNContact]()
     var currentText: String = ""
     let contactCellId:String = String(SLAddContactTableViewCell)
     var shouldShowNavController: Bool?
-    var delegate: SLContactViewControllerDelegate?
+    weak var delegate: SLChooseContactViewControllerDelegate?
     var tableYOffset: CGFloat = 0.0
     var searchBarPlaceholderText: String?
     var cornerRadius: CGFloat?
     
-    lazy var searchBar: UISearchBar = {
-        var y0: CGFloat = 0.0
-        if let showNav = self.shouldShowNavController where showNav {
-            if let navController = self.navigationController {
-                y0 = navController.navigationBar.bounds.size.height
-            }
-            
-            y0 += UIApplication.sharedApplication().statusBarFrame.size.height
-        }
-        
-        let frame = CGRectMake(0, y0, self.view.bounds.size.width, 45.0)
-        var bar:UISearchBar = UISearchBar(frame: frame)
-        bar.delegate = self
-        bar.placeholder = self.searchBarPlaceholderText == nil ? "" : self.searchBarPlaceholderText!
-        bar.setShowsCancelButton(true, animated: true)
-        bar.showsBookmarkButton = false;
-        bar.searchBarStyle = UISearchBarStyle.Minimal
-        bar.tintColor = UIColor.blackColor()
-
-        return bar
-    }()
-    
     lazy var tableView: UITableView = {
-        let searchBarMaxY = CGRectGetMaxY(self.searchBar.frame)
-        let table:UITableView = UITableView.init(frame: CGRectMake(
+        let frame = CGRectMake(
             0,
-            searchBarMaxY,
+            CGRectGetMaxY((self.navigationController?.navigationBar.frame)!),
             self.view.bounds.size.width,
-            self.view.bounds.size.height - searchBarMaxY
-            ), style: UITableViewStyle.Plain
+            self.view.bounds.size.height
         )
+        
+        let table:UITableView = UITableView.init(frame: frame, style: .Plain)
         table.dataSource = self;
         table.delegate = self;
-        table.rowHeight = 50
-        table.separatorStyle = UITableViewCellSeparatorStyle.None
+        table.rowHeight = 44.0
+        table.separatorStyle = .None
         table.registerClass(SLAddContactTableViewCell.self, forCellReuseIdentifier: self.contactCellId)
     
         return table
     }()
     
-    lazy var doneButton: UIButton = {
-        let height: CGFloat = 35.0
-        let width: CGFloat = 100.0
-        let frame = CGRectMake(0.5*(self.view.bounds.size.width - width), 0.5*(self.view.bounds.size.height - height), width, height)
+    lazy var letterViewController:SLContactsLetterViewController = {
+        let view:SLContactsLetterViewController = SLContactsLetterViewController()
+        view.delegate = self
         
-        let button:UIButton = UIButton(frame: frame)
-        button.addTarget(
-            self,
-            action: #selector(doneButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
-        )
-        button.setTitle(NSLocalizedString("Done", comment: ""), forState: UIControlState.Normal)
-        button.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        button.layer.cornerRadius = 2.0
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.blackColor().CGColor
-        
-        return button
+        return view
     }()
     
     override func viewDidLoad() {
@@ -89,10 +59,7 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
         
         self.view.backgroundColor = UIColor.whiteColor()
         
-        if let radius = self.cornerRadius {
-            self.view.layer.cornerRadius = radius
-            self.view.clipsToBounds = true
-        }
+        self.navigationItem.title = NSLocalizedString("FIND EMERGENCY CONTACTS", comment: "")
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -112,9 +79,29 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.view.addSubview(self.searchBar)
-        self.view.addSubview(self.tableView)
-        self.view.addSubview(self.doneButton)
+        if !self.view.subviews.contains(self.tableView) {
+            self.view.addSubview(self.tableView)
+        }
+        
+        self.tableView.reloadData()
+
+    
+        if !self.view.subviews.contains(self.letterViewController.view) {
+            let width:CGFloat = 20.0
+            let height:CGFloat = self.view.bounds.size.height -
+                CGRectGetMaxY(self.navigationController!.navigationBar.frame) - 40.0
+            self.letterViewController.view.frame = CGRect(
+                x: self.view.bounds.size.width - width,
+                y: CGRectGetMaxY(self.navigationController!.navigationBar.frame),
+                width: width,
+                height: height
+            )
+            
+            self.addChildViewController(self.letterViewController)
+            self.view.addSubview(self.letterViewController.view)
+            self.view.bringSubviewToFront(self.letterViewController.view)
+            self.letterViewController.didMoveToParentViewController(self)
+        }
     }
     
     func getContactsFromCurrentText() {
@@ -132,8 +119,6 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
     }
     
     func keyboardWillShow(notification: NSNotification) {
-        self.doneButton.hidden = true
-        self.searchBar.showsCancelButton = true
         if let info = notification.userInfo, let frameValue = info[UIKeyboardFrameEndUserInfoKey] as? NSValue {
             let keyboardFrame: CGRect = frameValue.CGRectValue()
             let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
@@ -143,7 +128,8 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
             self.tableYOffset = keyboardFrame.height - (keyboardFrame.origin.y - convertedFrame.origin.y)
             
             if let navController = self.navigationController {
-                self.tableYOffset += navController.navigationBar.bounds.size.height + UIApplication.sharedApplication().statusBarFrame.size.height
+                self.tableYOffset += navController.navigationBar.bounds.size.height +
+                    UIApplication.sharedApplication().statusBarFrame.size.height
             }
             
             self.tableView.contentInset = UIEdgeInsetsMake(
@@ -156,7 +142,6 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
     }
     
     func keyboardWillDisappear(notification: NSNotification) {
-        self.searchBar.showsCancelButton = false
         if let info = notification.userInfo,
             let durration:Double = info[UIKeyboardAnimationDurationUserInfoKey] as? Double,
             let curve = info[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber {
@@ -175,12 +160,6 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
                 },
                 completion: nil
             )
-        }
-    }
-    
-    func doneButtonPressed() {
-        if let delegate = self.delegate {
-            delegate.contactViewControllerWantsExit(self)
         }
     }
     
@@ -212,26 +191,8 @@ class SLContactViewController: UIViewController, UISearchBarDelegate, UITableVie
         }
     }
     
-    // Mark UISeachBarDelegate methods
-    func searchBar(searchBar: UISearchBar, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
-        if let searchText = searchBar.text {
-            self.currentText = (searchText as NSString).stringByReplacingCharactersInRange(range, withString: text)
-            self.getContactsFromCurrentText()
-        } else {
-            self.contacts = []
-        }
-        
-        self.tableView.reloadData()
-        
-        return true
-    }
-    
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        searchBar.text = ""
-        self.doneButton.hidden = false
-        self.contacts = []
-        self.tableView.reloadData()
-        
+    // MARK SLContactsLetterViewControllerDelegate methods
+    func contactsLetterViewController(letterViewController: SLContactsLetterViewController, letter: String) {
+        print("letter pressed: \(letter)")
     }
 }

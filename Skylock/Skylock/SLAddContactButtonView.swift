@@ -9,7 +9,7 @@
 import UIKit
 import Foundation
 
-protocol SLAddContactButtonViewDelegate {
+protocol SLAddContactButtonViewDelegate:class {
     func addContactButtonViewTapped(addContactButtonView: SLAddContactButtonView)
 }
 
@@ -20,7 +20,7 @@ class SLAddContactButtonView: UIView {
     private let yPadding: CGFloat = 10.0
     private let xPadding: CGFloat = 10.0
     private let font = UIFont(name:"Helvetica", size:9)
-    var delegate: SLAddContactButtonViewDelegate?
+    weak var delegate: SLAddContactButtonViewDelegate?
     private var tgr: UITapGestureRecognizer?
     
     private lazy var picView:UIImageView = {

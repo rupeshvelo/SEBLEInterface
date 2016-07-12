@@ -10,14 +10,14 @@ import UIKit
 import Contacts
 
 
-@objc protocol SLEmergencyContactPopupViewControllerDelegate {
+@objc protocol SLEmergencyContactPopupViewControllerDelegate:class {
     func contactPopUpViewControllerWantsExit(cpvc: SLEmergencyContactPopupViewController)
 }
 
 
 class SLEmergencyContactPopupViewController: UIViewController,
 SLAddContactButtonViewDelegate,
-SLContactViewControllerDelegate
+SLChooseContactViewControllerDelegate
 {
     enum SLAddContactButtonViewTag:Int {
         case One = 1000
@@ -34,7 +34,7 @@ SLContactViewControllerDelegate
     var contacts: [CNContact?] = []
     var selectedEmergencyContactViewID: SLUserDefaultsEmergencyContactId?
     var contactButtonViews = [SLUserDefaultsEmergencyContactId:SLAddContactButtonView]()
-    var delegate: SLEmergencyContactPopupViewControllerDelegate?
+    weak var delegate: SLEmergencyContactPopupViewControllerDelegate?
     
     lazy var emergencyContactsHeaderLabel: UILabel = {
         let utility: SLUtilities = SLUtilities()
@@ -451,7 +451,7 @@ SLContactViewControllerDelegate
         return tag
     }
     
-    func removeContactViewController(cvc: SLContactViewController) {
+    func removeContactViewController(cvc: SLChooseContactViewController) {
         
         UIView.animateWithDuration(0.3, animations: {
             //cvc.view.frame = CGRect(x: cvc.view.center.x, y: cvc.view.center.y, width: 0, height: 0)
@@ -503,7 +503,7 @@ SLContactViewControllerDelegate
             return
         }
         
-        let cvc = SLContactViewController()
+        let cvc = SLChooseContactViewController()
         cvc.delegate = self
         cvc.shouldShowNavController = false
         cvc.searchBarPlaceholderText = NSLocalizedString("Add Contact", comment: "")
@@ -522,7 +522,7 @@ SLContactViewControllerDelegate
     }
     
     // MARK SLContactViewControllerDelegate Methods
-    func contactViewControllerContactSelected(cvc: SLContactViewController, contact: CNContact) {
+    func contactViewControllerContactSelected(cvc: SLChooseContactViewController, contact: CNContact) {
         self.saveEmergencyContact(contact)
         self.removeContactViewController(cvc)
         
@@ -533,7 +533,7 @@ SLContactViewControllerDelegate
         }
     }
     
-    func contactViewControllerWantsExit(cvc: SLContactViewController) {
+    func contactViewControllerWantsExit(cvc: SLChooseContactViewController) {
         self.removeContactViewController(cvc)
     }
 }

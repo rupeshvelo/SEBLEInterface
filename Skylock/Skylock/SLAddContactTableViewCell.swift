@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SLAddContactTableViewCellDelegate {
+protocol SLAddContactTableViewCellDelegate:class {
     func addAccountTableViewCellButtonPressed(
         cell: SLAddContactTableViewCell,
         cellButtonType: SLAddContactTableViewCellButton
@@ -23,7 +23,7 @@ enum SLAddContactTableViewCellButton {
 class SLAddContactTableViewCell:UITableViewCell {
     let buttonDivider:CGFloat = 15.0
     var imageData:NSData?
-    var delegate: SLAddContactTableViewCellDelegate?
+    weak var delegate: SLAddContactTableViewCellDelegate?
     var shouldShowButtons: Bool?
     
     lazy var emailButton: UIButton = {

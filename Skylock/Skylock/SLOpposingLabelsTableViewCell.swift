@@ -8,8 +8,8 @@
 
 import UIKit
 
-protocol SLOpposingLabelsTableViewCellDelegate {
-    func cellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell)
+protocol SLOpposingLabelsTableViewCellDelegate:class {
+    func opposingLabelsCellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell)
 }
 
 class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
@@ -19,7 +19,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     let labelFont:UIFont = UIFont.systemFontOfSize(12.0)
     
-    var delegate:SLOpposingLabelsTableViewCellDelegate?
+    weak var delegate:SLOpposingLabelsTableViewCellDelegate?
     
     lazy var leftLabel:UILabel = {
         let frame = CGRect(
@@ -74,12 +74,12 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         self.contentView.addSubview(self.rightField)
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
-        let view:UIView = UIView(frame: self.bounds)
-        //view.backgroundColor = UIColor.clearColor()
-        view.backgroundColor = UIColor.redColor()
-        self.selectedBackgroundView = view
-    }
+//    override func setSelected(selected: Bool, animated: Bool) {
+//        let view:UIView = UIView(frame: self.bounds)
+//        //view.backgroundColor = UIColor.clearColor()
+//        view.backgroundColor = UIColor.redColor()
+//        self.selectedBackgroundView = view
+//    }
     
     func setProperties(
         leftLabelText:String,
@@ -116,7 +116,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     // MARK: UITextFieldDelegate methods
     func textFieldDidBeginEditing(textField: UITextField) {
-        self.delegate?.cellTextFieldBecameFirstResponder(self)
+        self.delegate?.opposingLabelsCellTextFieldBecameFirstResponder(self)
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
