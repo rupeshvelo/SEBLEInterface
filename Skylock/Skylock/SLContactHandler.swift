@@ -21,7 +21,7 @@ enum SLUserDefaultsEmergencyContactId: String {
         case Name
     }
     
-    private let keysToFetch: [String] = [
+    private let keysToFetch: [CNKeyDescriptor] = [
         CNContactGivenNameKey,
         CNContactFamilyNameKey,
         CNContactImageDataKey,
@@ -37,11 +37,48 @@ enum SLUserDefaultsEmergencyContactId: String {
         return try self.getContacts(PredicateType.Name, predicateArgument: name)
     }
     
+    func allContacts(completion: ([CNContact]) -> Void) throws {
+        let fetchRequest = CNContactFetchRequest(keysToFetch: self.keysToFetch)
+        var contacts:[CNContact] = [CNContact]()
+        try CNContactStore().enumerateContactsWithFetchRequest(fetchRequest) { (contact, nil) in
+            contacts.append(contact)
+        }
+        
+        completion(contacts)
+    }
+    
     func dbEmegencyContacts() -> [SLEmergencyContact]? {
         let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
         let contacts:[SLEmergencyContact]? = dbManager.emergencyContacts() as? [SLEmergencyContact]
         
         return contacts
+    }
+    
+    func emergencyContactFromCNContact(contact: CNContact) -> SLEmergencyContact {
+        print("contact: \(contact)")
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        if let dbContact = dbManager.getContactWithContactId(contact.identifier) {
+            return dbContact
+        }
+        
+        let newContact = dbManager.newEmergencyContact()
+        newContact.firstName = contact.givenName
+        newContact.lastName = contact.familyName
+        newContact.contactId = contact.identifier
+        newContact.isCurrentContact = false
+        
+        if !contact.phoneNumbers.isEmpty {
+            if let phoneNumber = contact.phoneNumbers[0].value as? CNPhoneNumber {
+                newContact.phoneNumber = phoneNumber.valueForKey("digits") as? String
+                newContact.countyCode = phoneNumber.valueForKey("countryCode") as? String
+            }
+        }
+        
+        if !contact.emailAddresses.isEmpty {
+            newContact.email = (contact.emailAddresses[0]).valueForKey("value") as? String
+        }
+        
+        return newContact
     }
     
     func getActiveEmergencyContacts() -> [SLEmergencyContact]? {

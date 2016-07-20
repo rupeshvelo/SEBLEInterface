@@ -6,7 +6,13 @@
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
-class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SLEmergencyContactsViewController:
+UIViewController,
+UITableViewDelegate,
+UITableViewDataSource,
+SLChooseContactViewControllerDelegate,
+SLEmergenyContactTableViewCellDelegate
+{
     var contacts:[SLEmergencyContact] = [SLEmergencyContact]()
     
     let maxNumberOfContacts:Int = 3
@@ -49,11 +55,15 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
     }
     
     func getEmergencyContats() {
-        let allContacts:[SLEmergencyContact] =
-            SLDatabaseManager.sharedManager().emergencyContacts() as! [SLEmergencyContact]
         self.contacts.removeAll()
+        guard let emergencyContacts = SLDatabaseManager.sharedManager().emergencyContacts()
+            as? [SLEmergencyContact] else
+        {
+            return
+        }
+        
         var counter:Int = 0
-        for contact in allContacts {
+        for contact in emergencyContacts {
             if let isCurrent = contact.isCurrentContact
                 where isCurrent.boolValue && counter < self.maxNumberOfContacts
             {
@@ -68,6 +78,45 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
             self.dismissViewControllerAnimated(true, completion: nil)
         } else {
             self.onExit!()
+        }
+    }
+    
+    func saveContactToServer(contact: SLEmergencyContact, shouldDelete: Bool) {
+        // TODO: This methods should also handle deleting a contact.
+        // This operation is not currently available on the server.
+        guard let phoneNumber = contact.phoneNumber else {
+            return
+        }
+        
+        let currentUser:SLUser = SLDatabaseManager.sharedManager().currentUser
+        let keychainHandler = SLKeychainHandler()
+        guard let token = keychainHandler.getItemForUsername(
+            currentUser.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            return
+        }
+        
+        let restManager:SLRestManager = SLRestManager.sharedManager()
+        let authValue = restManager.basicAuthorizationHeaderValueUsername(token, password: "")
+        let additionalHeaders = ["Authorization": authValue]
+        let subRoutes = [currentUser.userId!, "mobiles"]
+        let payload = ["mobile": phoneNumber]
+        restManager.postObject(
+            payload,
+            serverKey: .Main,
+            pathKey: .Users,
+            subRoutes: subRoutes,
+            additionalHeaders: additionalHeaders
+        ) { (response:[NSObject : AnyObject]?) in
+            if response == nil {
+                print("no response")
+                return
+            }
+            
+            print(response)
         }
     }
     
@@ -105,7 +154,9 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
                 .Pic: image
             ]
             
+            cell?.delegate = self
             cell?.setProperties(properties)
+            cell?.selectionStyle = .None
             
             return cell!
         }
@@ -120,16 +171,17 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
         cell?.textLabel!.font = UIFont.systemFontOfSize(14.0)
         cell?.textLabel!.textColor = UIColor(red: 155, green: 155, blue: 155)
         cell?.imageView!.image = UIImage(named: "contacts_phone_icon")
+        cell?.selectionStyle = .None
         
         return cell!
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 20.0 : 144.0
+        return section == 0 ? 10.0 : 144.0
     }
     
     func tableView(tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 20.0 : 144.0
+        return section == 0 ? 10.0 : 144.0
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -146,7 +198,6 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
         
         let view = UIView(frame: viewFrame)
         view.backgroundColor = UIColor(white: 242.0/255.0, alpha: 1.0)
-        
         if section == 1 {
             let xPadding:CGFloat = 26.0
             let labelWidth = self.view.bounds.size.width - 2*xPadding
@@ -187,7 +238,71 @@ class SLEmergencyContactsViewController: UIViewController, UITableViewDelegate, 
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 1 {
-            let ecvc = SLEmergencyContactsViewController()
+            let ccvc = SLChooseContactViewController()
+            ccvc.delegate = self
+            self.navigationController?.pushViewController(ccvc, animated: true)
+        }
+    }
+    
+    // MARK: SLChooseContactViewControllerDelegate Methods
+    func contactViewControllerContactSelected(
+        cvc: SLChooseContactViewController,
+        contact: SLEmergencyContact,
+        isSelected: Bool)
+    {
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        contact.isCurrentContact = isSelected
+        
+        if isSelected {
+            if self.contacts.count < 3 {
+                dbManager.saveEmergencyContact(contact)
+                self.contacts.append(contact)
+                self.tableView.reloadData()
+                self.navigationController?.popViewControllerAnimated(true)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), {
+                    self.saveContactToServer(contact, shouldDelete: false)
+                })
+            }
+        } else {
+            var target:Int = -1
+            for (index, emergenyContact) in self.contacts.enumerate() {
+                if emergenyContact.contactId == contact.contactId {
+                    target = index
+                    break
+                }
+            }
+            
+            if target != -1 {
+                dbManager.deleteContactWithId(contact.contactId, completion: nil)
+                self.contacts.removeAtIndex(target)
+                self.tableView.reloadData()
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        }
+    }
+    
+    // MARK: SLChooseContactViewControllerDelegate methods
+    func contactViewControllerWantsExit(cvc: SLChooseContactViewController) {
+        
+    }
+    
+    // MARK: SLEmergencyContactTableViewCellDelegate methods
+    func removeButtonPressedOnCell(cell: SLEmergenyContactTableViewCell) {
+        for i in 0 ..< self.contacts.count {
+            let indexPath = NSIndexPath(forRow: i, inSection: 0)
+            let emergencyCell = self.tableView.cellForRowAtIndexPath(indexPath)
+            if cell == emergencyCell {
+                let contact = self.contacts[i]
+                let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+                dbManager.deleteContactWithId(contact.contactId, completion: nil)
+                self.contacts.removeAtIndex(i)
+                
+                self.tableView.beginUpdates()
+                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                self.tableView.endUpdates()
+                
+                break
+            }
         }
     }
 }

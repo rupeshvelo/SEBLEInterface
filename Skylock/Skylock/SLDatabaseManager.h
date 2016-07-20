@@ -41,5 +41,8 @@
 - (void)saveLock:(SLLock *)lock;
 - (NSArray *)emergencyContacts;
 - (void)saveEmergencyContact:(SLEmergencyContact *)contact;
+- (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId;
+- (SLEmergencyContact *)newEmergencyContact;
+- (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion;
 
 @end

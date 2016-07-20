@@ -396,6 +396,22 @@
     return contacts;
 }
 
+- (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId == %@", contactId];
+    NSArray *contacts = [self getManagedObjectsWithPredicate:predicate
+                                               forEnityNamed:kSLDatabaseManagerEnityEmergencyContact];
+    
+    return (contacts && contacts.count > 0) ? contacts[0] : nil;
+}
+
+- (SLEmergencyContact *)newEmergencyContact
+{
+    return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityEmergencyContact
+                                         inManagedObjectContext:self.context];
+}
+
 - (void)saveEmergencyContact:(SLEmergencyContact *)contact
 {
     NSError *error = nil;
@@ -406,6 +422,26 @@
         NSLog(@"Failed to save lock %@ to db with error: %@",
               contact.firstName,
               error.localizedDescription);
+    }
+}
+
+- (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion
+{
+    SLEmergencyContact *contact = [self getContactWithContactId:contactId];
+    if (!contact) {
+        return;
+    }
+    
+    [self.context deleteObject:contact];
+    
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (error) {
+        NSLog(@"Failed to delete contact from database with error: %@", error.localizedDescription);
+    }
+    
+    if (completion) {
+        completion(success);
     }
 }
 

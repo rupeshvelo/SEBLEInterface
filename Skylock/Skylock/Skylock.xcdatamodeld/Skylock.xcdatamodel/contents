@@ -10,6 +10,7 @@
     </entity>
     <entity name="SLEmergencyContact" representedClassName="SLEmergencyContact" syncable="YES">
         <attribute name="contactId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="countyCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isCurrentContact" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -45,9 +46,9 @@
     </entity>
     <elements>
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
+        <element name="SLEmergencyContact" positionX="-810" positionY="-171" width="128" height="150"/>
         <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="195"/>
         <element name="SLLog" positionX="-819" positionY="-189" width="128" height="75"/>
         <element name="SLUser" positionX="-63" positionY="9" width="128" height="180"/>
-        <element name="SLEmergencyContact" positionX="-810" positionY="-171" width="128" height="135"/>
     </elements>
 </model>

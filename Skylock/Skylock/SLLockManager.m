@@ -1509,6 +1509,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
     }
     
+    
+    
     if (self.shouldEnterActiveSearch) {
         [self foundLockWhileInActiveSearchForName:name];
     } else if (self.selectedLock && [macAddress isEqualToString:self.selectedLock.macAddress]) {
