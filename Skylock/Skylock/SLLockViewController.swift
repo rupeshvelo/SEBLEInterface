@@ -264,7 +264,7 @@ SLAcceptNotificationsViewControllerDelegate
             self.thinkerViewController.didMoveToParentViewController(self)
         }
         
-        self.thinkerViewController.setState(.ClockwiseMoving)
+        self.thinkerViewController.setState(.CounterClockwiseMoving)
     }
     
     func registerForNotifications() {
