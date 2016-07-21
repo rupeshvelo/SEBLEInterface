@@ -180,6 +180,19 @@ SLAcceptNotificationsViewControllerDelegate
         return button
     }()
     
+    lazy var thinkerViewController:SLThinkerViewController = {
+        let tvc:SLThinkerViewController = SLThinkerViewController(
+            topText: "Top Text",
+            bottomText: "Bottom Text",
+            firstBackgroundColor: UIColor.whiteColor(),
+            secondBackgroundColor: UIColor(red: 102, green: 177, blue: 227),
+            foregroundColor: UIColor(red: 60, green: 83, blue: 119),
+            inActiveBackgroundColor: UIColor(red: 130, green: 156, blue: 178)
+        )
+        
+        return tvc
+    }()
+    
     lazy var mapViewController:SLMapViewController = {
         let mvc:SLMapViewController = SLMapViewController()
         return mvc
@@ -212,7 +225,7 @@ SLAcceptNotificationsViewControllerDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
+        self.view.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
         
         self.lock = self.lockManager.getCurrentLock()
         self.locationManager.beginUpdatingLocation()
@@ -234,10 +247,27 @@ SLAcceptNotificationsViewControllerDelegate
         
         self.lockManager.checkLockOpenOrClosed()
         self.showAcceptNotificaitonViewController()
+        
+        if !self.view.subviews.contains(self.thinkerViewController.view) {
+            let diameter:CGFloat = 223.0
+            self.thinkerViewController.view.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: diameter,
+                height: diameter
+            )
+            self.thinkerViewController.view.center = self.lockButton.center
+            
+            self.addChildViewController(self.thinkerViewController)
+            self.view.addSubview(self.thinkerViewController.view)
+            self.view.bringSubviewToFront(self.thinkerViewController.view)
+            self.thinkerViewController.didMoveToParentViewController(self)
+        }
+        
+        self.thinkerViewController.setState(.ClockwiseMoving)
     }
     
     func registerForNotifications() {
-        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(crashTurnedOn(_:)),

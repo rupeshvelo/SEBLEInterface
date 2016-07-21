@@ -193,6 +193,7 @@
 		DC94E13A1D0D3726002D32C3 /* button_delete_account_Myprofile@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC94E1361D0D3726002D32C3 /* button_delete_account_Myprofile@3x.png */; };
 		DC94E13B1D0D3726002D32C3 /* icon_camera_Myprofile@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC94E1371D0D3726002D32C3 /* icon_camera_Myprofile@2x.png */; };
 		DC94E13C1D0D3726002D32C3 /* icon_camera_Myprofile@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC94E1381D0D3726002D32C3 /* icon_camera_Myprofile@3x.png */; };
+		DC9664EC1D3FCD62001DCAFD /* SLThinkerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9664EB1D3FCD62001DCAFD /* SLThinkerViewController.swift */; };
 		DC9682BC1D2B067F008C106E /* SLModifySensitiveDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682BB1D2B067F008C106E /* SLModifySensitiveDataViewController.swift */; };
 		DC9682BF1D2B3012008C106E /* SLInsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682BE1D2B3012008C106E /* SLInsetTextField.swift */; };
 		DC9682C11D2B7B15008C106E /* SLContactsLetterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */; };
@@ -582,6 +583,7 @@
 		DC94E1361D0D3726002D32C3 /* button_delete_account_Myprofile@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "button_delete_account_Myprofile@3x.png"; sourceTree = "<group>"; };
 		DC94E1371D0D3726002D32C3 /* icon_camera_Myprofile@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_camera_Myprofile@2x.png"; sourceTree = "<group>"; };
 		DC94E1381D0D3726002D32C3 /* icon_camera_Myprofile@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_camera_Myprofile@3x.png"; sourceTree = "<group>"; };
+		DC9664EB1D3FCD62001DCAFD /* SLThinkerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLThinkerViewController.swift; sourceTree = "<group>"; };
 		DC9682BB1D2B067F008C106E /* SLModifySensitiveDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLModifySensitiveDataViewController.swift; sourceTree = "<group>"; };
 		DC9682BE1D2B3012008C106E /* SLInsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLInsetTextField.swift; sourceTree = "<group>"; };
 		DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContactsLetterViewController.swift; sourceTree = "<group>"; };
@@ -926,6 +928,7 @@
 				DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */,
 				DCAAEB861D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift */,
 				DCAAEBA81D32D9A100946B61 /* SLEmergencyContactsViewController.swift */,
+				DC9664EB1D3FCD62001DCAFD /* SLThinkerViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1873,6 +1876,7 @@
 				DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */,
 				DCD679761CF779920081D225 /* SLOnboardingPageViewController.swift in Sources */,
 				DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */,
+				DC9664EC1D3FCD62001DCAFD /* SLThinkerViewController.swift in Sources */,
 				DC9682BC1D2B067F008C106E /* SLModifySensitiveDataViewController.swift in Sources */,
 				DC3141211B93849E00492C4D /* SLTouchPadViewController.swift in Sources */,
 				DC0FBFD41D14C683008ED381 /* SLString.swift in Sources */,
