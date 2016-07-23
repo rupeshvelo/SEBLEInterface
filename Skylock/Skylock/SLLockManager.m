@@ -1663,6 +1663,8 @@ disconnectedPeripheralNamed:(NSString *)peripheralName
         return;
     }
     
+    self.shouldEnterActiveSearch = NO;
+    
     SLLock *lock = self.locks[macAddress];
     if ([self isLockConnected:lock]) {
         [self.locks removeObjectForKey:lock.macAddress];
