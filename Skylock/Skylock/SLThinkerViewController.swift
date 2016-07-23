@@ -27,6 +27,10 @@ enum SLThinkerViewControllerLabelTextState {
     case InactiveBottom
 }
 
+protocol SLThinkerViewControllerDelegate:class {
+    func thinkerViewTapped(tvc: SLThinkerViewController)
+}
+
 class SLThinkerViewController: UIViewController {
     private let texts:[SLThinkerViewControllerLabelTextState:String]
     
@@ -50,10 +54,13 @@ class SLThinkerViewController: UIViewController {
     
     private var shouldContinueAnimation:Bool = false
     
+    weak var delegate:SLThinkerViewControllerDelegate?
+    
     lazy var backgroundView:UIView = {
         let view:UIView = UIView(frame: self.view.bounds)
         view.backgroundColor = self.currentBackgroundColor
         view.layer.cornerRadius = self.viewRadius()
+        
         
         return view
     }()
@@ -74,20 +81,25 @@ class SLThinkerViewController: UIViewController {
             height: diameter
         )
         
+        let tgr = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
+        tgr.numberOfTapsRequired = 1
+        
         let view:UIView = UIView(frame: frame)
         view.backgroundColor = self.foregroundColor
         view.layer.cornerRadius = 0.5*diameter
+        view.clipsToBounds = true
+        view.userInteractionEnabled = true
+        view.addGestureRecognizer(tgr)
         
         return view
     }()
     
     lazy var topLabel:UILabel = {
-        let offset = self.viewRadius()*(1.0 - self.foregroundScaler)
         let height:CGFloat = 23.0
         let frame = CGRect(
-            x: offset,
-            y: 0.5*self.wormView.bounds.size.height - height,
-            width: self.foregroundScaler*self.viewRadius(),
+            x: 0.0,
+            y: 0.5*self.foregroundView.bounds.size.height - height,
+            width: self.foregroundView.bounds.size.width,
             height: height
         )
         
@@ -95,17 +107,15 @@ class SLThinkerViewController: UIViewController {
         label.font = UIFont.systemFontOfSize(21)
         label.textAlignment = .Center
         label.textColor = self.textColor
-        
         return label
     }()
     
     lazy var bottomLabel:UILabel = {
-        let offset = self.viewRadius()*(1.0 - self.foregroundScaler)
         let height:CGFloat = 23.0
         let frame = CGRect(
-            x: offset,
-            y: 0.5*self.wormView.bounds.size.height + height,
-            width: self.foregroundScaler*self.viewRadius(),
+            x: 0.0,
+            y: 0.5*self.foregroundView.bounds.size.height,
+            width: self.foregroundView.bounds.size.width,
             height: height
         )
         
@@ -153,6 +163,8 @@ class SLThinkerViewController: UIViewController {
         
         if !self.view.subviews.contains(self.foregroundView) {
             self.view.addSubview(self.foregroundView)
+            self.foregroundView.addSubview(self.topLabel)
+            self.foregroundView.addSubview(self.bottomLabel)
         }
     }
     
@@ -245,7 +257,11 @@ class SLThinkerViewController: UIViewController {
         return nil
     }
     
-    private func setLabelTextForState(
+    @objc private func viewTapped() {
+        self.delegate?.thinkerViewTapped(self)
+    }
+    
+    private func setLabelTextForTopState(
         topState: SLThinkerViewControllerLabelTextState,
         bottomState: SLThinkerViewControllerLabelTextState
         )
@@ -262,31 +278,33 @@ class SLThinkerViewController: UIViewController {
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.secondBackgroundColor
             self.currentTintColor = self.secondBackgroundColor
-            self.setLabelTextForState(.ClockwiseTopStill, bottomState: .ClockwiseBottomStill)
+            self.setLabelTextForTopState(.ClockwiseTopStill, bottomState: .ClockwiseBottomStill)
         case .ClockwiseMoving:
             self.wormView.hidden = false
             self.shouldContinueAnimation = true
             self.currentBackgroundColor = self.firstBackgroundColor
             self.currentTintColor = self.secondBackgroundColor
-            self.topText = self.firstTextClockwise
-            self.bottomText = self.secondTextClockwise
+            self.setLabelTextForTopState(.ClockwiseTopMoving, bottomState: .ClockwiseBottomMoving)
             self.rotateWormView(true)
         case .CounterClockwiseStill:
             self.wormView.hidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.firstBackgroundColor
             self.currentTintColor = self.firstBackgroundColor
+            self.setLabelTextForTopState(.CounterClockwiseTopStill, bottomState: .CounterClockwiseBottomStill)
         case .CounterClockwiseMoving:
             self.wormView.hidden = false
             self.shouldContinueAnimation = true
             self.currentBackgroundColor = self.secondBackgroundColor
             self.currentTintColor = self.firstBackgroundColor
+            self.setLabelTextForTopState(.CounterClockwiseTopMoving, bottomState: .CounterClockwiseBottomMoving)
             self.rotateWormView(false)
         case .Inactive:
             self.wormView.hidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.inActiveBackgroundColor
             self.currentTintColor = self.inActiveBackgroundColor
+            self.setLabelTextForTopState(.InactiveTop, bottomState: .InactiveBottom)
         }
         
         self.updateWormLayer()

@@ -17,6 +17,7 @@
 #define kSLNotificationUserSignedInFacebook                 @"kSLNotificationUserSignedInFacebook"
 #define kSLNotificationLockManagerUpdatedLock               @"kSLNotificationLockManagerUpdatedLock"
 #define kSLNotificationLockManagerUpdatedLockAlert          @"kSLNotificationLockManagerUpdatedLockAlert"
+#define kSLNotificationLockManagerReadFirmwareVersion       @"kSLNotificationLockManagerReadFirmwareVersion"
 #define kSLNotificationAlertOccured                         @"kSLNotificationAlertOccured"
 #define kSLNotificationAlertDismissed                       @"kSLNotificationAlertDismissed"
 #define kSLNotificationTimerValueUpdated                    @"kSLNotificationTimerValueUpdated"

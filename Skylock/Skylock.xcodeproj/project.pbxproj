@@ -250,6 +250,8 @@
 		DCAAEC051D347DDF00946B61 /* emergency_contact_circle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCAAEBF31D347DDF00946B61 /* emergency_contact_circle@3x.png */; };
 		DCAAEC061D347DDF00946B61 /* sharing_default_picture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCAAEBF41D347DDF00946B61 /* sharing_default_picture@2x.png */; };
 		DCAAEC071D347DDF00946B61 /* sharing_default_picture@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCAAEBF51D347DDF00946B61 /* sharing_default_picture@3x.png */; };
+		DCB6D24B1D42F62E00BCF465 /* SLUserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */; };
+		DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB6D24D1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift */; };
 		DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */; };
 		DCBAAAE11D03ED380000C6AA /* SLAcceptNotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBAAAE01D03ED380000C6AA /* SLAcceptNotificationsViewController.swift */; };
 		DCC1E73F1B49800B0083A665 /* SLDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC1E73E1B49800B0083A665 /* SLDatabaseManager.m */; };
@@ -645,6 +647,8 @@
 		DCAAEBF31D347DDF00946B61 /* emergency_contact_circle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "emergency_contact_circle@3x.png"; sourceTree = "<group>"; };
 		DCAAEBF41D347DDF00946B61 /* sharing_default_picture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sharing_default_picture@2x.png"; sourceTree = "<group>"; };
 		DCAAEBF51D347DDF00946B61 /* sharing_default_picture@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sharing_default_picture@3x.png"; sourceTree = "<group>"; };
+		DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUserSettingsViewController.swift; sourceTree = "<group>"; };
+		DCB6D24D1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUserSettingTableViewCell.swift; sourceTree = "<group>"; };
 		DCB7A08C1B4089A400636D8E /* SLBaseTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLBaseTableViewCell.h; sourceTree = "<group>"; };
 		DCB7A08D1B4089A400636D8E /* SLBaseTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLBaseTableViewCell.m; sourceTree = "<group>"; };
 		DCBAAAE01D03ED380000C6AA /* SLAcceptNotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLAcceptNotificationsViewController.swift; sourceTree = "<group>"; };
@@ -843,6 +847,7 @@
 			children = (
 				DCC5CFEB1D0720B800EB16BA /* SLLockDetailsTableViewCell.swift */,
 				DCE5C1CA1CFA62020084F8A2 /* SLUnderlineTextView.swift */,
+				DCB6D24D1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift */,
 				DC9682BE1D2B3012008C106E /* SLInsetTextField.swift */,
 				DC3CCE281BA3534000528992 /* SLDirectionsTableViewCell.h */,
 				DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */,
@@ -929,6 +934,7 @@
 				DCAAEB861D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift */,
 				DCAAEBA81D32D9A100946B61 /* SLEmergencyContactsViewController.swift */,
 				DC9664EB1D3FCD62001DCAFD /* SLThinkerViewController.swift */,
+				DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1889,6 +1895,7 @@
 				DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */,
 				DCB7A08E1B4089A400636D8E /* SLBaseTableViewCell.m in Sources */,
 				DCE5C1CB1CFA62020084F8A2 /* SLUnderlineTextView.swift in Sources */,
+				DCB6D24B1D42F62E00BCF465 /* SLUserSettingsViewController.swift in Sources */,
 				DCF41CAB1CE8D91C008C17DE /* SLLogDetailViewController.swift in Sources */,
 				DC7E70C31B8BC0F9006E74DC /* SLLockValue.m in Sources */,
 				DCC5CFEC1D0720B800EB16BA /* SLLockDetailsTableViewCell.swift in Sources */,
@@ -1898,6 +1905,7 @@
 				DCA71B021CFFC73F000517CC /* SLPairingSuccessViewController.swift in Sources */,
 				DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */,
 				DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */,
+				DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */,
 				DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */,
 				DC44027A1B9BCEEC00D1C2B9 /* SLSharingContactTableViewCell.m in Sources */,
 				DCE6071B1D10879D0034D0B3 /* SLLocationManager.swift in Sources */,

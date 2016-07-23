@@ -303,33 +303,19 @@
                                                    @"Got response from server: %@", serverReply.description]];
     
     NSLog(@"server reply: %@", serverReply.description);
-    id status = serverReply[@"status"];
-    
-    if ([status isKindOfClass:[NSString class]]) {
-        if (![status isEqualToString:@"success"]) {
-            message = [NSString stringWithFormat:@"Error in response from server: %@",
-                       serverReply[@"message"]];
-            NSLog(@"%@", message);
-            [SLDatabaseManager.sharedManager saveLogEntry:message];
-            completion(nil);
-            return;
-        }
-        
-        id payload = serverReply[@"payload"];
-        if ([payload isKindOfClass:[NSDictionary class]]) {
-            completion(payload);
-        } else if ([payload isKindOfClass:[NSArray class]]) {
-            completion(@{@"payload": payload});
+    if (serverReply[@"error"] == [NSNull null]) {
+        if (serverReply[@"payload"]) {
+            completion(serverReply[@"payload"]);
         } else {
             completion(nil);
         }
     } else {
-        NSLog(@"Internal server error status %@", status);
+        NSString *errorString = serverReply[@"error"];
+        NSLog(@"Internal server error %@", errorString);
         [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
-                                                       @"Internal server error status %@", status]];
+                                                       @"Internal server error %@", errorString]];
         completion(nil);
     }
-    
 }
 
 - (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password

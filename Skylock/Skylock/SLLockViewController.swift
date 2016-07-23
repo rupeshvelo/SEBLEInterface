@@ -12,7 +12,8 @@ import UIKit
 UIViewController,
 SLSlideViewControllerDelegate,
 SLLocationManagerDelegate,
-SLAcceptNotificationsViewControllerDelegate
+SLAcceptNotificationsViewControllerDelegate,
+SLThinkerViewControllerDelegate
 {
     let xPadding:CGFloat = 13.0
     
@@ -137,58 +138,28 @@ SLAcceptNotificationsViewControllerDelegate
         
         return imageView
     }()
-    
-    lazy var lockStateLabel:UILabel = {
-        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
-        let font = UIFont.systemFontOfSize(34)
-        let height:CGFloat = 36.0
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - labelWidth),
-            self.view.bounds.size.height - 40.0 - height,
-            labelWidth,
-            height
-        )
-        
-        let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
-        label.text = NSLocalizedString("NOT CONNECTED", comment: "")
-        label.textAlignment = .Center
-        label.font = font
-        label.numberOfLines = 1
-        
-        return label
-    }()
-    
-    lazy var lockButton:UIButton = {
-        let lockedImage:UIImage = UIImage(named: "lock_unlocked_button")!
-        let unlockImage:UIImage = UIImage(named: "lock_locked_button")!
-        let disabledImage:UIImage = UIImage(named: "lock_disconnected_button")!
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - lockedImage.size.width),
-            CGRectGetMinY(self.lockStateLabel.frame) - lockedImage.size.height - 14.0,
-            lockedImage.size.width,
-            lockedImage.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(lockButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(lockedImage, forState: .Normal)
-        button.setImage(unlockImage, forState: .Selected)
-        button.setImage(disabledImage, forState: .Disabled)
-        button.enabled = false
 
-        return button
-    }()
-    
     lazy var thinkerViewController:SLThinkerViewController = {
+        let text:[SLThinkerViewControllerLabelTextState:String] = [
+            .ClockwiseTopStill: NSLocalizedString("LOCKED", comment: ""),
+            .ClockwiseBottomStill: NSLocalizedString("Tap to unlock", comment: ""),
+            .ClockwiseTopMoving: NSLocalizedString("Locking...", comment: ""),
+            .CounterClockwiseTopStill: NSLocalizedString("UNLOCKED", comment: ""),
+            .CounterClockwiseBottomStill: NSLocalizedString("Tap to lock", comment: ""),
+            .CounterClockwiseTopMoving: NSLocalizedString("Unlocking...", comment: ""),
+            .InactiveTop: NSLocalizedString("NOT", comment: ""),
+            .InactiveBottom: NSLocalizedString("CONNECTED", comment: "")
+        ]
+        
         let tvc:SLThinkerViewController = SLThinkerViewController(
-            topText: "Top Text",
-            bottomText: "Bottom Text",
+            texts: text,
             firstBackgroundColor: UIColor.whiteColor(),
             secondBackgroundColor: UIColor(red: 102, green: 177, blue: 227),
             foregroundColor: UIColor(red: 60, green: 83, blue: 119),
-            inActiveBackgroundColor: UIColor(red: 130, green: 156, blue: 178)
+            inActiveBackgroundColor: UIColor(red: 130, green: 156, blue: 178),
+            textColor: UIColor.whiteColor()
         )
+        tvc.delegate = self
         
         return tvc
     }()
@@ -236,8 +207,6 @@ SLAcceptNotificationsViewControllerDelegate
         self.view.addSubview(self.crashButton)
         self.view.addSubview(self.theftButton)
         self.view.addSubview(self.tempStatsView)
-        self.view.addSubview(self.lockStateLabel)
-        self.view.addSubview(self.lockButton)
         
         self.registerForNotifications()
     }
@@ -251,12 +220,11 @@ SLAcceptNotificationsViewControllerDelegate
         if !self.view.subviews.contains(self.thinkerViewController.view) {
             let diameter:CGFloat = 223.0
             self.thinkerViewController.view.frame = CGRect(
-                x: 0,
-                y: 0,
+                x: 0.5*(self.view.bounds.size.width - diameter),
+                y: CGRectGetMaxY(self.crashButton.frame) + 50.0,
                 width: diameter,
                 height: diameter
             )
-            self.thinkerViewController.view.center = self.lockButton.center
             
             self.addChildViewController(self.thinkerViewController)
             self.view.addSubview(self.thinkerViewController.view)
@@ -264,7 +232,7 @@ SLAcceptNotificationsViewControllerDelegate
             self.thinkerViewController.didMoveToParentViewController(self)
         }
         
-        self.thinkerViewController.setState(.CounterClockwiseMoving)
+        self.thinkerViewController.setState(.Inactive)
     }
     
     func registerForNotifications() {
@@ -388,33 +356,22 @@ SLAcceptNotificationsViewControllerDelegate
         }
     }
     
-    func lockButtonPressed() {
-        if let lock:SLLock = self.lock {
-            self.lockManager.setLockStateForLock(lock)
-        }
-    }
-    
     func lockOpened(notification: NSNotification) {
-        self.lockButton.enabled = true
-        self.lockButton.selected = false
+        self.thinkerViewController.setState(.CounterClockwiseStill)
         if let lock = self.lock {
             lock.isLocked = NSNumber(bool: false)
         }
-        
-        self.lockStateLabel.text = self.lockStateText()
     }
     
     func lockLocked(notification: NSNotification) {
-        self.lockButton.enabled = true
-        self.lockButton.selected = true
+        self.thinkerViewController.setState(.ClockwiseStill)
         if let lock = self.lock {
             lock.isLocked = NSNumber(bool: true)
         }
-        
-        self.lockStateLabel.text = self.lockStateText()
     }
     
     func lockRemoved(notification: NSNotification) {
+        self.thinkerViewController.setState(.Inactive)
         self.setLockDisabled()
     }
     
@@ -433,8 +390,6 @@ SLAcceptNotificationsViewControllerDelegate
             self.lock = lock
             self.lockNameLabel.setNeedsDisplay()
             self.lockManager.checkLockOpenOrClosed()
-            self.lockButton.enabled = true
-            self.lockStateLabel.text = self.lockStateText()
             self.lockNameLabel.textColor = UIColor.whiteColor()
         }
     }
@@ -507,26 +462,8 @@ SLAcceptNotificationsViewControllerDelegate
     
     func setLockDisabled() {
         self.lock = nil
-        self.lockButton.enabled = false
-        self.lockButton.selected = false
-        self.lockStateLabel.text = self.lockStateText()
+        self.thinkerViewController.setState(.Inactive)
         self.lockNameLabel.text = ""
-        // Insert move views to disabled mode here
-    }
-    
-    func lockStateText() -> String {
-        let text:String
-        if let lock = self.lock {
-            if lock.isLocked.boolValue {
-                text = NSLocalizedString("Tap to unlock", comment: "")
-            } else {
-                text = NSLocalizedString("Tap to lock", comment: "")
-            }
-        } else {
-            text = NSLocalizedString("NOT CONNECTED", comment: "")
-        }
-        
-        return text
     }
     
     func touchCatcherViewTapped() {
@@ -547,11 +484,13 @@ SLAcceptNotificationsViewControllerDelegate
     
     func presentViewControllerWithNavigationController(viewController: UIViewController) {
         //let transitionHandler = SLViewControllerTransitionHandler()
-        let nc:UINavigationController
         if let navController = self.navigationController {
             navController.pushViewController(viewController, animated: true)
         } else {
-            nc = UINavigationController(rootViewController: viewController)
+            let nc:UINavigationController = UINavigationController(rootViewController: viewController)
+            nc.navigationBar.barStyle = UIBarStyle.Black
+            nc.navigationBar.tintColor = UIColor.whiteColor()
+            nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
             self.presentViewController(nc, animated: true, completion: nil)
         }
 
@@ -617,11 +556,23 @@ SLAcceptNotificationsViewControllerDelegate
         appDelegate.setUpNotficationSettings()
     }
     
-    func acceptsNotificationsControllerWantsExit(acceptNotiticationViewController: SLAcceptNotificationsViewController, animated: Bool) {
+    func acceptsNotificationsControllerWantsExit(
+        acceptNotiticationViewController: SLAcceptNotificationsViewController,
+        animated: Bool
+        )
+    {
         let userDefaults = NSUserDefaults.standardUserDefaults()
         userDefaults.setBool(true, forKey: "SLUserDefaultsOnBoardingComplete")
         userDefaults.synchronize()
         
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: SLThinkerViewControllerDelegate methods
+    func thinkerViewTapped(tvc: SLThinkerViewController) {
+        print("thinker view tapped")
+        if let lock:SLLock = self.lock {
+            self.lockManager.setLockStateForLock(lock)
+        }
     }
 }

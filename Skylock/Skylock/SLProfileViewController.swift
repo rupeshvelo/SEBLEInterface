@@ -34,6 +34,7 @@ class SLProfileViewController:
             NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
             NSLocalizedString("Delete my account", comment: ""),
+            NSLocalizedString("Logout", comment: "")
         ]
     ]
     
@@ -164,6 +165,15 @@ class SLProfileViewController:
             object: nil
         )
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let indexPath = self.tableView.indexPathForSelectedRow {
+            let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+            cell?.selected = false
+        }
+    }
 
     func cameraButtonPressed() {
         self.presentViewController(self.alertViewController, animated: true, completion: nil)
@@ -249,6 +259,7 @@ class SLProfileViewController:
         
         self.keyboardShowing = false
         self.selectedPath = nil
+        self.navigationItem.rightBarButtonItem = nil
         
         let frameValue:NSValue = userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue
         self.tableView.contentSize = CGSize(
@@ -395,6 +406,9 @@ class SLProfileViewController:
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if indexPath.section == 1 {
             switch indexPath.row {
+            case 0:
+                let usvc:SLUserSettingsViewController = SLUserSettingsViewController()
+                self.navigationController?.pushViewController(usvc, animated: true)
             case 1:
                 let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .PhoneNumber)
                 self.navigationController?.pushViewController(msdvc, animated: true)
