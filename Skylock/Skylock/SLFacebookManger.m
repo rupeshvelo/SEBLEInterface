@@ -145,15 +145,15 @@
     modifiedInfo[@"googlePushId"] = pushToken;
     [SLDatabaseManager.sharedManager saveUserWithDictionary:modifiedInfo isFacebookUser:YES];
     
-    NSString *userId = info[@"id"];
-    [SLPicManager.sharedManager facebookPicForFBUserId:userId completion:nil];
+    NSString *facebookUserId = info[@"id"];
+    [SLPicManager.sharedManager facebookPicForFBUserId:facebookUserId completion:nil];
     
     SLUser *user = [SLDatabaseManager.sharedManager currentUser];
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asRestDictionary];
-    userDict[@"password"] = userId;
+    userDict[@"password"] = facebookUserId;
     
     [keychainHandler setItemForUsername:user.userId
-                             inputValue:userId
+                             inputValue:facebookUserId
                    additionalSeviceInfo:nil
                             handlerCase:SLKeychainHandlerCasePassword];
     
@@ -172,7 +172,7 @@
                                      
                                      NSString *message = [NSString stringWithFormat:
                                                           @"got response saving facebook userId: %@ Response Info: %@",
-                                                          userDict,
+                                                          user.userId,
                                                           responseDict];
                                      NSLog(@"%@", message);
                                      [SLDatabaseManager.sharedManager saveLogEntry:message];

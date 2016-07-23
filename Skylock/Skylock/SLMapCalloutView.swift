@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SLMapCalloutViewDelegate {
+protocol SLMapCalloutViewDelegate:class {
     func calloutViewTapped(calloutView: SLMapCalloutView)
 }
 
@@ -18,7 +18,7 @@ class SLMapCalloutView: UIView {
     let selectedImageName:String
     let deselectedImageName:String
     var isSelected:Bool = false
-    var delegate:SLMapCalloutViewDelegate?
+    weak var delegate:SLMapCalloutViewDelegate?
     
     init(frame:CGRect, upperText:String, lowerText:String, selectedImageName:String, deselectedImageName:String) {
         self.upperText = upperText

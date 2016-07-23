@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol SLTouchPadViewControllerDelegate {
+protocol SLTouchPadViewControllerDelegate:class {
     func touchPadViewControllerWantsExit(touchPadViewController: SLTouchPadViewController)
 }
 
@@ -19,7 +19,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     
     let maximunCodeNumber: Int = 8
     
-    var delegate: SLTouchPadViewControllerDelegate?
+    weak var delegate: SLTouchPadViewControllerDelegate?
     
     var letterIndex:Int = 0
     
@@ -75,7 +75,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         label.text = text
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         label.font = font
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = .Center
         
         return label
     }()
@@ -108,7 +108,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         label.textColor = UIColor(red: 146, green: 148, blue: 151)
         label.font = font
         label.numberOfLines = 0
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = .Center
         
         return label
     }()
@@ -170,8 +170,8 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         
         let button: UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(savePinButtonPressed), forControlEvents: UIControlEvents.TouchDown)
-        button.setImage(image, forState: UIControlState.Normal)
-        button.setImage(disabledImage, forState: UIControlState.Disabled)
+        button.setImage(image, forState: .Normal)
+    button.setImage(disabledImage, forState: .Disabled)
         button.enabled = false
         
         return button

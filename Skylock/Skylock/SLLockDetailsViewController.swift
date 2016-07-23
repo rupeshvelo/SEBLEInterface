@@ -66,7 +66,12 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func menuButtonPressed() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        if let navController = self.navigationController {
+            navController.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
 //        let transitionHandler = SLViewControllerTransitionHandler()
 //        self.navigationController?.modalPresentationStyle = .Custom
 //        self.navigationController?.transitioningDelegate = transitionHandler

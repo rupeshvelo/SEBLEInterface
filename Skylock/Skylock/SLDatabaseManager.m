@@ -12,10 +12,12 @@
 #import "SLUser.h"
 #import "SLLog.h"
 #import "SLNotifications.h"
+#import "SLEmergencyContact.h"
 
-#define kSLDatabaseManagerEnityLock @"SLLock"
-#define kSLDatabaseManagerEnityUser @"SLUser"
-#define KSLDatabaseManagerEnityLog  @"SLLog"
+#define kSLDatabaseManagerEnityLock             @"SLLock"
+#define kSLDatabaseManagerEnityUser             @"SLUser"
+#define KSLDatabaseManagerEnityLog              @"SLLog"
+#define kSLDatabaseManagerEnityEmergencyContact @"SLEmergencyContact"
 
 @interface SLDatabaseManager()
 
@@ -380,6 +382,66 @@
         NSLog(@"Failed to save lock %@ to db with error: %@",
               lock.name,
               error.localizedDescription);
+    }
+}
+
+- (NSArray *)emergencyContacts
+{
+    NSArray *contacts = [self getManagedObjectsWithPredicate:nil
+                                               forEnityNamed:kSLDatabaseManagerEnityEmergencyContact];
+    if (!contacts) {
+        contacts = [NSArray new];
+    }
+    
+    return contacts;
+}
+
+- (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId
+{
+    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactId == %@", contactId];
+    NSArray *contacts = [self getManagedObjectsWithPredicate:predicate
+                                               forEnityNamed:kSLDatabaseManagerEnityEmergencyContact];
+    
+    return (contacts && contacts.count > 0) ? contacts[0] : nil;
+}
+
+- (SLEmergencyContact *)newEmergencyContact
+{
+    return [NSEntityDescription insertNewObjectForEntityForName:kSLDatabaseManagerEnityEmergencyContact
+                                         inManagedObjectContext:self.context];
+}
+
+- (void)saveEmergencyContact:(SLEmergencyContact *)contact
+{
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (success) {
+        NSLog(@"saved emergency conact: %@ to db", contact.firstName);
+    } else {
+        NSLog(@"Failed to save lock %@ to db with error: %@",
+              contact.firstName,
+              error.localizedDescription);
+    }
+}
+
+- (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion
+{
+    SLEmergencyContact *contact = [self getContactWithContactId:contactId];
+    if (!contact) {
+        return;
+    }
+    
+    [self.context deleteObject:contact];
+    
+    NSError *error = nil;
+    BOOL success = [self.context save:&error];
+    if (error) {
+        NSLog(@"Failed to delete contact from database with error: %@", error.localizedDescription);
+    }
+    
+    if (completion) {
+        completion(success);
     }
 }
 

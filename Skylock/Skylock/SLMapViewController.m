@@ -18,7 +18,6 @@
 #import "SLLock.h"
 #import "UIImage+Skylock.h"
 #import "SLNavigationViewController.h"
-#import "SLAccountInfoViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "SLNotifications.h"
 #import "SLNotificationViewController.h"

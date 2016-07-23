@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 @class SLUser;
 @class SLLock;
-
+@class SLEmergencyContact;
 @class NSManagedObjectContext;
 
 @interface SLDatabaseManager : NSObject
@@ -39,5 +39,10 @@
 - (void)saveLogEntry:(NSString *)entry;
 - (void)saveLockConnectedDate:(SLLock *)lock;
 - (void)saveLock:(SLLock *)lock;
+- (NSArray *)emergencyContacts;
+- (void)saveEmergencyContact:(SLEmergencyContact *)contact;
+- (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId;
+- (SLEmergencyContact *)newEmergencyContact;
+- (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion;
 
 @end

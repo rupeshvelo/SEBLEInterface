@@ -12,16 +12,17 @@ enum SLSlideViewControllerAction {
     case EllipsesPressed
     case FindMyEllipsePressed
     case ProfileAndSettingPressed
+    case EmergencyContacts
     case HelpPressed
     case RateTheAppPressed
 }
 
-protocol SLSlideViewControllerDelegate {
+protocol SLSlideViewControllerDelegate:class {
     func handleAction(svc: SLSlideViewController, action: SLSlideViewControllerAction)
 }
 
 class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    var delegate:SLSlideViewControllerDelegate?
+    weak var delegate:SLSlideViewControllerDelegate?
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
@@ -74,6 +75,9 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
                 text = NSLocalizedString("PROFILE & SETTINGS", comment: "")
                 imageName = "profile_settings_icon_slideview"
             } else if indexPath.row == 1 {
+                text = NSLocalizedString("EMERGENCY CONTACTS", comment: "")
+                imageName = "slide_view_emergency_contacts_icon"
+            } else if indexPath.row == 2 {
                 text = NSLocalizedString("HELP", comment: "")
                 imageName = "slideview_help_icon"
             } else {
@@ -153,6 +157,8 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             case 0:
                 action = .ProfileAndSettingPressed
             case 1:
+                action = .EmergencyContacts
+            case 2:
                 action = .HelpPressed
             default:
                 action = .RateTheAppPressed

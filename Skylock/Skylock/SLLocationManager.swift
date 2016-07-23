@@ -9,13 +9,13 @@
 import Foundation
 import CoreLocation
 
-@objc protocol SLLocationManagerDelegate {
+@objc protocol SLLocationManagerDelegate:class {
     func locationManagerUpdatedUserPosition(locationManager:SLLocationManager, userLocation: CLLocation)
     func locationManagerDidAcceptedLocationAuthorization(locationManager:SLLocationManager, didAccept: Bool)
 }
 
 @objc class SLLocationManager: NSObject, CLLocationManagerDelegate {
-    var delegate:SLLocationManagerDelegate?
+    weak var delegate:SLLocationManagerDelegate?
     
     private lazy var manager:CLLocationManager = {
         let locManager:CLLocationManager = CLLocationManager()

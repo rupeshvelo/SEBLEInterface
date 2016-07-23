@@ -13,7 +13,7 @@ import UIKit
     case Right
 }
 
-@objc public protocol SLMapCalloutViewControllerDelegate {
+@objc public protocol SLMapCalloutViewControllerDelegate:class {
     @objc func leftCalloutViewTapped(calloutController: SLMapCalloutViewController)
     @objc func rightCalloutViewTapped(calloutController: SLMapCalloutViewController)
 }
@@ -22,7 +22,7 @@ import UIKit
     var rightText: String?
     var distanceAway: Float?
     @objc public var lock: SLLock?
-    var delegate: SLMapCalloutViewControllerDelegate?
+    weak var delegate: SLMapCalloutViewControllerDelegate?
     
     @objc public func setProperties(rightText: String, lock: SLLock) {
         self.rightText = rightText

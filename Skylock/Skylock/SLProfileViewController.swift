@@ -17,9 +17,9 @@ class SLProfileViewController:
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate
 {
-    var selectedPath:NSIndexPath?
-    
     var keyboardShowing:Bool = false
+    
+    var selectedPath:NSIndexPath?
     
     let tableInfo:[[String]] = [
         [
@@ -34,6 +34,7 @@ class SLProfileViewController:
             NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
             NSLocalizedString("Delete my account", comment: ""),
+            NSLocalizedString("Logout", comment: "")
         ]
     ]
     
@@ -84,7 +85,52 @@ class SLProfileViewController:
         return table
     }()
     
+    lazy var alertViewController:UIAlertController = {
+        weak var weakSelf:SLProfileViewController? = self
+        let cancelAction = UIAlertAction(
+            title: NSLocalizedString("Cancel", comment: ""),
+            style: .Cancel,
+            handler: nil
+        )
+        
+        let choosePhotoAction = UIAlertAction(
+            title: NSLocalizedString("Choose photo...", comment: ""),
+            style: .Default,
+            handler: { _ in
+                if let this = weakSelf where UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
+                    let imagePicker = UIImagePickerController()
+                    imagePicker.delegate = self
+                    imagePicker.sourceType = .PhotoLibrary;
+                    imagePicker.allowsEditing = true
+                    this.presentViewController(imagePicker, animated: true, completion: nil)
+                }
+            }
+        )
+        
+        let takePhotoAction = UIAlertAction(
+            title: NSLocalizedString("Take a new photo", comment: ""),
+            style: .Default,
+            handler: { _ in
+                if let this = weakSelf where UIImagePickerController.isSourceTypeAvailable(.Camera) {
+                    let imagePicker = UIImagePickerController()
+                    imagePicker.delegate = self
+                    imagePicker.sourceType = .Camera;
+                    imagePicker.allowsEditing = true
+                    this.presentViewController(imagePicker, animated: true, completion: nil)
+                }
+            }
+        )
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        alertController.addAction(cancelAction)
+        alertController.addAction(choosePhotoAction)
+        alertController.addAction(takePhotoAction)
+        
+        return alertController
+    }()
+    
     deinit {
+        print("deinit called")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -92,7 +138,6 @@ class SLProfileViewController:
         super.viewDidLoad()
         
         self.view.addSubview(self.tableView)
-        
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
             image: menuImage,
@@ -120,15 +165,18 @@ class SLProfileViewController:
             object: nil
         )
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let indexPath = self.tableView.indexPathForSelectedRow {
+            let cell = self.tableView.cellForRowAtIndexPath(indexPath)
+            cell?.selected = false
+        }
+    }
 
     func cameraButtonPressed() {
-        if UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
-            let imagePicker = UIImagePickerController()
-            imagePicker.delegate = self
-            imagePicker.sourceType = .PhotoLibrary;
-            imagePicker.allowsEditing = false
-            self.presentViewController(imagePicker, animated: true, completion: nil)
-        }
+        self.presentViewController(self.alertViewController, animated: true, completion: nil)
     }
     
     func setPictureForUser() {
@@ -172,54 +220,77 @@ class SLProfileViewController:
     }
     
     func keyboardWillShow(notification: NSNotification) {
-        if let userInfo:[NSObject:AnyObject] = notification.userInfo where !self.keyboardShowing {
-            let frameValue:NSValue = userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue
-            let offset = frameValue.CGRectValue().size.height + tableView(self.tableView, heightForHeaderInSection: 0)
-                + (self.navigationController?.navigationBar.bounds.size.height)!
-                + UIApplication.sharedApplication().statusBarFrame.size.height
-            self.tableView.contentOffset = CGPoint(x: 0.0, y: offset)
-//            if let path = self.selectedPath {
-//                self.tableView.scrollToRowAtIndexPath(path, atScrollPosition: .Top, animated: true)
-//            }
-            self.keyboardShowing = true
-            
-            let rightButton:UIBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem:
-                .Done, target: self,
-                       action: #selector(doneButtonPressed)
-            )
-            self.navigationItem.rightBarButtonItem = rightButton
+        if self.keyboardShowing {
+            return
+        }
+        
+        guard let userInfo:[NSObject:AnyObject] = notification.userInfo else {
+            return
+        }
+        
+        let offset:CGFloat = UIApplication.sharedApplication().statusBarFrame.size.height +
+            (self.navigationController == nil ? 0.0 : self.navigationController!.navigationBar.bounds.size.height)
+            + self.tableView(self.tableView, heightForHeaderInSection: 0)
+        let frameValue:NSValue = userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue
+        self.tableView.contentSize = CGSize(
+            width: self.tableView.contentSize.width,
+            height: self.tableView.contentSize.height + frameValue.CGRectValue().size.height
+        )
+        self.tableView.contentOffset = CGPoint(x: 0.0, y: offset)
+        
+        self.keyboardShowing = true
+        
+        let rightButton:UIBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .Done,
+            target: self,
+            action: #selector(doneButtonPressed)
+        )
+        self.navigationItem.rightBarButtonItem = rightButton
+        
+        if self.selectedPath != nil {
+            self.tableView.scrollToRowAtIndexPath(self.selectedPath!, atScrollPosition: .Top, animated: true)
         }
     }
     
     func keyboardWillHide(notification: NSNotification) {
-        self.tableView.contentOffset = CGPoint(x: 0.0, y: 0.0)
-    }
-    
-    func doneButtonPressed() {
-        guard let selectedPath = self.selectedPath else {
+        guard let userInfo:[NSObject:AnyObject] = notification.userInfo else {
             return
         }
         
-        self.tableView.resignFirstResponder()
-        self.resignFirstResponder() 
-        if let cell:SLOpposingLabelsTableViewCell =
-            self.tableView(self.tableView, cellForRowAtIndexPath: selectedPath) as? SLOpposingLabelsTableViewCell
-        {
-            if cell.rightField.canResignFirstResponder() {
-                print("\(cell.leftLabel.text) tag: \(cell.tag)")
-                dispatch_async(dispatch_get_main_queue(), { 
-                    cell.rightField.resignFirstResponder()
-                })
+        self.keyboardShowing = false
+        self.selectedPath = nil
+        self.navigationItem.rightBarButtonItem = nil
+        
+        let frameValue:NSValue = userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue
+        self.tableView.contentSize = CGSize(
+            width: self.tableView.contentSize.width,
+            height: self.tableView.contentSize.height - frameValue.CGRectValue().size.height
+        )
+    }
+    
+    func doneButtonPressed() {
+        for i in 0...self.tableInfo.first!.count {
+            let path = NSIndexPath(forRow: i, inSection: 0)
+            if let cell:SLOpposingLabelsTableViewCell =
+                self.tableView.cellForRowAtIndexPath(path) as? SLOpposingLabelsTableViewCell
+            {
+                if cell.isTextFieldFirstResponder() {
+                    cell.haveFieldResignFirstReponder()
+                    break
+                }
             }
         }
     }
     
     func menuButtonPressed() {
-        let transitionHandler = SLViewControllerTransitionHandler()
-        self.modalPresentationStyle = .Custom
-        self.transitioningDelegate = transitionHandler
-        self.dismissViewControllerAnimated(true, completion: nil)
+//        let transitionHandler = SLViewControllerTransitionHandler()
+//        self.modalPresentationStyle = .Custom
+//        self.transitioningDelegate = transitionHandler
+        if let navController = self.navigationController {
+            navController.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
     
     // MARK tableview delegate & datasource methods
@@ -251,8 +322,8 @@ class SLProfileViewController:
                 cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
             }
             
-            cell?.delegate = self
             cell?.selectionStyle = .None
+            cell?.delegate = self
             cell?.setProperties(
                 leftText,
                 rightLabelText: rightText,
@@ -333,7 +404,21 @@ class SLProfileViewController:
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        if indexPath.section == 1 {
+            switch indexPath.row {
+            case 0:
+                let usvc:SLUserSettingsViewController = SLUserSettingsViewController()
+                self.navigationController?.pushViewController(usvc, animated: true)
+            case 1:
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .PhoneNumber)
+                self.navigationController?.pushViewController(msdvc, animated: true)
+            case 2:
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
+                self.navigationController?.pushViewController(msdvc, animated: true)
+            default:
+                print("no action for \(indexPath.description)")
+            }
+        }
     }
     
     // MARK: SLLabelAndSwitchCellDelegate methods
@@ -342,9 +427,8 @@ class SLProfileViewController:
     }
     
     // MARK: SLOpposingLabelsTableViewCellDelegate methods
-    func cellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell) {
-        self.selectedPath = NSIndexPath(forRow: cell.tag, inSection: 0)
-        print("section: \(self.selectedPath!.section) row: \(self.selectedPath!.row)")
+    func opposingLabelsCellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell) {
+        self.selectedPath = self.tableView.indexPathForCell(cell)
     }
     
     // MARK: UIImagePickerViewControllerDelegate methods

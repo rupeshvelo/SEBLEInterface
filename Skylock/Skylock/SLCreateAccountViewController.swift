@@ -292,7 +292,6 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
         )
         
         self.view.addSubview(self.scrollView)
-
         self.scrollView.addSubview(self.topLabel)
 
         if self.currentPhase == .Create {
@@ -619,7 +618,6 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-    
         return true
     }
 }

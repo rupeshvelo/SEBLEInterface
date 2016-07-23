@@ -48,7 +48,7 @@
              @"user_id": self.userId,
              @"last_name": self.lastName,
              @"email": self.email ? self.email : [NSNull null],
-             @"fb_flag": @([self.userType isEqualToString:@"facebook"]),
+             @"user_type": self.userType,
              @"reg_id": self.googlePushId,
              };
 }
@@ -87,7 +87,7 @@
         self.email = dictionary[@"email"];
     }
     
-    self.userType = isFacebookUser ? kSLUserTypeFacebook : kSLUserTypePhone;
+    self.userType = isFacebookUser ? kSLUserTypeFacebook : kSLUserTypeEllipse;
 }
 
 - (id)valueOrNullForDictionary:(NSDictionary *)dictionary key:(id)value

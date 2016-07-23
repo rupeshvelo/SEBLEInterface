@@ -17,3 +17,4 @@
 #import "SLFacebookManger.h"
 #import "SLNotifications.h"
 #import "SLPicManager.h"
+#import "SLEmergencyContact.h"

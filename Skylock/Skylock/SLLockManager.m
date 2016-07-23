@@ -1079,6 +1079,21 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     [SLDatabaseManager.sharedManager saveLogEntry:message];
 }
 
+- (void)handleReadFirmwareVersion:(NSString *)macAddress data:(NSData *)data
+{
+    char *bytes = (char *)data.bytes;
+    NSLog(@"update for %@", macAddress);
+    NSMutableArray *values = [NSMutableArray new];
+    for (int i=0; i < data.length; i++) {
+        int byte = bytes[i];
+        NSLog(@"byte # %d:%d",i, byte);
+        [values addObject:@(byte)];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerReadFirmwareVersion
+                                                        object:values];
+}
+
 - (void)readCommandStatusForMacAddress:(NSString *)macAddress
 {
     [self.bleManager readValueForPeripheralWithKey:macAddress
@@ -1126,7 +1141,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 {
     [SLRestManager.sharedManager getRequestWithServerKey:SLRestManagerServerKeyMain
                                                  pathKey:SLRestManagerPathKeyFirmwareUpdate
-                                               subRoutes:nil additionalHeaders:nil
+                                               subRoutes:nil
+                                       additionalHeaders:nil
                                               completion:^(NSDictionary *responseDict) {
                                                   if (responseDict && responseDict[@"payload"]) {
                                                       NSMutableArray *parts = [NSMutableArray new];
@@ -1191,7 +1207,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                data:data];
 }
 
-- (void)tempReadFirmwareDataForLockAddress:(NSString *)macAddress
+- (void)readFirmwareDataForLockAddress:(NSString *)macAddress
 {
     [self readValueFromPeripheralForMacAddress:macAddress
                                        service:SLLockManagerServiceConfiguration
@@ -1498,7 +1514,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
     NSString *name = (advertisementData && advertisementData[@"kCBAdvDataLocalName"]) ?
-    advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
+        advertisementData[@"kCBAdvDataLocalName"] : peripheral.peripheral.name;
     NSLog(@"found peripheral: %@", name);
     [SLDatabaseManager.sharedManager saveLogEntry:
      [NSString stringWithFormat:@"found peripheral: %@", name]];
@@ -1524,7 +1540,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                            self.selectedLock ? self.selectedLock.name : @"nil",
                                            name]];
     }
-        
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager
@@ -1592,13 +1607,8 @@ discoveredCharacteristicsForService:(CBService *)service
         [self handleLEDStateForLockMacAddress:macAddress data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicButtonLockSequence]]) {
         [self handleLockSequenceWriteForMacAddress:macAddress data:data];
-    } else {
-        char *bytes = (char *)data.bytes;
-        NSLog(@"update for %@", uuid);
-        for (int i=0; i < data.length; i++) {
-            int byte = bytes[i];
-            NSLog(@"byte # %d:%d",i, byte);
-        }
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicCodeVersion]]) {
+        [self handleReadFirmwareVersion:macAddress data:data];
     }
 }
 

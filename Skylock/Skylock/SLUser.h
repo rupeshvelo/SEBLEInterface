@@ -15,7 +15,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 #define kSLUserTypeFacebook @"facebook"
-#define kSLUserTypePhone    @"phone"
+#define kSLUserTypeEllipse  @"ellipse"
 
 @interface SLUser : NSManagedObject
 
