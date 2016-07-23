@@ -2130,7 +2130,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.Skylock;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "79942854-61e4-4de6-86f5-468cfe75fb59";
+				PROVISIONING_PROFILE = "2e460f16-a2d7-4fd1-bb02-f160400711f7";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
