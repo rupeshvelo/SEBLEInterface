@@ -1676,6 +1676,7 @@ disconnectedPeripheralNamed:(NSString *)peripheralName
         [self.addressesToPermenantlyDelete removeObject:lock.macAddress];
     } else {
         NSLog(@"lock: %@ was not set for deletion", lock.macAddress);
+        [self startScan];
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
                                                             object:@{@"lockName":macAddress}];
         return;

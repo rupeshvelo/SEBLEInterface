@@ -221,7 +221,7 @@ SLThinkerViewControllerDelegate
             let diameter:CGFloat = 223.0
             self.thinkerViewController.view.frame = CGRect(
                 x: 0.5*(self.view.bounds.size.width - diameter),
-                y: CGRectGetMaxY(self.crashButton.frame) + 50.0,
+                y: CGRectGetMaxY(self.crashButton.frame) + 100.0,
                 width: diameter,
                 height: diameter
             )
@@ -395,7 +395,6 @@ SLThinkerViewControllerDelegate
     }
     
     func lockDisconneted(notification: NSNotification) {
-        // TODO Set up view to handl when there is no lock
         guard let notificationObject = notification.object as? [String: String] else {
             return
         }
@@ -572,6 +571,9 @@ SLThinkerViewControllerDelegate
     func thinkerViewTapped(tvc: SLThinkerViewController) {
         print("thinker view tapped")
         if let lock:SLLock = self.lock {
+            self.thinkerViewController.setState(
+                lock.isLocked.boolValue ? .CounterClockwiseMoving : .CounterClockwiseMoving
+            )
             self.lockManager.setLockStateForLock(lock)
         }
     }

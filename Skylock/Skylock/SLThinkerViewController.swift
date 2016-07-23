@@ -307,6 +307,7 @@ class SLThinkerViewController: UIViewController {
             self.setLabelTextForTopState(.InactiveTop, bottomState: .InactiveBottom)
         }
         
+        self.backgroundView.backgroundColor = self.currentBackgroundColor
         self.updateWormLayer()
     }
 }
