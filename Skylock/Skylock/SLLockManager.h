@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (SLLock *)getCurrentLock;
 - (void)setLockStateForLock:(SLLock *)lock;
 - (void)toggleCrashForLock:(SLLock *)lock;
-- (void)toggleSecurityForLock:(SLLock *)lock;
+- (void)toggleTheftForLock:(SLLock *)lock;
 - (void)toggleSharingForLock:(SLLock *)lock;
 - (void)startBlueToothManager;
 - (void)removeUnconnectedLocks;

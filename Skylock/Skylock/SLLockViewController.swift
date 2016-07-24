@@ -13,7 +13,9 @@ UIViewController,
 SLSlideViewControllerDelegate,
 SLLocationManagerDelegate,
 SLAcceptNotificationsViewControllerDelegate,
-SLThinkerViewControllerDelegate
+SLThinkerViewControllerDelegate,
+SLNotificationViewControllerDelegate,
+SLCrashNotificationViewControllerDelegate
 {
     let xPadding:CGFloat = 13.0
     
@@ -21,9 +23,12 @@ SLThinkerViewControllerDelegate
     
     let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
     
+    let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+    
     var isMapShowing:Bool = false
     
     var lockBarViewController:SLLockBarViewController?
+    
     
     lazy var acceptNotificationViewController:SLAcceptNotificationsViewController = {
         let anvc:SLAcceptNotificationsViewController = SLAcceptNotificationsViewController()
@@ -102,7 +107,10 @@ SLThinkerViewControllerDelegate
             height: button.bounds.size.height
         )
         button.addTarget(self, action: #selector(crashButtonPressed), forControlEvents: .TouchDown)
-        
+        if let crashAlertsOn = self.databaseManager.currentUser?.areCrashAlertsOn {
+            button.selected = crashAlertsOn.boolValue
+        }
+
         return button
     }()
     
@@ -120,6 +128,9 @@ SLThinkerViewControllerDelegate
             height: button.bounds.size.height
         )
         button.addTarget(self, action: #selector(theftButtonPressed), forControlEvents: .TouchDown)
+        if let theftAlertsOn = self.databaseManager.currentUser?.areTheftAlertsOn {
+            button.selected = theftAlertsOn.boolValue
+        }
         
         return button
     }()
@@ -235,21 +246,33 @@ SLThinkerViewControllerDelegate
         self.thinkerViewController.setState(.Inactive)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+//        
+//        let wvc:SLWarningViewController = SLWarningViewController(
+//            headerText: "What up foo",
+//            infoText: "The sky dumbass",
+//            cancelButtonTitle: "Freak Out",
+//            actionButtonTitle: "Boomer!!"
+//        )
+//        wvc.view.frame = self.view.bounds
+//        
+//        self.addChildViewController(wvc)
+//        self.view.addSubview(wvc.view)
+//        self.view.bringSubviewToFront(wvc.view)
+//        wvc.didMoveToParentViewController(self)
+//        let cnvc:SLCrashNotificationViewController = SLCrashNotificationViewController(
+//            takeActionButtonTitle: "ALERT MY CONTACTS",
+//            cancelButtonTitle: "CANCEL, I'M OK",
+//            titleText: NSLocalizedString("Crash detected!", comment: ""),
+//            infoText: NSLocalizedString("Your emergency contacts will be alerted in", comment: "")
+//        )
+//        cnvc.delegate = self
+//        
+//        self.presentViewController(cnvc, animated: true, completion: nil)
+    }
+    
     func registerForNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(crashTurnedOn(_:)),
-            name: "kSLNotificationLedTurnedOn",
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(crashTurnedOff(_:)),
-            name: kSLNotificationLedTurnedOff,
-            object: nil
-        )
-        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
@@ -289,6 +312,13 @@ SLThinkerViewControllerDelegate
             self, selector:
             #selector(hideLockBar(_:)),
             name: kSLNotificationHideLockBar,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(theftOrCrashAlert(_:)),
+            name: kSLNotificationAlertOccured,
             object: nil
         )
     }
@@ -342,18 +372,47 @@ SLThinkerViewControllerDelegate
     }
     
     func theftButtonPressed() {
-        if self.lock != nil && !self.crashButton.selected {
-            // remove the following line of code. The crash state of the lock 
-            // should be set in the callback not here. Just using for testing/demo purpose
-            self.lock?.isSecurityOn = NSNumber(bool: !(self.lock?.isSecurityOn.boolValue)!)
-            self.lockManager.toggleSecurityForLock(self.lock)
+        guard let user:SLUser = self.databaseManager.currentUser as SLUser else {
+            return
         }
+        
+        if self.lock == nil {
+            return
+        }
+        
+        if let crashAlertsOn = user.areCrashAlertsOn where crashAlertsOn.boolValue {
+            return
+        }
+        
+        if user.areTheftAlertsOn == nil {
+             user.areTheftAlertsOn = NSNumber(bool: false)
+        }
+        
+        user.areTheftAlertsOn = NSNumber(bool: !user.areTheftAlertsOn!.boolValue)
+        self.databaseManager.saveUser(user, withCompletion: nil)
+        self.theftButton.selected = user.areTheftAlertsOn!.boolValue
     }
     
     func crashButtonPressed() {
-        if self.lock != nil && !self.theftButton.selected {
-            self.lockManager.toggleCrashForLock(self.lock)
+        guard let user:SLUser = self.databaseManager.currentUser as SLUser else {
+            return
         }
+        
+        if self.lock == nil {
+            return
+        }
+        
+        if let theftAlertsOn = user.areTheftAlertsOn where theftAlertsOn.boolValue {
+            return
+        }
+        
+        if user.areCrashAlertsOn == nil {
+            user.areCrashAlertsOn = NSNumber(bool: false)
+        }
+        
+        user.areCrashAlertsOn = NSNumber(bool: !user.areCrashAlertsOn!.boolValue)
+        self.databaseManager.saveUser(user, withCompletion: nil)
+        self.crashButton.selected = user.areCrashAlertsOn!.boolValue
     }
     
     func lockOpened(notification: NSNotification) {
@@ -375,19 +434,10 @@ SLThinkerViewControllerDelegate
         self.setLockDisabled()
     }
     
-    func crashTurnedOn(notification: NSNotification) {
-        self.crashButton.selected = true
-        self.lock?.isCrashOn = NSNumber(bool: true)
-    }
-    
-    func crashTurnedOff(notification: NSNotification) {
-        self.crashButton.selected = false
-        self.lock?.isCrashOn = NSNumber(bool: false)
-    }
-    
     func lockPaired(notification: NSNotification) {
         if let lock:SLLock = self.lockManager.getCurrentLock() {
             self.lock = lock
+            self.lockNameLabel.text = lock.displayName()
             self.lockNameLabel.setNeedsDisplay()
             self.lockManager.checkLockOpenOrClosed()
             self.lockNameLabel.textColor = UIColor.whiteColor()
@@ -459,6 +509,34 @@ SLThinkerViewControllerDelegate
         }
     }
     
+    func theftOrCrashAlert(notification: NSNotification) {
+        guard let alertNotification:SLNotification = notification.object as? SLNotification else {
+            return
+        }
+        
+        if alertNotification.type == SLNotificationType.CrashPre {
+            let cnvc:SLCrashNotificationViewController = SLCrashNotificationViewController(
+                takeActionButtonTitle: "ALERT MY CONTACTS",
+                cancelButtonTitle: "CANCEL, I'M OK",
+                titleText: NSLocalizedString("Crash detected!", comment: ""),
+                infoText: NSLocalizedString("Your emergency contacts will be alerted in", comment: "")
+            )
+            cnvc.crashDelegate = self
+            
+            self.presentViewController(cnvc, animated: true, completion: nil)
+        } else if alertNotification.type == SLNotificationType.Theft {
+            let tnvc:SLTheftNotificationViewController = SLTheftNotificationViewController(
+                takeActionButtonTitle: "LOCATE MY BIKE",
+                cancelButtonTitle: "OK, GOT IT",
+                titleText: NSLocalizedString("Theft detected!", comment: ""),
+                infoText: NSLocalizedString("We think someone may be tampering with your bike.", comment: "")
+            )
+            tnvc.delegate = self
+            
+            self.presentViewController(tnvc, animated: true, completion: nil)
+        }
+    }
+    
     func setLockDisabled() {
         self.lock = nil
         self.thinkerViewController.setState(.Inactive)
@@ -495,7 +573,6 @@ SLThinkerViewControllerDelegate
 
         //nc.modalPresentationStyle = .Custom
         //nc.transitioningDelegate = transitionHandler
-        
     }
     
     func lockBarHeight() -> CGFloat {
@@ -569,12 +646,48 @@ SLThinkerViewControllerDelegate
     
     // MARK: SLThinkerViewControllerDelegate methods
     func thinkerViewTapped(tvc: SLThinkerViewController) {
-        print("thinker view tapped")
-        if let lock:SLLock = self.lock {
-            self.thinkerViewController.setState(
-                lock.isLocked.boolValue ? .CounterClockwiseMoving : .CounterClockwiseMoving
-            )
-            self.lockManager.setLockStateForLock(lock)
+        guard let lock = self.lock else {
+            return
         }
+        
+        self.thinkerViewController.setState(
+            lock.isLocked.boolValue ? .CounterClockwiseMoving : .CounterClockwiseMoving
+        )
+        
+        self.lockManager.setLockStateForLock(lock)
+    }
+    
+    // MARK: SLNotificationViewControllerDelegate methods
+    func takeActionButtonPressed(nvc: SLNotificationViewController) {
+        let notificationManager:SLNotificationManager = SLNotificationManager.sharedManager() as! SLNotificationManager
+        var completion:(() -> Void)?
+        if let notification:SLNotification = notificationManager.lastNotification() as SLNotification {
+            if notification.type == SLNotificationType.CrashPre {
+                // this is where the emergency contacts should be contacted, 
+                // and any associated UI should be presented.
+            } else if notification.type == SLNotificationType.Theft {
+                completion = {
+                    self.isMapShowing = true
+                    self.presentViewControllerWithNavigationController(self.mapViewController)
+                }
+            }
+            
+            notificationManager.removeLastNotification()
+        }
+        
+        
+        nvc.dismissViewControllerAnimated(true, completion: completion)
+    }
+    
+    func cancelButtonPressed(nvc: SLNotificationViewController) {
+        let notificationManager:SLNotificationManager = SLNotificationManager.sharedManager() as! SLNotificationManager
+        notificationManager.removeLastNotification()
+        nvc.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: SLCrashNotificationViewControllerDelegate methods
+    func timerExpired(cnvc: SLCrashNotificationViewController) {
+        SLNotificationManager.sharedManager().sendEmergencyText()
+        cnvc.dismissViewControllerAnimated(true, completion: nil)
     }
 }

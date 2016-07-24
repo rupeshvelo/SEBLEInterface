@@ -9,14 +9,6 @@
 #import "SLNotification.h"
 #import "NSString+Skylock.h"
 
-#define kSLNotificationTimerValue   30
-
-@interface SLNotification()
-
-@property (nonatomic, assign) NSUInteger timerValue;
-
-@end
-
 @implementation SLNotification
 
 - (id)initWithType:(SLNotificationType)notificaitonType
@@ -54,47 +46,13 @@
             self.mainText = NSLocalizedString(@"Skylock Crash Alert", nil);
             self.detailText = NSLocalizedString(@"Emergency contacts notified", nil);
             break;
-        case SLNotificationTypeTheftLow:
+        case SLNotificationTypeTheft:
             self.mainText = NSLocalizedString(@"Skylock Theft Alert", nil);
-            self.detailText = NSLocalizedString(@"Low Threat", nil);
-            break;
-        case SLNotificationTypeTheftMedium:
-            self.mainText = NSLocalizedString(@"Skylock Theft Alert", nil);
-            self.detailText = NSLocalizedString(@"Medium Threat", nil);
-            break;
-        case SLNotificationTypeTheftHigh:
-            self.mainText = NSLocalizedString(@"Skylock Theft Alert", nil);
-            self.detailText = NSLocalizedString(@"High Threat", nil);
+            self.detailText = NSLocalizedString(@"Theft Threat", nil);
             break;
         default:
             break;
     }
 }
 
-- (void)startCountdown
-{
-    [NSTimer scheduledTimerWithTimeInterval:1
-                                     target:self
-                                   selector:@selector(timerFired:)
-                                   userInfo:nil
-                                    repeats:YES];
-    self.timerValue = kSLNotificationTimerValue;
-}
-
-- (void)timerFired:(NSTimer *)timer
-{
-    if (self.timerValue == 0) {
-        [timer invalidate];
-        
-        if ([self.delegate respondsToSelector:@selector(notificationTimerExpired:)]) {
-            [self.delegate notificationTimerExpired:self];
-        }
-    }
-    
-    if ([self.delegate respondsToSelector:@selector(notification:timerValueUpdated:)]) {
-        [self.delegate notification:self timerValueUpdated:@(self.timerValue)];
-    }
-    
-    self.timerValue--;
-}
 @end

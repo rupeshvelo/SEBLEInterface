@@ -7,16 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SLNotificationViewController.h"
 #import <MessageUI/MessageUI.h>
-#import "SLAnnotationDirectionCalloutView.h"
 #import "SLDirectionsViewController.h"
 
 @import GoogleMaps;
 
 @interface SLMapViewController : UIViewController <
 UIAlertViewDelegate,
-SLNotificationViewControllerDelegate,
 MFMessageComposeViewControllerDelegate,
 SLDirectionsViewControllerDelegate,
 GMSMapViewDelegate

@@ -138,16 +138,18 @@ class SLRequestContactsAccessViewController: UIViewController {
     func acceptButtonPressed() {
         let contactHandler = SLContactHandler()
         contactHandler.requestAuthorization { (allowedAccess) in
-            if allowedAccess {
-                let ecvc = SLEmergencyContactsViewController()
-                ecvc.onExit = {
+            dispatch_async(dispatch_get_main_queue(), { 
+                if allowedAccess {
+                    let ecvc = SLEmergencyContactsViewController()
+                    ecvc.onExit = {
+                        self.dismissViewControllerAnimated(true, completion: nil)
+                    }
+                    
+                    self.navigationController?.pushViewController(ecvc, animated: true)
+                } else {
                     self.dismissViewControllerAnimated(true, completion: nil)
                 }
-                
-                self.navigationController?.pushViewController(ecvc, animated: true)
-            } else {
-                self.dismissViewControllerAnimated(true, completion: nil)
-            }
+            })
         }
     }
     

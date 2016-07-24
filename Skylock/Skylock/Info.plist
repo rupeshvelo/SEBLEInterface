@@ -123,6 +123,9 @@
 	<array>
 		<string>Roboto-Regular.ttf</string>
 		<string>ShadowsIntoLightTwo-Regular.ttf</string>
+        <string>Montserrat-Regular.ttf</string>
+        <string>Montserrat-Bold.ttf</string>
+        <string>OpenSans-Regular.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

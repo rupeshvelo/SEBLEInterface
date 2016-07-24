@@ -29,22 +29,22 @@
 {
     [values enumerateKeysAndObjectsUsingBlock:^(NSNumber *key, NSNumber *obj, BOOL *stop) {
         switch (key.unsignedIntegerValue) {
-            case SLAccerometerDataXMav:
+            case SLAccelerometerDataXMav:
                 self.xmav = obj;
                 break;
-            case SLAccerometerDataYMav:
+            case SLAccelerometerDataYMav:
                 self.ymav = obj;
                 break;
-            case SLAccerometerDataZMav:
+            case SLAccelerometerDataZMav:
                 self.zmav = obj;
                 break;
-            case SLAccerometerDataXVar:
+            case SLAccelerometerDataXVar:
                 self.xvar = obj;
                 break;
-            case SLAccerometerDataYVar:
+            case SLAccelerometerDataYVar:
                 self.yvar = obj;
                 break;
-            case SLAccerometerDataZVar:
+            case SLAccelerometerDataZVar:
                 self.zvar = obj;
                 break;
             default:
@@ -55,12 +55,12 @@
 
 - (NSDictionary *)asDictionary
 {
-    return @{@(SLAccerometerDataXMav): self.xmav,
-             @(SLAccerometerDataXVar): self.xvar,
-             @(SLAccerometerDataYMav): self.ymav,
-             @(SLAccerometerDataYVar): self.yvar,
-             @(SLAccerometerDataZMav): self.zmav,
-             @(SLAccerometerDataZVar): self.zvar
+    return @{@(SLAccelerometerDataXMav): self.xmav,
+             @(SLAccelerometerDataXVar): self.xvar,
+             @(SLAccelerometerDataYMav): self.ymav,
+             @(SLAccelerometerDataYVar): self.yvar,
+             @(SLAccelerometerDataZMav): self.zmav,
+             @(SLAccelerometerDataZVar): self.zvar
              };
 }
 

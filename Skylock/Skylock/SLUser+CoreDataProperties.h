@@ -2,7 +2,7 @@
 //  SLUser+CoreDataProperties.h
 //  Skylock
 //
-//  Created by Andre Green on 4/9/16.
+//  Created by Andre Green on 7/24/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -20,9 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *googlePushId;
 @property (nullable, nonatomic, retain) NSNumber *isCurrentUser;
 @property (nullable, nonatomic, retain) NSString *lastName;
+@property (nullable, nonatomic, retain) NSString *phoneNumber;
 @property (nullable, nonatomic, retain) NSString *userId;
 @property (nullable, nonatomic, retain) NSString *userType;
-@property (nullable, nonatomic, retain) NSString *phoneNumber;
+@property (nullable, nonatomic, retain) NSNumber *areCrashAlertsOn;
+@property (nullable, nonatomic, retain) NSNumber *areTheftAlertsOn;
+@property (nullable, nonatomic, retain) NSNumber *isAutoLockOn;
+@property (nullable, nonatomic, retain) NSNumber *isAutoUnlockOn;
 @property (nullable, nonatomic, retain) NSSet<SLLock *> *locks;
 
 @end

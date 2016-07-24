@@ -161,7 +161,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (NSArray *)deviceNameFragmentsToConnect
 {
-    return @[@"skylock"];
+    return @[@"skylock", @"ellipse"];
 }
 
 - (NSSet *)servicesToSubcribeTo
@@ -448,14 +448,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
 
 - (void)toggleCrashForLock:(SLLock *)lock
 {
+    
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    [self writeToLockWithMacAddress:lock.macAddress
-                            service:SLLockManagerServiceHardware
-                     characteristic:SLLockManagerCharacteristicLed
-                             turnOn:!lock.isCrashOn.boolValue];
 }
 
-- (void)toggleSecurityForLock:(SLLock *)lock
+- (void)toggleTheftForLock:(SLLock *)lock
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     
@@ -737,12 +734,12 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         }
     }
     
-    NSDictionary *values = @{@(SLAccerometerDataXMav):@(xmav),
-                             @(SLAccerometerDataYMav):@(ymav),
-                             @(SLAccerometerDataZMav):@(zmav),
-                             @(SLAccerometerDataXVar):@(xvar),
-                             @(SLAccerometerDataYVar):@(yvar),
-                             @(SLAccerometerDataZVar):@(zvar)
+    NSDictionary *values = @{@(SLAccelerometerDataXMav):@(xmav),
+                             @(SLAccelerometerDataYMav):@(ymav),
+                             @(SLAccelerometerDataZMav):@(zmav),
+                             @(SLAccelerometerDataXVar):@(xvar),
+                             @(SLAccelerometerDataYVar):@(yvar),
+                             @(SLAccelerometerDataZVar):@(zvar)
                              };
     
     [self updateValues:values forLockMacAddress:macAddress forValue:SLLockManagerValueServiceAccelerometer];
@@ -795,6 +792,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
         NSLog(@"Error: updating security state got value: %@", @(value));
         [SLDatabaseManager.sharedManager saveLogEntry:
          [NSString stringWithFormat:@"Error: updating security state got value: %@", @(value)]];
+        [self disconnectFromLockWithAddress:lock.macAddress];
         return;
     }
     
@@ -1058,7 +1056,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     }
     
     SLLock *lock = self.locks[macAddress];
-    lock.isCrashOn = @(isOn);
     [[NSNotificationCenter defaultCenter] postNotificationName:notification
                                                         object:@{@"lock": lock}];
 }
