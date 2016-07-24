@@ -20,7 +20,6 @@
 #import "SLNavigationViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "SLNotifications.h"
-#import "SLNotificationViewController.h"
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
 #import "SLUser.h"
@@ -246,27 +245,7 @@
 
 - (void)handleCrashAndTheftAlerts:(NSNotification *)notification
 {
-    if (self.notificationViewController) {
-        NSDictionary *info = notification.userInfo;
-        if (info && info[@"notification"]) {
-            SLNotification *slNotification = info[@"notification"];
-            [self.notificationViewController addNewNotficationViewForNotification:slNotification];
-        }
-    } else {
-        self.notificationViewController = [SLNotificationViewController new];
-        self.notificationViewController.delegate = self;
-        self.notificationViewController.view.frame = self.view.bounds;
-        self.notificationViewController.view.alpha = 0.0f;
-        
-        [self addChildViewController:self.notificationViewController];
-        [self.view addSubview:self.notificationViewController.view];
-        [self.view bringSubviewToFront:self.notificationViewController.view];
-        [self.notificationViewController didMoveToParentViewController:self];
-        
-        [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-            self.notificationViewController.view.alpha = 1.0f;
-        }];
-    }
+
 }
 
 - (void)lockPaired:(NSNotification *)notification
@@ -305,24 +284,6 @@
         [self.notificationViewController dismissViewControllerAnimated:YES completion:^{
             self.notificationViewController = nil;
         }];
-    }
-}
-
-- (void)dismissAlert:(NSNotification *)notification
-{
-    NSDictionary *info = notification.userInfo;
-    if (self.notificationViewController && info && info[@"notification"]) {
-        SLNotification *slNotification = info[@"notification"];
-        [self.notificationViewController dismissNotification:slNotification];
-    }
-}
-
-- (void)addAlertView:(NSNotification *)notification
-{
-    NSDictionary *info = notification.userInfo;
-    if (self.notificationViewController && info && info[@"notification"]) {
-        SLNotification *slNotification = info[@"notification"];
-        [self.notificationViewController addNewNotficationViewForNotification:slNotification];
     }
 }
 

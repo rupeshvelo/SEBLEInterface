@@ -82,6 +82,42 @@
 		DC2DDD4D1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC2DDD291D1C85AB004A5857 /* sign_in_text_confirmation_code_button@2x.png */; };
 		DC2DDD4E1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC2DDD2A1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@3x.png */; };
 		DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */; };
+		DC30034F1D43D9D2004CE560 /* SLWarningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC30034E1D43D9D2004CE560 /* SLWarningViewController.swift */; };
+		DC3003731D4405FD004CE560 /* SLNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3003721D4405FD004CE560 /* SLNotificationViewController.swift */; };
+		DC3003751D440EEF004CE560 /* SLTheftNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3003741D440EEF004CE560 /* SLTheftNotificationViewController.swift */; };
+		DC3003761D441570004CE560 /* Gotham-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003511D43E1F8004CE560 /* Gotham-Light.otf */; };
+		DC3003771D441573004CE560 /* Gotham-Medium 2.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003521D43E1F8004CE560 /* Gotham-Medium 2.otf */; };
+		DC3003781D441577004CE560 /* Gotham-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003531D43E1F8004CE560 /* Gotham-Thin.otf */; };
+		DC3003791D44157A004CE560 /* gothambold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003541D43E1F8004CE560 /* gothambold.ttf */; };
+		DC30037A1D441580004CE560 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003551D43E200004CE560 /* Montserrat-Bold.ttf */; };
+		DC30037B1D441584004CE560 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003561D43E200004CE560 /* Montserrat-Regular.ttf */; };
+		DC30037C1D441588004CE560 /* OpenSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003571D43E207004CE560 /* OpenSans-Bold.ttf */; };
+		DC30037D1D44158D004CE560 /* OpenSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003581D43E207004CE560 /* OpenSans-BoldItalic.ttf */; };
+		DC30037E1D441590004CE560 /* OpenSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003591D43E207004CE560 /* OpenSans-ExtraBold.ttf */; };
+		DC30037F1D441594004CE560 /* OpenSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035A1D43E207004CE560 /* OpenSans-ExtraBoldItalic.ttf */; };
+		DC3003801D441598004CE560 /* OpenSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035B1D43E207004CE560 /* OpenSans-Italic.ttf */; };
+		DC3003811D44159B004CE560 /* OpenSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035C1D43E207004CE560 /* OpenSans-Light.ttf */; };
+		DC3003821D44159E004CE560 /* OpenSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035D1D43E207004CE560 /* OpenSans-LightItalic.ttf */; };
+		DC3003831D4415A1004CE560 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035E1D43E207004CE560 /* OpenSans-Regular.ttf */; };
+		DC3003841D4415A4004CE560 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC30035F1D43E207004CE560 /* OpenSans-Semibold.ttf */; };
+		DC3003851D4415A7004CE560 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003601D43E207004CE560 /* OpenSans-SemiboldItalic.ttf */; };
+		DC3003861D4415AB004CE560 /* ProximaNova-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003611D43E216004CE560 /* ProximaNova-Black.otf */; };
+		DC3003871D4415AE004CE560 /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003621D43E216004CE560 /* ProximaNova-Bold.otf */; };
+		DC3003881D4415B1004CE560 /* ProximaNova-BoldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003631D43E216004CE560 /* ProximaNova-BoldIt.otf */; };
+		DC3003891D4415B5004CE560 /* ProximaNova-Extrabold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003641D43E216004CE560 /* ProximaNova-Extrabold.otf */; };
+		DC30038A1D4415B7004CE560 /* ProximaNova-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003651D43E216004CE560 /* ProximaNova-Light.otf */; };
+		DC30038B1D4415BA004CE560 /* ProximaNova-LightItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003661D43E216004CE560 /* ProximaNova-LightItalic.otf */; };
+		DC30038C1D4415BD004CE560 /* ProximaNova-RegItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003671D43E216004CE560 /* ProximaNova-RegItalic.otf */; };
+		DC30038D1D4415C0004CE560 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003681D43E216004CE560 /* ProximaNova-Regular.otf */; };
+		DC30038E1D4415C4004CE560 /* ProximaNova-RegularItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003691D43E216004CE560 /* ProximaNova-RegularItalic.otf */; };
+		DC30038F1D4415C7004CE560 /* ProximaNova-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036A1D43E216004CE560 /* ProximaNova-Semibold.otf */; };
+		DC3003901D4415CA004CE560 /* ProximaNova-SemiboldItalic.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036B1D43E216004CE560 /* ProximaNova-SemiboldItalic.otf */; };
+		DC3003911D4415CE004CE560 /* ProximaNovaCond-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036C1D43E216004CE560 /* ProximaNovaCond-Light.otf */; };
+		DC3003921D4415D1004CE560 /* ProximaNovaCond-LightIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036D1D43E216004CE560 /* ProximaNovaCond-LightIt.otf */; };
+		DC3003931D4415D4004CE560 /* ProximaNovaCond-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036E1D43E216004CE560 /* ProximaNovaCond-Regular.otf */; };
+		DC3003941D4415D8004CE560 /* ProximaNovaCond-RegularIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC30036F1D43E216004CE560 /* ProximaNovaCond-RegularIt.otf */; };
+		DC3003951D4415DA004CE560 /* ProximaNovaCond-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003701D43E216004CE560 /* ProximaNovaCond-Semibold.otf */; };
+		DC3003961D4415DD004CE560 /* ProximaNovaCond-SemiboldIt.otf in Resources */ = {isa = PBXBuildFile; fileRef = DC3003711D43E216004CE560 /* ProximaNovaCond-SemiboldIt.otf */; };
 		DC3141211B93849E00492C4D /* SLTouchPadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */; };
 		DC3CCE021BA306FD00528992 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC3CCE011BA306FD00528992 /* MapKit.framework */; };
 		DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE031BA30ED000528992 /* SLDirection.swift */; };
@@ -184,7 +220,6 @@
 		DC7E70D01B8C3382006E74DC /* SLNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70CF1B8C3382006E74DC /* SLNotificationManager.m */; };
 		DC7E70D31B8C34A6006E74DC /* SLNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D21B8C34A6006E74DC /* SLNotification.m */; };
 		DC7E70D61B8D1356006E74DC /* SLNotificationEmergencyView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */; };
-		DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */; };
 		DC80915B1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */; };
 		DC85F3B21BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
 		DC85F3B31BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */; };
@@ -468,6 +503,42 @@
 		DC2DDD2A1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sign_in_text_confirmation_code_button@3x.png"; sourceTree = "<group>"; };
 		DC2E04F51B3EEA2200B7D6F6 /* SLContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLContact.h; sourceTree = "<group>"; };
 		DC2E04F61B3EEA2200B7D6F6 /* SLContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLContact.m; sourceTree = "<group>"; };
+		DC30034E1D43D9D2004CE560 /* SLWarningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWarningViewController.swift; sourceTree = "<group>"; };
+		DC3003511D43E1F8004CE560 /* Gotham-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Light.otf"; sourceTree = "<group>"; };
+		DC3003521D43E1F8004CE560 /* Gotham-Medium 2.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Medium 2.otf"; sourceTree = "<group>"; };
+		DC3003531D43E1F8004CE560 /* Gotham-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Thin.otf"; sourceTree = "<group>"; };
+		DC3003541D43E1F8004CE560 /* gothambold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = gothambold.ttf; sourceTree = "<group>"; };
+		DC3003551D43E200004CE560 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		DC3003561D43E200004CE560 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		DC3003571D43E207004CE560 /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
+		DC3003581D43E207004CE560 /* OpenSans-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-BoldItalic.ttf"; sourceTree = "<group>"; };
+		DC3003591D43E207004CE560 /* OpenSans-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-ExtraBold.ttf"; sourceTree = "<group>"; };
+		DC30035A1D43E207004CE560 /* OpenSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		DC30035B1D43E207004CE560 /* OpenSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Italic.ttf"; sourceTree = "<group>"; };
+		DC30035C1D43E207004CE560 /* OpenSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Light.ttf"; sourceTree = "<group>"; };
+		DC30035D1D43E207004CE560 /* OpenSans-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-LightItalic.ttf"; sourceTree = "<group>"; };
+		DC30035E1D43E207004CE560 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
+		DC30035F1D43E207004CE560 /* OpenSans-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Semibold.ttf"; sourceTree = "<group>"; };
+		DC3003601D43E207004CE560 /* OpenSans-SemiboldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-SemiboldItalic.ttf"; sourceTree = "<group>"; };
+		DC3003611D43E216004CE560 /* ProximaNova-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Black.otf"; sourceTree = "<group>"; };
+		DC3003621D43E216004CE560 /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		DC3003631D43E216004CE560 /* ProximaNova-BoldIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-BoldIt.otf"; sourceTree = "<group>"; };
+		DC3003641D43E216004CE560 /* ProximaNova-Extrabold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Extrabold.otf"; sourceTree = "<group>"; };
+		DC3003651D43E216004CE560 /* ProximaNova-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Light.otf"; sourceTree = "<group>"; };
+		DC3003661D43E216004CE560 /* ProximaNova-LightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-LightItalic.otf"; sourceTree = "<group>"; };
+		DC3003671D43E216004CE560 /* ProximaNova-RegItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-RegItalic.otf"; sourceTree = "<group>"; };
+		DC3003681D43E216004CE560 /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		DC3003691D43E216004CE560 /* ProximaNova-RegularItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-RegularItalic.otf"; sourceTree = "<group>"; };
+		DC30036A1D43E216004CE560 /* ProximaNova-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Semibold.otf"; sourceTree = "<group>"; };
+		DC30036B1D43E216004CE560 /* ProximaNova-SemiboldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-SemiboldItalic.otf"; sourceTree = "<group>"; };
+		DC30036C1D43E216004CE560 /* ProximaNovaCond-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Light.otf"; sourceTree = "<group>"; };
+		DC30036D1D43E216004CE560 /* ProximaNovaCond-LightIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-LightIt.otf"; sourceTree = "<group>"; };
+		DC30036E1D43E216004CE560 /* ProximaNovaCond-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Regular.otf"; sourceTree = "<group>"; };
+		DC30036F1D43E216004CE560 /* ProximaNovaCond-RegularIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-RegularIt.otf"; sourceTree = "<group>"; };
+		DC3003701D43E216004CE560 /* ProximaNovaCond-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-Semibold.otf"; sourceTree = "<group>"; };
+		DC3003711D43E216004CE560 /* ProximaNovaCond-SemiboldIt.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNovaCond-SemiboldIt.otf"; sourceTree = "<group>"; };
+		DC3003721D4405FD004CE560 /* SLNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLNotificationViewController.swift; sourceTree = "<group>"; };
+		DC3003741D440EEF004CE560 /* SLTheftNotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTheftNotificationViewController.swift; sourceTree = "<group>"; };
 		DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchPadViewController.swift; sourceTree = "<group>"; };
 		DC3CCE011BA306FD00528992 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DC3CCE031BA30ED000528992 /* SLDirection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLDirection.swift; sourceTree = "<group>"; };
@@ -575,8 +646,6 @@
 		DC7E70D21B8C34A6006E74DC /* SLNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotification.m; sourceTree = "<group>"; };
 		DC7E70D41B8D1356006E74DC /* SLNotificationEmergencyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNotificationEmergencyView.h; sourceTree = "<group>"; };
 		DC7E70D51B8D1356006E74DC /* SLNotificationEmergencyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationEmergencyView.m; sourceTree = "<group>"; };
-		DC7E70D71B8D1DC9006E74DC /* SLNotificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLNotificationViewController.h; sourceTree = "<group>"; };
-		DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLNotificationViewController.m; sourceTree = "<group>"; };
 		DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLConcentricCirclesViewController.swift; sourceTree = "<group>"; };
 		DC85F3B01BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLAnnotationDirectionCalloutView.h; sourceTree = "<group>"; };
 		DC85F3B11BA2090A0089BF08 /* SLAnnotationDirectionCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLAnnotationDirectionCalloutView.m; sourceTree = "<group>"; };
@@ -906,8 +975,6 @@
 				DC3CCE241BA34EF000528992 /* SLDirectionsViewController.h */,
 				DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */,
 				DC3141201B93849E00492C4D /* SLTouchPadViewController.swift */,
-				DC7E70D71B8D1DC9006E74DC /* SLNotificationViewController.h */,
-				DC7E70D81B8D1DC9006E74DC /* SLNotificationViewController.m */,
 				DCE2CE0D1B375FB8007C4AC5 /* SLNavigationViewController.h */,
 				DCE2CE0E1B375FB8007C4AC5 /* SLNavigationViewController.m */,
 				DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */,
@@ -935,6 +1002,9 @@
 				DCAAEBA81D32D9A100946B61 /* SLEmergencyContactsViewController.swift */,
 				DC9664EB1D3FCD62001DCAFD /* SLThinkerViewController.swift */,
 				DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */,
+				DC30034E1D43D9D2004CE560 /* SLWarningViewController.swift */,
+				DC3003721D4405FD004CE560 /* SLNotificationViewController.swift */,
+				DC3003741D440EEF004CE560 /* SLTheftNotificationViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1449,8 +1519,41 @@
 		DCF36BC11B538A1400070F11 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
+				DC3003511D43E1F8004CE560 /* Gotham-Light.otf */,
+				DC3003521D43E1F8004CE560 /* Gotham-Medium 2.otf */,
+				DC3003531D43E1F8004CE560 /* Gotham-Thin.otf */,
+				DC3003541D43E1F8004CE560 /* gothambold.ttf */,
 				DCF36BC71B538CE100070F11 /* Roboto-Regular.ttf */,
 				DCF36BC21B538A1400070F11 /* ShadowsIntoLightTwo-Regular.ttf */,
+				DC3003551D43E200004CE560 /* Montserrat-Bold.ttf */,
+				DC3003561D43E200004CE560 /* Montserrat-Regular.ttf */,
+				DC3003571D43E207004CE560 /* OpenSans-Bold.ttf */,
+				DC3003581D43E207004CE560 /* OpenSans-BoldItalic.ttf */,
+				DC3003591D43E207004CE560 /* OpenSans-ExtraBold.ttf */,
+				DC30035A1D43E207004CE560 /* OpenSans-ExtraBoldItalic.ttf */,
+				DC30035B1D43E207004CE560 /* OpenSans-Italic.ttf */,
+				DC30035C1D43E207004CE560 /* OpenSans-Light.ttf */,
+				DC30035D1D43E207004CE560 /* OpenSans-LightItalic.ttf */,
+				DC30035E1D43E207004CE560 /* OpenSans-Regular.ttf */,
+				DC30035F1D43E207004CE560 /* OpenSans-Semibold.ttf */,
+				DC3003601D43E207004CE560 /* OpenSans-SemiboldItalic.ttf */,
+				DC3003611D43E216004CE560 /* ProximaNova-Black.otf */,
+				DC3003621D43E216004CE560 /* ProximaNova-Bold.otf */,
+				DC3003631D43E216004CE560 /* ProximaNova-BoldIt.otf */,
+				DC3003641D43E216004CE560 /* ProximaNova-Extrabold.otf */,
+				DC3003651D43E216004CE560 /* ProximaNova-Light.otf */,
+				DC3003661D43E216004CE560 /* ProximaNova-LightItalic.otf */,
+				DC3003671D43E216004CE560 /* ProximaNova-RegItalic.otf */,
+				DC3003681D43E216004CE560 /* ProximaNova-Regular.otf */,
+				DC3003691D43E216004CE560 /* ProximaNova-RegularItalic.otf */,
+				DC30036A1D43E216004CE560 /* ProximaNova-Semibold.otf */,
+				DC30036B1D43E216004CE560 /* ProximaNova-SemiboldItalic.otf */,
+				DC30036C1D43E216004CE560 /* ProximaNovaCond-Light.otf */,
+				DC30036D1D43E216004CE560 /* ProximaNovaCond-LightIt.otf */,
+				DC30036E1D43E216004CE560 /* ProximaNovaCond-Regular.otf */,
+				DC30036F1D43E216004CE560 /* ProximaNovaCond-RegularIt.otf */,
+				DC3003701D43E216004CE560 /* ProximaNovaCond-Semibold.otf */,
+				DC3003711D43E216004CE560 /* ProximaNovaCond-SemiboldIt.otf */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
@@ -1580,14 +1683,18 @@
 				DC77BF911D0A36BC0081C7B6 /* lock_settings_right_arrow@2x.png in Resources */,
 				DC77BF941D0A36BC0081C7B6 /* lock_status_bar@3x.png in Resources */,
 				DCD88AEE1D1B69FC00A3618D /* onboarding_main_image_4@2x.png in Resources */,
+				DC3003781D441577004CE560 /* Gotham-Thin.otf in Resources */,
 				DCE607F71D10F7600034D0B3 /* button_keypad_left_Onboarding@3x.png in Resources */,
 				DCAAEBFE1D347DDF00946B61 /* contacts_phone_icon@2x.png in Resources */,
+				DC3003801D441598004CE560 /* OpenSans-Italic.ttf in Resources */,
+				DC3003771D441573004CE560 /* Gotham-Medium 2.otf in Resources */,
 				DC2DDD461D1C85AB004A5857 /* notifications_background@3x.png in Resources */,
 				DC2DDD4E1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@3x.png in Resources */,
 				DCE608061D10F7600034D0B3 /* touch_pad_up_arrow@2x.png in Resources */,
 				DCE608071D10F7600034D0B3 /* touch_pad_up_arrow@3x.png in Resources */,
 				DC2DDD371D1C85AB004A5857 /* button_ok_onboarding@2x.png in Resources */,
 				DC2DDD351D1C85AB004A5857 /* button_no_small_Onboarding@2x.png in Resources */,
+				DC30038A1D4415B7004CE560 /* ProximaNova-Light.otf in Resources */,
 				DCD88AEF1D1B69FC00A3618D /* onboarding_main_image_4@3x.png in Resources */,
 				DC1881DA1D21E5310030C607 /* thin-0632_security_lock@3x.png in Resources */,
 				DCD88AED1D1B69FC00A3618D /* onboarding_main_image_3@3x.png in Resources */,
@@ -1595,14 +1702,19 @@
 				DC1881D81D21E5310030C607 /* temp_phone_info@3x.png in Resources */,
 				DCD6797E1CF9FFB50081D225 /* placeholder_logo_animation@2x.png in Resources */,
 				DC1881D61D21E5310030C607 /* lock_unlocked_button@3x.png in Resources */,
+				DC3003821D44159E004CE560 /* OpenSans-LightItalic.ttf in Resources */,
+				DC3003961D4415DD004CE560 /* ProximaNovaCond-SemiboldIt.otf in Resources */,
 				DC9682E81D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png in Resources */,
+				DC30037D1D44158D004CE560 /* OpenSans-BoldItalic.ttf in Resources */,
 				DCAAEC001D347DDF00946B61 /* contacts_selected_circle@2x.png in Resources */,
 				DC4EF6E91D24B7B1005FFA3D /* map_view_directions_pin@2x.png in Resources */,
 				DC9682D91D2B8795008C106E /* help_icon_slideview@2x.png in Resources */,
 				DC77BF931D0A36BC0081C7B6 /* lock_status_bar@2x.png in Resources */,
+				DC3003951D4415DA004CE560 /* ProximaNovaCond-Semibold.otf in Resources */,
 				DC2DDD331D1C85AB004A5857 /* button_log_in_email_Onboarding@2x.png in Resources */,
 				DC9682EB1D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png in Resources */,
 				DC4EF6DE1D24B7B1005FFA3D /* map_lock_info_x_button@3x.png in Resources */,
+				DC3003891D4415B5004CE560 /* ProximaNova-Extrabold.otf in Resources */,
 				DC9682DD1D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png in Resources */,
 				DCE607FF1D10F7600034D0B3 /* button_save_Onboarding@3x.png in Resources */,
 				DC1881D21D21E5310030C607 /* lock_screen_theft_detection_button@3x.png in Resources */,
@@ -1614,9 +1726,11 @@
 				DCD6797F1CF9FFB50081D225 /* placeholder_logo_animation@3x.png in Resources */,
 				DCAAEC011D347DDF00946B61 /* contacts_selected_circle@3x.png in Resources */,
 				DCE607F91D10F7600034D0B3 /* button_keypad_right_Onboarding@3x.png in Resources */,
+				DC30038E1D4415C4004CE560 /* ProximaNova-RegularItalic.otf in Resources */,
 				DC77BF8B1D0A36BC0081C7B6 /* icon_unlocked_navy_circle_Ellipses@2x.png in Resources */,
 				DCE607F81D10F7600034D0B3 /* button_keypad_right_Onboarding@2x.png in Resources */,
 				DC2DDD4A1D1C85AB004A5857 /* sign_in_confirm_code_button@3x.png in Resources */,
+				DC3003881D4415B1004CE560 /* ProximaNova-BoldIt.otf in Resources */,
 				DC77BF891D0A36BC0081C7B6 /* icon_more_dots_gray_horizontal_Ellipses@2x.png in Resources */,
 				DC1881C91D21E5310030C607 /* lock_screen_close_icon@2x.png in Resources */,
 				DC2DDD361D1C85AB004A5857 /* button_no_small_Onboarding@3x.png in Resources */,
@@ -1636,6 +1750,8 @@
 				DC1881CC1D21E5310030C607 /* lock_screen_crash_detection_button@3x.png in Resources */,
 				DC2DDD431D1C85AB004A5857 /* login_use_location_background@2x.png in Resources */,
 				DCAAEBF91D347DDF00946B61 /* button_not_now_Onboarding@3x.png in Resources */,
+				DC3003811D44159B004CE560 /* OpenSans-Light.ttf in Resources */,
+				DC3003841D4415A4004CE560 /* OpenSans-Semibold.ttf in Resources */,
 				DCE607FA1D10F7600034D0B3 /* button_keypad_up_Onboarding@2x.png in Resources */,
 				DCD6797A1CF9FECD0081D225 /* Launch.storyboard in Resources */,
 				DC2DDD421D1C85AB004A5857 /* confirm_text_code_button@3x.png in Resources */,
@@ -1645,12 +1761,14 @@
 				DCF36BC81B538CE100070F11 /* Roboto-Regular.ttf in Resources */,
 				DC9682E31D2B8795008C106E /* icons_navtab_mapview_selected@2x.png in Resources */,
 				DC2DDD2B1D1C85AB004A5857 /* button_blink_device_Onboarding@2x.png in Resources */,
+				DC30038F1D4415C7004CE560 /* ProximaNova-Semibold.otf in Resources */,
 				DC1881CE1D21E5310030C607 /* lock_screen_crash_detection_button_inactive@3x.png in Resources */,
 				DC3E26801C4EC92900BF7AC2 /* GoogleService-Info.plist in Resources */,
 				DC9682EC1D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png in Resources */,
 				DCAAEC041D347DDF00946B61 /* emergency_contact_circle@2x.png in Resources */,
 				DCD88AE61D1B69FC00A3618D /* needs_location_background@2x.png in Resources */,
 				DC77BF901D0A36BC0081C7B6 /* lock_details_settings_icon@3x.png in Resources */,
+				DC3003851D4415A7004CE560 /* OpenSans-SemiboldItalic.ttf in Resources */,
 				DC2DDD3F1D1C85AB004A5857 /* button_yes_small_Onboarding@2x.png in Resources */,
 				DC4EF6E51D24B7B1005FFA3D /* map_theft_detection_on_button@2x.png in Resources */,
 				DC2DDD391D1C85AB004A5857 /* button_sign_up_facebook_Onboarding@2x.png in Resources */,
@@ -1660,17 +1778,20 @@
 				DC2DDD4C1D1C85AB004A5857 /* sign_in_existing_user_login_button@3x.png in Resources */,
 				DC4EF6EB1D24B7B1005FFA3D /* map_view_get_directions_lock_unconnected_button@2x.png in Resources */,
 				DC1881C81D21E5310030C607 /* lock_locked_button@3x.png in Resources */,
+				DC3003871D4415AE004CE560 /* ProximaNova-Bold.otf in Resources */,
 				DC77BF881D0A36BC0081C7B6 /* icon_locked_navy_circle_Ellipses@3x.png in Resources */,
 				DC2DDD2E1D1C85AB004A5857 /* button_close_window_extra_large_Onboarding@3x.png in Resources */,
 				DCE608001D10F7600034D0B3 /* touch_pad_down_arrow@2x.png in Resources */,
 				DC4EF6D71D24B7B1005FFA3D /* icon_current_location_small@2x.png in Resources */,
 				DCAAEBF71D347DDF00946B61 /* button_add_contacts_Emergencycontacts@3x.png in Resources */,
+				DC3003931D4415D4004CE560 /* ProximaNovaCond-Regular.otf in Resources */,
 				DCE5C2211CFB5D910084F8A2 /* button_yes_small_Onboarding@2x.png in Resources */,
 				DCAAEBFF1D347DDF00946B61 /* contacts_phone_icon@3x.png in Resources */,
 				DC9682DC1D2B8795008C106E /* icons_leftmenu_ellipses@3x.png in Resources */,
 				DCE607F01D10F7600034D0B3 /* button_backspace_Onboarding@2x.png in Resources */,
 				DC77BF821D0A36BC0081C7B6 /* button_save_Ellipses@3x.png in Resources */,
 				DC77BF8A1D0A36BC0081C7B6 /* icon_more_dots_gray_horizontal_Ellipses@3x.png in Resources */,
+				DC3003941D4415D8004CE560 /* ProximaNovaCond-RegularIt.otf in Resources */,
 				DCAAEBF61D347DDF00946B61 /* button_add_contacts_Emergencycontacts@2x.png in Resources */,
 				DC77BF831D0A36BC0081C7B6 /* button_save_inactive_Ellipses@2x.png in Resources */,
 				DC4EF6F21D24B7B1005FFA3D /* user_location_pin@3x.png in Resources */,
@@ -1679,13 +1800,18 @@
 				DCE607F41D10F7600034D0B3 /* button_keypad_down_Onboarding@2x.png in Resources */,
 				DCE607FC1D10F7600034D0B3 /* button_save_inactive_Onboarding@2x.png in Resources */,
 				DCAAEBFB1D347DDF00946B61 /* button_remove_Emergencycontacts@3x.png in Resources */,
+				DC30038C1D4415BD004CE560 /* ProximaNova-RegItalic.otf in Resources */,
 				DC9682ED1D2B8795008C106E /* slideview_help_icon@2x.png in Resources */,
 				DC9682DB1D2B8795008C106E /* icons_leftmenu_ellipses@2x.png in Resources */,
 				DC2DDD401D1C85AB004A5857 /* button_yes_small_Onboarding@3x.png in Resources */,
+				DC3003861D4415AB004CE560 /* ProximaNova-Black.otf in Resources */,
+				DC3003921D4415D1004CE560 /* ProximaNovaCond-LightIt.otf in Resources */,
 				DC4EF6F11D24B7B1005FFA3D /* user_location_pin@2x.png in Resources */,
 				DC4EF6F01D24B7B1005FFA3D /* show_current location_button@3x.png in Resources */,
 				DCD88AE71D1B69FC00A3618D /* needs_location_background@3x.png in Resources */,
 				DC2DDD4D1D1C85AB004A5857 /* sign_in_text_confirmation_code_button@2x.png in Resources */,
+				DC30037E1D441590004CE560 /* OpenSans-ExtraBold.ttf in Resources */,
+				DC30038D1D4415C0004CE560 /* ProximaNova-Regular.otf in Resources */,
 				DC4EF6EE1D24B7B1005FFA3D /* map_view_lock_info_get_directions_to_my_bike_button@3x.png in Resources */,
 				DCD82FE91B1FCBBC00B38910 /* Images.xcassets in Resources */,
 				DCE5C21A1CFB5D910084F8A2 /* button_continue_Onboarding@3x.png in Resources */,
@@ -1704,12 +1830,15 @@
 				DCAAEC061D347DDF00946B61 /* sharing_default_picture@2x.png in Resources */,
 				DC2DDD321D1C85AB004A5857 /* button_get_help_Onboarding@3x.png in Resources */,
 				DC4EF6D61D24B7B1005FFA3D /* get_direction_to_bike_button@3x.png in Resources */,
+				DC3003761D441570004CE560 /* Gotham-Light.otf in Resources */,
 				DC2DDD301D1C85AB004A5857 /* button_existing_user_Onboarding@3x.png in Resources */,
 				DC4EF6EC1D24B7B1005FFA3D /* map_view_get_directions_lock_unconnected_button@3x.png in Resources */,
 				DC1881C51D21E5310030C607 /* lock_disconnected_button@2x.png in Resources */,
+				DC3003911D4415CE004CE560 /* ProximaNovaCond-Light.otf in Resources */,
 				DC2DDD2C1D1C85AB004A5857 /* button_blink_device_Onboarding@3x.png in Resources */,
 				DC4EF6D41D24B7B1005FFA3D /* button_close_window_large_Mapview@3x.png in Resources */,
 				DC9682EA1D2B8795008C106E /* rate_app_icon_slideview@3x.png in Resources */,
+				DC3003901D4415CA004CE560 /* ProximaNova-SemiboldItalic.otf in Resources */,
 				DCD88AE81D1B69FC00A3618D /* onboarding_main_image_1@2x.png in Resources */,
 				DC2DDD2F1D1C85AB004A5857 /* button_existing_user_Onboarding@2x.png in Resources */,
 				DCE607F31D10F7600034D0B3 /* button_close_window_large_Onboarding@3x.png in Resources */,
@@ -1731,7 +1860,10 @@
 				DCAAEBFA1D347DDF00946B61 /* button_remove_Emergencycontacts@2x.png in Resources */,
 				DC77BF7D1D0A36BC0081C7B6 /* button_delete_this_lock_Ellipses@2x.png in Resources */,
 				DC1881D51D21E5310030C607 /* lock_unlocked_button@2x.png in Resources */,
+				DC30037B1D441584004CE560 /* Montserrat-Regular.ttf in Resources */,
 				DC9682DA1D2B8795008C106E /* help_icon_slideview@3x.png in Resources */,
+				DC30038B1D4415BA004CE560 /* ProximaNova-LightItalic.otf in Resources */,
+				DC30037C1D441588004CE560 /* OpenSans-Bold.ttf in Resources */,
 				DC9682E21D2B8795008C106E /* icons_navtab_mapview@3x.png in Resources */,
 				DC4EF6EF1D24B7B1005FFA3D /* show_current location_button@2x.png in Resources */,
 				DC1881CB1D21E5310030C607 /* lock_screen_crash_detection_button@2x.png in Resources */,
@@ -1748,6 +1880,7 @@
 				DCD88AE51D1B69FC00A3618D /* button_get_started_now_onboarding@3x.png in Resources */,
 				DCAAEBFD1D347DDF00946B61 /* button_yes_Onboarding@3x.png in Resources */,
 				DC4EF6D81D24B7B1005FFA3D /* icon_current_location_small@3x.png in Resources */,
+				DC3003791D44157A004CE560 /* gothambold.ttf in Resources */,
 				DC4EF6D31D24B7B1005FFA3D /* button_close_window_large_Mapview@2x.png in Resources */,
 				DC4EF6DF1D24B7B1005FFA3D /* map_show_more_button@2x.png in Resources */,
 				DC77BF861D0A36BC0081C7B6 /* button_unshare_toggle_Ellipses@3x.png in Resources */,
@@ -1762,6 +1895,7 @@
 				DC4EF6D91D24B7B1005FFA3D /* map_crash_detection_off_button@2x.png in Resources */,
 				DC2DDD3E1D1C85AB004A5857 /* button_try_again_Onboarding@3x.png in Resources */,
 				DCE5C2161CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@3x.png in Resources */,
+				DC3003831D4415A1004CE560 /* OpenSans-Regular.ttf in Resources */,
 				DC94E13A1D0D3726002D32C3 /* button_delete_account_Myprofile@3x.png in Resources */,
 				DC9682E71D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png in Resources */,
 				DC4EF6E01D24B7B1005FFA3D /* map_show_more_button@3x.png in Resources */,
@@ -1770,11 +1904,13 @@
 				DC2DDD3A1D1C85AB004A5857 /* button_sign_up_facebook_Onboarding@3x.png in Resources */,
 				DCE5C21C1CFB5D910084F8A2 /* button_invitation_to_share_Onboarding@3x.png in Resources */,
 				DCE5C21E1CFB5D910084F8A2 /* button_no_small_Onboarding@3x.png in Resources */,
+				DC30037A1D441580004CE560 /* Montserrat-Bold.ttf in Resources */,
 				DCE5C2201CFB5D910084F8A2 /* button_yes_Onboarding@3x.png in Resources */,
 				DC4EF6E41D24B7B1005FFA3D /* map_theft_detection_off_button@3x.png in Resources */,
 				DC4EF6ED1D24B7B1005FFA3D /* map_view_lock_info_get_directions_to_my_bike_button@2x.png in Resources */,
 				DC94E13C1D0D3726002D32C3 /* icon_camera_Myprofile@3x.png in Resources */,
 				DCD88AE41D1B69FC00A3618D /* button_get_started_now_onboarding@2x.png in Resources */,
+				DC30037F1D441594004CE560 /* OpenSans-ExtraBoldItalic.ttf in Resources */,
 				DC4EF6DC1D24B7B1005FFA3D /* map_crash_detection_on_button@3x.png in Resources */,
 				DC2DDD341D1C85AB004A5857 /* button_log_in_email_Onboarding@3x.png in Resources */,
 				DC2DDD3C1D1C85AB004A5857 /* button_text_confirmation_code_Onboarding@3x.png in Resources */,
@@ -1858,6 +1994,7 @@
 			files = (
 				DC974D291C3A28D600797CF1 /* SLWalkthroughCardView.swift in Sources */,
 				DC77BF611D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift in Sources */,
+				DC30034F1D43D9D2004CE560 /* SLWarningViewController.swift in Sources */,
 				DCF41CA81CE7F56C008C17DE /* SLLog+CoreDataProperties.m in Sources */,
 				DC763D391CB4C31B00037EF9 /* SLAddContactTableViewCell.swift in Sources */,
 				DC3CCE071BA334F800528992 /* SLDirectionDrawingHelper.swift in Sources */,
@@ -1921,6 +2058,7 @@
 				DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */,
 				DCAAEBA91D32D9A100946B61 /* SLEmergencyContactsViewController.swift in Sources */,
 				DCAAEB871D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift in Sources */,
+				DC3003731D4405FD004CE560 /* SLNotificationViewController.swift in Sources */,
 				DCD679811CFA444E0081D225 /* SLSignInViewController.swift in Sources */,
 				DC763D371CB471C800037EF9 /* SLChooseContactViewController.swift in Sources */,
 				DCF41CA21CE7C679008C17DE /* SLLogViewController.swift in Sources */,
@@ -1934,6 +2072,7 @@
 				DC4EF63F1D24A6CC005FFA3D /* SLLockInfoViewController.swift in Sources */,
 				DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */,
 				DC156BD71C5D240D00015B53 /* SLUser.m in Sources */,
+				DC3003751D440EEF004CE560 /* SLTheftNotificationViewController.swift in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DC17ACB91B5C6C6F0090BE8A /* SLMapAnnotationImage.m in Sources */,
@@ -1958,7 +2097,6 @@
 				DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */,
 				DCE607191D105AA00034D0B3 /* SLFullScreenAnimation.swift in Sources */,
 				DC156BD91C5D240D00015B53 /* SLLock.m in Sources */,
-				DC7E70D91B8D1DC9006E74DC /* SLNotificationViewController.m in Sources */,
 				DCE5C2261CFB6E510084F8A2 /* SLAvailableLocksViewController.swift in Sources */,
 				AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */,
 			);

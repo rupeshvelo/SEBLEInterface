@@ -235,6 +235,31 @@ SLThinkerViewControllerDelegate
         self.thinkerViewController.setState(.Inactive)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        let wvc:SLWarningViewController = SLWarningViewController(
+//            headerText: "What up foo",
+//            infoText: "The sky dumbass",
+//            cancelButtonTitle: "Freak Out",
+//            actionButtonTitle: "Boomer!!"
+//        )
+//        wvc.view.frame = self.view.bounds
+//        
+//        self.addChildViewController(wvc)
+//        self.view.addSubview(wvc.view)
+//        self.view.bringSubviewToFront(wvc.view)
+//        wvc.didMoveToParentViewController(self)
+        let tnvc:SLTheftNotificationViewController = SLTheftNotificationViewController(
+            takeActionButtonTitle: "Call you mama, foo!",
+            cancelButtonTitle: "f-off",
+            titleText: "She been missin you mang",
+            infoText: "It only takes a minute foo! Pick up dat phone!!"
+        )
+        
+        self.presentViewController(tnvc, animated: true, completion: nil)
+    }
+    
     func registerForNotifications() {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
