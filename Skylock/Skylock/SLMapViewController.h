@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
-#import "SLAnnotationDirectionCalloutView.h"
 #import "SLDirectionsViewController.h"
 
 @import GoogleMaps;

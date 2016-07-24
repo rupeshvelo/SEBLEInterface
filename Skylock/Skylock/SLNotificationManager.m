@@ -12,6 +12,8 @@
 #import "SLNotifications.h"
 #import "SLLock.h"
 #import "SLAccelerometerValues.h"
+#import "SLDatabaseManager.h"
+#import "SLUser.h"
 
 @interface SLNotificationManager()
 
@@ -87,18 +89,26 @@
         SLNotification *notification = [[SLNotification alloc] initWithType:notficationType];
         notification.displayDateString = [self formattedDisplayTimeForNotificiaton:notification];
         notification.fullDateString = [self formattedFullTimeForNotfication:notification];
-        notification.delegate = self;
         [self.notifications addObject:notification];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationAlertOccured
-                                                            object:nil
-                                                          userInfo:@{@"notification":notification}];
+                                                            object:notification
+                                                          userInfo:nil];
     }
 }
 
 - (NSArray *)getNotifications
 {
     return self.notifications;
+}
+
+- (SLNotification *)lastNotification
+{
+    if (self.notifications.count == 0) {
+        return nil;
+    }
+    
+    return [self.notifications lastObject];
 }
 
 - (void)dismissNotificationWithId:(NSString *)notificationId
@@ -121,45 +131,41 @@
     }
 }
 
+- (void)removeLastNotification
+{
+    if (self.notifications.count == 0) {
+        return;
+    }
+    
+    [self.notifications removeLastObject];
+}
 - (void)checkIfLockNeedsNotification:(SLLock *)lock
 {
     BOOL sendAlert = YES;
     SLNotificationType alert = SLNotificationTypeNone;
-    NSLog(@"Checking accelerometer values: %@", lock.accelerometerVales.asReadableDictionary);
+    SLDatabaseManager *dbManager = [SLDatabaseManager sharedManager];
+    SLUser *user = dbManager.currentUser;
+    if (!user) {
+        return;
+    }
     
-//    if ((lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdCrashMAV &&
-//         lock.accelerometerVales.xvar.doubleValue <= SLLockValueThresholdCrashSD) ||
-//        (lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdCrashMAV &&
-//         lock.accelerometerVales.yvar.doubleValue <= SLLockValueThresholdCrashSD) ||
-//        (lock.accelerometerVales.zmav.doubleValue >= SLLockValueThresholdCrashMAV &&
-//         lock.accelerometerVales.zvar.doubleValue <= SLLockValueThresholdCrashSD)) {
-//        alert = SLNotificationTypeCrashPre;
-//    } else if ((lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
-//                lock.accelerometerVales.xvar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
-//               (lock.accelerometerVales.xmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
-//                lock.accelerometerVales.yvar.doubleValue <= SLLockValueThresholdTheftMediumSD) ||
-//               (lock.accelerometerVales.zmav.doubleValue >= SLLockValueThresholdTheftMediumMAV &&
-//                lock.accelerometerVales.zvar.doubleValue <= SLLockValueThresholdTheftMediumSD)) {
-//        alert = SLNotificationTypeTheftMedium;
-//    } else {
-//        sendAlert = NO;
-//    }
-    if ((lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdCrashSD ||
-         lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdCrashSD ||
-         lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdCrashSD) &&
-        lock.isCrashOn.boolValue)
+    double mav = (lock.accelerometerVales.xmav.doubleValue + lock.accelerometerVales.ymav.doubleValue +
+                  lock.accelerometerVales.zmav.doubleValue)/3.0;
+    double stdDev = (lock.accelerometerVales.xvar.doubleValue + lock.accelerometerVales.yvar.doubleValue +
+                     lock.accelerometerVales.zvar.doubleValue)/3.0;
+    NSLog(@"mav: %f, stddev: %f", mav, stdDev);
+    
+    if (user.areCrashAlertsOn.boolValue && mav >= SLLockValueThresholdCrashMAV
+        && stdDev >= SLLockValueThresholdCrashSD)
     {
         alert = SLNotificationTypeCrashPre;
-    } else if ((lock.accelerometerVales.xvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
-                lock.accelerometerVales.yvar.doubleValue > SLLockValueThresholdTheftMediumSD ||
-                lock.accelerometerVales.zvar.doubleValue > SLLockValueThresholdTheftMediumSD) &&
-               lock.isSecurityOn.boolValue)
+    } else if (user.areTheftAlertsOn.boolValue && mav >= SLLockValueThresholdTheftMAV
+               && stdDev > SLLockValueThresholdTheftSD)
     {
-        alert = SLNotificationTypeTheftMedium;
+        alert = SLNotificationTypeTheft;
     } else {
         sendAlert = NO;
     }
-    // this is kinda dumb imo, but only one notification can be displayed at a time,
     
     if (sendAlert) {
         [self createNotificationOfType:alert];
@@ -168,30 +174,7 @@
 
 - (void)sendEmergencyText
 {
-    NSArray *recipients = @[@"4087173377"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationSendEmergecyText
-                                                        object:nil
-                                                      userInfo:@{@"recipients": recipients}];
-}
-
-#pragma mark - SLNotification delegate methods
-- (void)notification:(SLNotification *)notfication timerValueUpdated:(NSNumber *)value
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationTimerValueUpdated
-                                                        object:nil
-                                                      userInfo:@{@"notification":notfication,
-                                                                 @"value":value}];
-}
-
-- (void)notificationTimerExpired:(SLNotification *)notification
-{
-    if (notification.type == SLNotificationTypeCrashPre) {
-        notification.type = SLNotificationTypeCrashPost;
-    }
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationTimeExpired
-                                                        object:nil
-                                                      userInfo:@{@"notification":notification}];
+    NSLog(@"Will send emergency text...soon");
 }
 
 @end

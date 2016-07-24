@@ -2,7 +2,7 @@
 //  SLUser+CoreDataProperties.m
 //  Skylock
 //
-//  Created by Andre Green on 4/9/16.
+//  Created by Andre Green on 7/24/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -18,9 +18,13 @@
 @dynamic googlePushId;
 @dynamic isCurrentUser;
 @dynamic lastName;
+@dynamic phoneNumber;
 @dynamic userId;
 @dynamic userType;
-@dynamic phoneNumber;
+@dynamic areCrashAlertsOn;
+@dynamic areTheftAlertsOn;
+@dynamic isAutoLockOn;
+@dynamic isAutoUnlockOn;
 @dynamic locks;
 
 @end

@@ -20,6 +20,7 @@ enum SLColor {
     case Color87_216_255
     case Color102_177_227
     case Color109_194_223
+    case Color130_156_178
     case Color155_155_155
     case Color231_231_233
     case Color239_239_239
@@ -27,7 +28,14 @@ enum SLColor {
 }
 
 class SLUtilities: NSObject {
-    func sizeForLabel(font: UIFont, text: String, maxWidth: CGFloat, maxHeight: CGFloat, numberOfLines: NSInteger) -> CGSize {
+    func sizeForLabel(
+        font: UIFont,
+        text: String,
+        maxWidth: CGFloat,
+        maxHeight: CGFloat,
+        numberOfLines: NSInteger
+        ) -> CGSize
+    {
         let label:UILabel = UILabel(frame: CGRectMake(0, 0, maxWidth, maxHeight))
         label.numberOfLines = numberOfLines
         label.lineBreakMode = NSLineBreakMode.ByWordWrapping
@@ -52,6 +60,8 @@ class SLUtilities: NSObject {
             color = UIColor.color(102, green: 177, blue: 227)
         case .Color109_194_223:
             color = UIColor.color(109, green: 194, blue: 223)
+        case .Color130_156_178:
+            color = UIColor.color(130, green: 156, blue: 178)
         case .Color155_155_155:
             color = UIColor.color(155, green: 155, blue: 155)
         case .Color231_231_233:

@@ -15,6 +15,7 @@
 #import "SLLog.h"
 #import "SLNotifications.h"
 #import "SLFacebookManger.h"
-#import "SLNotifications.h"
 #import "SLPicManager.h"
 #import "SLEmergencyContact.h"
+#import "SLAccelerometerValues.h"
+#import "SLNotificationManager.h"

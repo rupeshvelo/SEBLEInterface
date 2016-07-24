@@ -32,7 +32,7 @@ protocol SLThinkerViewControllerDelegate:class {
 }
 
 class SLThinkerViewController: UIViewController {
-    private let texts:[SLThinkerViewControllerLabelTextState:String]
+    private var texts:[SLThinkerViewControllerLabelTextState:String]
     
     private let firstBackgroundColor:UIColor
     
@@ -54,6 +54,8 @@ class SLThinkerViewController: UIViewController {
     
     private var shouldContinueAnimation:Bool = false
     
+    private var thinkerState:SLThinkerViewControllerState = .Inactive
+
     weak var delegate:SLThinkerViewControllerDelegate?
     
     lazy var backgroundView:UIView = {
@@ -307,7 +309,43 @@ class SLThinkerViewController: UIViewController {
             self.setLabelTextForTopState(.InactiveTop, bottomState: .InactiveBottom)
         }
         
+        self.thinkerState = state
         self.backgroundView.backgroundColor = self.currentBackgroundColor
         self.updateWormLayer()
+    }
+    
+    func updateTextForState(state: SLThinkerViewControllerState, topText: String?, bottomText: String?) {
+        let topTextState:SLThinkerViewControllerLabelTextState
+        let bottomTextState:SLThinkerViewControllerLabelTextState
+        
+        switch state {
+        case .Inactive:
+            topTextState = .InactiveTop
+            bottomTextState = .InactiveBottom
+        case .ClockwiseMoving:
+            topTextState = .ClockwiseTopMoving
+            bottomTextState = .ClockwiseBottomMoving
+        case .ClockwiseStill:
+            topTextState = .ClockwiseTopStill
+            bottomTextState = .ClockwiseBottomStill
+        case .CounterClockwiseMoving:
+            topTextState = .CounterClockwiseTopMoving
+            bottomTextState = .CounterClockwiseBottomMoving
+        case .CounterClockwiseStill:
+            topTextState = .CounterClockwiseTopStill
+            bottomTextState = .CounterClockwiseBottomStill
+        }
+        
+        if let top = topText {
+            self.texts[topTextState] = top
+        }
+        
+        if let bottom = bottomText {
+            self.texts[bottomTextState] = bottom
+        }
+        
+        if state == self.thinkerState {
+            self.setLabelTextForTopState(topTextState, bottomState: bottomTextState)
+        }
     }
 }

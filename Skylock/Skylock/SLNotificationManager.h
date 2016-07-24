@@ -10,21 +10,25 @@
 #import "SLNotification.h"
 
 @class SLLock;
+@class SLNotification;
 
 typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
-    SLLockValueThresholdCrashMAV = 60,
-    SLLockValueThresholdCrashSD = 1000,
-    SLLockValueThresholdTheftMediumMAV = 60,
-    SLLockValueThresholdTheftMediumSD = 300,
+    SLLockValueThresholdCrashMAV = 900,
+    SLLockValueThresholdCrashSD = 500,
+    SLLockValueThresholdTheftMAV = 500,
+    SLLockValueThresholdTheftSD = 350,
 };
 
-@interface SLNotificationManager : NSObject <SLNotficationDelegate>
+
+@interface SLNotificationManager : NSObject
 
 + (id)sharedManager;
 - (void)createNotificationOfType:(SLNotificationType)notficationType;
 - (NSArray *)getNotifications;
+- (SLNotification *)lastNotification;
 - (void)dismissNotificationWithId:(NSString *)notificationId;
 - (void)checkIfLockNeedsNotification:(SLLock *)lock;
 - (void)sendEmergencyText;
+- (void)removeLastNotification;
 
 @end

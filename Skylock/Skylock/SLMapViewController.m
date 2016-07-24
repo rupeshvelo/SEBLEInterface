@@ -10,7 +10,6 @@
 #import "SLConstants.h"
 #import "SLLockManager.h"
 #import "SLUserDefaults.h"
-#import "SLDropDownLabel.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"

@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, SLAccerometerData) {
-    SLAccerometerDataXMav,
-    SLAccerometerDataYMav,
-    SLAccerometerDataZMav,
-    SLAccerometerDataXVar,
-    SLAccerometerDataYVar,
-    SLAccerometerDataZVar
+typedef NS_ENUM(NSUInteger, SLAccelerometerData) {
+    SLAccelerometerDataXMav,
+    SLAccelerometerDataYMav,
+    SLAccelerometerDataZMav,
+    SLAccelerometerDataXVar,
+    SLAccelerometerDataYVar,
+    SLAccelerometerDataZVar
 };
 
 @interface SLAccelerometerValues : NSObject

@@ -11,32 +11,22 @@
 
 typedef NS_ENUM(NSUInteger, SLNotificationType) {
     SLNotificationTypeNone,
-    SLNotificationTypeTheftLow,
-    SLNotificationTypeTheftMedium,
-    SLNotificationTypeTheftHigh,
+    SLNotificationTypeTheft,
     SLNotificationTypeCrashPre,
     SLNotificationTypeCrashPost
 };
 
-@protocol SLNotficationDelegate <NSObject>
-
-- (void)notification:(SLNotification *)notfication timerValueUpdated:(NSNumber *)value;
-- (void)notificationTimerExpired:(SLNotification *)notification;
-
-@end
 
 @interface SLNotification : NSObject
 
-@property (nonatomic, weak) id <SLNotficationDelegate> delegate;
+@property (nonatomic, assign) SLNotificationType type;
 @property (nonatomic, copy) NSString *detailText;
 @property (nonatomic, copy) NSString *mainText;
-@property (nonatomic, assign) SLNotificationType type;
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, copy) NSString *displayDateString;
 @property (nonatomic, copy) NSString *fullDateString;
 @property (nonatomic, copy) NSString *identifier;
 
 - (id)initWithType:(SLNotificationType)notificaitonType;
-- (void)startCountdown;
 
 @end

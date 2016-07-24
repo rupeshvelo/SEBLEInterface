@@ -22,9 +22,6 @@
 @synthesize distanceAway;
 @synthesize rssiStrength;
 @synthesize isLocked;
-@synthesize isCrashOn;
-@synthesize isSharingOn;
-@synthesize isSecurityOn;
 @synthesize temperature;
 @synthesize accelerometerVales;
 
@@ -38,9 +35,6 @@
     self.rssiStrength = dictionary[@"rssiStrength"] ? dictionary[@"rssiStrength"] : @(0);
     self.temperature = dictionary[@"temperature"] ? dictionary[@"temperature"] : @(0);
     self.isLocked = dictionary[@"isLocked"] ? dictionary[@"isLocked"] : @(NO);
-    self.isCrashOn = dictionary[@"isCrashOn"] ? dictionary[@"isCrashOn"] : @(NO);
-    self.isSharingOn = dictionary[@"isSharingOn"] ? dictionary[@"isSharingOn"] : @(NO);
-    self.isSecurityOn = dictionary[@"isSecurityOn"] ? dictionary[@"isSecurityOn"] : @(NO);
     self.isShallowConnection = dictionary[@"isShallowConnection"] ? dictionary[@"isShallowConnection"] : @(NO);
 }
 
@@ -72,18 +66,6 @@
     
     if (dictionary[@"isLocked"]) {
         self.isLocked = dictionary[@"isLocked"];
-    }
-    
-    if (dictionary[@"isCrashOn"]) {
-        self.isCrashOn = dictionary[@"isCrashOn"];
-    }
-    
-    if (dictionary[@"isSharingOn"]) {
-        self.isSharingOn = dictionary[@"isSharingOn"];
-    }
-    
-    if (dictionary[@"isSecurityOn"]) {
-        self.isSecurityOn = dictionary[@"isSecurityOn"];
     }
     
     if (dictionary[@"temperature"]) {

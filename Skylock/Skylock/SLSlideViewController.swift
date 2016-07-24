@@ -38,7 +38,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor(red: 74, green: 80, blue: 96)
+        self.view.backgroundColor = SLUtilities().color(.Color130_156_178)
     }
     
     override func viewWillAppear(animated: Bool) {
