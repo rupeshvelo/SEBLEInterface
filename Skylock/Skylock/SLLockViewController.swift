@@ -452,12 +452,6 @@ SLCrashNotificationViewControllerDelegate
         guard let disconnectedAddress = notificationObject["lockName"] else {
             return
         }
-    
-        if self.lock == nil {
-            print("lock is nil")
-        } else {
-            print("lock address is: \(self.lock!.macAddress)")
-        }
         
         if let currentLock = self.lock where disconnectedAddress == currentLock.macAddress {
             self.setLockDisabled()

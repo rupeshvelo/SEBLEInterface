@@ -72,6 +72,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
+    application.applicationIconBadgeNumber = 0;
     [SLFacebookManger.sharedManager applicationBecameActive];
 }
 
@@ -212,9 +213,8 @@
 - (void)handleNotification:(NSNotification *)notification
 {
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
-    NSDictionary *info = notification.userInfo;
-    if ((state == UIApplicationStateBackground || state == UIApplicationStateInactive) && info && info[@"notification"]) {
-        SLNotification *slNotification = info[@"notification"];
+    SLNotification *slNotification = notification.object;
+    if ((state == UIApplicationStateBackground || state == UIApplicationStateInactive) && slNotification) {
         [self postNotification:slNotification];
     }
 }

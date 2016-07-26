@@ -305,7 +305,15 @@
     NSLog(@"server reply: %@", serverReply.description);
     if (serverReply[@"error"] == [NSNull null]) {
         if (serverReply[@"payload"]) {
-            completion(serverReply[@"payload"]);
+            NSDictionary *payload;
+            if ([serverReply[@"payload"] isKindOfClass:[NSArray class]]) {
+                // this is a hack till we get a standard response from the server
+                payload = @{@"payload": serverReply[@"payload"]};
+            } else {
+                payload = serverReply[@"payload"];
+            }
+            
+            completion(payload);
         } else {
             completion(nil);
         }

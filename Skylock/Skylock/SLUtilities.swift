@@ -22,6 +22,7 @@ enum SLColor {
     case Color109_194_223
     case Color130_156_178
     case Color155_155_155
+    case Color160_200_224
     case Color231_231_233
     case Color239_239_239
     case Color255_255_255
@@ -64,6 +65,8 @@ class SLUtilities: NSObject {
             color = UIColor.color(130, green: 156, blue: 178)
         case .Color155_155_155:
             color = UIColor.color(155, green: 155, blue: 155)
+        case .Color160_200_224:
+            color = UIColor.color(160, green: 200, blue: 224)
         case .Color231_231_233:
             color = UIColor.color(231, green: 231, blue: 233)
         case .Color239_239_239:

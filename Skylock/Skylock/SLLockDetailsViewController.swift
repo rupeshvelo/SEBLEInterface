@@ -13,6 +13,8 @@ import UIKit
 class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var connectedLock:SLLock?
     
+    let utilities:SLUtilities = SLUtilities()
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
         table.delegate = self
@@ -138,7 +140,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 33.0
+        return 65.0
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -148,7 +150,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         
         if section == 0 {
             text = NSLocalizedString("CURRENTLY CONNECTED", comment: "")
-            color = UIColor(red: 76, green: 79, blue: 97)
+            color = self.utilities
             textColor = UIColor(white: 239.0/255.0, alpha: 1.0)
         } else {
             text = NSLocalizedString("CONNECTION HISTORY", comment: "")
