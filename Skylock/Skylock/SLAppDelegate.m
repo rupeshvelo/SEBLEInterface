@@ -51,7 +51,7 @@
     pageControl.pageIndicatorTintColor = [UIColor colorWithRed:215 green:215 blue:215];;
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:102 green:177 blue:227];
     pageControl.backgroundColor = [UIColor clearColor];
-    
+        
     return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
 

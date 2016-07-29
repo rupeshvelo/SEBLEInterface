@@ -9,63 +9,60 @@
 import UIKit
 
 class SLLockDetailsTableViewCell: UITableViewCell {
-    var lock:SLLock?
     let xPadding:CGFloat = 10.0
+
+    var isConnected:Bool = false
     
-    lazy var nameLabel:UILabel = {
-        let labelWidth = self.bounds.size.width - self.xPadding -
-            (self.accessoryView == nil ? 0.0 : self.accessoryView!.bounds.size.width) - 5.0
-        let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(18)
-        let labelSize:CGSize = utility.sizeForLabel(
-            font,
-            text: self.lock == nil ? "" : self.lock!.displayName(),
-            maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
-            numberOfLines: 1
-        )
-        
-        let frame = CGRectMake(
-            self.xPadding,
-            0,
-            labelSize.width,
-            labelSize.height
-        )
-        
-        let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.text = self.lock?.displayName()
-        label.textAlignment = .Left
-        label.font = font
-        label.numberOfLines = 1
-        
-        return label
-    }()
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+    }
     
-    lazy var tempInfoView:UIImageView = {
-        let image = UIImage(named: "lock_status_bar")!
-        let frame = CGRect(
-            x: self.nameLabel.frame.origin.x,
-            y: CGRectGetMaxY(self.nameLabel.frame) + 5.0,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let view:UIImageView = UIImageView(image: image)
-        view.frame = frame
-        
-        return view
-    }()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.contentView.addSubview(nameLabel)
-        self.contentView.addSubview(tempInfoView)
+        let utilities:SLUtilities = SLUtilities()
+        let yPadding:CGFloat = 20.0
+        let xPadding:CGFloat = 10.0
+        if let textLabel = self.textLabel {
+            textLabel.textColor = utilities.color(.Color155_155_155)
+            textLabel.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
+            
+            let textLabelFrame = CGRect(
+                x: textLabel.frame.origin.x,
+                y: yPadding,
+                width: self.contentView.bounds.size.width - 2.0*xPadding,
+                height: textLabel.bounds.size.height
+            )
+            textLabel.frame = textLabelFrame
+        }
+        
+        if let detailTextLabel = self.detailTextLabel {
+            let colorCode:SLColor = self.isConnected ? .Color160_200_224  : .Color188_187_187
+            detailTextLabel.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)
+            detailTextLabel.textColor = utilities.color(colorCode)
+            
+            let detailTextLabelFrame = CGRect(
+                x: detailTextLabel.frame.origin.x,
+                y: self.contentView.bounds.size.height - detailTextLabel.bounds.size.height - yPadding,
+                width: self.contentView.bounds.size.width - 2.0*xPadding,
+                height: detailTextLabel.bounds.size.height
+            )
+            
+            detailTextLabel.frame = detailTextLabelFrame
+        }
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-
+    
+    func setProperties(isConnected: Bool, mainText: String?, detailText: String?) {
+        self.isConnected = isConnected
+        self.textLabel?.text = mainText
+        self.detailTextLabel?.text = detailText
+    }
 }

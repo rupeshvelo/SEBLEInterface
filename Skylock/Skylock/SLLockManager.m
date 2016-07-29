@@ -251,6 +251,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     
     self.selectedLock = lock;
     self.selectedLock.isCurrentLock = @(YES);
+    self.selectedLock.lastConnected = [NSDate date];
     [self.databaseManger setCurrentLock:self.selectedLock];
     
     [self startGettingHardwareData];
@@ -1576,7 +1577,14 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     self.notConnectPeripherals[macAddress] = peripheral;
     
     if (!self.selectedLock) {
-        self.selectedLock = [self.databaseManger getCurrentLockForCurrentUser];
+        SLLock *currentLock = [self.databaseManger getCurrentLockForCurrentUser];
+        if (currentLock) {
+            NSLog(@"Current user lock from db is %@, or %@", currentLock.name, currentLock.displayName);
+        }
+        
+        if ([macAddress isEqualToString:currentLock.macAddress]) {
+            self.selectedLock = currentLock;
+        }
     }
     
     if (self.shouldEnterActiveSearch) {
@@ -1744,7 +1752,7 @@ disconnectedPeripheralNamed:(NSString *)peripheralName
         NSLog(@"lock: %@ was not set for deletion", lock.macAddress);
         [self startScan];
         [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
-                                                            object:@{@"lockName":macAddress}];
+                                                            object:macAddress];
         return;
     }
     

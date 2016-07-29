@@ -42,11 +42,8 @@ class SLCreateAccountViewController: UIViewController, UIScrollViewDelegate, UIT
     var isKeyboardShowing:Bool = false
     
     var fieldValues:[FieldName: String] = [
-        .FirstName: "",
-        .LastName: "",
         .Email: "",
         .Password: "",
-        .CountryCode: "+",
         .PhoneNumber: ""
     ]
     

@@ -8,10 +8,80 @@
 
 import UIKit
 
+private enum SLOnboardingViewControllerInfo {
+    case Pic
+    case Title
+    case Text
+}
+
 @objc public class SLOnboardingPageViewController:UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
     var pageIndex:Int = 0
+    
     var onboardingControllers = [SLOnboardingViewController]()
     
+    var toViewControllerIndex:Int = 0
+    
+    private let controllerData:[[SLOnboardingViewControllerInfo:String]] = [
+        [
+            .Pic: "onboarding_main_image_1",
+            .Title: NSLocalizedString("Theft alerts", comment: ""),
+            .Text: NSLocalizedString(
+                "Ellipse can detect if someone’s tampering with your bike, " +
+                "and send you an alert so you can take action.",
+                comment: ""
+            )
+        ],
+        [
+            .Pic: "onboarding_main_image_2",
+            .Title: NSLocalizedString(
+                "Make the most of your bike by sharing with your friends.",
+                comment: ""
+            ),
+            .Text: NSLocalizedString(
+                "Ellipse's built in accelerometer can detect if you've been in a crash, and alert your loved ones.",
+                comment: ""
+            )
+        ],
+        [
+            .Pic: "onboarding_main_image_3",
+            .Title: NSLocalizedString(
+                "Tap to unlock",
+                comment: ""
+            ),
+            .Text: NSLocalizedString(
+                "Using your smartphone, just one click safely locks or unlocks your Ellipse. " +
+                "No more fumbling with bulky chains.",
+                comment: ""
+            )
+        ],
+        [
+            .Pic: "onboarding_main_image_4",
+            .Title: NSLocalizedString(
+                "Easily locate your bike",
+                comment: ""
+            ),
+            .Text: NSLocalizedString(
+                "Can't remember where you parked? Use the map tool and get walking directions.",
+                comment: ""
+            )
+        ]
+    ]
+    
+    lazy var pageControl:UIPageControl = {
+        let width:CGFloat = 100.0
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - width),
+            y: 0.5*self.view.bounds.size.height - 90.0,
+            width: width,
+            height: 50
+        )
+        
+        let control:UIPageControl = UIPageControl(frame: frame)
+        control.numberOfPages = self.controllerData.count
+        control.currentPage = 0
+        
+        return control
+    }()
     
     lazy var pageViewController:UIPageViewController = {
         let pageController:UIPageViewController = UIPageViewController(
@@ -32,22 +102,25 @@ import UIKit
     }()
     
     lazy var getStartedButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_get_started_now_onboarding")!
-        let frame:CGRect = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: self.view.bounds.size.height - image.size.height - 30.0,
-            width: image.size.width,
-            height: image.size.height
+        let height:CGFloat = 55.0
+        let frame = CGRect(
+            x: 0.0,
+            y: self.view.bounds.size.height - height,
+            width: self.view.bounds.size.width,
+            height: height
         )
         
-        let button:UIButton = UIButton(frame: frame)
+        let button:UIButton = UIButton(type: UIButtonType.System)
+        button.frame = frame
         button.addTarget(
             self,
             action: #selector(getStartedButtonPressed),
             forControlEvents: UIControlEvents.TouchDown
         )
-        button.setImage(image, forState: UIControlState.Normal)
-        
+        button.setTitle(NSLocalizedString("GET STARTED", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.backgroundColor = UIColor.color(86, green: 216, blue: 255)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
         return button
     }()
     
@@ -55,92 +128,40 @@ import UIKit
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.whiteColor()
         
-        let picName1 = "onboarding_main_image_1"
-        let topText1 = NSLocalizedString(
-            "Ellipse is a keyless, solar powered, bluetooth enabled, state of the art bike lock.",
-            comment: ""
-        )
-        let bottomText1 = NSLocalizedString(
-            "Welcome to the future.  No more searching for lost keys or struggling with bulky " +
-            "chain locks, with Ellipse all you need is your smart phone to lock and unlock your " +
-            "bike safely and securely. But there’s lot's more.",
-            comment: ""
-        )
         
-        let picName2 = "onboarding_main_image_2"
-        let topText2 = NSLocalizedString(
-            "Make the most of your bike by sharing with your friends.",
-            comment: ""
-        )
-        let bottomText2 = NSLocalizedString(
-            "Ellipse lets you share your bike with up to 5 friends. Once they've installed the app, " +
-            "they'll be able to lock and unlock it too, so they can borrow it when you’re not using it.",
-            comment: ""
-        )
-        
-        let picName3 = "onboarding_main_image_3"
-        let topText3 = NSLocalizedString(
-            "State of the art theft detection means peace of mind for you.",
-            comment: ""
-        )
-        let bottomText3 = NSLocalizedString(
-            "Ellipse uses its built-in accelerometer to detect theft threats. When your bike is being " +
-            "tampered with, Ellipse will detect the motion and send you an alert.",
-            comment: ""
-        )
-        
-        let picName4 = "onboarding_main_image_4"
-        let topText4 = NSLocalizedString(
-            "Crash detection sends auto alerts to your emergency contacts.",
-            comment: ""
-        )
-        let bottomText4 = NSLocalizedString(
-            "Nominate up to 3 emergency contacts, and if Ellipse detects an accident, it will " +
-            "automatically notify them. Simply swipe to cancel if you're ok.",
-            comment: ""
+        let obvc0 = SLOnboardingViewController(
+            picName: self.controllerData[0][.Pic]!,
+            titleText: self.controllerData[0][.Title]!,
+            text: self.controllerData[0][.Text]!,
+            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
         )
         
         let obvc1 = SLOnboardingViewController(
-            nibName: nil,
-            bundle: nil,
-            picName: picName1,
-            topText: topText1,
-            bottomText: bottomText1,
+            picName: self.controllerData[1][.Pic]!,
+            titleText: self.controllerData[1][.Title]!,
+            text: self.controllerData[1][.Text]!,
             yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
         )
         
         let obvc2 = SLOnboardingViewController(
-            nibName: nil,
-            bundle: nil,
-            picName: picName2,
-            topText: topText2,
-            bottomText: bottomText2,
+            picName: self.controllerData[2][.Pic]!,
+            titleText: self.controllerData[2][.Title]!,
+            text: self.controllerData[2][.Text]!,
             yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
         )
         
-        let obvc3 = SLOnboardingViewController(
-            nibName: nil,
-            bundle: nil,
-            picName: picName3,
-            topText: topText3,
-            bottomText: bottomText3,
-            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
-        )
-        
-        let obvc4 = SLOnboardingViewController(
-            nibName: nil,
-            bundle: nil,
-            picName: picName4,
-            topText: topText4,
-            bottomText: bottomText4,
+        let obvc3 = SLOnboardingMapBackgroundViewController(
+            picName: self.controllerData[3][.Pic]!,
+            titleText: self.controllerData[3][.Title]!,
+            text: self.controllerData[3][.Text]!,
             yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
         )
         
         self.onboardingControllers = [
+            obvc0,
             obvc1,
             obvc2,
-            obvc3,
-            obvc4
+            obvc3
         ]
         
         self.addChildViewController(self.pageViewController)
@@ -148,6 +169,7 @@ import UIKit
         self.pageViewController.didMoveToParentViewController(self)
         
         self.view.addSubview(self.getStartedButton)
+        self.view.addSubview(self.pageControl)
     }
     
     func getStartedButtonPressed() {
@@ -185,14 +207,6 @@ import UIKit
         return nil
     }
     
-    public func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return self.onboardingControllers.count
-    }
-    
-    public func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
-        return self.pageIndex
-    }
-    
     public func pageViewController(
         pageViewController: UIPageViewController,
         didFinishAnimating finished: Bool,
@@ -200,7 +214,22 @@ import UIKit
                            transitionCompleted completed: Bool
         )
     {
+        if !completed {
+            return
+        }
         
+        guard let previousViewController = previousViewControllers.first as? SLOnboardingViewController else {
+            return
+        }
+        
+        if let fromIndex = self.onboardingControllers.indexOf(previousViewController) {
+            let diff = self.toViewControllerIndex - fromIndex
+            if (diff > 0 && self.toViewControllerIndex < self.onboardingControllers.count) ||
+                (diff < 0 && self.toViewControllerIndex >= 0)
+            {
+                self.pageControl.currentPage = self.toViewControllerIndex
+            }
+        }
     }
     
     public func pageViewController(
@@ -208,6 +237,12 @@ import UIKit
         willTransitionToViewControllers pendingViewControllers: [UIViewController]
         )
     {
+        guard let viewController = pendingViewControllers.first as? SLOnboardingViewController else {
+            return
+        }
         
+        if let index = self.onboardingControllers.indexOf(viewController) {
+            self.toViewControllerIndex = index
+        }
     }
 }

@@ -9,6 +9,8 @@
 import UIKit
 
 class SLSignInViewController: UIViewController {
+    let buttonSpacer:CGFloat = 20
+    
     lazy var logoView:UIImageView = {
         let image = UIImage(named: "placeholder_logo_animation")!
         let view = UIImageView(image: image)
@@ -21,52 +23,12 @@ class SLSignInViewController: UIViewController {
         
         return view
     }()
-
-    lazy var existingUserButton:UIButton = {
-        let image = UIImage(named: "button_existing_user_Onboarding")!
-        let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: CGRectGetMaxY(self.logoView.frame) + 63.0,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(
-            self,
-            action: #selector(existingUserButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
-        )
-        
-        return button
-    }()
-
-    lazy var signUpWithEmailButton:UIButton = {
-        let image = UIImage(named: "button_log_in_email_Onboarding")!
-        let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: self.view.bounds.size.height - image.size.height - 24.0,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
-        button.addTarget(
-            self,
-            action: #selector(signUpWithEmailButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
-        )
-        
-        return button
-    }()
     
     lazy var signUpWithFacebookButton:UIButton = {
         let image = UIImage(named: "button_sign_up_facebook_Onboarding")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: CGRectGetMinY(self.signUpWithEmailButton.frame) - image.size.height - 20.0,
+            y: self.view.bounds.size.height - image.size.height - self.buttonSpacer,
             width: image.size.width,
             height: image.size.height
         )
@@ -81,11 +43,59 @@ class SLSignInViewController: UIViewController {
         
         return button
     }()
+
+    lazy var existingUserButton:UIButton = {
+        let frame = CGRect(
+            x: CGRectGetMinX(self.signUpWithFacebookButton.frame),
+            y: CGRectGetMinY(self.signUpWithFacebookButton.frame)
+                - self.signUpWithFacebookButton.bounds.size.height - self.buttonSpacer,
+            width: self.signUpWithFacebookButton.bounds.size.width,
+            height: self.signUpWithFacebookButton.bounds.size.height
+        )
+        
+        let button:UIButton = UIButton(type: UIButtonType.System)
+        button.frame = frame
+        button.backgroundColor = UIColor.clearColor()
+        button.setTitle(NSLocalizedString("LOG IN", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.color(87, green: 216, blue: 255), forState: .Normal)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.color(87, green: 216, blue: 255).CGColor
+        button.addTarget(
+            self,
+            action: #selector(existingUserButtonPressed),
+            forControlEvents: UIControlEvents.TouchDown
+        )
+        
+        return button
+    }()
+
+    lazy var signUpWithEmailButton:UIButton = {
+        let frame = CGRect(
+            x: CGRectGetMinX(self.signUpWithFacebookButton.frame),
+            y: CGRectGetMinY(self.existingUserButton.frame)
+                - self.signUpWithFacebookButton.bounds.size.height - self.buttonSpacer,
+            width: self.signUpWithFacebookButton.bounds.size.width,
+            height: self.signUpWithFacebookButton.bounds.size.height
+        )
+        
+        let button:UIButton = UIButton(type: UIButtonType.System)
+        button.frame = frame
+        button.backgroundColor = UIColor.color(87, green: 216, blue: 255)
+        button.setTitle(NSLocalizedString("SIGN UP", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.addTarget(
+            self,
+            action: #selector(signUpWithEmailButtonPressed),
+            forControlEvents: UIControlEvents.TouchDown
+        )
+        
+        return button
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor(red: 74, green: 80, blue: 97)
+        self.view.backgroundColor = UIColor.whiteColor()
         
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.existingUserButton)
@@ -104,7 +114,6 @@ class SLSignInViewController: UIViewController {
     }
     
     func signUpWithFacebookButtonPressed() {
-        print("sign up with facebook button pressed")
         let facebookManager:SLFacebookManger = SLFacebookManger.sharedManager() as! SLFacebookManger
         facebookManager.loginFromViewController(self) { (success) in
             if success {

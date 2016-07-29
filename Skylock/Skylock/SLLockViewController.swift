@@ -15,7 +15,8 @@ SLLocationManagerDelegate,
 SLAcceptNotificationsViewControllerDelegate,
 SLThinkerViewControllerDelegate,
 SLNotificationViewControllerDelegate,
-SLCrashNotificationViewControllerDelegate
+SLCrashNotificationViewControllerDelegate,
+SLLockBarViewControllerDelegate
 {
     let xPadding:CGFloat = 13.0
     
@@ -190,7 +191,7 @@ SLCrashNotificationViewControllerDelegate
     lazy var touchCatcherView:UIView = {
         let tgr:UITapGestureRecognizer = UITapGestureRecognizer(
             target: self,
-            action: #selector(touchCatcherViewTapped)
+            action: #selector(removeSlideViewController)
         )
         
         let view:UIView = UIView(frame: self.view.bounds)
@@ -224,6 +225,7 @@ SLCrashNotificationViewControllerDelegate
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         
         self.lockManager.checkLockOpenOrClosed()
         self.showAcceptNotificaitonViewController()
@@ -270,6 +272,10 @@ SLCrashNotificationViewControllerDelegate
 //        cnvc.delegate = self
 //        
 //        self.presentViewController(cnvc, animated: true, completion: nil)
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
     }
     
     func registerForNotifications() {
@@ -445,11 +451,7 @@ SLCrashNotificationViewControllerDelegate
     }
     
     func lockDisconneted(notification: NSNotification) {
-        guard let notificationObject = notification.object as? [String: String] else {
-            return
-        }
-        
-        guard let disconnectedAddress = notificationObject["lockName"] else {
+        guard let disconnectedAddress = notification.object as? String else {
             return
         }
         
@@ -469,6 +471,7 @@ SLCrashNotificationViewControllerDelegate
             } else {
                 let height:CGFloat = 48.0
                 self.lockBarViewController = SLLockBarViewController()
+                self.lockBarViewController?.delegate = self
                 self.lockBarViewController!.view.frame = CGRect(
                     x: 0.0,
                     y: self.view.bounds.size.height,
@@ -537,7 +540,7 @@ SLCrashNotificationViewControllerDelegate
         self.lockNameLabel.text = ""
     }
     
-    func touchCatcherViewTapped() {
+    func removeSlideViewController() {
         self.isMapShowing = false
         UIView.animateWithDuration(0.4, animations: {
             self.slideViewController.view.frame = CGRect(
@@ -683,5 +686,12 @@ SLCrashNotificationViewControllerDelegate
     func timerExpired(cnvc: SLCrashNotificationViewController) {
         SLNotificationManager.sharedManager().sendEmergencyText()
         cnvc.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // MARK: SLLockBarViewControllerDelegate Methods
+    func lockBarTapped(lockBar: SLLockBarViewController) {
+        self.dismissViewControllerAnimated(true, completion: {
+            self.removeSlideViewController()
+        })
     }
 }
