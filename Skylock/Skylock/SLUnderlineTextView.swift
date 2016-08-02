@@ -13,18 +13,18 @@ class SLUnderlineTextView: UIView {
     let lineHeight:CGFloat = 1.0
     let placeHolder:String
     
-    lazy var underlineView:UIView = {
-        let frame = CGRect(
-            x: 0,
-            y: self.bounds.size.height - self.lineHeight,
-            width: self.bounds.size.width,
-            height: self.lineHeight
-        )
-        let view:UIView = UIView(frame: frame)
-        view.backgroundColor = self.color
-        
-        return view
-    }()
+//    lazy var underlineView:UIView = {
+//        let frame = CGRect(
+//            x: 0,
+//            y: self.bounds.size.height - self.lineHeight,
+//            width: self.bounds.size.width,
+//            height: self.lineHeight
+//        )
+//        let view:UIView = UIView(frame: frame)
+//        view.backgroundColor = self.color
+//        
+//        return view
+//    }()
     
     lazy var textField:UITextField = {
         let frame = CGRect(
@@ -59,7 +59,9 @@ class SLUnderlineTextView: UIView {
         super.layoutSubviews()
         
         self.addSubview(self.textField)
-        self.addSubview(self.underlineView)
+        //self.addSubview(self.underlineView)
+        self.layer.borderColor = UIColor.whiteColor().CGColor
+        self.layer.borderWidth = 1.0
     }
     
     func setText(text: String) {

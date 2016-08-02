@@ -58,6 +58,7 @@ class SLSignInViewController: UIViewController {
         button.backgroundColor = UIColor.clearColor()
         button.setTitle(NSLocalizedString("LOG IN", comment: ""), forState: .Normal)
         button.setTitleColor(UIColor.color(87, green: 216, blue: 255), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.color(87, green: 216, blue: 255).CGColor
         button.addTarget(
@@ -83,6 +84,7 @@ class SLSignInViewController: UIViewController {
         button.backgroundColor = UIColor.color(87, green: 216, blue: 255)
         button.setTitle(NSLocalizedString("SIGN UP", comment: ""), forState: .Normal)
         button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         button.addTarget(
             self,
             action: #selector(signUpWithEmailButtonPressed),

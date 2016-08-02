@@ -215,6 +215,8 @@
 		DC77CA701D4BCE94009D2E41 /* onboarding_main_image_4@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC77CA641D4BCE94009D2E41 /* onboarding_main_image_4@2x.png */; };
 		DC77CA711D4BCE94009D2E41 /* onboarding_main_image_4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC77CA651D4BCE94009D2E41 /* onboarding_main_image_4@3x.png */; };
 		DC77CA731D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77CA721D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift */; };
+		DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77CA741D4BEB61009D2E41 /* SLBoxTextField.swift */; };
+		DC77CA771D4C290F009D2E41 /* SLBoxTextFieldWithButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77CA761D4C290F009D2E41 /* SLBoxTextFieldWithButton.swift */; };
 		DC7A12DD1B572ED700F3336E /* SLCirclePicView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7A12DC1B572ED700F3336E /* SLCirclePicView.m */; };
 		DC7E70C31B8BC0F9006E74DC /* SLLockValue.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70C21B8BC0F9006E74DC /* SLLockValue.m */; };
 		DC7E70D01B8C3382006E74DC /* SLNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC7E70CF1B8C3382006E74DC /* SLNotificationManager.m */; };
@@ -614,6 +616,8 @@
 		DC77CA641D4BCE94009D2E41 /* onboarding_main_image_4@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboarding_main_image_4@2x.png"; sourceTree = "<group>"; };
 		DC77CA651D4BCE94009D2E41 /* onboarding_main_image_4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "onboarding_main_image_4@3x.png"; sourceTree = "<group>"; };
 		DC77CA721D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLOnboardingMapBackgroundViewController.swift; sourceTree = "<group>"; };
+		DC77CA741D4BEB61009D2E41 /* SLBoxTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLBoxTextField.swift; sourceTree = "<group>"; };
+		DC77CA761D4C290F009D2E41 /* SLBoxTextFieldWithButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLBoxTextFieldWithButton.swift; sourceTree = "<group>"; };
 		DC7A12DB1B572ED700F3336E /* SLCirclePicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCirclePicView.h; sourceTree = "<group>"; };
 		DC7A12DC1B572ED700F3336E /* SLCirclePicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCirclePicView.m; sourceTree = "<group>"; };
 		DC7E70C11B8BC0F9006E74DC /* SLLockValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockValue.h; sourceTree = "<group>"; };
@@ -892,6 +896,8 @@
 				DCA142181D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift */,
 				DC4EF63B1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift */,
 				DCAAEBBE1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift */,
+				DC77CA741D4BEB61009D2E41 /* SLBoxTextField.swift */,
+				DC77CA761D4C290F009D2E41 /* SLBoxTextFieldWithButton.swift */,
 			);
 			name = views;
 			sourceTree = "<group>";
@@ -1909,6 +1915,7 @@
 				DC0FBFD41D14C683008ED381 /* SLString.swift in Sources */,
 				DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */,
 				DCBE64661D4448D200CB0840 /* SLCrashNotificationViewController.swift in Sources */,
+				DC77CA771D4C290F009D2E41 /* SLBoxTextFieldWithButton.swift in Sources */,
 				DC80915B1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift in Sources */,
 				DC1F66951D219B710048107E /* SLLockBarViewController.swift in Sources */,
 				DCDAC22E1BA9FE8400396951 /* SLDirectionAPIHelper.swift in Sources */,
@@ -1926,6 +1933,7 @@
 				DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */,
 				DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */,
 				DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */,
+				DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */,
 				DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */,
 				DCE6071B1D10879D0034D0B3 /* SLLocationManager.swift in Sources */,
 				DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */,
