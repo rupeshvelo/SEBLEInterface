@@ -106,7 +106,7 @@ class SLThinkerViewController: UIViewController {
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.font = UIFont.systemFontOfSize(21)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 21.0)
         label.textAlignment = .Center
         label.textColor = self.textColor
         return label
@@ -122,7 +122,7 @@ class SLThinkerViewController: UIViewController {
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.font = UIFont.systemFontOfSize(21)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 21.0)
         label.textAlignment = .Center
         label.textColor = self.textColor
         

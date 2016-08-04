@@ -9,64 +9,27 @@
 import UIKit
 
 class SLConnectLockInfoViewController: UIViewController {
-    var xPadding: CGFloat = 0
-    let lightBlueColor:UIColor = UIColor(red: 102, green: 177, blue: 227)
+    let xPadding: CGFloat = 15.0
     
-    lazy var connectEllipseLabel:UILabel = {
-        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
-        let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
-        let text = NSLocalizedString("Do you want to connect your new Ellipse?", comment: "")
-        let labelSize:CGSize = utility.sizeForLabel(
-            font,
-            text: text,
-            maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
-            numberOfLines: 0
-        )
-        
-        let frame = CGRectMake(
-            self.xPadding,
-            107.0,
-            labelWidth,
-            labelSize.height
-        )
-        
+    let labelTextColor:UIColor = UIColor(red: 160, green: 200, blue: 224)
+    
+    lazy var getStartedLabel:UILabel = {
+        let frame = CGRect(x: 0.0, y: 100.0, width: self.view.bounds.size.width, height: 22.0)
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = self.lightBlueColor
-        label.text = text
-        label.textAlignment = NSTextAlignment.Center
-        label.font = font
-        label.numberOfLines = 0
+        label.text = NSLocalizedString("Let's get you started.", comment: "")
+        label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
+        label.textAlignment = .Center
         
         return label
     }()
     
-    lazy var yesButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_yes_Onboarding")!
-        let frame = CGRect(
-            x: self.xPadding,
-            y: CGRectGetMaxY(self.connectEllipseLabel.frame) + 20,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(yesButtonPressed), forControlEvents: .TouchDown)
-        
-        return button
-    }()
-    
-    lazy var infoLabel:UILabel = {
+    lazy var connectEllipseLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(11)
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
         let text = NSLocalizedString(
-            "If you have bought an Ellipse, you can connect to it " +
-            "now and configure it. All you need is a Ellipse, a bluetooth-enabled smart " +
-            "phone and an internet connection.  Ellipse uses low energy Bluetooth so it won't " +
-            "drain your battery).",
+            "To get the most out of this app you'll\nneed to set up at least one Ellipse.",
             comment: ""
         )
         
@@ -79,14 +42,68 @@ class SLConnectLockInfoViewController: UIViewController {
         )
         
         let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.yesButton.frame) + 26.0,
-            labelWidth,
+            0.5*(self.view.bounds.size.width - labelSize.width),
+            CGRectGetMaxY(self.getStartedLabel.frame) + 76.0,
+            labelSize.width,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(red: 155, green: 155, blue: 155)
+        label.textColor = self.labelTextColor
+        label.text = text
+        label.textAlignment = .Center
+        label.font = font
+        label.numberOfLines = 0
+        
+        return label
+    }()
+    
+    lazy var setUpEllipseButton:UIButton = {
+        
+        let frame = CGRect(
+            x: self.xPadding,
+            y: CGRectGetMaxY(self.connectEllipseLabel.frame) + 20,
+            width: self.view.bounds.size.width - 2.0*self.xPadding,
+            height: 44.0
+        )
+        
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
+        button.setTitle(NSLocalizedString("SET UP MY OWN ELLISPE", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
+        button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
+        button.addTarget(self, action: #selector(yesButtonPressed), forControlEvents: .TouchDown)
+        
+        return button
+    }()
+    
+    lazy var sharingInfoLabel:UILabel = {
+        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
+        let utility = SLUtilities()
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
+        let text = NSLocalizedString(
+            "I have received an invitation code to\nborrow a friend’s Ellipse",
+            comment: ""
+        )
+        
+        let labelSize:CGSize = utility.sizeForLabel(
+            font,
+            text: text,
+            maxWidth: labelWidth,
+            maxHeight: CGFloat.max,
+            numberOfLines: 0
+        )
+        
+        let frame = CGRectMake(
+            0.5*(self.view.bounds.size.width - labelSize.width),
+            CGRectGetMaxY(self.setUpEllipseButton.frame) + 26.0,
+            labelSize.width,
+            labelSize.height
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = self.labelTextColor
         label.text = text
         label.textAlignment = NSTextAlignment.Center
         label.font = font
@@ -96,17 +113,23 @@ class SLConnectLockInfoViewController: UIViewController {
     }()
     
     lazy var invitationButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_invitation_to_share_Onboarding")!
+        let color = UIColor(red: 87, green: 216, blue: 255)
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.infoLabel.frame) + 26.0,
-            width: image.size.width,
-            height: image.size.height
+            y: CGRectGetMaxY(self.sharingInfoLabel.frame) + 26.0,
+            width: self.setUpEllipseButton.bounds.size.width,
+            height: self.setUpEllipseButton.bounds.size.height
         )
         
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
+        button.setTitle(NSLocalizedString("ADD A FRIEND'S ELLIPSE", comment: ""), forState: .Normal)
+        button.setTitleColor(color, forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
         button.addTarget(self, action: #selector(invitationButtonPressed), forControlEvents: .TouchDown)
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = color.CGColor
+        button.enabled = false
         
         return button
     }()
@@ -114,16 +137,13 @@ class SLConnectLockInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = NSLocalizedString("CONNECT YOUR ELLIPSE", comment: "")
+        self.navigationItem.title = NSLocalizedString("WELCOME ON BOARD :)", comment: "")
         
         self.view.backgroundColor = UIColor.whiteColor()
         
-        let buttonImage:UIImage = UIImage(named: "button_yes_Onboarding")!
-        self.xPadding = 0.5*(self.view.bounds.size.width - buttonImage.size.width)
-        
         self.view.addSubview(self.connectEllipseLabel)
-        self.view.addSubview(self.yesButton)
-        self.view.addSubview(self.infoLabel)
+        self.view.addSubview(self.setUpEllipseButton)
+        self.view.addSubview(self.sharingInfoLabel)
         self.view.addSubview(self.invitationButton)
     }
 
@@ -132,11 +152,7 @@ class SLConnectLockInfoViewController: UIViewController {
     }
     
     func yesButtonPressed() {
-//        let vc = SLProfileViewController()
-//        self.navigationController?.pushViewController(vc, animated: true)
-        
         let alvc = SLAvailableLocksViewController()
-        alvc.hideBackButton = true
         self.navigationController?.pushViewController(alvc, animated: true)
     }
     

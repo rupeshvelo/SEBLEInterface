@@ -19,7 +19,7 @@ import UIKit
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Plain)
-        table.rowHeight = 75.0
+        table.rowHeight = 110.0
         table.backgroundColor = UIColor.clearColor()
         table.delegate = self
         table.dataSource = self
@@ -50,6 +50,24 @@ import UIKit
         
         if let currentLock = lockManager.getCurrentLock() {
             lockManager.disconnectFromLockWithAddress(currentLock.macAddress)
+        }
+        
+        if let availableLocks = lockManager.locksDiscoveredInSearch() as? [SLLock] {
+            for lock in availableLocks {
+                var addLock = true
+                for listedLock in self.locks {
+                    if lock.macAddress == listedLock.macAddress {
+                        addLock = false
+                        break
+                    }
+                }
+                
+                if addLock {
+                    self.locks.append(lock)
+                }
+            }
+            
+            self.tableView.reloadData()
         }
         
         NSNotificationCenter.defaultCenter().addObserver(
@@ -142,6 +160,26 @@ import UIKit
         }
     }
     
+    func connectButtonPressed(button: UIButton) {
+        for (i, lock) in self.locks.enumerate() {
+            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
+            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+            
+            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+                let accessoryButtonTag = accessoryButton.tag
+                let buttonTag = button.tag
+                if accessoryButtonTag == buttonTag {
+                    let ccvc = SLConcentricCirclesViewController()
+                    self.navigationController?.pushViewController(ccvc, animated: true)
+                    
+                    let lockManager = SLLockManager.sharedManager()
+                    lockManager.connectToLockWithName(lock.name)
+                    break
+                }
+            }
+        }
+    }
+    
     func enableButtonAtIndex(index: Int) {
         if index < tempButtons.count {
             let button:UIButton = self.tempButtons[index]
@@ -173,7 +211,7 @@ import UIKit
         }
         
         let lock = self.locks[indexPath.row]
-        let image:UIImage = UIImage(named: "button_blink_device_Onboarding")!
+        let image:UIImage = UIImage(named: "lock_onboarding_connect_button")!
         let button:UIButton = UIButton(frame: CGRect(
             x: 0,
             y: 0,
@@ -181,24 +219,26 @@ import UIKit
             height: image.size.height)
         )
         button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(blinkLockButtonPressed(_:)), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(connectButtonPressed(_:)), forControlEvents: .TouchDown)
         button.tag = indexPath.row + self.buttonTagShift
-        button.enabled = false
         
         self.tempButtons.append(button)
         
         cell?.textLabel?.text = lock.displayName()
+        cell?.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        cell?.textLabel?.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 17.0)
         cell?.accessoryView = button
+        cell?.selectionStyle = .None
         
         return cell!
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 75.0
+        return 90.0
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let labelHeight:CGFloat = 18.0
+        let labelHeight:CGFloat = self.tableView(tableView, heightForHeaderInSection: section)
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -212,14 +252,15 @@ import UIKit
             x: 0,
             y: 0.5*(view.bounds.size.height - labelHeight),
             width: tableView.bounds.size.width,
-            height: labelHeight
+            height: view.bounds.size.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.text = NSLocalizedString("We've found the following Ellipses", comment: "")
+        label.text = NSLocalizedString("We've found the\nfollowing Ellipses", comment: "")
         label.textAlignment = .Center
-        label.font = UIFont.systemFontOfSize(15)
-        label.textColor = UIColor(red: 102, green: 177, blue: 227)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
+        label.textColor = UIColor(red: 130, green: 156, blue: 178)
+        label.numberOfLines = 2
         
         view.addSubview(label)
         
@@ -241,14 +282,5 @@ import UIKit
         view.userInteractionEnabled = true
         
         return view
-    }
-    
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let ccvc = SLConcentricCirclesViewController()
-        self.navigationController?.pushViewController(ccvc, animated: true)
-        
-        let lock = self.locks[indexPath.row]
-        let lockManager = SLLockManager.sharedManager()
-        lockManager.connectToLockWithName(lock.name)
     }
 }

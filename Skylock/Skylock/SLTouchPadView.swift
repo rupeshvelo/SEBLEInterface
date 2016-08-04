@@ -119,9 +119,7 @@ class SLTouchPadView: UIView {
         self.addSubview(self.leftButton)        
     }
     
-    func touchPadButtonPressed(sender: UIButton) {
-        print("touch pad button pressed")
-        
+    func touchPadButtonPressed(sender: UIButton) {        
         let location: SLTouchPadLocation
         switch sender {
         case self.topButton:

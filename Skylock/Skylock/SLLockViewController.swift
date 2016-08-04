@@ -60,14 +60,30 @@ SLLockBarViewControllerDelegate
         return button
     }()
     
+    lazy var underLineView:UIView = {
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.view.bounds.size.height - 80.0,
+            width: self.view.bounds.size.width - 2*self.xPadding,
+            height: 1.0
+        )
+        
+        let view:UIView = UIView(frame: frame)
+        view.backgroundColor = UIColor.whiteColor()
+        view.hidden = true
+        
+        return view
+    }()
+    
     lazy var lockNameLabel:UILabel = {
-        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
-        let font = UIFont.systemFontOfSize(18)
+        let labelWidth = self.underLineView.bounds.size.width
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 18.0)
+        let height:CGFloat = 20.0
         let frame = CGRectMake(
             0.5*(self.view.bounds.size.width - labelWidth),
-            CGRectGetMaxY(self.menuButton.frame) + 45.0,
+            CGRectGetMinY(self.underLineView.frame) - height - 5.0,
             labelWidth,
-            20.0
+            height
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -76,29 +92,16 @@ SLLockBarViewControllerDelegate
         label.textAlignment = .Left
         label.font = font
         label.numberOfLines = 1
+        label.hidden = true
         
         return label
     }()
     
-    lazy var underLineView:UIView = {
-        let frame = CGRect(
-            x: CGRectGetMinX(self.lockNameLabel.frame),
-            y: CGRectGetMaxY(self.lockNameLabel.frame) + 4.0,
-            width: self.lockNameLabel.bounds.size.width,
-            height: 1.0
-        )
-        
-        let view:UIView = UIView(frame: frame)
-        view.backgroundColor = UIColor.whiteColor()
-        
-        return view
-    }()
-    
     lazy var crashButton:SLLockScreenAlertButton = {
         let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
-            activeImageName: "lock_screen_crash_detection_button",
-            inactiveImageName: "lock_screen_crash_detection_button_inactive",
-            titleText: NSLocalizedString("Crash detection", comment: ""),
+            activeImageName: "lock_screen_crash_detection_on",
+            inactiveImageName: "lock_screen_crash_detection_off",
+            titleText: NSLocalizedString("Crash\ndetection", comment: ""),
             textColor: UIColor.whiteColor()
         )
         button.frame = CGRect(
@@ -111,19 +114,20 @@ SLLockBarViewControllerDelegate
         if let crashAlertsOn = self.databaseManager.currentUser?.areCrashAlertsOn {
             button.selected = crashAlertsOn.boolValue
         }
-
+        button.hidden = true
+        
         return button
     }()
     
     lazy var theftButton:UIButton = {
         let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
-            activeImageName: "lock_screen_theft_detection_button",
-            inactiveImageName: "lock_screen_theft_detection_button_inactive",
-            titleText: NSLocalizedString("Theft detection", comment: ""),
+            activeImageName: "lock_screen_theft_detection_on",
+            inactiveImageName: "lock_screen_theft_detection_off",
+            titleText: NSLocalizedString("Theft\ndetection", comment: ""),
             textColor: UIColor.whiteColor()
         )
         button.frame = CGRect(
-            x: CGRectGetMaxX(self.crashButton.frame) + 30.0,
+            x: self.view.bounds.size.width - button.bounds.size.width - self.xPadding,
             y: CGRectGetMinY(self.crashButton.frame),
             width: button.bounds.size.width,
             height: button.bounds.size.height
@@ -132,6 +136,7 @@ SLLockBarViewControllerDelegate
         if let theftAlertsOn = self.databaseManager.currentUser?.areTheftAlertsOn {
             button.selected = theftAlertsOn.boolValue
         }
+        button.hidden = true
         
         return button
     }()
@@ -140,13 +145,14 @@ SLLockBarViewControllerDelegate
         let image:UIImage = UIImage(named: "temp_phone_info")!
         let frame = CGRectMake(
             self.view.bounds.size.width - image.size.width - self.xPadding,
-            CGRectGetMidY(self.theftButton.frame) - 0.5*image.size.height,
+            CGRectGetMinY(self.underLineView.frame) - image.size.height - 5.0,
             image.size.width,
             image.size.height
         )
         
         let imageView:UIImageView = UIImageView(image: image)
         imageView.frame = frame
+        imageView.hidden = true
         
         return imageView
     }()
@@ -200,6 +206,45 @@ SLLockBarViewControllerDelegate
         
         return view
     }()
+    
+    lazy var unconnectedView:UIView = {
+        let width = self.view.bounds.size.width - 2.0*self.xPadding
+        let height:CGFloat = 60.0
+        let viewFrame = CGRect(
+            x: self.xPadding,
+            y: self.view.bounds.size.height - height - 20.0,
+            width: width,
+            height: height
+        )
+        
+        let view:UIView = UIView(frame: viewFrame)
+        
+        let labelFrame = CGRect(x: 0.0, y: 0.0, width: view.bounds.size.width, height: 0.5*view.bounds.size.height)
+        let label:UILabel = UILabel(frame: labelFrame)
+        label.text = NSLocalizedString("You are not connected to any locks.", comment: "")
+        label.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 15.0)
+        label.textAlignment = .Center
+        label.textColor = UIColor.whiteColor()
+        
+        view.addSubview(label)
+        
+        let buttonFrame = CGRectMake(
+            0.0,
+            0.5*view.bounds.size.height,
+            view.bounds.size.width,
+            0.5*view.bounds.size.height
+        )
+        let button:UIButton = UIButton(type: .System)
+        button.frame = buttonFrame
+        button.setTitle(NSLocalizedString("Find an Ellipse to connect to.", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 15.0)
+        button.addTarget(self, action: #selector(findEllipseButtonPressed), forControlEvents: .TouchDown)
+        
+        view.addSubview(button)
+        
+        return view
+    }()
 
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -214,8 +259,10 @@ SLLockBarViewControllerDelegate
         self.locationManager.beginUpdatingLocation()
         
         self.view.addSubview(self.menuButton)
-        self.view.addSubview(self.lockNameLabel)
+        self.view.addSubview(self.unconnectedView)
+        
         self.view.addSubview(self.underLineView)
+        self.view.addSubview(self.lockNameLabel)
         self.view.addSubview(self.crashButton)
         self.view.addSubview(self.theftButton)
         self.view.addSubview(self.tempStatsView)
@@ -234,7 +281,7 @@ SLLockBarViewControllerDelegate
             let diameter:CGFloat = 223.0
             self.thinkerViewController.view.frame = CGRect(
                 x: 0.5*(self.view.bounds.size.width - diameter),
-                y: CGRectGetMaxY(self.crashButton.frame) + 100.0,
+                y: 0.5*(self.view.bounds.size.height - diameter) - 50.0,
                 width: diameter,
                 height: diameter
             )
@@ -246,6 +293,7 @@ SLLockBarViewControllerDelegate
         }
         
         self.thinkerViewController.setState(.Inactive)
+        self.toggleViewsHiddenOnConnction(self.lock != nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -421,6 +469,11 @@ SLLockBarViewControllerDelegate
         self.crashButton.selected = user.areCrashAlertsOn!.boolValue
     }
     
+    func findEllipseButtonPressed() {
+        let alvc = SLAvailableLocksViewController()
+        self.presentViewControllerWithNavigationController(alvc)
+    }
+    
     func lockOpened(notification: NSNotification) {
         self.thinkerViewController.setState(.CounterClockwiseStill)
         if let lock = self.lock {
@@ -447,6 +500,7 @@ SLLockBarViewControllerDelegate
             self.lockNameLabel.setNeedsDisplay()
             self.lockManager.checkLockOpenOrClosed()
             self.lockNameLabel.textColor = UIColor.whiteColor()
+            self.toggleViewsHiddenOnConnction(true)
         }
     }
     
@@ -538,6 +592,16 @@ SLLockBarViewControllerDelegate
         self.lock = nil
         self.thinkerViewController.setState(.Inactive)
         self.lockNameLabel.text = ""
+        self.toggleViewsHiddenOnConnction(false)
+    }
+    
+    func toggleViewsHiddenOnConnction(isConnected: Bool) {
+        self.unconnectedView.hidden = isConnected
+        self.underLineView.hidden = !isConnected
+        self.lockNameLabel.hidden = !isConnected
+        self.crashButton.hidden = !isConnected
+        self.theftButton.hidden = !isConnected
+        self.tempStatsView.hidden = !isConnected
     }
     
     func removeSlideViewController() {

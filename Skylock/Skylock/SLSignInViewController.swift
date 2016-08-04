@@ -129,9 +129,14 @@ class SLSignInViewController: UIViewController {
                     self.presentViewController(lvc, animated: true, completion: nil)
                 } else {
                     let clvc = SLConnectLockInfoViewController()
-                    let navController:UINavigationController = UINavigationController(rootViewController: clvc)
-                    self.presentViewController(navController, animated: true, completion: nil)
+                    let nc:UINavigationController = UINavigationController(rootViewController: clvc)
+                    nc.navigationBar.barStyle = UIBarStyle.Black
+                    nc.navigationBar.tintColor = UIColor.whiteColor()
+                    nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
+                    self.presentViewController(nc, animated: true, completion: nil)
                 }
+            } else {
+                // TODO: Handle error in UI
             }
         }
     }

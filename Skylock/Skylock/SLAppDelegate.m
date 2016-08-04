@@ -142,8 +142,11 @@
                 SLLockViewController *lvc = [SLLockViewController new];
                 initialVC = lvc;
             } else {
-                SLAvailableLocksViewController *alvc = [SLAvailableLocksViewController new];
-                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:alvc];
+                SLConnectLockInfoViewController *clvc = [SLConnectLockInfoViewController new];
+                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:clvc];
+                nc.navigationBar.barStyle = UIBarStyleBlack;
+                nc.navigationBar.tintColor = [UIColor whiteColor];
+                nc.navigationBar.barTintColor = [UIColor color:130 green:156 blue:178];
                 initialVC = nc;
             }
         } else {

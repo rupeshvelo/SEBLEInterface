@@ -431,9 +431,8 @@ SLBoxTextFieldWithButtonDelegate
             
             if self.currentPhase == .SignIn {
                 if status == 200 {
-                    let userDefaults = NSUserDefaults.standardUserDefaults()
-                    userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
-                    userDefaults.synchronize()
+                    ud.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                    ud.synchronize()
                     
                     let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
                     dispatch_async(dispatch_get_main_queue(), {
@@ -442,8 +441,11 @@ SLBoxTextFieldWithButtonDelegate
                             self.presentViewController(lvc, animated: true, completion: nil)
                         } else {
                             let clvc = SLConnectLockInfoViewController()
-                            let navController:UINavigationController = UINavigationController(rootViewController: clvc)
-                            self.presentViewController(navController, animated: true, completion: nil)
+                            let nc:UINavigationController = UINavigationController(rootViewController: clvc)
+                            nc.navigationBar.barStyle = UIBarStyle.Black
+                            nc.navigationBar.tintColor = UIColor.whiteColor()
+                            nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
+                            self.presentViewController(nc, animated: true, completion: nil)
                         }
                     })
                 } else {
@@ -587,7 +589,26 @@ SLBoxTextFieldWithButtonDelegate
     }
     
     func facebookButtonPressed() {
-        
+        let facebookManager:SLFacebookManger = SLFacebookManger.sharedManager() as! SLFacebookManger
+        facebookManager.loginFromViewController(self) { (success) in
+            if success {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                userDefaults.synchronize()
+                
+                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                if lockManager.hasLocksForCurrentUser() {
+                    let lvc = SLLockViewController()
+                    self.presentViewController(lvc, animated: true, completion: nil)
+                } else {
+                    let clvc = SLConnectLockInfoViewController()
+                    let navController:UINavigationController = UINavigationController(rootViewController: clvc)
+                    self.presentViewController(navController, animated: true, completion: nil)
+                }
+            } else {
+                // TODO: Handle error in UI
+            }
+        }
     }
     
     func keyboardWillShow(notification: NSNotification) {
