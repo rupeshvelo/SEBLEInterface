@@ -30,7 +30,6 @@ SLLockBarViewControllerDelegate
     
     var lockBarViewController:SLLockBarViewController?
     
-    
     lazy var acceptNotificationViewController:SLAcceptNotificationsViewController = {
         let anvc:SLAcceptNotificationsViewController = SLAcceptNotificationsViewController()
         anvc.delegate = self
@@ -573,6 +572,7 @@ SLLockBarViewControllerDelegate
                 infoText: NSLocalizedString("Your emergency contacts will be alerted in", comment: "")
             )
             cnvc.crashDelegate = self
+            cnvc.delegate = self
             
             self.presentViewController(cnvc, animated: true, completion: nil)
         } else if alertNotification.type == SLNotificationType.Theft {
