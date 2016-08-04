@@ -57,6 +57,7 @@ SLUserSettingTableViewCellDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.title = NSLocalizedString("MY PROFILE", comment: "")
         self.view.addSubview(self.tableView)
     }
     
@@ -71,10 +72,8 @@ SLUserSettingTableViewCellDelegate
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellId = String(SLUserSettingTableViewCell)
-        var cell:SLUserSettingTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId) as? SLUserSettingTableViewCell
-        if cell == nil {
-            cell = SLUserSettingTableViewCell(style: .Subtitle, reuseIdentifier: cellId)
-        }
+        let cell:SLUserSettingTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+            as? SLUserSettingTableViewCell
         cell?.delegate = self
         
         if let topText = self.settings[indexPath.row][.Top] {

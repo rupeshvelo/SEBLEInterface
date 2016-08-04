@@ -56,8 +56,8 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.textLabel?.font = UIFont.systemFontOfSize(12)
-        self.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        self.textLabel?.font = UIFont(name: SLFont.OpenSansSemiBold.rawValue, size: 14)
+        self.textLabel?.textColor = UIColor(red: 157, green: 161, blue: 167)
         
         self.setAccessoryView()
     }

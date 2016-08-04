@@ -37,14 +37,14 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
                         pathKey:(SLRestManagerPathKey)pathKey
                       subRoutes:(NSArray *)subRoutes
               additionalHeaders:(NSDictionary *)additionalHeaders
-                     completion:(void (^)(NSDictionary *responseDict))completion;
+                     completion:(void (^)(NSUInteger status, NSDictionary *payload))completion;
 
 - (void)postObject:(NSDictionary *)object
          serverKey:(SLRestManagerServerKey)serverKey
            pathKey:(SLRestManagerPathKey)pathKey
          subRoutes:(NSArray *)subRoutes
  additionalHeaders:(NSDictionary *)additionalHeaders
-        completion:(void (^)(NSDictionary *responseDict))completion;
+        completion:(void (^)(NSUInteger status, NSDictionary *payload))completion;
 
 - (void)getPictureFromUrl:(NSString *)url withCompletion:(void(^)(NSData *))completion;
 

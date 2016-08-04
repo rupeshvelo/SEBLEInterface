@@ -17,6 +17,8 @@ class SLBoxTextField: UITextField {
     
     private var inErrorMode:Bool = false
     
+    let textFont:UIFont = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 15.0)!
+    
     lazy var errorLabel:UILabel = {
         let frame = CGRect(
             x: 0.5*self.bounds.size.width,
@@ -38,19 +40,18 @@ class SLBoxTextField: UITextField {
         
         super.init(frame: frame)
         
-        let font:UIFont = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 15.0)!
         if let placeholder = self.placeHolderText {
             self.attributedPlaceholder = NSAttributedString(
                 string: placeholder,
                 attributes: [
                     NSForegroundColorAttributeName: UIColor(red: 160, green: 200, blue: 224),
-                    NSFontAttributeName: font
+                    NSFontAttributeName: self.textFont
                 ]
             )
         }
         
         self.textColor = self.normalTextColor
-        self.font = font
+        self.font = self.textFont
         self.layer.borderColor = UIColor.whiteColor().CGColor
         self.layer.borderWidth = 1.0
     }

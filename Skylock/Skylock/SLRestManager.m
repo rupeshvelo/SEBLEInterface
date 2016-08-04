@@ -121,7 +121,7 @@
                         pathKey:(SLRestManagerPathKey)pathKey
                       subRoutes:(NSArray *)subRoutes
               additionalHeaders:(NSDictionary *)additionalHeaders
-                     completion:(void (^)(NSDictionary *responseDict))completion
+                     completion:(void (^)(NSUInteger, NSDictionary *))completion
 {
     NSURL *url = [self urlWithServerKey:serverKey pathKey:pathKey subRoutes:subRoutes];
     
@@ -158,7 +158,7 @@
            pathKey:(SLRestManagerPathKey)pathKey
          subRoutes:(NSArray *)subRoutes
  additionalHeaders:(NSDictionary *)additionalHeaders
-        completion:(void (^)(NSDictionary *responseDict))completion
+        completion:(void (^)(NSUInteger, NSDictionary *))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
 
@@ -270,7 +270,7 @@
                  response:(NSURLResponse *)response
                     error:(NSError *)error
               originalUrl:(NSURL *)originalUrl
-               completion:(void (^)(NSDictionary *responseDict))completion
+               completion:(void (^)(NSUInteger status, NSDictionary *responseDict))completion
 {
     NSString *message;
     if (error) {
@@ -281,7 +281,7 @@
                    response];
         NSLog(@"%@", message);
         [SLDatabaseManager.sharedManager saveLogEntry:message];
-        completion(nil);
+        completion(0, nil);
         return;
     }
     
@@ -295,7 +295,7 @@
                              error];
         NSLog(@"%@", message);
         [SLDatabaseManager.sharedManager saveLogEntry:message];
-        completion(nil);
+        completion(0, nil);
         return;
     }
     
@@ -303,6 +303,7 @@
                                                    @"Got response from server: %@", serverReply.description]];
     
     NSLog(@"server reply: %@", serverReply.description);
+    NSNumber *status = serverReply[@"status"];
     if (serverReply[@"error"] == [NSNull null]) {
         if (serverReply[@"payload"]) {
             NSDictionary *payload;
@@ -313,16 +314,16 @@
                 payload = serverReply[@"payload"];
             }
             
-            completion(payload);
+            completion(status.integerValue, payload);
         } else {
-            completion(nil);
+            completion(status.integerValue, nil);
         }
     } else {
         NSString *errorString = serverReply[@"error"];
         NSLog(@"Internal server error %@", errorString);
         [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
                                                        @"Internal server error %@", errorString]];
-        completion(nil);
+        completion(status.integerValue, nil);
     }
 }
 

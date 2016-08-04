@@ -243,7 +243,22 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         style: .Normal,
         title: self.rowActionTextForIndexPath(indexPath))
         { (rowAction, index) in
-            print("delete action button pressed")
+            var lock:SLLock?
+            if indexPath.section == 0 && self.connectedLock != nil {
+                lock = self.connectedLock
+            } else if indexPath == 1 {
+                lock = self.unconnectedLocks[indexPath.row]
+            }
+            
+            if lock == nil {
+                return
+            }
+            
+            let lrodvc = SLLockResetOrDeleteViewController(
+                type: SLLockResetOrDeleteViewControllerType.Delete,
+                lock: lock!
+            )
+            self.navigationController?.pushViewController(lrodvc, animated: true)
         }
         deleteAction.backgroundColor = UIColor(patternImage: deleteImage)
         
@@ -253,7 +268,10 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             style: .Normal,
             title: self.rowActionTextForIndexPath(indexPath))
             { (rowAction, index) in
-                print("settings action button pressed")
+                if let lock = self.connectedLock {
+                    let lsvc = SLLockSettingsViewController(lock: lock)
+                    self.navigationController?.pushViewController(lsvc, animated: true)
+                }
             }
             settingsAction.backgroundColor = UIColor(patternImage: settingsImage)
             actions.append(settingsAction)

@@ -11,6 +11,12 @@ import UIKit
 class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     let user:SLUser = SLDatabaseManager.sharedManager().currentUser
     
+    let ySpacer:CGFloat = 35.0
+    
+    let xPadding:CGFloat = 25.0
+    
+    let codeLength:Int = 6
+    
     lazy var exitButton:UIButton = {
         let image:UIImage = UIImage(named: "sign_in_close_icon")!
         let frame:CGRect = CGRect(
@@ -31,13 +37,43 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         return button
     }()
     
+    lazy var verificationLabel:UILabel = {
+        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
+        let utility = SLUtilities()
+        let font = UIFont.systemFontOfSize(14)
+        let firstText = NSLocalizedString("A verification code was sent via SMS to ", comment: "")
+        let text = self.user.phoneNumber == nil ? firstText : firstText + self.user.phoneNumber!
+        let labelSize:CGSize = utility.sizeForLabel(
+            font,
+            text: text,
+            maxWidth: labelWidth,
+            maxHeight: CGFloat.max,
+            numberOfLines: 0
+        )
+        
+        let frame = CGRectMake(
+            self.xPadding,
+            2.0*self.ySpacer,
+            labelWidth,
+            labelSize.height
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = UIColor.whiteColor()
+        label.text = text
+        label.textAlignment = .Center
+        label.font = font
+        label.numberOfLines = 0
+        
+        return label
+    }()
+    
     lazy var codeEntryView:UIView = {
-        let width:CGFloat = 164.0
-        let height:CGFloat = 66.0
+        let height:CGFloat = 62.0
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - width),
-            y: 0.5*(self.view.bounds.size.height - height),
-            width: width,
+            x: self.xPadding,
+            y: CGRectGetMaxY(self.verificationLabel.frame) + self.ySpacer,
+            width: self.view.bounds.size.width - 2.0*self.xPadding,
             height: height
         )
         
@@ -51,8 +87,8 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         let xPadding:CGFloat = 10.0
         let labelWidth = self.codeEntryView.bounds.size.width - 2*xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(22)
-        let height:CGFloat = 22.0
+        let font = UIFont.systemFontOfSize(28)
+        let height:CGFloat = 31.0
         let frame = CGRectMake(
             xPadding,
             0.5*(self.codeEntryView.bounds.size.height - height),
@@ -74,43 +110,11 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         return field
     }()
     
-    lazy var verificationLabel:UILabel = {
-        let xPadding:CGFloat = 70.0
-        let labelWidth = self.view.bounds.size.width - 2*xPadding
-        let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
-        let firstText = NSLocalizedString("A verification code was sent\nvia SMS to ", comment: "")
-        let text = self.user.phoneNumber == nil ? firstText : firstText + self.user.phoneNumber!
-        let labelSize:CGSize = utility.sizeForLabel(
-            font,
-            text: text,
-            maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
-            numberOfLines: 0
-        )
-        
-        let frame = CGRectMake(
-            xPadding,
-            CGRectGetMinY(self.codeEntryView.frame) - labelSize.height - 40.0 ,
-            labelWidth,
-            labelSize.height
-        )
-        
-        let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
-        label.text = text
-        label.textAlignment = .Center
-        label.font = font
-        label.numberOfLines = 0
-        
-        return label
-    }()
-    
     lazy var resendCodeButton:UIButton = {
         let width:CGFloat = 0.8*self.verificationLabel.bounds.size.width
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - width),
-            y: CGRectGetMaxY(self.codeEntryView.frame) + 40.0,
+            y: CGRectGetMaxY(self.codeEntryView.frame) + self.ySpacer,
             width: width,
             height: 20.0
         )
@@ -119,26 +123,31 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         button.addTarget(self, action: #selector(resendCodeButtonPressed), forControlEvents: .TouchDown)
         button.setTitle(NSLocalizedString("RESEND CODE", comment: ""), forState: .Normal)
         button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 10.0)
+    
         return button
     }()
     
-    lazy var confirmCodeButton:UIButton = {
-        let image:UIImage = UIImage(named: "confirm_text_code_button")!
+    lazy var signUpButton:UIButton = {
+        let padding = 0.5*self.xPadding
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: self.view.bounds.size.height - image.size.height - 20.0,
-            width: image.size.width,
-            height: image.size.height
+            x: padding,
+            y: CGRectGetMaxY(self.resendCodeButton.frame) + self.ySpacer,
+            width: self.view.bounds.size.width - 2.0*padding,
+            height: 44.0
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
+        button.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
+        button.setTitle(NSLocalizedString("SIGN UP", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 15.0)
         button.addTarget(
             self,
-            action: #selector(confirmCodeButtonPressed),
+            action: #selector(signUpButtonPressed),
             forControlEvents: .TouchDown
         )
+        button.hidden = true
         
         return button
     }()
@@ -146,13 +155,13 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
+        self.view.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
         
         self.view.addSubview(self.codeEntryView)
         self.codeEntryView.addSubview(self.codeEntryField)
         self.view.addSubview(self.verificationLabel)
         self.view.addSubview(self.resendCodeButton)
-        self.view.addSubview(self.confirmCodeButton)
+        self.view.addSubview(self.signUpButton)
     }
     
     func resendCodeButtonPressed() {
@@ -163,7 +172,7 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         self.codeEntryField.resignFirstResponder()
     }
     
-    func confirmCodeButtonPressed() {
+    func signUpButtonPressed() {
         let user:SLUser = SLDatabaseManager.sharedManager().currentUser
         guard let userId = user.userId else {
             // TODO: present error to user
@@ -193,8 +202,26 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         pathKey: .Users,
         subRoutes: subRoutes,
         additionalHeaders: headers)
-        { (responseDict:[NSObject: AnyObject]!) in
-            print(responseDict)
+        { (status:UInt, payload:[NSObject: AnyObject]!) in
+            if status == 201 && payload != nil {
+                let userDefaults = NSUserDefaults.standardUserDefaults()
+                userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                userDefaults.synchronize()
+                
+                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                dispatch_async(dispatch_get_main_queue(), { 
+                    if lockManager.hasLocksForCurrentUser() {
+                        let lvc = SLLockViewController()
+                        self.presentViewController(lvc, animated: true, completion: nil)
+                    } else {
+                        let clvc = SLConnectLockInfoViewController()
+                        let navController:UINavigationController = UINavigationController(rootViewController: clvc)
+                        self.presentViewController(navController, animated: true, completion: nil)
+                    }
+                })
+            } else {
+                // Handle errors here. Should show a popup
+            }
         }
     }
     
@@ -215,7 +242,10 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         if let text = textField.text {
             let tempText:NSString = text as NSString
             let newText = tempText.stringByReplacingCharactersInRange(range, withString: string)
-            self.confirmCodeButton.hidden = newText.characters.count < 4
+            if newText.characters.count > self.codeLength {
+                return false
+            }
+            self.signUpButton.hidden = newText.characters.count < self.codeLength
         }
         
         return true

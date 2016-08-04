@@ -66,12 +66,12 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         
         self.view.backgroundColor = UIColor.whiteColor()
         
-        let backButton:UIBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .Action,
-            target: self,
-            action: #selector(backButtonPressed)
-        )
-        self.navigationItem.leftBarButtonItem = backButton
+//        let backButton:UIBarButtonItem = UIBarButtonItem(
+//            barButtonSystemItem: .Action,
+//            target: self,
+//            action: #selector(backButtonPressed)
+//        )
+//        self.navigationItem.leftBarButtonItem = backButton
         self.navigationItem.title = self.lock?.displayName()
         self.view.addSubview(self.tableView)
         
@@ -257,22 +257,21 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         )
         
         let view:UIView = UIView(frame: frame)
-        view.backgroundColor = UIColor(white: 239.0/255.0, alpha: 1.0)
+        view.backgroundColor = UIColor(white: 247.0/255.0, alpha: 1.0)
         
         let height:CGFloat = 16.0
         let labelFrame = CGRect(
-            x: 5.0,
-            y: view.bounds.height - height - 5.0,
+            x: 0.0,
+            y: 0.5*(view.bounds.height - height),
             width: view.bounds.width,
             height: height
         )
         
         let label:UILabel = UILabel(frame: labelFrame)
-        label.font = UIFont.systemFontOfSize(14.0)
-        label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
+        label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = .Left
-        label.backgroundColor = UIColor.clearColor()
+        label.textAlignment = .Center
         
         view.addSubview(label)
         

@@ -34,6 +34,8 @@ SLBoxTextFieldWithButtonDelegate
     
     let yFieldSpacer:CGFloat = 25.0
     
+    var hasSentTextMessage:Bool = false
+    
     var currentPhase:SLCreateAccountFieldPhase
     
     var fields:[SLBoxTextField] = [SLBoxTextField]()
@@ -195,7 +197,7 @@ SLBoxTextFieldWithButtonDelegate
         
         let frame = CGRectMake(
             padding,
-            CGRectGetMaxY(self.phoneNumberField.frame) + self.yFieldSpacer,
+            CGRectGetMaxY(self.passwordField.frame) + self.yFieldSpacer,
             labelSize.width,
             labelSize.height
         )
@@ -213,7 +215,7 @@ SLBoxTextFieldWithButtonDelegate
     lazy var sendTextButton:UIButton = {
         let frame = CGRect(
             x: 0.0,
-            y: 0.0,
+            y: self.view.bounds.size.height - self.emailField.bounds.size.height,
             width: self.view.bounds.size.width,
             height: self.emailField.bounds.size.height
         )
@@ -225,10 +227,51 @@ SLBoxTextFieldWithButtonDelegate
         button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         button.addTarget(
             self,
-            action: #selector(sendTextButtonPressed),
+            action: #selector(startLoginProcedure),
             forControlEvents: .TouchDown
         )
         button.hidden = true
+        
+        return button
+    }()
+    
+    lazy var loginButton:UIButton = {
+        let width = self.passwordField.bounds.size.width
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - width),
+            y: CGRectGetMaxY(self.passwordField.frame) + self.yFieldSpacer,
+            width: width,
+            height: self.phoneNumberField.bounds.size.height
+        )
+        
+        let title = self.currentPhase == .Create ?  NSLocalizedString("SIGN UP", comment: "") :
+            NSLocalizedString("LOG IN", comment: "")
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
+        button.setTitle(title, forState: .Normal)
+        button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.addTarget(
+            self,
+            action: #selector(startLoginProcedure),
+            forControlEvents: .TouchDown
+        )
+        
+        return button
+    }()
+    
+    lazy var facebookButton:UIButton = {
+        let image:UIImage = UIImage(named: "button_sign_up_facebook_Onboarding")!
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - image.size.width),
+            y: self.view.bounds.size.height - image.size.height - self.yFieldSpacer,
+            width: image.size.width,
+            height: image.size.height
+        )
+        
+        let button:UIButton = UIButton(frame: frame)
+        button.addTarget(self, action: #selector(facebookButtonPressed), forControlEvents: .TouchDown)
+        button.setImage(image, forState: .Normal)
         
         return button
     }()
@@ -271,6 +314,7 @@ SLBoxTextFieldWithButtonDelegate
         } else {
             self.scrollView.addSubview(self.phoneNumberField)
             self.scrollView.addSubview(self.passwordField)
+            self.view.addSubview(self.facebookButton)
         }
         
         self.view.addSubview(self.exitButton)
@@ -302,8 +346,8 @@ SLBoxTextFieldWithButtonDelegate
         case .Create:
             self.fields = [
                 self.emailField,
-                self.passwordField,
-                self.phoneNumberField
+                self.phoneNumberField,
+                self.passwordField
             ]
         case .SignIn:
             self.fields = [
@@ -326,7 +370,7 @@ SLBoxTextFieldWithButtonDelegate
         }
     }
     
-    func sendTextButtonPressed() {
+    func startLoginProcedure() {
         let ud:NSUserDefaults = NSUserDefaults.standardUserDefaults()
         
 //        guard let pushId = ud.objectForKey(SLUserDefaultsPushNotificationToken) else {
@@ -345,13 +389,14 @@ SLBoxTextFieldWithButtonDelegate
         let userProperties:[NSObject:AnyObject] = [
             "first_name": NSNull(),
             "last_name": NSNull(),
-            "email": self.emailField.text!,
-            "user_id": self.phoneNumberField.text!,
-            "password": self.passwordField.text!,
-            "fb_flag": false,
+            "email": self.emailField.text == nil ? NSNull() : self.emailField.text!,
+            "user_id": self.phoneNumberField.text == nil ? NSNull() : self.phoneNumberField.text!,
+            "password": self.passwordField.text == nil ? NSNull() : self.passwordField.text!,
+            "user_type": kSLUserTypeEllipse,
             "reg_id": "000000000000000000",
             "country_code": countryCode == nil ? NSNull() : countryCode!
         ]
+        print(userProperties.description)
         
         let restManager:SLRestManager = SLRestManager.sharedManager() as SLRestManager
         restManager.postObject(
@@ -360,7 +405,7 @@ SLBoxTextFieldWithButtonDelegate
         pathKey: .Users,
         subRoutes: nil,
         additionalHeaders: nil,
-        completion: { (responseDict:[NSObject: AnyObject]!) in
+        completion: { (status: UInt, responseDict:[NSObject: AnyObject]!) in
             print("responseDict: \(responseDict))")
             guard let response:[String:AnyObject] = responseDict as? [String:AnyObject] else {
                 print("response dictionary is not in the correct format")
@@ -384,32 +429,54 @@ SLBoxTextFieldWithButtonDelegate
                 handlerCase: .RestToken
             )
             
-            ud.setBool(true, forKey: SLUserDefaultsSignedIn)
-            ud.synchronize()
-            
-            dispatch_async(dispatch_get_main_queue(), { 
-                let ctcvc = SLConfirmTextCodeViewController()
-                self.presentViewController(ctcvc, animated: true, completion: nil)
-            })
-            
-            let subRoutes:[String] = [
-                currentUser.userId!,
-                restManager.pathAsString(.PhoneVerificaiton)
-            ]
-            
-            let headers = [
-                "Authorization": restManager.basicAuthorizationHeaderValueUsername(userToken, password: "")
-            ]
-            
-            restManager.getRequestWithServerKey(
-                .Main,
-                pathKey: .Users,
-                subRoutes: subRoutes,
-                additionalHeaders: headers,
-                completion: { (textResponseDict:[NSObject:AnyObject]!) in
-                    print("text response: \(textResponseDict)")
-            })
+            if self.currentPhase == .SignIn {
+                if status == 200 {
+                    let userDefaults = NSUserDefaults.standardUserDefaults()
+                    userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                    userDefaults.synchronize()
+                    
+                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                    dispatch_async(dispatch_get_main_queue(), {
+                        if lockManager.hasLocksForCurrentUser() {
+                            let lvc = SLLockViewController()
+                            self.presentViewController(lvc, animated: true, completion: nil)
+                        } else {
+                            let clvc = SLConnectLockInfoViewController()
+                            let navController:UINavigationController = UINavigationController(rootViewController: clvc)
+                            self.presentViewController(navController, animated: true, completion: nil)
+                        }
+                    })
+                } else {
+                    // Handle errors here. Should show a popup
+                }
+            } else {
+                let subRoutes:[String] = [
+                    currentUser.userId!,
+                    restManager.pathAsString(.PhoneVerificaiton)
+                ]
+                
+                let headers = [
+                    "Authorization": restManager.basicAuthorizationHeaderValueUsername(userToken, password: "")
+                ]
+                
+                restManager.getRequestWithServerKey(
+                    .Main,
+                    pathKey: .Users,
+                    subRoutes: subRoutes,
+                    additionalHeaders: headers,
+                    completion: { (status: UInt, textResponseDict:[NSObject:AnyObject]!) in
+                        dispatch_async(dispatch_get_main_queue(), { 
+                            let ctvc = SLConfirmTextCodeViewController()
+                            self.presentViewController(ctvc, animated: true, completion: nil)
+                        })
+                    }
+                )
+            }
         })
+    }
+    
+    func loginButtonPressed() {
+        
     }
     
     func getTextFieldsSectionHeight() -> CGFloat {
@@ -422,25 +489,20 @@ SLBoxTextFieldWithButtonDelegate
     }
     
     func firstFieldY0() -> CGFloat {
-        return 0.5*(self.view.bounds.size.height - self.getTextFieldsSectionHeight())
+        return CGRectGetMaxY(self.topLabel.frame) + self.yFieldSpacer
     }
     
     func setFieldPositions() {
         var y0 = self.firstFieldY0()
-        for (index, field) in self.fields.enumerate() {
+        for field in self.fields {
             field.frame = CGRect(
                 x: field.frame.origin.x,
                 y: y0,
                 width: field.bounds.size.width,
                 height: field.bounds.size.height
             )
-            if self.currentPhase == .Create {
-                y0 += self.yFieldSpacer + field.bounds.size.height
-            } else {
-                if index > 0 {
-                    y0 += self.yFieldSpacer + field.bounds.size.height
-                }
-            }
+            
+            y0 += self.yFieldSpacer + field.bounds.size.height
         }
     }
     
@@ -458,6 +520,11 @@ SLBoxTextFieldWithButtonDelegate
     func areFieldsValid() -> Bool {
         var allFieldsValid = true
         for (key, value) in self.fieldValues {
+            // Don't need to validate email on sign in since there in no email field
+            if self.currentPhase == .SignIn && key == .Email {
+                continue
+            }
+            
             var isValid = true
             if value == "" {
                 isValid = false
@@ -510,15 +577,17 @@ SLBoxTextFieldWithButtonDelegate
     
     func keyboardOffset() -> CGFloat {
         let firstField:SLBoxTextField = self.fields.first!
-        let offset:CGFloat = CGRectGetMinY(firstField.frame) -
-            //UIApplication.sharedApplication().statusBarFrame.size.height - 50.0
-            CGRectGetMaxY(self.exitButton.frame) - 20.0
+        let offset:CGFloat = CGRectGetMinY(firstField.frame) - CGRectGetMaxY(self.exitButton.frame) - 20.0
         
         return offset
     }
     
     func toolbarDoneButtonPressed() {
         self.phoneNumberField.resignFirstResponder()
+    }
+    
+    func facebookButtonPressed() {
+        
     }
     
     func keyboardWillShow(notification: NSNotification) {
@@ -590,6 +659,13 @@ SLBoxTextFieldWithButtonDelegate
             keyboardType = .Default
         }
         
+        if textField == self.passwordField {
+            // Adding this line since the secure entry option erases all text in the field when 
+            // on the user's first keystroke
+            self.fieldValues[.Password] = ""
+            self.passwordField.text = ""
+        }
+        
         textField.keyboardType = keyboardType
         textField.returnKeyType = .Done
     }
@@ -605,40 +681,35 @@ SLBoxTextFieldWithButtonDelegate
             let tempText:NSString = text as NSString
             let newText = tempText.stringByReplacingCharactersInRange(range, withString: string)
             self.fieldValues[fieldName] = newText as String
-            print("field values: \(self.fieldValues.description)")
-            let animationTime:Double = 0.25
             if self.areFieldsValid() {
-                if let keyboardFrame = self.keyboardFrame where self.sendTextButton.hidden {
-                    let translatedFrame = self.view.convertRect(keyboardFrame, toView: self.scrollView)
-                    self.sendTextButton.frame = CGRect(
-                        x: 0.0,
-                        y: CGRectGetMinY(translatedFrame),
-                        width: self.sendTextButton.bounds.size.width,
-                        height: self.sendTextButton.bounds.size.height
-                    )
-                    self.sendTextButton.hidden = false
-                    self.scrollView.addSubview(self.sendTextButton)
-                    UIView.animateWithDuration(animationTime, animations: {
-                        self.sendTextButton.frame = CGRectOffset(
-                            self.sendTextButton.frame,
-                            0.0,
-                            -self.sendTextButton.bounds.size.height
-                        )
-                        }, completion: { (finished:Bool) in
-                            
-                    })
+                if self.currentPhase == .Create {
+                    if self.hasSentTextMessage {
+                        if !self.view.subviews.contains(self.loginButton) {
+                            self.view.addSubview(self.loginButton)
+                        }
+                    } else {
+                        if !self.view.subviews.contains(self.sendTextButton) {
+                            self.view.addSubview(self.sendTextButton)
+                        }
+                    }
+                } else {
+                    if !self.view.subviews.contains(self.loginButton) {
+                        self.view.addSubview(self.loginButton)
+                    }
                 }
             } else {
-                if !self.sendTextButton.hidden {
-                    UIView.animateWithDuration(animationTime, animations: {
-                        self.sendTextButton.frame = CGRectOffset(
-                            self.sendTextButton.frame,
-                            0.0,
-                            self.sendTextButton.bounds.size.height
-                        )}, completion: { (finished:Bool) in
-                            self.sendTextButton.hidden = true
-                            self.sendTextButton.removeFromSuperview()
-                    })
+                if self.currentPhase == .Create {
+                    if self.view.subviews.contains(self.sendTextButton) {
+                        self.sendTextButton.removeFromSuperview()
+                    }
+                    
+                    if self.view.subviews.contains(self.loginButton) {
+                        self.loginButton.removeFromSuperview()
+                    }
+                } else {
+                    if self.view.subviews.contains(self.loginButton) {
+                        self.loginButton.removeFromSuperview()
+                    }
                 }
             }
         }

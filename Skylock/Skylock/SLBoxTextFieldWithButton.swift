@@ -13,7 +13,6 @@ protocol SLBoxTextFieldWithButtonDelegate:class {
 class SLBoxTextFieldWithButton: SLBoxTextField {
     weak var textBoxDelegate: SLBoxTextFieldWithButtonDelegate?
     
-    
     lazy var showButton:UIButton = {
         let width:CGFloat = 40.0
         let height:CGFloat = 30.0
@@ -51,7 +50,6 @@ class SLBoxTextFieldWithButton: SLBoxTextField {
     
     override func exitErrorMode() {
         super.exitErrorMode()
-        self.showButton.selected = self.secureTextEntry
         self.rightView = self.showButton
     }
 }

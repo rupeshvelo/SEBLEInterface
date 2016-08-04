@@ -157,6 +157,9 @@
     
 //    SLLockViewController *lvc = [SLLockViewController new];
 //    initialVC = lvc;
+//    
+//    SLConfirmTextCodeViewController *ctcvc = [SLConfirmTextCodeViewController new];
+//    initialVC = ctcvc;
     
     return initialVC;
 }

@@ -162,7 +162,7 @@
                                     pathKey:SLRestManagerPathKeyUsers
                                   subRoutes:nil
                           additionalHeaders:nil
-                                 completion:^(NSDictionary *responseDict) {
+                                 completion:^(NSUInteger status, NSDictionary *responseDict) {
                                      if (!responseDict || !responseDict[@"token"]) {
                                          NSLog(@"No response or user token when saving facebook user");
                                          [SLDatabaseManager.sharedManager saveLogEntry:

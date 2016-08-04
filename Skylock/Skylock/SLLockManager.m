@@ -987,7 +987,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                  pathKey:SLRestManagerPathKeyChallengeKey
                                subRoutes:subRoutes
                        additionalHeaders:additionalHeaders
-                              completion:^(NSDictionary *responseDict) {
+                              completion:^(NSUInteger status, NSDictionary *responseDict) {
                                   if (!responseDict || !responseDict[@"challenge_key"]) {
                                       // TODO figure out how to handle this gracefully
                                       NSLog(@"Error could not retrieve challenge key from server.");
@@ -1156,7 +1156,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                  pathKey:SLRestManagerPathKeyFirmwareUpdate
                                                subRoutes:nil
                                        additionalHeaders:nil
-                                              completion:^(NSDictionary *responseDict) {
+                                              completion:^(NSUInteger status, NSDictionary *responseDict) {
                                                   if (responseDict && responseDict[@"payload"]) {
                                                       NSArray *payload = responseDict[@"payload"];
                                                       [self.firmware removeAllObjects];
@@ -1192,7 +1192,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                   serverKey:SLRestManagerServerKeyMain
                                     pathKey:SLRestManagerPathKeyUsers subRoutes:subRoutes
                           additionalHeaders:additionalHeaders
-                                 completion:^(NSDictionary *responseDict) {
+                                 completion:^(NSUInteger status, NSDictionary *responseDict) {
                                      // TODO the server currently returns an empty payload for this url
                                      // and the server is always returning an error. When that is fixed,
                                      // this should be updated
@@ -1489,7 +1489,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                     pathKey:SLRestManagerPathKeyKeys
                   subRoutes:subRoutes
           additionalHeaders:additionalHeaders
-                 completion:^(NSDictionary *responseDict) {
+                 completion:^(NSUInteger status, NSDictionary *responseDict) {
                      NSString *infoMessage;
                      if (responseDict && responseDict[@"signed_message"] &&
                          responseDict[@"public_key"] &&

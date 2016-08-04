@@ -10,6 +10,7 @@ import UIKit
 
 enum SLFont:String {
     case OpenSansRegular = "OpenSans"
+    case OpenSansSemiBold = "OpenSans-SemiBold"
     case MontserratRegular = "Montserrat-Regular"
 }
 

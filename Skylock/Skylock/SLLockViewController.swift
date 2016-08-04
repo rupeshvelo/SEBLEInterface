@@ -605,6 +605,10 @@ SLLockBarViewControllerDelegate
             print("help pressed")
         case .RateTheAppPressed:
             print("rate the app pressed")
+        case .InviteFriendsPressed:
+            print("Invite friends pressed")
+        case .OrderNowPressed:
+            print("order now pressed")
         }
     }
     

@@ -187,6 +187,9 @@
 		DC49FC9E1D1050BD00862F24 /* SLViewControllerTransitionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC49FC9D1D1050BD00862F24 /* SLViewControllerTransitionHandler.swift */; };
 		DC4EF63C1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4EF63B1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift */; };
 		DC4EF63F1D24A6CC005FFA3D /* SLLockInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4EF63E1D24A6CC005FFA3D /* SLLockInfoViewController.swift */; };
+		DC535E6C1D52BE82006D5CDE /* SLLogoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC535E6B1D52BE82006D5CDE /* SLLogoutViewController.swift */; };
+		DC535E711D52BF99006D5CDE /* close_x_white_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC535E6F1D52BF99006D5CDE /* close_x_white_icon@2x.png */; };
+		DC535E721D52BF99006D5CDE /* close_x_white_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC535E701D52BF99006D5CDE /* close_x_white_icon@3x.png */; };
 		DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */; };
 		DC5C165A1C56D4A1006A41A5 /* SLMapCalloutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */; };
 		DC6DB57F1D04DFE700B159B3 /* SLLockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DB57E1D04DFE700B159B3 /* SLLockViewController.swift */; };
@@ -231,28 +234,6 @@
 		DC9682BC1D2B067F008C106E /* SLModifySensitiveDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682BB1D2B067F008C106E /* SLModifySensitiveDataViewController.swift */; };
 		DC9682BF1D2B3012008C106E /* SLInsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682BE1D2B3012008C106E /* SLInsetTextField.swift */; };
 		DC9682C11D2B7B15008C106E /* SLContactsLetterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */; };
-		DC9682D91D2B8795008C106E /* help_icon_slideview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C31D2B8795008C106E /* help_icon_slideview@2x.png */; };
-		DC9682DA1D2B8795008C106E /* help_icon_slideview@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C41D2B8795008C106E /* help_icon_slideview@3x.png */; };
-		DC9682DB1D2B8795008C106E /* icons_leftmenu_ellipses@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C51D2B8795008C106E /* icons_leftmenu_ellipses@2x.png */; };
-		DC9682DC1D2B8795008C106E /* icons_leftmenu_ellipses@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C61D2B8795008C106E /* icons_leftmenu_ellipses@3x.png */; };
-		DC9682DD1D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C71D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png */; };
-		DC9682DE1D2B8795008C106E /* icons_leftmenu_ellipses_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C81D2B8795008C106E /* icons_leftmenu_ellipses_selected@3x.png */; };
-		DC9682DF1D2B8795008C106E /* icons_leftmenu_findmyellipse@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682C91D2B8795008C106E /* icons_leftmenu_findmyellipse@2x.png */; };
-		DC9682E01D2B8795008C106E /* icons_leftmenu_findmyellipse@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CA1D2B8795008C106E /* icons_leftmenu_findmyellipse@3x.png */; };
-		DC9682E11D2B8795008C106E /* icons_navtab_mapview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CB1D2B8795008C106E /* icons_navtab_mapview@2x.png */; };
-		DC9682E21D2B8795008C106E /* icons_navtab_mapview@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CC1D2B8795008C106E /* icons_navtab_mapview@3x.png */; };
-		DC9682E31D2B8795008C106E /* icons_navtab_mapview_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CD1D2B8795008C106E /* icons_navtab_mapview_selected@2x.png */; };
-		DC9682E41D2B8795008C106E /* icons_navtab_mapview_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CE1D2B8795008C106E /* icons_navtab_mapview_selected@3x.png */; };
-		DC9682E51D2B8795008C106E /* profile_settings_icon_slideview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682CF1D2B8795008C106E /* profile_settings_icon_slideview@2x.png */; };
-		DC9682E61D2B8795008C106E /* profile_settings_icon_slideview@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D01D2B8795008C106E /* profile_settings_icon_slideview@3x.png */; };
-		DC9682E71D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D11D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png */; };
-		DC9682E81D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D21D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png */; };
-		DC9682E91D2B8795008C106E /* rate_app_icon_slideview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D31D2B8795008C106E /* rate_app_icon_slideview@2x.png */; };
-		DC9682EA1D2B8795008C106E /* rate_app_icon_slideview@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D41D2B8795008C106E /* rate_app_icon_slideview@3x.png */; };
-		DC9682EB1D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D51D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png */; };
-		DC9682EC1D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D61D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png */; };
-		DC9682ED1D2B8795008C106E /* slideview_help_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D71D2B8795008C106E /* slideview_help_icon@2x.png */; };
-		DC9682EE1D2B8795008C106E /* slideview_help_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC9682D81D2B8795008C106E /* slideview_help_icon@3x.png */; };
 		DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D191C38976600797CF1 /* SLKeychainHandler.swift */; };
 		DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */; };
 		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
@@ -587,6 +568,9 @@
 		DC49FC9D1D1050BD00862F24 /* SLViewControllerTransitionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLViewControllerTransitionHandler.swift; sourceTree = "<group>"; };
 		DC4EF63B1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLNoEllipseConnectedView.swift; sourceTree = "<group>"; };
 		DC4EF63E1D24A6CC005FFA3D /* SLLockInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockInfoViewController.swift; sourceTree = "<group>"; };
+		DC535E6B1D52BE82006D5CDE /* SLLogoutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLogoutViewController.swift; sourceTree = "<group>"; };
+		DC535E6F1D52BF99006D5CDE /* close_x_white_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close_x_white_icon@2x.png"; sourceTree = "<group>"; };
+		DC535E701D52BF99006D5CDE /* close_x_white_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close_x_white_icon@3x.png"; sourceTree = "<group>"; };
 		DC5C16561C56D009006A41A5 /* SLMapCalloutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutViewController.swift; sourceTree = "<group>"; };
 		DC5C16591C56D4A1006A41A5 /* SLMapCalloutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLMapCalloutView.swift; sourceTree = "<group>"; };
 		DC61477E1B32801E0077484B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -636,28 +620,6 @@
 		DC9682BB1D2B067F008C106E /* SLModifySensitiveDataViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLModifySensitiveDataViewController.swift; sourceTree = "<group>"; };
 		DC9682BE1D2B3012008C106E /* SLInsetTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLInsetTextField.swift; sourceTree = "<group>"; };
 		DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContactsLetterViewController.swift; sourceTree = "<group>"; };
-		DC9682C31D2B8795008C106E /* help_icon_slideview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help_icon_slideview@2x.png"; sourceTree = "<group>"; };
-		DC9682C41D2B8795008C106E /* help_icon_slideview@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "help_icon_slideview@3x.png"; sourceTree = "<group>"; };
-		DC9682C51D2B8795008C106E /* icons_leftmenu_ellipses@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_ellipses@2x.png"; sourceTree = "<group>"; };
-		DC9682C61D2B8795008C106E /* icons_leftmenu_ellipses@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_ellipses@3x.png"; sourceTree = "<group>"; };
-		DC9682C71D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_ellipses_selected@2x.png"; sourceTree = "<group>"; };
-		DC9682C81D2B8795008C106E /* icons_leftmenu_ellipses_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_ellipses_selected@3x.png"; sourceTree = "<group>"; };
-		DC9682C91D2B8795008C106E /* icons_leftmenu_findmyellipse@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_findmyellipse@2x.png"; sourceTree = "<group>"; };
-		DC9682CA1D2B8795008C106E /* icons_leftmenu_findmyellipse@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_leftmenu_findmyellipse@3x.png"; sourceTree = "<group>"; };
-		DC9682CB1D2B8795008C106E /* icons_navtab_mapview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_navtab_mapview@2x.png"; sourceTree = "<group>"; };
-		DC9682CC1D2B8795008C106E /* icons_navtab_mapview@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_navtab_mapview@3x.png"; sourceTree = "<group>"; };
-		DC9682CD1D2B8795008C106E /* icons_navtab_mapview_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_navtab_mapview_selected@2x.png"; sourceTree = "<group>"; };
-		DC9682CE1D2B8795008C106E /* icons_navtab_mapview_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons_navtab_mapview_selected@3x.png"; sourceTree = "<group>"; };
-		DC9682CF1D2B8795008C106E /* profile_settings_icon_slideview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_settings_icon_slideview@2x.png"; sourceTree = "<group>"; };
-		DC9682D01D2B8795008C106E /* profile_settings_icon_slideview@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_settings_icon_slideview@3x.png"; sourceTree = "<group>"; };
-		DC9682D11D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_settings_icon_slideview_selected@2x.png"; sourceTree = "<group>"; };
-		DC9682D21D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile_settings_icon_slideview_selected@3x.png"; sourceTree = "<group>"; };
-		DC9682D31D2B8795008C106E /* rate_app_icon_slideview@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rate_app_icon_slideview@2x.png"; sourceTree = "<group>"; };
-		DC9682D41D2B8795008C106E /* rate_app_icon_slideview@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rate_app_icon_slideview@3x.png"; sourceTree = "<group>"; };
-		DC9682D51D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slide_view_emergency_contacts_icon@2x.png"; sourceTree = "<group>"; };
-		DC9682D61D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slide_view_emergency_contacts_icon@3x.png"; sourceTree = "<group>"; };
-		DC9682D71D2B8795008C106E /* slideview_help_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slideview_help_icon@2x.png"; sourceTree = "<group>"; };
-		DC9682D81D2B8795008C106E /* slideview_help_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slideview_help_icon@3x.png"; sourceTree = "<group>"; };
 		DC974D191C38976600797CF1 /* SLKeychainHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLKeychainHandler.swift; sourceTree = "<group>"; };
 		DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageViewController.swift; sourceTree = "<group>"; };
 		DC9EADED1B34EFB100DA1692 /* SLLockManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockManager.h; sourceTree = "<group>"; };
@@ -948,6 +910,7 @@
 				DC3003721D4405FD004CE560 /* SLNotificationViewController.swift */,
 				DC3003741D440EEF004CE560 /* SLTheftNotificationViewController.swift */,
 				DCBE64651D4448D200CB0840 /* SLCrashNotificationViewController.swift */,
+				DC535E6B1D52BE82006D5CDE /* SLLogoutViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1161,6 +1124,15 @@
 			name = extenstions;
 			sourceTree = "<group>";
 		};
+		DC535E6E1D52BF99006D5CDE /* slideview */ = {
+			isa = PBXGroup;
+			children = (
+				DC535E6F1D52BF99006D5CDE /* close_x_white_icon@2x.png */,
+				DC535E701D52BF99006D5CDE /* close_x_white_icon@3x.png */,
+			);
+			path = slideview;
+			sourceTree = "<group>";
+		};
 		DC77CA591D4BCE94009D2E41 /* onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -1183,11 +1155,11 @@
 		DC7A105D1B5714B100F3336E /* skylock_assets */ = {
 			isa = PBXGroup;
 			children = (
+				DC535E6E1D52BF99006D5CDE /* slideview */,
 				DC77CA591D4BCE94009D2E41 /* onboarding */,
 				DC1ED0D81D49C84800A9A3D3 /* map_view */,
 				DC06EF5F1D484C1A00C96DF9 /* lock_details */,
 				DCAAEBE31D347DDF00946B61 /* emergency_contacts */,
-				DC9682C21D2B8795008C106E /* slideview */,
 				DC1881AE1D21E5310030C607 /* lock_screen */,
 				DC2DDD061D1C85AB004A5857 /* login */,
 				DCE607D71D10F7600034D0B3 /* touch_pad */,
@@ -1207,35 +1179,6 @@
 				DC94E1381D0D3726002D32C3 /* icon_camera_Myprofile@3x.png */,
 			);
 			path = profile_view;
-			sourceTree = "<group>";
-		};
-		DC9682C21D2B8795008C106E /* slideview */ = {
-			isa = PBXGroup;
-			children = (
-				DC9682C31D2B8795008C106E /* help_icon_slideview@2x.png */,
-				DC9682C41D2B8795008C106E /* help_icon_slideview@3x.png */,
-				DC9682C51D2B8795008C106E /* icons_leftmenu_ellipses@2x.png */,
-				DC9682C61D2B8795008C106E /* icons_leftmenu_ellipses@3x.png */,
-				DC9682C71D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png */,
-				DC9682C81D2B8795008C106E /* icons_leftmenu_ellipses_selected@3x.png */,
-				DC9682C91D2B8795008C106E /* icons_leftmenu_findmyellipse@2x.png */,
-				DC9682CA1D2B8795008C106E /* icons_leftmenu_findmyellipse@3x.png */,
-				DC9682CB1D2B8795008C106E /* icons_navtab_mapview@2x.png */,
-				DC9682CC1D2B8795008C106E /* icons_navtab_mapview@3x.png */,
-				DC9682CD1D2B8795008C106E /* icons_navtab_mapview_selected@2x.png */,
-				DC9682CE1D2B8795008C106E /* icons_navtab_mapview_selected@3x.png */,
-				DC9682CF1D2B8795008C106E /* profile_settings_icon_slideview@2x.png */,
-				DC9682D01D2B8795008C106E /* profile_settings_icon_slideview@3x.png */,
-				DC9682D11D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png */,
-				DC9682D21D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png */,
-				DC9682D31D2B8795008C106E /* rate_app_icon_slideview@2x.png */,
-				DC9682D41D2B8795008C106E /* rate_app_icon_slideview@3x.png */,
-				DC9682D51D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png */,
-				DC9682D61D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png */,
-				DC9682D71D2B8795008C106E /* slideview_help_icon@2x.png */,
-				DC9682D81D2B8795008C106E /* slideview_help_icon@3x.png */,
-			);
-			path = slideview;
 			sourceTree = "<group>";
 		};
 		DCAAEBE31D347DDF00946B61 /* emergency_contacts */ = {
@@ -1609,18 +1552,14 @@
 				DC1ED0FD1D49C84800A9A3D3 /* map_shared_to_others_bike_icon_large@2x.png in Resources */,
 				DC3003821D44159E004CE560 /* OpenSans-LightItalic.ttf in Resources */,
 				DC3003961D4415DD004CE560 /* ProximaNovaCond-SemiboldIt.otf in Resources */,
-				DC9682E81D2B8795008C106E /* profile_settings_icon_slideview_selected@3x.png in Resources */,
 				DC30037D1D44158D004CE560 /* OpenSans-BoldItalic.ttf in Resources */,
 				DC06EF8E1D484C1A00C96DF9 /* locks_connect_button@2x.png in Resources */,
 				DCAAEC001D347DDF00946B61 /* contacts_selected_circle@2x.png in Resources */,
-				DC9682D91D2B8795008C106E /* help_icon_slideview@2x.png in Resources */,
 				DC3003951D4415DA004CE560 /* ProximaNovaCond-Semibold.otf in Resources */,
 				DC2DDD331D1C85AB004A5857 /* button_log_in_email_Onboarding@2x.png in Resources */,
 				DC77CA6B1D4BCE94009D2E41 /* onboarding_main_image_1@3x.png in Resources */,
 				DC77CA6F1D4BCE94009D2E41 /* onboarding_main_image_3@3x.png in Resources */,
-				DC9682EB1D2B8795008C106E /* slide_view_emergency_contacts_icon@2x.png in Resources */,
 				DC3003891D4415B5004CE560 /* ProximaNova-Extrabold.otf in Resources */,
-				DC9682DD1D2B8795008C106E /* icons_leftmenu_ellipses_selected@2x.png in Resources */,
 				DCE607FF1D10F7600034D0B3 /* button_save_Onboarding@3x.png in Resources */,
 				DC1881D21D21E5310030C607 /* lock_screen_theft_detection_button@3x.png in Resources */,
 				DC2DDD441D1C85AB004A5857 /* login_use_location_background@3x.png in Resources */,
@@ -1663,15 +1602,12 @@
 				DC1ED0F41D49C84800A9A3D3 /* map_close_details_x_icon@3x.png in Resources */,
 				DC2DDD421D1C85AB004A5857 /* confirm_text_code_button@3x.png in Resources */,
 				DC06EF911D484C1A00C96DF9 /* locks_delete_lock_button@3x.png in Resources */,
-				DC9682EE1D2B8795008C106E /* slideview_help_icon@3x.png in Resources */,
 				DC2DDD311D1C85AB004A5857 /* button_get_help_Onboarding@2x.png in Resources */,
 				DCF36BC81B538CE100070F11 /* Roboto-Regular.ttf in Resources */,
-				DC9682E31D2B8795008C106E /* icons_navtab_mapview_selected@2x.png in Resources */,
 				DC2DDD2B1D1C85AB004A5857 /* button_blink_device_Onboarding@2x.png in Resources */,
 				DC30038F1D4415C7004CE560 /* ProximaNova-Semibold.otf in Resources */,
 				DC1881CE1D21E5310030C607 /* lock_screen_crash_detection_button_inactive@3x.png in Resources */,
 				DC3E26801C4EC92900BF7AC2 /* GoogleService-Info.plist in Resources */,
-				DC9682EC1D2B8795008C106E /* slide_view_emergency_contacts_icon@3x.png in Resources */,
 				DCAAEC041D347DDF00946B61 /* emergency_contact_circle@2x.png in Resources */,
 				DC3003851D4415A7004CE560 /* OpenSans-SemiboldItalic.ttf in Resources */,
 				DC1ED0F31D49C84800A9A3D3 /* map_close_details_x_icon@2x.png in Resources */,
@@ -1679,7 +1615,6 @@
 				DC2DDD391D1C85AB004A5857 /* button_sign_up_facebook_Onboarding@2x.png in Resources */,
 				DC2DDD411D1C85AB004A5857 /* confirm_text_code_button@2x.png in Resources */,
 				DCE5C2221CFB5D910084F8A2 /* button_yes_small_Onboarding@3x.png in Resources */,
-				DC9682DE1D2B8795008C106E /* icons_leftmenu_ellipses_selected@3x.png in Resources */,
 				DC2DDD4C1D1C85AB004A5857 /* sign_in_existing_user_login_button@3x.png in Resources */,
 				DC06EF7F1D484C1A00C96DF9 /* button_save_Ellipses@3x.png in Resources */,
 				DC1881C81D21E5310030C607 /* lock_locked_button@3x.png in Resources */,
@@ -1690,7 +1625,6 @@
 				DC3003931D4415D4004CE560 /* ProximaNovaCond-Regular.otf in Resources */,
 				DCE5C2211CFB5D910084F8A2 /* button_yes_small_Onboarding@2x.png in Resources */,
 				DCAAEBFF1D347DDF00946B61 /* contacts_phone_icon@3x.png in Resources */,
-				DC9682DC1D2B8795008C106E /* icons_leftmenu_ellipses@3x.png in Resources */,
 				DCE607F01D10F7600034D0B3 /* button_backspace_Onboarding@2x.png in Resources */,
 				DC3003941D4415D8004CE560 /* ProximaNovaCond-RegularIt.otf in Resources */,
 				DCAAEBF61D347DDF00946B61 /* button_add_contacts_Emergencycontacts@2x.png in Resources */,
@@ -1699,11 +1633,9 @@
 				DCE607FC1D10F7600034D0B3 /* button_save_inactive_Onboarding@2x.png in Resources */,
 				DCAAEBFB1D347DDF00946B61 /* button_remove_Emergencycontacts@3x.png in Resources */,
 				DC30038C1D4415BD004CE560 /* ProximaNova-RegItalic.otf in Resources */,
-				DC9682ED1D2B8795008C106E /* slideview_help_icon@2x.png in Resources */,
 				DC1ED0EF1D49C84800A9A3D3 /* button_close_window_large_Mapview@2x.png in Resources */,
 				DC06EF881D484C1A00C96DF9 /* icon_unlocked_navy_circle_Ellipses@2x.png in Resources */,
 				DC06EF831D484C1A00C96DF9 /* button_unshare_toggle_Ellipses@3x.png in Resources */,
-				DC9682DB1D2B8795008C106E /* icons_leftmenu_ellipses@2x.png in Resources */,
 				DC2DDD401D1C85AB004A5857 /* button_yes_small_Onboarding@3x.png in Resources */,
 				DC3003861D4415AB004CE560 /* ProximaNova-Black.otf in Resources */,
 				DC3003921D4415D1004CE560 /* ProximaNovaCond-LightIt.otf in Resources */,
@@ -1716,9 +1648,6 @@
 				DCE5C21B1CFB5D910084F8A2 /* button_invitation_to_share_Onboarding@2x.png in Resources */,
 				DC2DDD491D1C85AB004A5857 /* sign_in_confirm_code_button@2x.png in Resources */,
 				DC1ED0F11D49C84800A9A3D3 /* hamburger_button_navy@2x.png in Resources */,
-				DC9682DF1D2B8795008C106E /* icons_leftmenu_findmyellipse@2x.png in Resources */,
-				DC9682E01D2B8795008C106E /* icons_leftmenu_findmyellipse@3x.png in Resources */,
-				DC9682E91D2B8795008C106E /* rate_app_icon_slideview@2x.png in Resources */,
 				DC1ED0FE1D49C84800A9A3D3 /* map_shared_to_others_bike_icon_large@3x.png in Resources */,
 				DCE607F61D10F7600034D0B3 /* button_keypad_left_Onboarding@2x.png in Resources */,
 				DC1881D41D21E5310030C607 /* lock_screen_theft_detection_button_inactive@3x.png in Resources */,
@@ -1733,7 +1662,6 @@
 				DC3003911D4415CE004CE560 /* ProximaNovaCond-Light.otf in Resources */,
 				DC77CA671D4BCE94009D2E41 /* button_get_started_now_onboarding@3x.png in Resources */,
 				DC2DDD2C1D1C85AB004A5857 /* button_blink_device_Onboarding@3x.png in Resources */,
-				DC9682EA1D2B8795008C106E /* rate_app_icon_slideview@3x.png in Resources */,
 				DC1ED1001D49C84800A9A3D3 /* map_show_more_dots@3x.png in Resources */,
 				DC3003901D4415CA004CE560 /* ProximaNova-SemiboldItalic.otf in Resources */,
 				DC2DDD2F1D1C85AB004A5857 /* button_existing_user_Onboarding@2x.png in Resources */,
@@ -1753,15 +1681,14 @@
 				DC06EF7B1D484C1A00C96DF9 /* button_delete_this_lock_Ellipses@3x.png in Resources */,
 				DCE5C2151CFB5D910084F8A2 /* table_cell_lock_pic_onboarding@2x.png in Resources */,
 				DC2DDD3B1D1C85AB004A5857 /* button_text_confirmation_code_Onboarding@2x.png in Resources */,
+				DC535E711D52BF99006D5CDE /* close_x_white_icon@2x.png in Resources */,
 				DC2DDD3D1D1C85AB004A5857 /* button_try_again_Onboarding@2x.png in Resources */,
 				DCAAEBFA1D347DDF00946B61 /* button_remove_Emergencycontacts@2x.png in Resources */,
 				DC1881D51D21E5310030C607 /* lock_unlocked_button@2x.png in Resources */,
 				DC77CA6E1D4BCE94009D2E41 /* onboarding_main_image_3@2x.png in Resources */,
 				DC30037B1D441584004CE560 /* Montserrat-Regular.ttf in Resources */,
-				DC9682DA1D2B8795008C106E /* help_icon_slideview@3x.png in Resources */,
 				DC30038B1D4415BA004CE560 /* ProximaNova-LightItalic.otf in Resources */,
 				DC30037C1D441588004CE560 /* OpenSans-Bold.ttf in Resources */,
-				DC9682E21D2B8795008C106E /* icons_navtab_mapview@3x.png in Resources */,
 				DC1881CB1D21E5310030C607 /* lock_screen_crash_detection_button@2x.png in Resources */,
 				DC06EF7E1D484C1A00C96DF9 /* button_save_Ellipses@2x.png in Resources */,
 				DC94E1391D0D3726002D32C3 /* button_delete_account_Myprofile@2x.png in Resources */,
@@ -1769,7 +1696,6 @@
 				DC77CA661D4BCE94009D2E41 /* button_get_started_now_onboarding@2x.png in Resources */,
 				DCE608021D10F7600034D0B3 /* touch_pad_left_arrow@2x.png in Resources */,
 				DC1881C71D21E5310030C607 /* lock_locked_button@2x.png in Resources */,
-				DC9682E11D2B8795008C106E /* icons_navtab_mapview@2x.png in Resources */,
 				DC06EF871D484C1A00C96DF9 /* icon_more_dots_gray_horizontal_Ellipses@3x.png in Resources */,
 				DC2DDD471D1C85AB004A5857 /* sign_in_close_icon@2x.png in Resources */,
 				DC2DDD451D1C85AB004A5857 /* notifications_background@2x.png in Resources */,
@@ -1779,6 +1705,7 @@
 				DCE5C2171CFB5D910084F8A2 /* button_connect_device_Onboarding@2x.png in Resources */,
 				DC1881CF1D21E5310030C607 /* lock_screen_hamburger_menu@2x.png in Resources */,
 				DC1ED1011D49C84800A9A3D3 /* map_view_close_directions_button@2x.png in Resources */,
+				DC535E721D52BF99006D5CDE /* close_x_white_icon@3x.png in Resources */,
 				DC06EF821D484C1A00C96DF9 /* button_unshare_toggle_Ellipses@2x.png in Resources */,
 				DC77CA6A1D4BCE94009D2E41 /* onboarding_main_image_1@2x.png in Resources */,
 				DC06EF921D484C1A00C96DF9 /* locks_setting_button@2x.png in Resources */,
@@ -1791,7 +1718,6 @@
 				DC3003831D4415A1004CE560 /* OpenSans-Regular.ttf in Resources */,
 				DC94E13A1D0D3726002D32C3 /* button_delete_account_Myprofile@3x.png in Resources */,
 				DC06EF7C1D484C1A00C96DF9 /* button_factory_reset_Ellipses@2x.png in Resources */,
-				DC9682E71D2B8795008C106E /* profile_settings_icon_slideview_selected@2x.png in Resources */,
 				DCAAEBF81D347DDF00946B61 /* button_not_now_Onboarding@2x.png in Resources */,
 				DC06EF8A1D484C1A00C96DF9 /* lock_settings_right_arrow@2x.png in Resources */,
 				DC2DDD3A1D1C85AB004A5857 /* button_sign_up_facebook_Onboarding@3x.png in Resources */,
@@ -1806,18 +1732,15 @@
 				DC2DDD341D1C85AB004A5857 /* button_log_in_email_Onboarding@3x.png in Resources */,
 				DC2DDD3C1D1C85AB004A5857 /* button_text_confirmation_code_Onboarding@3x.png in Resources */,
 				DC77CA681D4BCE94009D2E41 /* needs_location_background@2x.png in Resources */,
-				DC9682E51D2B8795008C106E /* profile_settings_icon_slideview@2x.png in Resources */,
 				DC2DDD2D1D1C85AB004A5857 /* button_close_window_extra_large_Onboarding@2x.png in Resources */,
 				DCE5C2181CFB5D910084F8A2 /* button_connect_device_Onboarding@3x.png in Resources */,
 				DC06EF8C1D484C1A00C96DF9 /* lock_status_bar@2x.png in Resources */,
 				DC77CA711D4BCE94009D2E41 /* onboarding_main_image_4@3x.png in Resources */,
-				DC9682E61D2B8795008C106E /* profile_settings_icon_slideview@3x.png in Resources */,
 				DCAAEBFC1D347DDF00946B61 /* button_yes_Onboarding@2x.png in Resources */,
 				DC1ED0FC1D49C84800A9A3D3 /* map_shared_to_me_bike_icon_large@3x.png in Resources */,
 				DCAAEC021D347DDF00946B61 /* contacts_unselected_circle@2x.png in Resources */,
 				DCAAEC051D347DDF00946B61 /* emergency_contact_circle@3x.png in Resources */,
 				DC77CA6C1D4BCE94009D2E41 /* onboarding_main_image_2@2x.png in Resources */,
-				DC9682E41D2B8795008C106E /* icons_navtab_mapview_selected@3x.png in Resources */,
 				DC1881D71D21E5310030C607 /* temp_phone_info@2x.png in Resources */,
 				DC1881D01D21E5310030C607 /* lock_screen_hamburger_menu@3x.png in Resources */,
 			);
@@ -1893,6 +1816,7 @@
 				DC2EE9841D45492600922C6C /* SLUser+CoreDataProperties.m in Sources */,
 				DCA142191D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift in Sources */,
 				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
+				DC535E6C1D52BE82006D5CDE /* SLLogoutViewController.swift in Sources */,
 				DC77BF5E1D09F5DD0081C7B6 /* SLLockSettingsViewController.swift in Sources */,
 				DC6DB57F1D04DFE700B159B3 /* SLLockViewController.swift in Sources */,
 				DCAAEBBF1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift in Sources */,
