@@ -217,4 +217,9 @@
     self.name = [NSString stringWithFormat:@"%@ %@", parts[0], parts[1]];
 }
 
+- (BOOL)isInBootMode
+{
+    return [self.name.lowercaseString containsString:@"skyboot"];
+}
+
 @end

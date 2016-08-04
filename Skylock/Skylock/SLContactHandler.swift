@@ -263,7 +263,7 @@ enum SLUserDefaultsEmergencyContactId: String {
                 pathKey: SLRestManagerPathKey.Users,
                 subRoutes: subRoutes,
                 additionalHeaders: additionalHeaders)
-            { (_: [NSObject : AnyObject]!) in
+            { (status: UInt, payload:[NSObject : AnyObject]!) in
                 print("Got payload from saving contact with Id: \(contact.identifier)")
             }
         })

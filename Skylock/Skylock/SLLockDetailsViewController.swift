@@ -13,13 +13,15 @@ import UIKit
 class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var connectedLock:SLLock?
     
+    let utilities:SLUtilities = SLUtilities()
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
         table.delegate = self
         table.dataSource = self
         table.separatorStyle = UITableViewCellSeparatorStyle.None
         table.backgroundColor = UIColor.whiteColor()
-        table.rowHeight = 54.0
+        table.rowHeight = 92.0
         table.scrollEnabled = false
         table.registerClass(
             SLLockDetailsTableViewCell.self,
@@ -36,13 +38,25 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         return locks
     }()
     
+    lazy var dataFormatter:NSDateFormatter = {
+        let df:NSDateFormatter = NSDateFormatter()
+        df.dateFormat = "MMM d, H:mm a"
+        
+        return df
+    }()
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.whiteColor()
         
         let addLockButton:UIBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .Add,
+            title: NSLocalizedString("ADD NEW", comment: ""),
+            style: .Plain,
             target: self,
             action: #selector(addLock)
         )
@@ -60,9 +74,23 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         )
         
         self.navigationItem.leftBarButtonItem = menuButton
-        self.navigationItem.title = NSLocalizedString("Ellipses", comment: "")
+        self.navigationItem.title = NSLocalizedString("ELLIPSES", comment: "")
         
         self.view.addSubview(self.tableView)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self, selector:
+            #selector(lockDisconnected(_:)),
+            name: kSLNotificationLockManagerDisconnectedLock,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnected(_:)),
+            name: kSLNotificationLockPaired,
+            object: nil
+        )
     }
     
     func menuButtonPressed() {
@@ -87,73 +115,91 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func rowActionTextForIndexPath(indexPath: NSIndexPath) -> String {
-        return "         "
+        return "             "
     }
     
+    func lockConnected(notification: NSNotification) {
+        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        self.unconnectedLocks = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
+        self.connectedLock = lockManager.getCurrentLock()
+        
+        self.tableView.reloadData()
+    }
+    
+    func lockDisconnected(notification: NSNotification) {
+        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        self.unconnectedLocks = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
+        self.connectedLock = nil
+        
+        self.tableView.reloadData()
+    }
+    
+    // MARK: UITableView Delegate & Datasource methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 3
+            return 1
         }
         
         return self.unconnectedLocks.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cellId = String(SLLockDetailsTableViewCell)
         let optionsDotsImage:UIImage = UIImage(named: "icon_more_dots_gray_horizontal_Ellipses")!
         let optionsDotsView:UIImageView = UIImageView(image: optionsDotsImage)
+        var mainText:String?
+        var detailText:String?
+        var isConnected = false
         
-        if indexPath.section == 0 && indexPath.row == 1 {
-            let cell:SLLockDetailsTableViewCell? = tableView.dequeueReusableCellWithIdentifier(
-                String(SLLockDetailsTableViewCell)
-                ) as? SLLockDetailsTableViewCell
-            
-            if let detailCell = cell, let lock = self.connectedLock {
-                detailCell.lock = lock
-                detailCell.accessoryView = optionsDotsView
-                detailCell.selectionStyle = .None
-                
-                return detailCell
+        if let lock = self.connectedLock where indexPath.section == 0 {
+            mainText = lock.displayName()
+            detailText = NSLocalizedString("Connected", comment: "")
+            isConnected = true
+        } else if indexPath.section != 0 {
+            let unconnectedLock = self.unconnectedLocks[indexPath.row]
+            mainText = unconnectedLock.displayName()
+            if let lastConnectedDate = unconnectedLock.lastConnected {
+                detailText = NSLocalizedString("Last connected on", comment: "") + " "
+                    + self.dataFormatter.stringFromDate(lastConnectedDate)
             }
         }
         
-        let cellId = "SLLockDetailViewControllerNormalCell"
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
-        if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
-        }
+        let cell:SLLockDetailsTableViewCell = tableView.dequeueReusableCellWithIdentifier(
+            cellId
+            ) as! SLLockDetailsTableViewCell
         
-        if (indexPath.section == 1) {
-            let lock = self.unconnectedLocks[indexPath.row]
-            cell?.textLabel!.text = lock.displayName()
-            cell?.accessoryView = optionsDotsView
-        }
+        cell.setProperties(isConnected, mainText: mainText, detailText: detailText)
+        cell.accessoryView = mainText == nil ? nil : optionsDotsView
+        cell.selectionStyle = .None
         
-        cell?.selectionStyle = .None
-        
-        return cell!
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.001
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 33.0
+        return 65.0
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let text:String
-        let color:UIColor
+        let backgroundColor:UIColor
         let textColor:UIColor
         
         if section == 0 {
             text = NSLocalizedString("CURRENTLY CONNECTED", comment: "")
-            color = UIColor(red: 76, green: 79, blue: 97)
-            textColor = UIColor(white: 239.0/255.0, alpha: 1.0)
+            backgroundColor = self.utilities.color(.Color60_83_119)
+            textColor = self.utilities.color(.Color239_239_239)
         } else {
-            text = NSLocalizedString("CONNECTION HISTORY", comment: "")
-            color = UIColor(red: 155, green: 155, blue: 155)
-            textColor = UIColor.whiteColor()
+            text = NSLocalizedString("PREVIOUS CONNECTIONS", comment: "")
+            backgroundColor = self.utilities.color(.Color247_247_248)
+            textColor = self.utilities.color(.Color140_140_140)
         }
         
         let frame = CGRect(
@@ -164,7 +210,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         )
         
         let view:UIView = UIView(frame: frame)
-        view.backgroundColor = color
+        view.backgroundColor = backgroundColor
         
         let height:CGFloat = 14.0
         let labelFrame = CGRect(
@@ -175,7 +221,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         )
         
         let label:UILabel = UILabel(frame: labelFrame)
-        label.font = UIFont.systemFontOfSize(12.0)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         label.textColor = textColor
         label.text = text
         label.textAlignment = .Center
@@ -190,28 +236,60 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         return true
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
-    
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
-        if indexPath.section != 0 || indexPath.row != 1 {
-            return []
-        }
-        
-        let deleteImage = UIImage(named: "lock_details_delete_icon")!
-        let deleteAction = UITableViewRowAction(style: .Normal, title: self.rowActionTextForIndexPath(indexPath)) { (rowAction, index) in
-            print("delete action button pressed")
+        var actions:[UITableViewRowAction] = [UITableViewRowAction]()
+        let deleteImage = UIImage(named: "locks_delete_lock_button")!
+        let deleteAction = UITableViewRowAction(
+        style: .Normal,
+        title: self.rowActionTextForIndexPath(indexPath))
+        { (rowAction, index) in
+            var lock:SLLock?
+            if indexPath.section == 0 && self.connectedLock != nil {
+                lock = self.connectedLock
+            } else if indexPath == 1 {
+                lock = self.unconnectedLocks[indexPath.row]
+            }
+            
+            if lock == nil {
+                return
+            }
+            
+            let lrodvc = SLLockResetOrDeleteViewController(
+                type: SLLockResetOrDeleteViewControllerType.Delete,
+                lock: lock!
+            )
+            self.navigationController?.pushViewController(lrodvc, animated: true)
         }
         deleteAction.backgroundColor = UIColor(patternImage: deleteImage)
         
-        let settingsImage = UIImage(named: "lock_details_settings_icon")!
-        let settingsAction = UITableViewRowAction(style: .Normal, title: self.rowActionTextForIndexPath(indexPath)) { (rowAction, index) in
-            print("settings action button pressed")
+        if indexPath.section == 0 {
+            let settingsImage = UIImage(named: "locks_setting_button")!
+            let settingsAction = UITableViewRowAction(
+            style: .Normal,
+            title: self.rowActionTextForIndexPath(indexPath))
+            { (rowAction, index) in
+                if let lock = self.connectedLock {
+                    let lsvc = SLLockSettingsViewController(lock: lock)
+                    self.navigationController?.pushViewController(lsvc, animated: true)
+                }
+            }
+            settingsAction.backgroundColor = UIColor(patternImage: settingsImage)
+            actions.append(settingsAction)
+        } else {
+            let conntectImage = UIImage(named: "locks_connect_button")!
+            let connectAction = UITableViewRowAction(
+            style: .Normal,
+            title: self.rowActionTextForIndexPath(indexPath))
+            { (rowAction, index) in
+                print("connect action button pressed")
+            }
+            connectAction.backgroundColor = UIColor(patternImage: conntectImage)
+            actions.append(connectAction)
         }
-        settingsAction.backgroundColor = UIColor(patternImage: settingsImage)
         
-        return [deleteAction, settingsAction]
+        actions.append(deleteAction)
+        
+        return actions
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

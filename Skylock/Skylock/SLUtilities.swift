@@ -10,6 +10,7 @@ import UIKit
 
 enum SLFont:String {
     case OpenSansRegular = "OpenSans"
+    case OpenSansSemiBold = "OpenSans-SemiBold"
     case MontserratRegular = "Montserrat-Regular"
 }
 
@@ -21,9 +22,13 @@ enum SLColor {
     case Color102_177_227
     case Color109_194_223
     case Color130_156_178
+    case Color140_140_140
     case Color155_155_155
+    case Color160_200_224
+    case Color188_187_187
     case Color231_231_233
     case Color239_239_239
+    case Color247_247_248
     case Color255_255_255
 }
 
@@ -62,12 +67,20 @@ class SLUtilities: NSObject {
             color = UIColor.color(109, green: 194, blue: 223)
         case .Color130_156_178:
             color = UIColor.color(130, green: 156, blue: 178)
+        case .Color140_140_140:
+            color = UIColor.color(140, green: 140, blue: 140)
         case .Color155_155_155:
             color = UIColor.color(155, green: 155, blue: 155)
+        case .Color160_200_224:
+            color = UIColor.color(160, green: 200, blue: 224)
+        case .Color188_187_187:
+            color = UIColor.color(188, green: 187, blue: 187)
         case .Color231_231_233:
             color = UIColor.color(231, green: 231, blue: 233)
         case .Color239_239_239:
             color = UIColor.color(239, green: 239, blue: 239)
+        case .Color247_247_248:
+            color = UIColor.color(247, green: 247, blue: 248)
         case .Color255_255_255:
             color = UIColor.whiteColor()
         }

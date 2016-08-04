@@ -13,6 +13,14 @@ protocol SLUserSettingTableViewCellDelegate: class {
 class SLUserSettingTableViewCell: UITableViewCell {
     weak var delegate:SLUserSettingTableViewCellDelegate?
     
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .Subtitle, reuseIdentifier: "SLUserSettingTableViewCell")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     lazy var settingSwitch:UISwitch = {
         let sSwitch:UISwitch = UISwitch()
         sSwitch.onTintColor = UIColor(red: 87, green: 216, blue: 255)

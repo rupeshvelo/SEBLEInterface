@@ -20,7 +20,13 @@ private enum Element {
     case LockNameText
 }
 
+protocol SLLockBarViewControllerDelegate:class {
+    func lockBarTapped(lockBar: SLLockBarViewController)
+}
+
 class SLLockBarViewController: UIViewController {
+    weak var delegate:SLLockBarViewControllerDelegate?
+    
     private var lock:SLLock?
     
     private let xPadding:CGFloat = 10.0
@@ -89,7 +95,7 @@ class SLLockBarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
+        self.view.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
         
         let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(lockBarTapped))
         tgr.numberOfTapsRequired = 1
@@ -219,11 +225,7 @@ class SLLockBarViewController: UIViewController {
     }
     
     @objc private func lockBarTapped() {
-        guard let lock = self.lock else {
-            return
-        }
-        
-        SLLockManager.sharedManager().setLockStateForLock(lock)
+        self.delegate?.lockBarTapped(self)
     }
     
     @objc private func lockOpened(notification: NSNotification) {
@@ -244,11 +246,7 @@ class SLLockBarViewController: UIViewController {
     
     @objc private func lockDisconneted(notification: NSNotification) {
         // TODO Set up view to handl when there is no lock
-        guard let notificationObject = notification.object as? [String: String] else {
-            return
-        }
-        
-        guard let disconnectedAddress = notificationObject["lockName"] else {
+        guard let disconnectedAddress = notification.object as? String else {
             return
         }
         

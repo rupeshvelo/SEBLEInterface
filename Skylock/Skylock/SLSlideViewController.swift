@@ -15,6 +15,8 @@ enum SLSlideViewControllerAction {
     case EmergencyContacts
     case HelpPressed
     case RateTheAppPressed
+    case InviteFriendsPressed
+    case OrderNowPressed
 }
 
 protocol SLSlideViewControllerDelegate:class {
@@ -23,6 +25,21 @@ protocol SLSlideViewControllerDelegate:class {
 
 class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     weak var delegate:SLSlideViewControllerDelegate?
+    
+    let cellText:[[String]] = [
+        [
+            NSLocalizedString("ELLIPSES", comment: ""),
+            NSLocalizedString("FIND MY ELLIPSE", comment: "")
+        ],
+        [
+            NSLocalizedString("PROFILE & SETTINGS", comment: ""),
+            NSLocalizedString("EMERGENCY CONTACTS", comment: ""),
+            NSLocalizedString("HELP", comment: ""),
+            NSLocalizedString("RATE THE APP", comment: ""),
+            NSLocalizedString("INVITE FRIENDS & EARN CREDIT", comment: ""),
+            NSLocalizedString("ORDER YOU ELLIPSE NOW", comment: "")
+        ]
+    ]
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
@@ -59,39 +76,6 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         )
     }
     
-    func cellInfo(indexPath: NSIndexPath) -> [String:String] {
-        let text:String
-        let imageName:String
-        if indexPath.section == 0 {
-            if indexPath.row == 0 {
-                text = NSLocalizedString("ELLIPSES", comment: "")
-                imageName = "icons_leftmenu_ellipses"
-            } else {
-                text = NSLocalizedString("FIND MY ELLIPSE", comment: "")
-                imageName = "icons_navtab_mapview"
-            }
-        } else {
-            if indexPath.row == 0 {
-                text = NSLocalizedString("PROFILE & SETTINGS", comment: "")
-                imageName = "profile_settings_icon_slideview"
-            } else if indexPath.row == 1 {
-                text = NSLocalizedString("EMERGENCY CONTACTS", comment: "")
-                imageName = "slide_view_emergency_contacts_icon"
-            } else if indexPath.row == 2 {
-                text = NSLocalizedString("HELP", comment: "")
-                imageName = "slideview_help_icon"
-            } else {
-                text = NSLocalizedString("RATE THE APP", comment: "")
-                imageName = "rate_app_icon_slideview"
-            }
-        }
-        
-        return [
-            "text": text,
-            "imageName": imageName,
-        ]
-    }
-    
     func cellId(section: Int) -> String {
         return section == 0 ? "SLSlideViewControllerSectionMainCell" : "SLSlideViewControllerSectionDetailCell"
     }
@@ -101,7 +85,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 2 : 3
+        return section == 0 ? 2 : 6
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -111,15 +95,12 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
         }
         
-        let cellInfo = self.cellInfo(indexPath)
-        let text = cellInfo["text"]!
-        let imageName = cellInfo["imageName"]!
-        let fontSize:CGFloat = indexPath.section == 0 ? 14.0 : 12.0
+        let text = self.cellText[indexPath.section][indexPath.row]
+        let fontSize:CGFloat = indexPath.section == 0 ? 16.0 : 11.0
         
         cell?.textLabel?.text = text
         cell?.textLabel?.textColor = UIColor.whiteColor()
-        cell?.textLabel?.font = UIFont.systemFontOfSize(fontSize)
-        cell?.imageView!.image = UIImage(named: imageName)
+        cell?.textLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: fontSize)
         cell?.backgroundColor = UIColor.clearColor()
     
         return cell!
@@ -140,7 +121,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 77.0 : 144.0
+        return section == 0 ? 77.0 : 100.0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -160,8 +141,12 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
                 action = .EmergencyContacts
             case 2:
                 action = .HelpPressed
-            default:
+            case 3:
                 action = .RateTheAppPressed
+            case 4:
+                action = .InviteFriendsPressed
+            default:
+                action = .OrderNowPressed
             }
         }
         

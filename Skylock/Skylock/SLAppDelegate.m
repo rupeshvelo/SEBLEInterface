@@ -51,7 +51,7 @@
     pageControl.pageIndicatorTintColor = [UIColor colorWithRed:215 green:215 blue:215];;
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:102 green:177 blue:227];
     pageControl.backgroundColor = [UIColor clearColor];
-    
+        
     return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
 
@@ -72,6 +72,7 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
+    application.applicationIconBadgeNumber = 0;
     [SLFacebookManger.sharedManager applicationBecameActive];
 }
 
@@ -156,6 +157,9 @@
     
 //    SLLockViewController *lvc = [SLLockViewController new];
 //    initialVC = lvc;
+//    
+//    SLConfirmTextCodeViewController *ctcvc = [SLConfirmTextCodeViewController new];
+//    initialVC = ctcvc;
     
     return initialVC;
 }
@@ -212,9 +216,8 @@
 - (void)handleNotification:(NSNotification *)notification
 {
     UIApplicationState state = [[UIApplication sharedApplication] applicationState];
-    NSDictionary *info = notification.userInfo;
-    if ((state == UIApplicationStateBackground || state == UIApplicationStateInactive) && info && info[@"notification"]) {
-        SLNotification *slNotification = info[@"notification"];
+    SLNotification *slNotification = notification.object;
+    if ((state == UIApplicationStateBackground || state == UIApplicationStateInactive) && slNotification) {
         [self postNotification:slNotification];
     }
 }

@@ -10,25 +10,18 @@ import UIKit
 
 class SLOnboardingViewController: UIViewController {
     let picName:String
-    let topText:String
-    let bottomText:String
+    let titleText:String
+    let text:String
     let yBottomBound:CGFloat
     let xPadding:CGFloat = 35.0
     
-    init(nibName nibNameOrNil: String?,
-                 bundle nibBundleOrNil: NSBundle?,
-                        picName:String,
-                        topText:String,
-                        bottomText:String,
-                        yBottomBound:CGFloat
-        )
-    {
+    init(picName: String, titleText: String, text: String, yBottomBound: CGFloat) {
         self.picName = picName
-        self.topText = topText
-        self.bottomText = bottomText
+        self.titleText = titleText
+        self.text = text
         self.yBottomBound = yBottomBound
         
-        super.init(nibName: nibNameOrNil, bundle:nibBundleOrNil)
+        super.init(nibName: nil, bundle:nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,7 +32,7 @@ class SLOnboardingViewController: UIViewController {
         let pic:UIImage = UIImage(named: self.picName)!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - pic.size.width),
-            y: 0.0,
+            y: self.view.bounds.size.height - pic.size.height,
             width: pic.size.width,
             height: pic.size.height
         )
@@ -50,13 +43,13 @@ class SLOnboardingViewController: UIViewController {
         return picView
     }()
     
-    lazy var topLabel:UILabel = {
+    lazy var titleLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
+        let font = UIFont.systemFontOfSize(22)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
-            text: self.topText,
+            text: self.titleText,
             maxWidth: labelWidth,
             maxHeight: CGFloat.max,
             numberOfLines: 0
@@ -64,14 +57,14 @@ class SLOnboardingViewController: UIViewController {
         
         let frame = CGRectMake(
             self.xPadding,
-            CGRectGetMaxY(self.pictureView.frame) + 45.0,
+            60.0,
             labelWidth,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(red: 102, green: 177, blue: 227)
-        label.text = self.topText
+        label.textColor = UIColor.whiteColor()
+        label.text = self.titleText
         label.textAlignment = NSTextAlignment.Center
         label.font = font
         label.numberOfLines = 0
@@ -79,13 +72,13 @@ class SLOnboardingViewController: UIViewController {
         return label
     }()
     
-    lazy var bottomLabel:UILabel = {
+    lazy var textLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(9)
+        let font = UIFont.systemFontOfSize(12)
         let labelSize:CGSize = utility.sizeForLabel(
             font,
-            text: self.bottomText,
+            text: self.text,
             maxWidth: labelWidth,
             maxHeight: CGFloat.max,
             numberOfLines: 0
@@ -93,14 +86,14 @@ class SLOnboardingViewController: UIViewController {
         
         let frame = CGRectMake(
             self.xPadding,
-            CGRectGetMaxY(self.topLabel.frame) + 20.0,
+            CGRectGetMaxY(self.titleLabel.frame) + 20.0,
             labelWidth,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(red: 155, green: 155, blue: 155)
-        label.text = self.bottomText
+        label.textColor = UIColor.whiteColor()
+        label.text = self.text
         label.textAlignment = NSTextAlignment.Center
         label.font = font
         label.numberOfLines = 0
@@ -111,29 +104,22 @@ class SLOnboardingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let colors:[CGColor] = [
+                UIColor.color(160, green: 200, blue: 224).CGColor,
+                UIColor.color(62, green: 83, blue: 121).CGColor
+            ]
+
+        let locations = [0.0, 1.0]
+        
+        let gradientLayer:CAGradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.bounds
+        gradientLayer.colors = colors
+        gradientLayer.locations = locations
+        
+        self.view.layer.addSublayer(gradientLayer)
+        
         self.view.addSubview(self.pictureView)
-        self.view.addSubview(self.topLabel)
-        self.view.addSubview(self.bottomLabel)
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        let y0:CGFloat = 0.5*(self.view.bounds.size.height - self.pictureView.bounds.size.height -
-            (self.view.bounds.size.height - self.yBottomBound) - self.topLabel.bounds.size.height -
-            20.0 - self.bottomLabel.bounds.size.height)
-        self.topLabel.frame = CGRect(
-            x: self.topLabel.frame.origin.x,
-            y: CGRectGetMaxY(self.pictureView.frame) + y0,
-            width: self.topLabel.bounds.size.width,
-            height: self.topLabel.bounds.size.height
-        )
-        
-        self.bottomLabel.frame = CGRect(
-            x: self.bottomLabel.frame.origin.x,
-            y: CGRectGetMaxY(self.topLabel.frame) + 20,
-            width: self.bottomLabel.bounds.size.width,
-            height: self.bottomLabel.bounds.size.height
-        )
+        self.view.addSubview(self.titleLabel)
+        self.view.addSubview(self.textLabel)
     }
 }

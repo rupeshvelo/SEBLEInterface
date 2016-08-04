@@ -17,7 +17,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     let labelHeight:CGFloat = 14.0
     
-    let labelFont:UIFont = UIFont.systemFontOfSize(12.0)
+    let labelFont:UIFont = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
     
     weak var delegate:SLOpposingLabelsTableViewCellDelegate?
     

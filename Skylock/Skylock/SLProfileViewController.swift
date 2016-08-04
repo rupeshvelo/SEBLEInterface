@@ -27,7 +27,6 @@ class SLProfileViewController:
             NSLocalizedString("Last name", comment: ""),
             NSLocalizedString("Phone number", comment: ""),
             NSLocalizedString("Email address", comment: ""),
-            NSLocalizedString("Lives in", comment: "")
         ],
         [
             NSLocalizedString("Alerts & notifications", comment: ""),
@@ -37,6 +36,8 @@ class SLProfileViewController:
             NSLocalizedString("Logout", comment: "")
         ]
     ]
+    
+    let headerHeight:CGFloat = 50.0
     
     lazy var profilePictureView:UIImageView = {
         let frame = CGRect(
@@ -312,8 +313,8 @@ class SLProfileViewController:
             let leftText = self.tableInfo[0][indexPath.row]
             let rightText = self.profileInfomationRightText(indexPath.row)
             
-            let greyTextColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-            let blueTextColor = UIColor(red: 102, green: 177, blue: 227)
+            let greyTextColor = UIColor(red: 157, green: 161, blue: 167)
+            let blueTextColor = UIColor(red: 87, green: 216, blue: 255)
             
             cellId = String(SLOpposingLabelsTableViewCell)
             var cell: SLOpposingLabelsTableViewCell? =
@@ -328,8 +329,7 @@ class SLProfileViewController:
                 leftText,
                 rightLabelText: rightText,
                 leftLabelTextColor: greyTextColor,
-                rightLabelTextColor: (indexPath.row == 0 || indexPath.row == 1 || indexPath.row == 2) ?
-                    greyTextColor : blueTextColor,
+                rightLabelTextColor: blueTextColor,
                 shouldEnableTextField: true
             )
             cell?.tag = indexPath.row
@@ -352,7 +352,7 @@ class SLProfileViewController:
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? self.profilePictureView.bounds.size.height + 50.0 : 50.0
+        return section == 0 ? self.profilePictureView.bounds.size.height + self.headerHeight : self.headerHeight
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -376,27 +376,26 @@ class SLProfileViewController:
         
         let text:String
         if section == 0 {
-            text = NSLocalizedString("PROFILE INFORMATION", comment: "")
+            text = NSLocalizedString("PERSONAL DETAILS", comment: "")
             view.addSubview(self.profilePictureView)
             view.addSubview(self.cameraButton)
         } else {
-            text = NSLocalizedString("MY ACCOUNT", comment: "")
+            text = NSLocalizedString("ACCOUNT SETTINGS", comment: "")
         }
         
         let height:CGFloat = 16.0
         let labelFrame = CGRect(
-            x: 5.0,
-            y: view.bounds.height - height - 5.0,
+            x: 0.0,
+            y: view.bounds.size.height - 0.5*(self.headerHeight + height),
             width: view.bounds.width,
             height: height
         )
         
         let label:UILabel = UILabel(frame: labelFrame)
-        label.font = UIFont.systemFontOfSize(14.0)
-        label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
+        label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = .Left
-        label.backgroundColor = UIColor.clearColor()
+        label.textAlignment = .Center
         
         view.addSubview(label)
         
@@ -415,6 +414,9 @@ class SLProfileViewController:
             case 2:
                 let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
                 self.navigationController?.pushViewController(msdvc, animated: true)
+            case 4:
+                let lvc:SLLogoutViewController = SLLogoutViewController()
+                self.presentViewController(lvc, animated: true, completion: nil)
             default:
                 print("no action for \(indexPath.description)")
             }

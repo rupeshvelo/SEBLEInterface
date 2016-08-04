@@ -15,13 +15,15 @@ enum SLLockResetOrDeleteViewControllerType {
 
 class SLLockResetOrDeleteViewController: UIViewController {
     var type:SLLockResetOrDeleteViewControllerType
+    
     let lock:SLLock
     
+    let xPadding:CGFloat = 21.0
+    
     lazy var infoLabel:UILabel = {
-        let buttonImage:UIImage = UIImage(named: "button_delete_this_lock_Ellipses")!
-        let labelWidth = buttonImage.size.width
+        let labelWidth = self.affirmativeButton.bounds.size.width
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(15)
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
         let text:String
         if self.type == .Reset {
             text = NSLocalizedString(
@@ -32,7 +34,7 @@ class SLLockResetOrDeleteViewController: UIViewController {
             )
         } else {
             text = NSLocalizedString(
-                "Deleting this lock from the app resets the Ellipse to it's factory " +
+                "Deleting this lock from the app resets the Ellipse to its factory " +
                 "settings and will remove the Ellipse from your account.  You'll need to do " +
                 "this if you sell or give your lock to someone else. Your Ellipse " +
                 "must be unlocked to perform this action.",
@@ -59,7 +61,6 @@ class SLLockResetOrDeleteViewController: UIViewController {
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
         label.font = font
         label.numberOfLines = 0
         
@@ -67,19 +68,20 @@ class SLLockResetOrDeleteViewController: UIViewController {
     }()
     
     lazy var affirmativeButton:UIButton = {
-        let image:UIImage = self.type == .Reset ? UIImage(named: "button_factory_reset_Ellipses")! :
-            UIImage(named: "button_delete_this_lock_Ellipses")!
-        
+        let width = (self.view.bounds.size.width - 2.0*self.xPadding)
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
+            x: self.xPadding,
             y: CGRectGetMidY(self.view.bounds),
-            width: image.size.width,
-            height: image.size.height
+            width: width,
+            height: 44.0
         )
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(affirmativeButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.setTitle(NSLocalizedString("DELETE ELLIPSE", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
         
         return button
     }()
@@ -113,10 +115,10 @@ class SLLockResetOrDeleteViewController: UIViewController {
         
         self.view.backgroundColor = UIColor.whiteColor()
         
-        self.navigationItem.title = NSLocalizedString("DELETE ELLIPSE", comment: "")
-        
-        self.view.addSubview(self.infoLabel)
+        self.navigationItem.title = NSLocalizedString("DELETE THIS ELLIPSE", comment: "")
+
         self.view.addSubview(self.affirmativeButton)
+        self.view.addSubview(self.infoLabel)
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,

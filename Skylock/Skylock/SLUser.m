@@ -55,11 +55,11 @@
 
 - (void)setPropertiesWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser
 {
-    if (dictionary[@"first_name"]) {
+    if (dictionary[@"first_name"] && dictionary[@"first_name"] != [NSNull null]) {
         self.firstName = dictionary[@"first_name"];
     }
     
-    if (dictionary[@"last_name"]) {
+    if (dictionary[@"last_name"] && dictionary[@"last_name"] != [NSNull null]) {
         self.lastName = dictionary[@"last_name"];
     }
     

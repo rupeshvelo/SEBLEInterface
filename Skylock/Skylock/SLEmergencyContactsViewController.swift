@@ -110,7 +110,7 @@ SLEmergenyContactTableViewCellDelegate
             pathKey: .Users,
             subRoutes: subRoutes,
             additionalHeaders: additionalHeaders
-        ) { (response:[NSObject : AnyObject]?) in
+        ) { (status: UInt, response:[NSObject : AnyObject]?) in
             if response == nil {
                 print("no response")
                 return
