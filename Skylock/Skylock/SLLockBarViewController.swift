@@ -54,7 +54,7 @@ class SLLockBarViewController: UIViewController {
     
     private lazy var lockImageView:UIImageView = {
         // TODO: get the unlocked image
-        let image:UIImage = UIImage(named: "thin-0632_security_lock")!
+        let image:UIImage = UIImage(named: "lock_bar_lock_icon")!
         let frame = CGRect(
             x: self.view.bounds.size.width - image.size.width - self.xPadding,
             y: 0.5*(self.view.bounds.size.height - image.size.height),
