@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>FacebookAppID</key>
 	<string>931235146941403</string>
 	<key>FacebookDisplayName</key>
@@ -121,6 +121,7 @@
 	<string>I&apos;m a mini eye...but still nefarious</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>OpenSans-Bold.ttf</string>
 		<string>Roboto-Regular.ttf</string>
 		<string>ShadowsIntoLightTwo-Regular.ttf</string>
 		<string>Montserrat-Regular.ttf</string>

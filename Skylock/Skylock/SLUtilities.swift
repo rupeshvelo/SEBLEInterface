@@ -11,7 +11,9 @@ import UIKit
 enum SLFont:String {
     case OpenSansRegular = "OpenSans"
     case OpenSansSemiBold = "OpenSans-SemiBold"
+    case OpenSansBold = "OpenSans-Bold"
     case MontserratRegular = "Montserrat-Regular"
+    case MonserratBold = "Montserrat-Bold"
 }
 
 enum SLColor {
@@ -86,5 +88,11 @@ class SLUtilities: NSObject {
         }
         
         return color
+    }
+    
+    func statusBarAndNavControllerHeight(viewController: UIViewController) -> CGFloat {
+        return UIApplication.sharedApplication().statusBarFrame.height +
+            (viewController.navigationController == nil ? 0.0 :
+                viewController.navigationController!.navigationBar.frame.size.height)
     }
 }

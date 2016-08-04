@@ -11,7 +11,7 @@ import UIKit
 class SLConcentricCirclesViewController: UIViewController {
     let interval:Double = 2.3
     var circleIndex:Int = 0
-    let startDiameter:CGFloat = 100.0
+    let startDiameter:CGFloat = 10.0
     var finalDiamter:CGFloat = 0.0
     var initialCircleFrame:CGRect = CGRectZero
     let numberOfCircles:Int = 5
@@ -48,16 +48,19 @@ class SLConcentricCirclesViewController: UIViewController {
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(getHelpButtonPressed), forControlEvents: .TouchDown)
         button.setTitle(NSLocalizedString("Get help", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor(red: 102, green: 177, blue: 227), forState: .Normal)
-        
+        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MonserratBold.rawValue, size: 14.0)
         return button
     }()
     
     lazy var makeSureLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
-        let text = NSLocalizedString("Make sure your Ellipse is switched on and within range of your phone.", comment: "")
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
+        let text = NSLocalizedString(
+            "Make sure your Ellipse is switched on and within range of your phone.",
+            comment: ""
+        )
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -74,7 +77,7 @@ class SLConcentricCirclesViewController: UIViewController {
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(red: 76, green: 79, blue: 97)
+        label.textColor = UIColor(red: 130, green: 156, blue: 178)
         label.textAlignment = NSTextAlignment.Center
         label.font = font
         label.numberOfLines = 0
@@ -91,6 +94,7 @@ class SLConcentricCirclesViewController: UIViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.whiteColor()
+        self.navigationItem.title = NSLocalizedString("CONNECTING ELLIPSE...", comment: "")
         
         self.initialCircleFrame = CGRect(
             x: 0.5*(self.view.bounds.size.width - self.startDiameter),
@@ -102,13 +106,12 @@ class SLConcentricCirclesViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(connectedLock),
-            name: "kSLNotificationLockPaired",
+            name: kSLNotificationLockPaired,
             object: nil
         )
         
         self.finalDiamter = pow(pow(self.view.bounds.size.width, 2) + pow(self.view.bounds.size.height, 2), 0.5)
         
-        self.view.addSubview(self.connectingEllipseLabel)
         self.view.addSubview(self.getHelpButton)
         self.view.addSubview(self.makeSureLabel)
         
@@ -149,7 +152,7 @@ class SLConcentricCirclesViewController: UIViewController {
     
     func createCircleView() -> UIView {
         let circle:UIView = UIView(frame: self.initialCircleFrame)
-        circle.backgroundColor = UIColor(white: 0.8, alpha: 1)
+        circle.backgroundColor = UIColor(red: 160, green: 200, blue: 224).colorWithAlphaComponent(0.5)
         circle.layer.cornerRadius = 0.5*self.initialCircleFrame.size.width
         
         return circle

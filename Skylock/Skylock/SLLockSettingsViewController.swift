@@ -298,7 +298,7 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
                     
-                    self.presentViewController(tpvc, animated: true, completion: nil)
+                    self.navigationController?.pushViewController(tpvc, animated: true)
                 } else if indexPath.row == SettingFieldValue.DeleteLock.rawValue {
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)

@@ -1777,7 +1777,7 @@ disconnectedPeripheralNamed:(NSString *)peripheralName
                                     handlerCase:SLKeychainHandlerCaseSignedMessage];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerDisconnectedLock
-                                                        object:@{@"lockName":macAddress}];
+                                                        object:macAddress];
 }
 
 - (void)bleInterfaceManager:(SEBLEInterfaceMangager *)interfaceManager

@@ -176,6 +176,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         field.textAlignment = .Center
         field.delegate = self
         field.autocapitalizationType = .Words
+        field.returnKeyType = .Done
         
         return field
     }()
