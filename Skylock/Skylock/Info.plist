@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>5</string>
+	<string>6</string>
 	<key>FacebookAppID</key>
 	<string>931235146941403</string>
 	<key>FacebookDisplayName</key>
@@ -118,7 +118,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Allow Ellipse to use your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>I&apos;m a mini eye...but still nefarious</string>
+	<string>I'm a mini eye...but still nefarious</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>

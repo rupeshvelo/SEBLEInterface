@@ -36,7 +36,7 @@ class SLLockInfoViewController: UIViewController {
     }()
     
     lazy var showMoreButton:UIButton = {
-        let image:UIImage = UIImage(named: "map_show_more_button")!
+        let image:UIImage = UIImage(named: "map_show_more_dots")!
         let frame = CGRect(
             x: self.view.bounds.size.width - image.size.width - self.xPadding,
             y: CGRectGetMidY(self.showLessButton.frame) - 0.5*image.size.height,

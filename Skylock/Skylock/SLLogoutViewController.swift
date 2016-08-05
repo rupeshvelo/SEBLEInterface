@@ -118,6 +118,7 @@ class SLLogoutViewController: UIViewController {
             
             let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
             if let lock:SLLock = lockManager.getCurrentLock() {
+                lock.isCurrentLock = NSNumber(bool: false)
                 lockManager.disconnectFromLockWithAddress(lock.macAddress)
             }
             
