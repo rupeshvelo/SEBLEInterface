@@ -211,7 +211,6 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     NSArray *notifyChars = @[[self uuidForCharacteristic:SLLockManagerCharacteristicMagnet],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicAccelerometer],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicSecurityState],
-                             [self uuidForCharacteristic:SLLockManagerCharacteristicLock],
                              [self uuidForCharacteristic:SLLockManagerCharacteristicCommandStatus]
                              ];
     
