@@ -16,7 +16,7 @@
 #import "SLLockManager.h"
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 #import <Google/CloudMessaging.h>
 
 #define kSLAppDelegateNotificationActionIgnore  @"kSLAppDelegateNotificationActionIgnore"

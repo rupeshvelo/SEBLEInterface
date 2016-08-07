@@ -134,6 +134,62 @@ class SLConnectLockInfoViewController: UIViewController {
         return button
     }()
     
+    lazy var goToAppLabel:UILabel = {
+        let labelWidth = self.view.bounds.size.width - 2*self.xPadding
+        let utility = SLUtilities()
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
+        let text = NSLocalizedString(
+            "No Ellipse? You can go strait to the app,\nbut you won't be able to unlock most features without an Ellipse",
+            comment: ""
+        )
+        
+        let labelSize:CGSize = utility.sizeForLabel(
+            font,
+            text: text,
+            maxWidth: labelWidth,
+            maxHeight: CGFloat.max,
+            numberOfLines: 0
+        )
+        
+        let frame = CGRectMake(
+            0.5*(self.view.bounds.size.width - labelSize.width),
+            CGRectGetMaxY(self.setUpEllipseButton.frame) + 26.0,
+            labelSize.width,
+            labelSize.height
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = self.labelTextColor
+        label.text = text
+        label.textAlignment = NSTextAlignment.Center
+        label.font = font
+        label.numberOfLines = 0
+        
+        return label
+    }()
+    
+    lazy var goToAppButton:UIButton = {
+        let color = UIColor(red: 87, green: 216, blue: 255)
+        let frame = CGRect(
+            x: self.xPadding,
+            y: CGRectGetMaxY(self.sharingInfoLabel.frame) + 26.0,
+            width: self.setUpEllipseButton.bounds.size.width,
+            height: self.setUpEllipseButton.bounds.size.height
+        )
+        
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
+        button.setTitle(NSLocalizedString("ADD A FRIEND'S ELLIPSE", comment: ""), forState: .Normal)
+        button.setTitleColor(color, forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
+        button.addTarget(self, action: #selector(invitationButtonPressed), forControlEvents: .TouchDown)
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = color.CGColor
+        button.enabled = false
+        
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

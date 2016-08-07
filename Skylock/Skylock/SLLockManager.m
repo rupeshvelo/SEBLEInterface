@@ -18,7 +18,7 @@
 #import "SLAccelerometerValues.h"
 #import "SLRestManager.h"
 #import "NSString+Skylock.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 #import <Security/Security.h>
 #import "SLUserDefaults.h"
 #import "SLUser.h"

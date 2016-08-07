@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Skylock.xcodeproj">
+      location = "group:/Users/andre/ios/skylock_ios/Skylock/Ellipse.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

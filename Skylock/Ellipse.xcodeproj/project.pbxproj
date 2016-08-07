@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9826C2467624AE3AB7062C59 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C05DCD441E16DC88F4D94FA3 /* Pods.framework */; };
+		490E4412C00C40DF35FA3411 /* Pods_Skylock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */; };
 		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0250151C81F00A00208508 /* SLUserHandler.swift */; };
 		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
@@ -382,9 +382,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3D2FAD72CBCFEF66D420F6C4 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		63C33621F297CAB8D71AE48F /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.debug.xcconfig"; sourceTree = "<group>"; };
+		8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skylock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
+		B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.release.xcconfig"; sourceTree = "<group>"; };
 		C05DCD441E16DC88F4D94FA3 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC0250151C81F00A00208508 /* SLUserHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUserHandler.swift; sourceTree = "<group>"; };
 		DC0427961B2EF073008F3DDE /* SEBLEInterface.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SEBLEInterface.xcodeproj; path = SEBLEInterface/SEBLEInterface/SEBLEInterface.xcodeproj; sourceTree = "<group>"; };
@@ -698,7 +699,7 @@
 		DCD6797C1CF9FFB50081D225 /* placeholder_logo_animation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder_logo_animation@2x.png"; sourceTree = "<group>"; };
 		DCD6797D1CF9FFB50081D225 /* placeholder_logo_animation@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder_logo_animation@3x.png"; sourceTree = "<group>"; };
 		DCD679801CFA444E0081D225 /* SLSignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSignInViewController.swift; sourceTree = "<group>"; };
-		DCD82FD51B1FCBBC00B38910 /* Skylock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skylock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCD82FD51B1FCBBC00B38910 /* Ellipse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ellipse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FD91B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FDA1B1FCBBC00B38910 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DCD82FDC1B1FCBBC00B38910 /* SLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLAppDelegate.h; sourceTree = "<group>"; };
@@ -707,7 +708,7 @@
 		DCD82FE21B1FCBBC00B38910 /* SLMapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SLMapViewController.h; sourceTree = "<group>"; };
 		DCD82FE31B1FCBBC00B38910 /* SLMapViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SLMapViewController.m; sourceTree = "<group>"; };
 		DCD82FE81B1FCBBC00B38910 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkylockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCD82FF11B1FCBBC00B38910 /* Ellipse.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Ellipse.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FF61B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCD82FF71B1FCBBC00B38910 /* SkylockTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SkylockTests.m; sourceTree = "<group>"; };
 		DCD88AF01D1B6F8300A3618D /* SLConfirmTextCodeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLConfirmTextCodeViewController.swift; sourceTree = "<group>"; };
@@ -774,8 +775,8 @@
 				DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */,
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
-				9826C2467624AE3AB7062C59 /* Pods.framework in Frameworks */,
 				DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */,
+				490E4412C00C40DF35FA3411 /* Pods_Skylock.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,15 +790,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2F720DA6A4089AF4A45D38CC /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				3D2FAD72CBCFEF66D420F6C4 /* Pods.debug.xcconfig */,
-				63C33621F297CAB8D71AE48F /* Pods.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		667D2EEEACA41AF9E6822701 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -811,6 +803,7 @@
 				DCDF19031BBDFF1D005BA5A6 /* CoreData.framework */,
 				DC3CCE011BA306FD00528992 /* MapKit.framework */,
 				C05DCD441E16DC88F4D94FA3 /* Pods.framework */,
+				8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1257,15 +1250,15 @@
 				DCD82FF41B1FCBBC00B38910 /* SkylockTests */,
 				DCD82FD61B1FCBBC00B38910 /* Products */,
 				667D2EEEACA41AF9E6822701 /* Frameworks */,
-				2F720DA6A4089AF4A45D38CC /* Pods */,
+				F3790C3AA6A4CF1D813A326D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
 		DCD82FD61B1FCBBC00B38910 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DCD82FD51B1FCBBC00B38910 /* Skylock.app */,
-				DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */,
+				DCD82FD51B1FCBBC00B38910 /* Ellipse.app */,
+				DCD82FF11B1FCBBC00B38910 /* Ellipse.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1405,33 +1398,42 @@
 			path = fonts;
 			sourceTree = "<group>";
 		};
+		F3790C3AA6A4CF1D813A326D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */,
+				B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DCD82FD41B1FCBBC00B38910 /* Skylock */ = {
+		DCD82FD41B1FCBBC00B38910 /* Ellipse */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Skylock" */;
+			buildConfigurationList = DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Ellipse" */;
 			buildPhases = (
-				EC7B9577BCD4FA140768AED6 /* Check Pods Manifest.lock */,
+				A8A5AE5A9D094ACEA0529329 /* [CP] Check Pods Manifest.lock */,
 				DCD82FD11B1FCBBC00B38910 /* Sources */,
 				DCD82FD21B1FCBBC00B38910 /* Frameworks */,
 				DCD82FD31B1FCBBC00B38910 /* Resources */,
-				D4639B6BC575BE9B8A275B39 /* Embed Pods Frameworks */,
-				38CB329AFEF5557709CFD654 /* Copy Pods Resources */,
+				7696FF8BE3BF1823A1490B18 /* [CP] Embed Pods Frameworks */,
+				960F7A4752626E3218E90553 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				DCE283251B2EFA2300864527 /* PBXTargetDependency */,
 			);
-			name = Skylock;
+			name = Ellipse;
 			productName = Skylock;
-			productReference = DCD82FD51B1FCBBC00B38910 /* Skylock.app */;
+			productReference = DCD82FD51B1FCBBC00B38910 /* Ellipse.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DCD82FF01B1FCBBC00B38910 /* SkylockTests */ = {
+		DCD82FF01B1FCBBC00B38910 /* EllipseTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "SkylockTests" */;
+			buildConfigurationList = DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "EllipseTests" */;
 			buildPhases = (
 				DCD82FED1B1FCBBC00B38910 /* Sources */,
 				DCD82FEE1B1FCBBC00B38910 /* Frameworks */,
@@ -1442,9 +1444,9 @@
 			dependencies = (
 				DCD82FF31B1FCBBC00B38910 /* PBXTargetDependency */,
 			);
-			name = SkylockTests;
+			name = EllipseTests;
 			productName = SkylockTests;
-			productReference = DCD82FF11B1FCBBC00B38910 /* SkylockTests.xctest */;
+			productReference = DCD82FF11B1FCBBC00B38910 /* Ellipse.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -1477,7 +1479,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Skylock" */;
+			buildConfigurationList = DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Ellipse" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1496,8 +1498,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				DCD82FD41B1FCBBC00B38910 /* Skylock */,
-				DCD82FF01B1FCBBC00B38910 /* SkylockTests */,
+				DCD82FD41B1FCBBC00B38910 /* Ellipse */,
+				DCD82FF01B1FCBBC00B38910 /* EllipseTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1759,44 +1761,44 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		38CB329AFEF5557709CFD654 /* Copy Pods Resources */ = {
+		7696FF8BE3BF1823A1490B18 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D4639B6BC575BE9B8A275B39 /* Embed Pods Frameworks */ = {
+		960F7A4752626E3218E90553 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		EC7B9577BCD4FA140768AED6 /* Check Pods Manifest.lock */ = {
+		A8A5AE5A9D094ACEA0529329 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1935,7 +1937,7 @@
 /* Begin PBXTargetDependency section */
 		DCD82FF31B1FCBBC00B38910 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DCD82FD41B1FCBBC00B38910 /* Skylock */;
+			target = DCD82FD41B1FCBBC00B38910 /* Ellipse */;
 			targetProxy = DCD82FF21B1FCBBC00B38910 /* PBXContainerItemProxy */;
 		};
 		DCE283251B2EFA2300864527 /* PBXTargetDependency */ = {
@@ -2052,7 +2054,7 @@
 		};
 		DCD82FFC1B1FCBBC00B38910 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3D2FAD72CBCFEF66D420F6C4 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2078,9 +2080,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.Skylock;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "2e460f16-a2d7-4fd1-bb02-f160400711f7";
+				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_NAME = Ellipse;
+				PROVISIONING_PROFILE = "9ad18abf-2526-4326-b0c5-b04243fc4613";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2089,7 +2091,7 @@
 		};
 		DCD82FFD1B1FCBBC00B38910 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 63C33621F297CAB8D71AE48F /* Pods.release.xcconfig */;
+			baseConfigurationReference = B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2114,9 +2116,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.Skylock;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "094603bc-4c70-493b-9558-1e5f5ad2cd5d";
+				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_NAME = Ellipse;
+				PROVISIONING_PROFILE = "bc84a8e1-5936-4d55-955d-6b1db1ef91e4";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 			};
@@ -2140,11 +2142,11 @@
 				INFOPLIST_FILE = SkylockTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Greuw.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Ellipse;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/SkylockTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skylock.app/Skylock";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellipse.app/Ellipse";
 			};
 			name = Debug;
 		};
@@ -2162,17 +2164,17 @@
 				INFOPLIST_FILE = SkylockTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "Greuw.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Ellipse;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/SkylockTests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Skylock.app/Skylock";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellipse.app/Ellipse";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Skylock" */ = {
+		DCD82FD01B1FCBBC00B38910 /* Build configuration list for PBXProject "Ellipse" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DCD82FF91B1FCBBC00B38910 /* Debug */,
@@ -2181,7 +2183,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Skylock" */ = {
+		DCD82FFB1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "Ellipse" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DCD82FFC1B1FCBBC00B38910 /* Debug */,
@@ -2190,7 +2192,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "SkylockTests" */ = {
+		DCD82FFE1B1FCBBC00B38910 /* Build configuration list for PBXNativeTarget "EllipseTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DCD82FFF1B1FCBBC00B38910 /* Debug */,

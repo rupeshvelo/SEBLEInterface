@@ -1,8 +1,10 @@
 use_frameworks!
-platform :ios, '8.1'
-pod 'GoogleMaps', '~> 1.10'
-pod "FBSDKCoreKit"
-pod "FBSDKLoginKit"
-pod 'Google/CloudMessaging'
-pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
-pod 'SWTableViewCell', '~> 0.3.7'
+platform :ios, '9.0'
+target "Skylock" do
+       pod 'GoogleMaps', '~> 1.10'
+       pod "FBSDKCoreKit"
+       pod "FBSDKLoginKit"
+       pod 'Google/CloudMessaging'
+       pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
+       pod 'SWTableViewCell', '~> 0.3.7'
+end 

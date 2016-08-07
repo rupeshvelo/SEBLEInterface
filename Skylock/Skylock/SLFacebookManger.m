@@ -12,7 +12,7 @@
 #import "SLDatabaseManager.h"
 #import "SLRestManager.h"
 #import "SLPicManager.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "SLUser.h"

@@ -7,7 +7,7 @@
 //
 
 #import "SLDirectionsTableViewCell.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 #import "NSString+Skylock.h"    
 
 

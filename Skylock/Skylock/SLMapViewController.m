@@ -22,7 +22,7 @@
 #import "SLDirectionsViewController.h"
 #import "SLRestManager.h"
 #import "SLUser.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 
 
 #define kSLMapViewControllerCalloutScaler           4.0f

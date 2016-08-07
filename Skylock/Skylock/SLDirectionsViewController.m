@@ -9,7 +9,7 @@
 #import "SLDirectionsViewController.h"
 #import "SLDirectionsTableViewCell.h"
 #import "NSString+Skylock.h"
-#import "Skylock-Swift.h"
+#import "Ellipse-Swift.h"
 
 
 #define kSLDirectionViewControllerDirectionCellId @"kSLDirectionViewControllerDirectionCellId"
