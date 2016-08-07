@@ -1,6 +1,6 @@
 use_frameworks!
 platform :ios, '9.0'
-target "Skylock" do
+target "Ellipse" do
        pod 'GoogleMaps', '~> 1.10'
        pod "FBSDKCoreKit"
        pod "FBSDKLoginKit"

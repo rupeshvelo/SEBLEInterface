@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		490E4412C00C40DF35FA3411 /* Pods_Skylock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */; };
+		533C414A667D227BB725102F /* Pods_Ellipse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */; };
 		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0250151C81F00A00208508 /* SLUserHandler.swift */; };
 		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
@@ -382,7 +382,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ellipse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.debug.xcconfig"; sourceTree = "<group>"; };
+		5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.debug.xcconfig"; sourceTree = "<group>"; };
+		714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.release.xcconfig"; sourceTree = "<group>"; };
 		8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skylock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
 		B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.release.xcconfig"; sourceTree = "<group>"; };
@@ -776,7 +779,7 @@
 				DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */,
 				DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */,
 				DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */,
-				490E4412C00C40DF35FA3411 /* Pods_Skylock.framework in Frameworks */,
+				533C414A667D227BB725102F /* Pods_Ellipse.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -804,6 +807,7 @@
 				DC3CCE011BA306FD00528992 /* MapKit.framework */,
 				C05DCD441E16DC88F4D94FA3 /* Pods.framework */,
 				8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */,
+				21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1403,6 +1407,8 @@
 			children = (
 				2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */,
 				B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */,
+				5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */,
+				714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1773,7 +1779,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		960F7A4752626E3218E90553 /* [CP] Copy Pods Resources */ = {
@@ -1788,7 +1794,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Skylock/Pods-Skylock-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A8A5AE5A9D094ACEA0529329 /* [CP] Check Pods Manifest.lock */ = {
@@ -2054,7 +2060,7 @@
 		};
 		DCD82FFC1B1FCBBC00B38910 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */;
+			baseConfigurationReference = 5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2091,7 +2097,7 @@
 		};
 		DCD82FFD1B1FCBBC00B38910 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */;
+			baseConfigurationReference = 714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
