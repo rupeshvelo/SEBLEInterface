@@ -15,6 +15,7 @@ public class SLDirection: NSObject {
     public var directions: String?
     public var distance: Int?
     public var address: String?
+    public var duration: Double?
     private let milesPerMeter:Float = 0.000621371
     
     convenience init(input: [String: AnyObject]) {
@@ -45,6 +46,10 @@ public class SLDirection: NSObject {
             let value = distance["value"] as? Int {
             self.distance = value
         }
+        
+        if let info = input["duration"] as? [String:AnyObject], let duration = info["value"] as? Double {
+            self.duration = duration
+        }
     }
     
     @objc public func getDirections() -> String? {
@@ -57,5 +62,13 @@ public class SLDirection: NSObject {
         }
         
         return CGFloat.max
+    }
+    
+    @objc public func getDuration() -> Double {
+        guard let duration = self.duration else {
+            return 0.0
+        }
+        
+        return duration
     }
 }

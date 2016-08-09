@@ -11,10 +11,13 @@
 
 #define kSLNotificationLockManagerDiscoverdLock             @"kSLNotificationLockManagerDiscoverdLock"
 #define kSLNotificationLockManagerDisconnectedLock          @"kSLNotificationLockManagerDisconnectedLock"
+#define kSLNotificationLockManagerStartedConnectingLock     @"kSLNotificationLockManagerStartedConnectingLock"
+#define kSLNotificationLockManagerStoppedConnectingLock     @"kSLNotificationLockManagerStoppedConnectingLock"
 #define kSLNotificationLockManagerConnectedLock             @"kSLNotificationLockManagerConnectedLock"
 #define kSLNotificationLockManagerShallowlyConnectedLock    @"kSLNotificationLockManagerShallowlyConnectedLock"
 #define kSLNotificationLockManagerBlePoweredOn              @"kSLNotificationLockManagerBlePoweredOn"
 #define kSLNotificationLockManagerStartedFirmwareUpdate     @"kSLNotificationLockManagerStartedFirmwareUpdate"
+#define kSLNotificationLockManagerFirmwareUpdateState       @"kSLNotificationLockManagerFirmwareUpdateState"
 #define kSLNotificationLockManagerEndedFirmwareUpdate       @"kSLNotificationLockManagerEndedFirmwareUpdate"
 #define kSLNotificationUserSignedInFacebook                 @"kSLNotificationUserSignedInFacebook"
 #define kSLNotificationLockManagerUpdatedLock               @"kSLNotificationLockManagerUpdatedLock"

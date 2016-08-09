@@ -48,8 +48,8 @@ class SLEmergenyContactTableViewCell: UITableViewCell {
         )
         
         self.textLabel?.frame = labelFrame
-        self.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        self.textLabel?.font = UIFont.systemFontOfSize(14.0)
+        self.textLabel?.textColor = UIColor(red: 130, green: 156, blue: 178)
+        self.textLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 15.0)
         
         if !self.subviews.contains(self.removeContactButton) {
             let frame = CGRect(

@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary *)asRestDictionary;
 - (NSString *)fullName;
 - (void)setPropertiesWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser;
+- (NSString *)countryCode;
 
 @end
 

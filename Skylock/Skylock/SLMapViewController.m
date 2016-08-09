@@ -152,11 +152,18 @@
                                                                    style:UIBarButtonItemStylePlain
                                                                   target:self
                                                                   action:@selector(menuButtonPressed)];
+    
+    UIBarButtonItem *showMoreButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"map_show_more_dots"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(showMoreButtonPressed)];
     self.navigationItem.leftBarButtonItem = menuButton;
+    self.navigationItem.rightBarButtonItem = showMoreButton;
+    
     self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
     self.locationButton.frame = CGRectMake(self.view.bounds.size.width - self.locationButton.bounds.size.width - 10.0f,
-                                           self.view.bounds.size.height - self.locationButton.bounds.size.height - 50.0f,
+                                           self.view.bounds.size.height - self.locationButton.bounds.size.height - 66.0f,
                                            self.locationButton.bounds.size.height,
                                            self.locationButton.bounds.size.width);
 }
@@ -205,12 +212,12 @@
 {
     SLLockViewController *lvc = (SLLockViewController *)self.presentingViewController;
     CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
-    [UIApplication sharedApplication].statusBarFrame.size.height;
+        [UIApplication sharedApplication].statusBarFrame.size.height;
     self.directionsViewController.directions = directions;
     self.directionsViewController.view.frame = CGRectMake(-self.directionsViewController.view.bounds.size.width,
                                                           y0,
-                                                          0.6f*self.view.bounds.size.width,
-                                                          self.view.bounds.size.height - [lvc lockBarHeight]);
+                                                          0.9f*self.view.bounds.size.width,
+                                                          self.view.bounds.size.height - [lvc lockBarHeight] - y0);
     self.directionsViewController.view.backgroundColor = [UIColor whiteColor];
 
     [self addChildViewController:self.directionsViewController];
@@ -277,6 +284,15 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)showMoreButtonPressed
+{
+    if (self.lockInfoViewController) {
+        [self removeLockInfoViewController];
+    } else {
+        [self presentLockInfoViewController];
+    }
+}
+
 - (void)removeCrashAndTheftViewController
 {
     if (self.notificationViewController) {
@@ -284,23 +300,6 @@
             self.notificationViewController = nil;
         }];
     }
-}
-
-- (void)presentEmergencyText:(NSNotification *)notification
-{
-    NSDictionary *info = notification.userInfo;
-    NSArray *recipients = info[@"recipients"];
-    SLUser *currentUser = [SLDatabaseManager.sharedManager currentUser];
-    // temporay location for this message. It should be stored in a p-list or the database
-    NSString *message = [NSString stringWithFormat:@"%@ is having an emergency. Please Contact %@ immediately. --Skylock",
-                         currentUser.fullName,
-                         currentUser.fullName];
-    MFMessageComposeViewController *cvc = [MFMessageComposeViewController new];
-    cvc.messageComposeDelegate = self;
-    cvc.recipients = recipients;
-    cvc.body = message;
-    
-    [self presentViewController:cvc animated:YES completion:nil];
 }
 
 - (void)presentLockInfoViewController
@@ -311,7 +310,7 @@
     
     CGFloat y0 = self.navigationController.navigationBar.bounds.size.height +
     [UIApplication sharedApplication].statusBarFrame.size.height;
-    CGFloat height = 250.0f;
+    CGFloat height = 175.0f;
     self.lockInfoViewController = [[SLLockInfoViewController alloc] initWithLock:self.selectedLock];
     self.lockInfoViewController.delegate = self;
     self.lockInfoViewController.view.frame = CGRectMake(0.0, -height, self.view.bounds.size.width, height);
@@ -328,6 +327,23 @@
                                                             height);
     }];
     
+}
+
+- (void)removeLockInfoViewController
+{
+    CGFloat yFinal = self.navigationController.navigationBar.bounds.size.height +
+    [UIApplication sharedApplication].statusBarFrame.size.height;
+    [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
+        self.lockInfoViewController.view.frame = CGRectMake(0.0,
+                                                            yFinal - self.lockInfoViewController.view.bounds.size.height,
+                                                            self.lockInfoViewController.view.bounds.size.width,
+                                                            self.lockInfoViewController.view.bounds.size.height);
+    } completion:^(BOOL finished) {
+        [self.lockInfoViewController.view removeFromSuperview];
+        [self.lockInfoViewController removeFromParentViewController];
+        [self.lockInfoViewController.view removeFromSuperview];
+        self.lockInfoViewController = nil;
+    }];
 }
 
 - (void)locationButtonPressed
@@ -349,14 +365,14 @@
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     [UIView animateWithDuration:SLConstantsAnimationDurration1 animations:^{
-        directionsController.view.frame = CGRectMake(self.view.bounds.size.width,
+        directionsController.view.frame = CGRectMake(-self.directionsViewController.view.bounds.size.width,
                                                      self.directionsViewController.view.frame.origin.y,
                                                      self.directionsViewController.view.bounds.size.width,
                                                      self.directionsViewController.view.bounds.size.height);
     } completion:^(BOOL finished) {
         [directionsController.view removeFromSuperview];
         [directionsController removeFromParentViewController];
-        [self exitDirecitonMode];
+        [self exitDirectionMode];
     }];
 }
 
@@ -369,13 +385,10 @@
 
 - (void)addLockToMap:(SLLock *)lock
 {
-    // hard coding location for demo
-    //CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.761758, -122.421241);
-    CLLocationCoordinate2D postion = CLLocationCoordinate2DMake(37.357150, -120.619938);
-    [self.selectedLock setCurrentLocation:postion];
-    GMSMarker *lockMarker = [GMSMarker markerWithPosition:postion];
+    CLLocationCoordinate2D location = lock.location;
+    GMSMarker *lockMarker = [GMSMarker markerWithPosition:location];
     lockMarker.title = lock.name;
-    lockMarker.icon = [UIImage imageNamed:@"user_location_pin"];
+    lockMarker.icon = [UIImage imageNamed:@"map_shared_to_me_bike_icon_large"];
     lockMarker.map = self.mapView;
     lockMarker.infoWindowAnchor = CGPointMake(0.0f, 0.0f);
     
@@ -386,6 +399,10 @@
 {
     if (!self.selectedLock) {
         NSLog(@"Can't present directions");
+        return;
+    }
+    
+    if (self.directions) {
         return;
     }
 
@@ -416,12 +433,16 @@
         return;
     }
     
+    if (self.directionDrawingHelper) {
+        return;
+    }
+    
     self.directionDrawingHelper = [[SLDirectionDrawingHelper alloc] initWithMapView:self.mapView
                                                                          directions:self.directions];
     [self.directionDrawingHelper drawDirections:^{}];
 }
 
-- (void)exitDirecitonMode
+- (void)exitDirectionMode
 {
     self.directions = nil;
     self.directionsViewController = nil;
@@ -430,9 +451,6 @@
 - (void)updateUserPosition:(CLLocationCoordinate2D)userPosition
 {
     self.userLocation = userPosition;
-    
-    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
-    user.location = self.userLocation;
     
     if (self.isInitialLoad) {
         [self centerOnUser];
@@ -445,7 +463,7 @@
 {
     if (marker != self.userMarker && !self.lockInfoViewController) {
         self.selectedLockMarker = marker;
-        [mapView setSelectedMarker:marker];
+        [mapView animateToLocation:marker.position];
         [self presentLockInfoViewController];
     }
 
@@ -469,6 +487,10 @@
         self.directionDrawingHelper = nil;
     }
     
+    if (self.lockInfoViewController) {
+        [self removeLockInfoViewController];
+    }
+    
     if (self.selectedLockMarker) {
         self.selectedLockMarker = nil;
     }
@@ -489,6 +511,13 @@
 #pragma mark - SLLockInfoViewControllerDelegate methods
 - (void)directionsButtonPressed:(SLLockInfoViewController *)livc
 {
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    GMSCameraPosition *cameraPosition = [GMSCameraPosition cameraWithTarget:self.selectedLock.location zoom:16];
+    [self.mapView animateToCameraPosition:cameraPosition];
+    
     [self getDirections];
 }
 

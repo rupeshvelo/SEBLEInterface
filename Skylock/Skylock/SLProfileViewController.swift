@@ -32,7 +32,7 @@ class SLProfileViewController:
             NSLocalizedString("Alerts & notifications", comment: ""),
             NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
-            NSLocalizedString("Delete my account", comment: ""),
+            //NSLocalizedString("Delete my account", comment: ""),
             NSLocalizedString("Logout", comment: "")
         ]
     ]

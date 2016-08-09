@@ -27,6 +27,10 @@ class SLDirectionDrawingHelper: NSObject {
             path.addCoordinate(direction.start!)
         }
         
+        if self.polyline != nil {
+            self.polyline = nil
+        }
+        
         self.polyline = GMSPolyline(path: path)
         self.polyline!.strokeWidth = 5
         self.polyline!.strokeColor = UIColor.redColor()

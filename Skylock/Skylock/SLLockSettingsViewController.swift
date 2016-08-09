@@ -83,10 +83,10 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
-            self, selector:
-            #selector(firmwareRead(_:)),
-            name: kSLNotificationLockManagerReadFirmwareVersion,
-            object: nil
+        self, selector:
+        #selector(firmwareRead(_:)),
+        name: kSLNotificationLockManagerReadFirmwareVersion,
+        object: nil
         )
     }
     
@@ -282,8 +282,8 @@ class SLLockSettingsViewController: UIViewController, UITableViewDataSource, UIT
         if let lock = self.lock {
             if indexPath.section == 0 {
                 if indexPath.row == 2 {
-                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-                    lockManager.updateFirmware()
+                    let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
+                    self.presentViewController(fuvc, animated: true, completion: nil)
                 }
             } else {
                 if indexPath.row == SettingFieldValue.TheftDetectionSettings.rawValue {

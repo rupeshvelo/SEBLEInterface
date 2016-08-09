@@ -19,43 +19,26 @@ class SLLockInfoViewController: UIViewController {
     
     weak var delegate:SLLockInfoViewControllerDelegate?
     
-    lazy var showLessButton:UIButton = {
-        let image:UIImage = UIImage(named: "map_lock_info_x_button")!
-        let frame = CGRect(
-            x: self.view.bounds.size.width - image.size.width - self.xPadding,
-            y: 16.0,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(showLessButtonPressed), forControlEvents: .TouchDown)
-        
-        return button
-    }()
-    
-    lazy var showMoreButton:UIButton = {
-        let image:UIImage = UIImage(named: "map_show_more_dots")!
-        let frame = CGRect(
-            x: self.view.bounds.size.width - image.size.width - self.xPadding,
-            y: CGRectGetMidY(self.showLessButton.frame) - 0.5*image.size.height,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(showMoreButtonPressed), forControlEvents: .TouchDown)
-        button.hidden = true
-        
-        return button
-    }()
+//    lazy var showLessButton:UIButton = {
+//        let image:UIImage = UIImage(named: "map_close_details_x_icon")!
+//        let frame = CGRect(
+//            x: self.view.bounds.size.width - image.size.width - self.xPadding,
+//            y: 20.0,
+//            width: image.size.width,
+//            height: image.size.height
+//        )
+//        
+//        let button:UIButton = UIButton(frame: frame)
+//        button.setImage(image, forState: .Normal)
+//        button.addTarget(self, action: #selector(showLessButtonPressed), forControlEvents: .TouchDown)
+//        
+//        return button
+//    }()
     
     lazy var lockNameLabel:UILabel = {
-        let labelWidth = self.view.bounds.size.width - self.showLessButton.bounds.size.width - 2*self.xPadding
+        let labelWidth = self.view.bounds.size.width - 2.0*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(18)
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 15)!
         let text = self.lock.displayName()
         
         let labelSize:CGSize = utility.sizeForLabel(
@@ -68,13 +51,13 @@ class SLLockInfoViewController: UIViewController {
         
         let frame = CGRectMake(
             self.xPadding,
-            CGRectGetMidY(self.showLessButton.frame) - 0.5*labelSize.height,
+            20.0,
             labelWidth,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = self.titleColor
+        label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
         label.text = text
         label.textAlignment = .Left
         label.font = font
@@ -83,68 +66,107 @@ class SLLockInfoViewController: UIViewController {
         return label
     }()
     
-    lazy var crashButton:SLLockScreenAlertButton = {
-        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
-            activeImageName: "map_crash_detection_on_button",
-            inactiveImageName: "map_crash_detection_off_button",
-            titleText: NSLocalizedString("Crash detection", comment: ""),
-            textColor: self.titleColor
-        )
-        button.frame = CGRect(
-            x: self.xPadding,
-            y: CGRectGetMaxY(self.lockNameLabel.frame) + 25.0,
-            width: button.bounds.size.width,
-            height: button.bounds.size.height
-        )
-        button.addTarget(self, action: #selector(crashButtonPressed), forControlEvents: .TouchDown)
+    lazy var lockInfoLabel:UILabel = {
+        let labelWidth = self.lockNameLabel.bounds.size.width
+        let utility = SLUtilities()
+        let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 10)!
+        let df:NSDateFormatter = NSDateFormatter()
+        df.dateFormat = "MMM d, H:mm a"
         
-        return button
+        let text = self.lock.displayName() +  " " + NSLocalizedString("Last Locked", comment: "") + " at "
+            + ( self.lock.lastConnected ==  nil ? "" : df.stringFromDate(self.lock.lastConnected!))
+        
+        let labelSize:CGSize = utility.sizeForLabel(
+            font,
+            text: self.lock.displayName(),
+            maxWidth: labelWidth,
+            maxHeight: CGFloat.max,
+            numberOfLines: 1
+        )
+        
+        let frame = CGRectMake(
+            self.xPadding,
+            CGRectGetMaxY(self.lockNameLabel.frame) + 15.0,
+            labelWidth,
+            labelSize.height
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = UIColor(red: 187, green: 187, blue: 187)
+        label.text = text
+        label.textAlignment = .Left
+        label.font = font
+        label.numberOfLines = 0
+        
+        return label
     }()
     
-    lazy var theftButton:SLLockScreenAlertButton = {
-        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
-            activeImageName: "map_theft_detection_on_button",
-            inactiveImageName: "map_theft_detection_off_button",
-            titleText: NSLocalizedString("Theft detection", comment: ""),
-            textColor: self.titleColor
-        )
-        button.frame = CGRect(
-            x: CGRectGetMaxX(self.crashButton.frame) + 25.0,
-            y: CGRectGetMinY(self.crashButton.frame),
-            width: button.bounds.size.width,
-            height: button.bounds.size.height
-        )
-        button.addTarget(self, action: #selector(theftButtonPressed), forControlEvents: .TouchDown)
-        
-        return button
-    }()
-    
-    lazy var tempInfoView:UIImageView = {
-        let image:UIImage = UIImage(named: "map_temp_lock_info")!
-        let frame = CGRect(
-            x: self.view.bounds.size.width - image.size.width - self.xPadding,
-            y: CGRectGetMidY(self.crashButton.frame) - 0.5*image.size.height,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let view:UIImageView = UIImageView(image: image)
-        view.frame = frame
-        
-        return view
-    }()
+//    lazy var crashButton:SLLockScreenAlertButton = {
+//        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
+//            activeImageName: "map_crash_detection_on_button",
+//            inactiveImageName: "map_crash_detection_off_button",
+//            titleText: NSLocalizedString("Crash detection", comment: ""),
+//            textColor: self.titleColor
+//        )
+//        button.frame = CGRect(
+//            x: self.xPadding,
+//            y: CGRectGetMaxY(self.lockNameLabel.frame) + 25.0,
+//            width: button.bounds.size.width,
+//            height: button.bounds.size.height
+//        )
+//        button.addTarget(self, action: #selector(crashButtonPressed), forControlEvents: .TouchDown)
+//        
+//        return button
+//    }()
+//    
+//    lazy var theftButton:SLLockScreenAlertButton = {
+//        let button:SLLockScreenAlertButton = SLLockScreenAlertButton(
+//            activeImageName: "map_theft_detection_on_button",
+//            inactiveImageName: "map_theft_detection_off_button",
+//            titleText: NSLocalizedString("Theft detection", comment: ""),
+//            textColor: self.titleColor
+//        )
+//        button.frame = CGRect(
+//            x: CGRectGetMaxX(self.crashButton.frame) + 25.0,
+//            y: CGRectGetMinY(self.crashButton.frame),
+//            width: button.bounds.size.width,
+//            height: button.bounds.size.height
+//        )
+//        button.addTarget(self, action: #selector(theftButtonPressed), forControlEvents: .TouchDown)
+//        
+//        return button
+//    }()
+//    
+//    lazy var tempInfoView:UIImageView = {
+//        let image:UIImage = UIImage(named: "map_temp_lock_info")!
+//        let frame = CGRect(
+//            x: self.view.bounds.size.width - image.size.width - self.xPadding,
+//            y: CGRectGetMidY(self.crashButton.frame) - 0.5*image.size.height,
+//            width: image.size.width,
+//            height: image.size.height
+//        )
+//        
+//        let view:UIImageView = UIImageView(image: image)
+//        view.frame = frame
+//        
+//        return view
+//    }()
     
     lazy var getDirectionsButton:UIButton = {
-        let image:UIImage = UIImage(named: "map_view_lock_info_get_directions_to_my_bike_button")!
+        let height:CGFloat = 42.0
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: self.view.bounds.size.height - image.size.height - 20.0,
-            width: image.size.width,
-            height: image.size.height
+            x: CGRectGetMinX(self.lockNameLabel.frame),
+            y: self.view.bounds.size.height - height - 15.0,
+            width: self.lockInfoLabel.bounds.size.width,
+            height: height
         )
         
-        let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: .Normal)
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
+        button.setTitle(NSLocalizedString("GET DIRECTIONS", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
+        button.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
         button.addTarget(self, action: #selector(getDirectionsButtonPressed), forControlEvents: .TouchDown)
         
         return button
@@ -168,50 +190,46 @@ class SLLockInfoViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if !self.view.subviews.contains(self.showLessButton) {
-            self.view.addSubview(self.showLessButton)
-        }
-        
-        if !self.view.subviews.contains(self.showMoreButton) {
-            self.view.addSubview(self.showMoreButton)
-        }
+//        if !self.view.subviews.contains(self.showLessButton) {
+//            self.view.addSubview(self.showLessButton)
+//        }
         
         if !self.view.subviews.contains(self.lockNameLabel) {
             self.view.addSubview(self.lockNameLabel)
         }
         
-        if !self.view.subviews.contains(self.crashButton) {
-            self.view.addSubview(self.crashButton)
+        if !self.view.subviews.contains(self.lockInfoLabel) {
+            self.view.addSubview(self.lockInfoLabel)
         }
         
-        if !self.view.subviews.contains(self.theftButton) {
-            self.view.addSubview(self.theftButton)
-        }
-        
-        if !self.view.subviews.contains(self.tempInfoView) {
-            self.view.addSubview(self.tempInfoView)
-        }
+//        if !self.view.subviews.contains(self.crashButton) {
+//            self.view.addSubview(self.crashButton)
+//        }
+//        
+//        if !self.view.subviews.contains(self.theftButton) {
+//            self.view.addSubview(self.theftButton)
+//        }
+//        
+//        if !self.view.subviews.contains(self.tempInfoView) {
+//            self.view.addSubview(self.tempInfoView)
+//        }
         
         if !self.view.subviews.contains(self.getDirectionsButton) {
             self.view.addSubview(self.getDirectionsButton)
         }
     }
     
-    func showLessButtonPressed() {
-        
-    }
+//    func showLessButtonPressed() {
+//        
+//    }
     
-    func showMoreButtonPressed() {
-        
-    }
-    
-    func crashButtonPressed() {
-        self.crashButton.selected = !self.crashButton.selected
-    }
-    
-    func theftButtonPressed() {
-        self.theftButton.selected = !self.theftButton.selected
-    }
+//    func crashButtonPressed() {
+//        self.crashButton.selected = !self.crashButton.selected
+//    }
+//    
+//    func theftButtonPressed() {
+//        self.theftButton.selected = !self.theftButton.selected
+//    }
     
     func getDirectionsButtonPressed() {
         self.delegate?.directionsButtonPressed(self)

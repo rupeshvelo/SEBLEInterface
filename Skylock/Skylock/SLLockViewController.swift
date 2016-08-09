@@ -165,7 +165,9 @@ SLLockBarViewControllerDelegate
             .CounterClockwiseBottomStill: NSLocalizedString("Tap to lock", comment: ""),
             .CounterClockwiseTopMoving: NSLocalizedString("Unlocking...", comment: ""),
             .InactiveTop: NSLocalizedString("NOT", comment: ""),
-            .InactiveBottom: NSLocalizedString("CONNECTED", comment: "")
+            .InactiveBottom: NSLocalizedString("CONNECTED", comment: ""),
+            .ConnectingTop: NSLocalizedString("CONNECTING...", comment: ""),
+            .ConnectingBottom: NSLocalizedString("", comment: "")
         ]
         
         let tvc:SLThinkerViewController = SLThinkerViewController(
@@ -374,6 +376,13 @@ SLLockBarViewControllerDelegate
             name: kSLNotificationAlertOccured,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(startedConnectingLock(_:)),
+            name: kSLNotificationLockManagerStartedConnectingLock,
+            object: nil
+        )
     }
     
     func showAcceptNotificaitonViewController() {
@@ -483,7 +492,11 @@ SLLockBarViewControllerDelegate
     func lockLocked(notification: NSNotification) {
         self.thinkerViewController.setState(.ClockwiseStill)
         if let lock = self.lock {
+            let user:SLUser = self.databaseManager.currentUser
             lock.isLocked = NSNumber(bool: true)
+            lock.setCurrentLocation(user.location)
+            //lock.setCurrentLocation(CLLocationCoordinate2DMake(37.345253, -120.585895))
+            self.databaseManager.saveLock(lock)
         }
     }
     
@@ -522,7 +535,7 @@ SLLockBarViewControllerDelegate
             if let lbvc = self.lockBarViewController {
                 presentedVC.view.bringSubviewToFront(lbvc.view)
             } else {
-                let height:CGFloat = 48.0
+                let height:CGFloat = 66.0
                 self.lockBarViewController = SLLockBarViewController()
                 self.lockBarViewController?.delegate = self
                 self.lockBarViewController!.view.frame = CGRect(
@@ -586,6 +599,10 @@ SLLockBarViewControllerDelegate
             
             self.presentViewController(tnvc, animated: true, completion: nil)
         }
+    }
+    
+    func startedConnectingLock(notification: NSNotification) {
+        self.thinkerViewController.setState(.Connecting)
     }
     
     func setLockDisabled() {
@@ -678,6 +695,14 @@ SLLockBarViewControllerDelegate
     
     // MARK: SLLocationManagerDelegate methods
     func locationManagerUpdatedUserPosition(locationManager: SLLocationManager, userLocation: CLLocation) {
+        let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        guard let user = dbManager.currentUser else {
+            return
+        }
+        
+        user.location = userLocation.coordinate
+        dbManager.saveUser(user, withCompletion: nil)
+        
         if self.isMapShowing {
             self.mapViewController.updateUserPosition(userLocation.coordinate)
         }

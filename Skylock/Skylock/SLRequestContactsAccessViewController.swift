@@ -9,27 +9,11 @@
 class SLRequestContactsAccessViewController: UIViewController {
     let xPadding:CGFloat = 20.0
     
-    lazy var backgroundView:UIView = {
-        let image = UIImage(named: "emergency_contact_circle")!
-        let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: (self.navigationController?.navigationBar.bounds.size.height)!
-                + UIApplication.sharedApplication().statusBarFrame.size.height + 20.0,
-            width: image.size.width,
-            height: image.size.height
-        )
-        
-        let view:UIImageView = UIImageView(image: image)
-        view.frame = frame
-        
-        return view
-    }()
-    
     lazy var mainInfoLabel:UILabel = {
-        let text = NSLocalizedString("Alert your emergency contacts if a crash is detected", comment: "")
+        let text = NSLocalizedString("Ellipse keeps you safe.", comment: "")
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
+        let font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 22.0)!
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -40,13 +24,14 @@ class SLRequestContactsAccessViewController: UIViewController {
         
         let frame = CGRectMake(
             self.xPadding,
-            CGRectGetMaxY(self.backgroundView.frame) + 20.0,
+            (self.navigationController?.navigationBar.bounds.size.height)!
+                + UIApplication.sharedApplication().statusBarFrame.size.height + 20.0,
             labelWidth,
             labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(red: 102, green: 177, blue: 227)
+        label.textColor = UIColor.whiteColor()
         label.text = text
         label.textAlignment = .Center
         label.font = font
@@ -57,15 +42,14 @@ class SLRequestContactsAccessViewController: UIViewController {
     
     lazy var detailInfoLabel:UILabel = {
         let text = NSLocalizedString(
-            "We hope it never happens, but should an accident be detected, " +
-            "your Ellipse can detect it and can send an SMS to your chosen emergency contacts to notify " +
-            "them so that they can send help. You can switch this on or off anytime.",
+            "Ellipse can detect if you've been in an accident and alert your loved ones by SMS. "
+                + "You can switch this off at any time.",
             comment: ""
         )
         
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(9)
+        let font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)!
         let labelSize:CGSize = utility.sizeForLabel(
             font,
             text: text,
@@ -82,7 +66,7 @@ class SLRequestContactsAccessViewController: UIViewController {
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
+        label.textColor = UIColor.whiteColor()
         label.text = text
         label.textAlignment = .Center
         label.font = font
@@ -92,47 +76,49 @@ class SLRequestContactsAccessViewController: UIViewController {
     }()
     
     lazy var acceptButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_yes_Onboarding")!
+        let height:CGFloat = 55.0
         let frame = CGRect(
-            x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: self.view.bounds.size.height - image.size.height - 20.0,
-            width: image.size.width,
-            height: image.size.height
+            x: 0.0,
+            y: self.view.bounds.size.height - height,
+            width: self.view.bounds.size.width,
+            height: height
         )
         
-        let button:UIButton = UIButton(frame: frame)
+        let button:UIButton = UIButton(type: .System)
+        button.frame = frame
         button.addTarget(self, action: #selector(acceptButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.setTitle(NSLocalizedString("SET UP EMERGENCY CONTACTS", comment: ""), forState: .Normal)
+        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
+        button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
         
         return button
     }()
     
-    lazy var declineButton:UIButton = {
-        let image:UIImage = UIImage(named: "button_not_now_Onboarding")!
+    lazy var phoneView:UIView = {
+        let image = UIImage(named: "emergency_contacts_phone_image")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: CGRectGetMinY(self.acceptButton.frame) - image.size.height - 20.0 ,
+            y: CGRectGetMinY(self.acceptButton.frame) - image.size.height,
             width: image.size.width,
             height: image.size.height
         )
         
-        let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(declineButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        let view:UIImageView = UIImageView(image: image)
+        view.frame = frame
         
-        return button
+        return view
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor(red: 160, green: 200, blue: 224)
         
-        self.view.addSubview(self.backgroundView)
         self.view.addSubview(self.mainInfoLabel)
         self.view.addSubview(self.detailInfoLabel)
         self.view.addSubview(self.acceptButton)
-        self.view.addSubview(self.declineButton)
+        self.view.addSubview(self.phoneView)
     }
     
     func acceptButtonPressed() {
@@ -151,9 +137,5 @@ class SLRequestContactsAccessViewController: UIViewController {
                 }
             })
         }
-    }
-    
-    func declineButtonPressed() {
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }

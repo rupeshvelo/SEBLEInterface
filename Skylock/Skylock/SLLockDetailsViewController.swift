@@ -15,6 +15,8 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     
     let utilities:SLUtilities = SLUtilities()
     
+    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
         table.delegate = self
@@ -32,8 +34,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }()
     
     lazy var unconnectedLocks:[SLLock] = {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-        let locks:[SLLock] = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
+        let locks:[SLLock] = self.lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
         
         return locks
     }()
@@ -127,9 +128,15 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func lockDisconnected(notification: NSNotification) {
+        guard let disconnectedLock:SLLock = notification.object as? SLLock else {
+            return
+        }
+        
         let lockManager = SLLockManager.sharedManager() as! SLLockManager
         self.unconnectedLocks = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
-        self.connectedLock = nil
+        if disconnectedLock.macAddress == self.connectedLock?.macAddress {
+            self.connectedLock = nil
+        }
         
         self.tableView.reloadData()
     }
@@ -140,11 +147,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        }
-        
-        return self.unconnectedLocks.count
+        return section == 0 ? 1 : self.unconnectedLocks.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -246,10 +249,10 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             var lock:SLLock?
             if indexPath.section == 0 && self.connectedLock != nil {
                 lock = self.connectedLock
-            } else if indexPath == 1 {
+            } else if indexPath.section == 1 {
                 lock = self.unconnectedLocks[indexPath.row]
             }
-            
+
             if lock == nil {
                 return
             }
@@ -281,7 +284,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             style: .Normal,
             title: self.rowActionTextForIndexPath(indexPath))
             { (rowAction, index) in
-                print("connect action button pressed")
+                self.addLock()
             }
             connectAction.backgroundColor = UIColor(patternImage: conntectImage)
             actions.append(connectAction)
