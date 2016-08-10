@@ -36,13 +36,13 @@
 @property (nonatomic, assign) CGRect lockInfoLargeFrame;
 
 @property (nonatomic, strong) GMSMapView *mapView;
-@property (nonatomic, strong) GMSMarker *userMarker;
-@property (nonatomic, strong) GMSMarker *selectedLockMarker;
 
 @property (nonatomic, strong) NSMutableDictionary *lockMarkers;
 @property (nonatomic, assign) BOOL isInitialLoad;
 
 @property (nonatomic, strong) SLLock *selectedLock;
+@property (nonatomic, strong) NSMutableArray *locks;
+
 @property (nonatomic, assign) CLLocationCoordinate2D userLocation;
 @property (nonatomic, strong) SLNotificationViewController *notificationViewController;
 
@@ -72,16 +72,6 @@
     }
     
     return _mapView;
-}
-
-- (GMSMarker *)userMarker
-{
-    if (!_userMarker) {
-        _userMarker = [GMSMarker markerWithPosition:self.userLocation];
-        _userMarker.map = self.mapView;
-    }
-    
-    return _userMarker;
 }
 
 - (UIButton *)locationButton
@@ -117,7 +107,7 @@
 - (SLNoEllipseConnectedView *)noEllipseConnectedView
 {
     if (!_noEllipseConnectedView) {
-        NSString *text = NSLocalizedString(@"You are not connected to an Ellipse. We can only show the location of locks that you are connected to.",
+        NSString *text = NSLocalizedString(@"You have not yet conneced to an Ellipse. We can only show the location of locks that you have connected to.",
                                            nil);
         _noEllipseConnectedView = [[SLNoEllipseConnectedView alloc] initWithFrame:CGRectMake(0.0f,
                                                                                              0.0f,
@@ -142,6 +132,9 @@
     [SLDatabaseManager.sharedManager setCurrentUser];
     
     self.lockMarkers = [NSMutableDictionary new];
+    self.locks = [NSMutableArray arrayWithArray:[SLLockManager.sharedManager allLocksForCurrentUser]];
+
+    
     self.isInitialLoad = YES;
     [self registerNotifications];
     
@@ -162,7 +155,7 @@
     
     self.navigationItem.title = NSLocalizedString(@"FIND MY ELLIPSE", nil);
     
-    self.locationButton.frame = CGRectMake(self.view.bounds.size.width - self.locationButton.bounds.size.width - 10.0f,
+    self.locationButton.frame = CGRectMake(self.view.bounds.size.width - self.locationButton.bounds.size.width - 15.0f,
                                            self.view.bounds.size.height - self.locationButton.bounds.size.height - 66.0f,
                                            self.locationButton.bounds.size.height,
                                            self.locationButton.bounds.size.width);
@@ -172,10 +165,7 @@
 {
     [super viewDidAppear:animated];
     
-    self.selectedLock = [SLLockManager.sharedManager getCurrentLock];
-    if (self.selectedLock && !self.lockMarkers[self.selectedLock.macAddress]) {
-        [self addLockToMap:self.selectedLock];
-    } else if (!self.selectedLock) {
+    if (self.locks.count == 0) {
         self.noEllipseConnectedView.frame = CGRectMake(0.0f,
                                                        -self.noEllipseConnectedView.frame.size.height,
                                                        self.noEllipseConnectedView.frame.size.width,
@@ -189,6 +179,10 @@
                                                            self.noEllipseConnectedView.frame.size.width,
                                                            self.noEllipseConnectedView.frame.size.height);
         }];
+    } else {
+        for (SLLock *lock in self.locks) {
+            [self addLockToMap:lock];
+        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationShowLockBar
@@ -351,15 +345,6 @@
     [self centerOnUser];
 }
 
-- (void)lockSelected
-{
-    // TODO - clear lock annotations that are no longer active
-    self.selectedLock = [SLLockManager.sharedManager selectedLock];
-    if (self.selectedLock) {
-       [self addLockToMap:self.selectedLock];
-    }
-}
-
 #pragma mark - SLDirectionsViewController Delegate Methods
 - (void)directionsViewControllerWantsExit:(SLDirectionsViewController *)directionsController
 {
@@ -461,10 +446,25 @@
 #pragma mark - GMS map view delegate methods
 - (BOOL)mapView:(GMSMapView *)mapView didTapMarker:(GMSMarker *)marker
 {
-    if (marker != self.userMarker && !self.lockInfoViewController) {
-        self.selectedLockMarker = marker;
-        [mapView animateToLocation:marker.position];
-        [self presentLockInfoViewController];
+    if (!self.lockInfoViewController) {
+        SLLock *selectedLock;
+        for (NSString *macAddress in self.lockMarkers.allKeys) {
+            GMSMarker *lockMarker = self.lockMarkers[macAddress];
+            if (marker == lockMarker) {
+                for (SLLock *lock in self.locks) {
+                    if ([lock.macAddress isEqualToString:macAddress]) {
+                        selectedLock = lock;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (selectedLock) {
+            self.selectedLock = selectedLock;
+            [mapView animateToLocation:marker.position];
+            [self presentLockInfoViewController];
+        }
     }
 
     return YES;
@@ -491,9 +491,7 @@
         [self removeLockInfoViewController];
     }
     
-    if (self.selectedLockMarker) {
-        self.selectedLockMarker = nil;
-    }
+    self.selectedLock = nil;
 }
 
 #pragma mark - SLNotificationViewController delegate methods

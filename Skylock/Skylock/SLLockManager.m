@@ -587,6 +587,11 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     return unconnectedLocks;
 }
 
+- (NSArray *)allLocksForCurrentUser
+{
+    return [self.databaseManger locksForCurrentUser];
+}
+
 - (NSString *)uuidForCharacteristic:(SLLockManagerCharacteristic)characteristic
 {
     NSString *characteristicString;
@@ -1199,7 +1204,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                           }
                                                       }
                                                       
-                                                      [self resetSeletedLockToBootMode];
+                                                      
+                                                      //[self resetSeletedLockToBootMode];
                                                   }
                                               }];
 }
