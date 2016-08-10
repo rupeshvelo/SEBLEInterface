@@ -77,10 +77,10 @@ SLLockBarViewControllerDelegate
     lazy var lockNameLabel:UILabel = {
         let labelWidth = self.underLineView.bounds.size.width
         let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 18.0)
-        let height:CGFloat = 20.0
+        let height:CGFloat = 22.0
         let frame = CGRectMake(
             0.5*(self.view.bounds.size.width - labelWidth),
-            CGRectGetMinY(self.underLineView.frame) - height - 5.0,
+            CGRectGetMinY(self.underLineView.frame) - height - 7.0,
             labelWidth,
             height
         )
@@ -140,20 +140,34 @@ SLLockBarViewControllerDelegate
         return button
     }()
     
-    lazy var tempStatsView:UIImageView = {
-        let image:UIImage = UIImage(named: "temp_phone_info")!
-        let frame = CGRectMake(
-            self.view.bounds.size.width - image.size.width - self.xPadding,
-            CGRectGetMinY(self.underLineView.frame) - image.size.height - 5.0,
-            image.size.width,
-            image.size.height
+    lazy var batteryView:UIImageView = {
+        let image:UIImage = UIImage(named: "battery0")!
+        let frame = CGRect(
+            x: CGRectGetMaxX(self.underLineView.frame) - image.size.width,
+            y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
+            width: image.size.width,
+            height: image.size.height
         )
         
-        let imageView:UIImageView = UIImageView(image: image)
-        imageView.frame = frame
-        imageView.hidden = true
+        let view:UIImageView = UIImageView(frame: frame)
+        view.image = image
         
-        return imageView
+        return view
+    }()
+    
+    lazy var rssiView:UIImageView = {
+        let image:UIImage = UIImage(named: "rssi0")!
+        let frame = CGRect(
+            x: CGRectGetMinX(self.batteryView.frame) - image.size.width - 20.0,
+            y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
+            width: image.size.width,
+            height: image.size.height
+        )
+        
+        let view:UIImageView = UIImageView(frame: frame)
+        view.image = image
+        
+        return view
     }()
 
     lazy var thinkerViewController:SLThinkerViewController = {
@@ -261,12 +275,12 @@ SLLockBarViewControllerDelegate
         
         self.view.addSubview(self.menuButton)
         self.view.addSubview(self.unconnectedView)
-        
         self.view.addSubview(self.underLineView)
         self.view.addSubview(self.lockNameLabel)
         self.view.addSubview(self.crashButton)
         self.view.addSubview(self.theftButton)
-        self.view.addSubview(self.tempStatsView)
+        self.view.addSubview(self.batteryView)
+        self.view.addSubview(self.rssiView)
         
         self.registerForNotifications()
     }
@@ -279,7 +293,7 @@ SLLockBarViewControllerDelegate
         self.showAcceptNotificaitonViewController()
         
         if !self.view.subviews.contains(self.thinkerViewController.view) {
-            let diameter:CGFloat = 223.0
+            let diameter:CGFloat = 245.0
             self.thinkerViewController.view.frame = CGRect(
                 x: 0.5*(self.view.bounds.size.width - diameter),
                 y: 0.5*(self.view.bounds.size.height - diameter) - 50.0,
@@ -295,32 +309,6 @@ SLLockBarViewControllerDelegate
         
         self.thinkerViewController.setState(.Inactive)
         self.toggleViewsHiddenOnConnction(self.lock != nil)
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-//        
-//        let wvc:SLWarningViewController = SLWarningViewController(
-//            headerText: "What up foo",
-//            infoText: "The sky dumbass",
-//            cancelButtonTitle: "Freak Out",
-//            actionButtonTitle: "Boomer!!"
-//        )
-//        wvc.view.frame = self.view.bounds
-//        
-//        self.addChildViewController(wvc)
-//        self.view.addSubview(wvc.view)
-//        self.view.bringSubviewToFront(wvc.view)
-//        wvc.didMoveToParentViewController(self)
-//        let cnvc:SLCrashNotificationViewController = SLCrashNotificationViewController(
-//            takeActionButtonTitle: "ALERT MY CONTACTS",
-//            cancelButtonTitle: "CANCEL, I'M OK",
-//            titleText: NSLocalizedString("Crash detected!", comment: ""),
-//            infoText: NSLocalizedString("Your emergency contacts will be alerted in", comment: "")
-//        )
-//        cnvc.delegate = self
-//        
-//        self.presentViewController(cnvc, animated: true, completion: nil)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
@@ -381,6 +369,13 @@ SLLockBarViewControllerDelegate
             self,
             selector: #selector(startedConnectingLock(_:)),
             name: kSLNotificationLockManagerStartedConnectingLock,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(hardwareValuesUpdated(_:)),
+            name: kSLNotificationLockManagerUpdatedHardwareValues,
             object: nil
         )
     }
@@ -572,6 +567,20 @@ SLLockBarViewControllerDelegate
         }
     }
     
+    func hardwareValuesUpdated(notification: NSNotification) {
+        guard let macAddress = notification.object as? String else {
+            return
+        }
+        
+        if self.lock != nil && self.lock?.macAddress == macAddress {
+            print("\(lock?.batteryVoltage), \(lock?.rssiStrength)")
+            dispatch_async(dispatch_get_main_queue(), { 
+                self.batteryView.image = self.batteryImageForCurrentLock()
+                self.rssiView.image = self.rssiImageForCurrentLock()
+            })
+        }
+    }
+    
     func theftOrCrashAlert(notification: NSNotification) {
         guard let alertNotification:SLNotification = notification.object as? SLNotification else {
             return
@@ -603,6 +612,13 @@ SLLockBarViewControllerDelegate
     
     func startedConnectingLock(notification: NSNotification) {
         self.thinkerViewController.setState(.Connecting)
+        self.unconnectedView.hidden = true
+        self.underLineView.hidden = true
+        self.lockNameLabel.hidden = true
+        self.crashButton.hidden = true
+        self.theftButton.hidden = true
+        self.batteryView.hidden = true
+        self.rssiView.hidden = true
     }
     
     func setLockDisabled() {
@@ -618,7 +634,8 @@ SLLockBarViewControllerDelegate
         self.lockNameLabel.hidden = !isConnected
         self.crashButton.hidden = !isConnected
         self.theftButton.hidden = !isConnected
-        self.tempStatsView.hidden = !isConnected
+        self.batteryView.hidden = !isConnected
+        self.rssiView.hidden = !isConnected
     }
     
     func removeSlideViewController() {
@@ -659,6 +676,52 @@ SLLockBarViewControllerDelegate
         }
         
         return self.lockBarViewController!.view.bounds.size.height
+    }
+    
+    func rssiImageForCurrentLock() -> UIImage? {
+        guard let lock = self.lock else {
+            return nil
+        }
+        
+        let imageName:String
+        let range:SLLockParameterRange = lock.rangeForParameterType(SLLockParameterType.RSSI)
+        switch range {
+        case .Zero:
+            imageName = "rssi0"
+        case .One:
+            imageName = "rssi1"
+        case .Two:
+            imageName = "rssi2"
+        case .Three:
+            imageName = "rssi3"
+        case .Four:
+            imageName = "rssi4"
+        }
+        
+        return UIImage(named: imageName)
+    }
+    
+    func batteryImageForCurrentLock() -> UIImage? {
+        guard let lock = self.lock else {
+            return nil
+        }
+        
+        let imageName:String
+        let range:SLLockParameterRange = lock.rangeForParameterType(SLLockParameterType.Battery)
+        switch range {
+        case .Zero:
+            imageName = "battery0"
+        case .One:
+            imageName = "battery1"
+        case .Two:
+            imageName = "battery2"
+        case .Three:
+            imageName = "battery3"
+        case .Four:
+            imageName = "battery4"
+        }
+        
+        return UIImage(named: imageName)
     }
     
     // MARK: SLSLideViewControllerDelegate methods
@@ -741,7 +804,7 @@ SLLockBarViewControllerDelegate
         }
         
         self.thinkerViewController.setState(
-            lock.isLocked.boolValue ? .CounterClockwiseMoving : .CounterClockwiseMoving
+            lock.isLocked.boolValue ? .CounterClockwiseMoving : .ClockwiseMoving
         )
         
         self.lockManager.setLockStateForLock(lock)

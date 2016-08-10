@@ -63,6 +63,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerTouchPadButton) {
 - (NSArray *)unconnectedLocksForCurrentUser;
 - (void)shallowConnectLock:(SLLock *)lock;
 - (void)disconnectFromLockWithAddress:(NSString *)macAddress;
+- (void)setTxMaxPower;
 
 // temporary methods for testing
 - (void)readFirmwareDataForLockAddress:(NSString *)macAddress;

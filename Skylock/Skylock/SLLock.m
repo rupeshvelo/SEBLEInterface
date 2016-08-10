@@ -11,6 +11,10 @@
 #import "SLUser.h"
 #import "SLAccelerometerValues.h"
 
+#define kSLLockMaxRssiStrength      -50.0f
+#define kSLLockMinRssiStrength      -100.f
+#define kSLLockMaxBatteryStrength   3500.0f
+#define kSLLockMinBatteryStrength   2100.0f
 
 @implementation SLLock
 
@@ -73,63 +77,36 @@
     }
 }
 
-- (SLLockCellSignalState)cellSignalState
+- (SLLockParameterRange)rangeForParameterType:(SLLockParameterType)type
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLLockCellSignalState cellState = SLLockCellSignalStateNone;
-    if (self.cellStrength.floatValue > 0.0 && self.cellStrength.floatValue <= 20.0) {
-        cellState = SLLockCellSignalState1;
-    } else if (self.cellStrength.floatValue > 20.0 && self.cellStrength.floatValue <= 40.0) {
-        cellState = SLLockCellSignalState2;
-    } else if (self.cellStrength.floatValue > 40.0 && self.cellStrength.floatValue <= 60.0) {
-        cellState = SLLockCellSignalState3;
-    } else if (self.cellStrength.floatValue > 60.0 && self.cellStrength.floatValue <= 80.0) {
-        cellState = SLLockCellSignalState4;
-    } else if (self.cellStrength.floatValue > 80.0 && self.cellStrength.floatValue <= 100.0) {
-        cellState = SLLockCellSignalState5;
+    SLLockParameterRange range;
+    if (type == SLLockParameterTypeBattery) {
+        if (self.batteryVoltage.floatValue > 3175.0f) {
+            range = SLLockParameterRangeFour;
+        } else if (self.batteryVoltage.floatValue > 3050.0f) {
+            range = SLLockParameterRangeThree;
+        } else if (self.batteryVoltage.floatValue > 2925.0f) {
+            range = SLLockParameterRangeTwo;
+        } else if (self.batteryVoltage.floatValue > 2800.0f) {
+            range = SLLockParameterRangeOne;
+        } else {
+            range = SLLockParameterRangeZero;
+        }
+    } else {
+        if (self.rssiStrength.floatValue  < 62.5f) {
+            range = SLLockParameterRangeFour;
+        } else if (self.rssiStrength.floatValue < 75.0f) {
+            range = SLLockParameterRangeThree;
+        } else if (self.rssiStrength.floatValue < 82.5f) {
+            range = SLLockParameterRangeTwo;
+        } else if (self.rssiStrength.floatValue < 100.0f) {
+            range = SLLockParameterRangeOne;
+        } else {
+            range = SLLockParameterRangeZero;
+        }
     }
-    
-    return cellState;
-}
 
-- (SLLockBatteryState)batteryState
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLLockBatteryState batState = SLLockBatteryStateNone;
-    if (self.batteryVoltage.floatValue > 0.0 && self.batteryVoltage.floatValue <= 10.0) {
-        batState = SLLockBatteryState1;
-    } else if (self.batteryVoltage.floatValue > 25.0 && self.batteryVoltage.floatValue <= 33.0) {
-        batState = SLLockBatteryState2;
-    } else if (self.batteryVoltage.floatValue > 33.0 && self.batteryVoltage.floatValue <= 50.0) {
-        batState = SLLockBatteryState3;
-    } else if (self.batteryVoltage.floatValue > 50.0 && self.batteryVoltage.floatValue <= 66.0) {
-        batState = SLLockBatteryState4;
-    } else if (self.batteryVoltage.floatValue > 66.0 && self.batteryVoltage.floatValue <= 75.0) {
-        batState = SLLockBatteryState5;
-    } else if (self.batteryVoltage.floatValue > 75.0 && self.batteryVoltage.floatValue <= 100.0) {
-        batState = SLLockBatteryState6;
-    }
-    
-    return batState;
-}
-
-- (SLLockWifiSignalState)wifiState
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    SLLockWifiSignalState wifiState = SLLockWifiSignalStateNone;
-    if (self.wifiStrength.floatValue > 0.0 && self.wifiStrength.floatValue <= 20.0) {
-        wifiState = SLLockWifiSignalState1;
-    } else if (self.wifiStrength.floatValue > 20.0 && self.wifiStrength.floatValue <= 40.0) {
-        wifiState = SLLockWifiSignalState2;
-    } else if (self.wifiStrength.floatValue > 40.0 && self.wifiStrength.floatValue <= 60.0f) {
-        wifiState = SLLockWifiSignalState3;
-    } else if (self.wifiStrength.floatValue > 60.0 && self.wifiStrength.floatValue <= 80.0f) {
-        wifiState = SLLockWifiSignalState4;
-    } else if (self.wifiStrength.floatValue > 80.0 && self.wifiStrength.floatValue <= 100.0f) {
-        wifiState = SLLockWifiSignalState3;
-    }
-    
-    return wifiState;
+    return range;
 }
 
 - (NSDictionary *)asDictionary

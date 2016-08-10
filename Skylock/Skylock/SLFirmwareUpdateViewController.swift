@@ -64,7 +64,7 @@ class SLFirmwareUpdateViewController: UIViewController {
         let frame = CGRect(
             x: self.xPadding,
             y: CGRectGetMaxY(self.progressLabel.frame) + 20.0,
-            width: self.view.bounds.size.width - 2*self.progressBar.bounds.size.width,
+            width: self.view.bounds.size.width - 2*self.xPadding,
             height: 10.0
         )
         
@@ -111,9 +111,13 @@ class SLFirmwareUpdateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.view.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
+        
         self.view.addSubview(self.updateLabel)
+        self.view.addSubview(self.progressLabel)
         self.view.addSubview(self.progressBar)
-        self.view.addSubview(self.progressBar)
+        self.view.addSubview(self.updateLaterButton)
+        self.view.addSubview(self.updateNowButton)
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
