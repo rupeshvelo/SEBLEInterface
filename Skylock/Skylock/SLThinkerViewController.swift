@@ -12,6 +12,7 @@ enum SLThinkerViewControllerState {
     case CounterClockwiseMoving
     case CounterClockwiseStill
     case Inactive
+    case Connecting
 }
 
 enum SLThinkerViewControllerLabelTextState {
@@ -25,6 +26,8 @@ enum SLThinkerViewControllerLabelTextState {
     case CounterClockwiseBottomMoving
     case InactiveTop
     case InactiveBottom
+    case ConnectingTop
+    case ConnectingBottom
 }
 
 protocol SLThinkerViewControllerDelegate:class {
@@ -307,6 +310,13 @@ class SLThinkerViewController: UIViewController {
             self.currentBackgroundColor = self.inActiveBackgroundColor
             self.currentTintColor = self.inActiveBackgroundColor
             self.setLabelTextForTopState(.InactiveTop, bottomState: .InactiveBottom)
+        case .Connecting:
+            self.wormView.hidden = false
+            self.shouldContinueAnimation = true
+            self.currentBackgroundColor = self.secondBackgroundColor
+            self.currentTintColor = self.firstBackgroundColor
+            self.setLabelTextForTopState(.ConnectingTop, bottomState: .ConnectingBottom)
+            self.rotateWormView(false)
         }
         
         self.thinkerState = state
@@ -334,6 +344,9 @@ class SLThinkerViewController: UIViewController {
         case .CounterClockwiseStill:
             topTextState = .CounterClockwiseTopStill
             bottomTextState = .CounterClockwiseBottomStill
+        case .Connecting:
+            topTextState = .ConnectingTop
+            bottomTextState = .ConnectingBottom
         }
         
         if let top = topText {

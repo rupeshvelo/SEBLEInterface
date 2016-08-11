@@ -10,7 +10,6 @@
 @class SLDirection;
 @interface SLDirectionsTableViewCell : UITableViewCell
 
-- (void)setPropertiesWithDirection:(SLDirection *)direction
-                  isFirstDirection:(BOOL)isFirst;
+- (void)setPropertiesWithDirection:(NSDictionary *)properties isFirstDirection:(BOOL)isFirst isLastDirection:(BOOL)isLast;
 
 @end

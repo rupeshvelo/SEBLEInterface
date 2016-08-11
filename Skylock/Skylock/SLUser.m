@@ -9,6 +9,10 @@
 #import "SLUser+CoreDataProperties.h"
 #import "SLUser.h"
 #import "SLLock.h"
+#import<CoreTelephony/CTCallCenter.h>
+#import<CoreTelephony/CTCall.h>
+#import<CoreTelephony/CTCarrier.h>
+#import<CoreTelephony/CTTelephonyNetworkInfo.h>
 
 @implementation SLUser
 
@@ -44,12 +48,14 @@
 
 - (NSDictionary *)asRestDictionary
 {
+    NSString *countryCode = self.countryCode;
     return @{@"first_name": self.firstName,
              @"user_id": self.userId,
              @"last_name": self.lastName,
              @"email": self.email ? self.email : [NSNull null],
              @"user_type": self.userType,
              @"reg_id": self.googlePushId,
+             @"country_code": countryCode == nil ? @"" : countryCode
              };
 }
 
@@ -104,6 +110,15 @@
     }
     
     return nil;
+}
+
+- (NSString *)countryCode
+{
+    CTTelephonyNetworkInfo *networkInfo = [CTTelephonyNetworkInfo new];
+    CTCarrier *carrier = [networkInfo subscriberCellularProvider];
+    NSString *countryCode = [carrier isoCountryCode];
+    
+    return countryCode;
 }
 
 @end

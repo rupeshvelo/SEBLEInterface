@@ -16,33 +16,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SLLock : NSManagedObject
 
-typedef NS_ENUM(NSUInteger, SLLockBatteryState) {
-    SLLockBatteryStateNone,
-    SLLockBatteryState1,
-    SLLockBatteryState2,
-    SLLockBatteryState3,
-    SLLockBatteryState4,
-    SLLockBatteryState5,
-    SLLockBatteryState6,
-    SLLockBatteryState7
+typedef NS_ENUM(NSUInteger, SLLockParameterRange) {
+    SLLockParameterRangeZero,
+    SLLockParameterRangeOne,
+    SLLockParameterRangeTwo,
+    SLLockParameterRangeThree,
+    SLLockParameterRangeFour,
 };
 
-typedef NS_ENUM(NSUInteger, SLLockCellSignalState) {
-    SLLockCellSignalStateNone,
-    SLLockCellSignalState1,
-    SLLockCellSignalState2,
-    SLLockCellSignalState3,
-    SLLockCellSignalState4,
-    SLLockCellSignalState5
-};
-
-typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
-    SLLockWifiSignalStateNone,
-    SLLockWifiSignalState1,
-    SLLockWifiSignalState2,
-    SLLockWifiSignalState3,
-    SLLockWifiSignalState4,
-    SLLockWifiSignalState5
+typedef NS_ENUM(NSUInteger, SLLockParameterType) {
+    SLLockParameterTypeBattery,
+    SLLockParameterTypeRSSI
 };
 
 @property (nonatomic, copy) NSNumber * isShallowConnection;
@@ -57,10 +41,6 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
-
-- (SLLockCellSignalState)cellSignalState;
-- (SLLockBatteryState)batteryState;
-- (SLLockWifiSignalState)wifiState;
 - (NSDictionary *)asDictionary;
 - (void)updatePropertiesWithDictionary:(NSDictionary *)dictionary;
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
@@ -72,7 +52,7 @@ typedef NS_ENUM(NSUInteger, SLLockWifiSignalState) {
 - (void)setCurrentLocation:(CLLocationCoordinate2D)location;
 - (void)switchLockNameToProvisioned;
 - (BOOL)isInBootMode;
-
+- (SLLockParameterRange)rangeForParameterType:(SLLockParameterType)type;
 @end
 
 NS_ASSUME_NONNULL_END

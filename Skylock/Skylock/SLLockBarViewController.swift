@@ -32,12 +32,12 @@ class SLLockBarViewController: UIViewController {
     private let xPadding:CGFloat = 10.0
     
     private lazy var lockNameLabel:UILabel = {
-        let width = 0.5*self.view.bounds.size.width - self.xPadding
+        let width = 0.75*self.view.bounds.size.width
         let height:CGFloat = 20.0
-        let font = UIFont.systemFontOfSize(16)
+        let font = UIFont.systemFontOfSize(13)
         let frame = CGRectMake(
             self.xPadding,
-            0.5*(self.view.bounds.size.height - height),
+            0.5*self.view.bounds.size.height - height,
             width,
             height
         )
@@ -68,19 +68,19 @@ class SLLockBarViewController: UIViewController {
     }()
     
     private lazy var tapActionLabel:UILabel = {
-        let width = 0.5*self.view.bounds.size.width - self.xPadding - self.lockImageView.bounds.size.width
+        let width = self.lockNameLabel.bounds.size.width
         let height:CGFloat = 20.0
-        let font = UIFont.systemFontOfSize(18)
+        let font = UIFont.systemFontOfSize(13)
         let frame = CGRectMake(
-            0.5*self.view.bounds.size.width,
-            0.5*(self.view.bounds.size.height - height),
+            self.xPadding,
+            0.5*self.view.bounds.size.height,
             width,
             height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor.whiteColor()
-        label.text = NSLocalizedString("TAP TO UNLOCK", comment: "")
+        label.text = NSLocalizedString("Tap to unlock", comment: "")
         label.textAlignment = .Left
         label.font = font
         label.numberOfLines = 1
@@ -179,7 +179,7 @@ class SLLockBarViewController: UIViewController {
             case .TapActionText:
                 value = NSLocalizedString("TAP TO UNLOCK", comment: "")
             case .LockImageName:
-                value = "thin-0632_security_lock"
+                value = "lock_bar_lock_icon"
             case .LockNameText:
                 value = self.lock!.displayName()
             }
@@ -188,7 +188,7 @@ class SLLockBarViewController: UIViewController {
             case .TapActionText:
                 value = NSLocalizedString("TAP TO LOCK", comment: "")
             case .LockImageName:
-                value = "thin-0632_security_lock"
+                value = "lock_bar_lock_icon"
             case .LockNameText:
                 value = self.lock!.displayName()
             }
