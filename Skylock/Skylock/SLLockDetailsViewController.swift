@@ -279,14 +279,14 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             settingsAction.backgroundColor = UIColor(patternImage: settingsImage)
             actions.append(settingsAction)
         } else {
-            let conntectImage = UIImage(named: "locks_connect_button")!
+            let connectImage = UIImage(named: "locks_connect_button")!
             let connectAction = UITableViewRowAction(
             style: .Normal,
             title: self.rowActionTextForIndexPath(indexPath))
             { (rowAction, index) in
                 self.addLock()
             }
-            connectAction.backgroundColor = UIColor(patternImage: conntectImage)
+            connectAction.backgroundColor = UIColor(patternImage: connectImage)
             actions.append(connectAction)
         }
         

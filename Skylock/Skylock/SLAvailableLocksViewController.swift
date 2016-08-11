@@ -247,6 +247,7 @@ import UIKit
         )
         
         let view:UIView = UIView(frame: viewFrame)
+        view.backgroundColor = UIColor.whiteColor()
         
         let frame = CGRect(
             x: 0,

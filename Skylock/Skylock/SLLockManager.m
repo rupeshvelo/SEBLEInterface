@@ -50,7 +50,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristic) {
     SLLockManagerCharacteristicResetLock,
     SLLockManagerCharacteristicCommandStatus,
     SLLockManagerCharacteristicWriteFirware,
-    SLLockManagerCharacteristicFirmwareUpdateDone
+    SLLockManagerCharacteristicFirmwareUpdateDone,
+    SLLockManagerCharacteristicSerialNumber
 };
 
 typedef NS_ENUM(NSUInteger, SLLockManagerCharacteristicState) {
@@ -204,7 +205,8 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                            [self uuidForCharacteristic:SLLockManagerCharacteristicCommandStatus],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicWriteFirware],
                            [self uuidForCharacteristic:SLLockManagerCharacteristicFirmwareUpdateDone],
-                           [self uuidForCharacteristic:SLLockManagerCharacteristicTXPowerControl]
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicTXPowerControl],
+                           [self uuidForCharacteristic:SLLockManagerCharacteristicSerialNumber]
                            ];
     
     return [NSSet setWithArray:readChars];
@@ -649,6 +651,9 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
             break;
         case SLLockManagerCharacteristicCommandStatus:
             characteristicString = @"5E05";
+            break;
+        case SLLockManagerCharacteristicSerialNumber:
+            characteristicString = @"5E83";
             break;
         default:
             break;
@@ -1141,6 +1146,15 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                         object:values];
 }
 
+- (void)handleReadSerialNumber:(NSString *)macAddress data:(NSData *)data
+{
+    char *bytes = (char *)data.bytes;
+    NSString *serialNumber = [NSString stringWithFormat:@"%s", bytes];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationLockManagerReadSerialNumber
+                                                        object:serialNumber];
+}
+
 - (void)readCommandStatusForMacAddress:(NSString *)macAddress
 {
     [self.bleManager readValueForPeripheralWithKey:macAddress
@@ -1184,7 +1198,7 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
     return names;
 }
 
-- (void)updateFirmware
+- (void)updateFirmwareForCurrentLock
 {
     [SLRestManager.sharedManager getRequestWithServerKey:SLRestManagerServerKeyMain
                                                  pathKey:SLRestManagerPathKeyFirmwareUpdate
@@ -1205,9 +1219,20 @@ typedef NS_ENUM(NSUInteger, SLLockManagerValueService) {
                                                       }
                                                       
                                                       
-                                                      //[self resetSeletedLockToBootMode];
+                                                      [self resetSeletedLockToBootMode];
                                                   }
                                               }];
+}
+
+- (void)readSerialNumberForCurrentLock
+{
+    if (!self.selectedLock) {
+        return;
+    }
+    
+    [self.bleManager readValueForPeripheralWithKey:self.selectedLock.macAddress
+                                    forServiceUUID:[self uuidForService:SLLockManagerServiceConfiguration]
+                             andCharacteristicUUID:[self uuidForCharacteristic:SLLockManagerCharacteristicSerialNumber]];
 }
 
 - (void)deleteLockFromCurrentUserAccountWithMacAddress:(NSString *)macAddress
@@ -1706,8 +1731,7 @@ discoveredCharacteristicsForService:(CBService *)service
                && [peripheralName.lowercaseString containsString:@"skyboot"])
     {
         self.isInBootMode = YES;
-        [self updateFirmware];
-        //[self handleLockResetWithAddress:peripheralName.macAddress success:YES];
+        [self handleLockResetWithAddress:peripheralName.macAddress success:YES];
     }
 }
 
@@ -1741,6 +1765,8 @@ discoveredCharacteristicsForService:(CBService *)service
         [self handleLockSequenceWriteForMacAddress:macAddress data:data];
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicCodeVersion]]) {
         [self handleReadFirmwareVersion:macAddress data:data];
+    } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicSerialNumber]]) {
+        [self handleReadSerialNumber:macAddress data:data];
     }
 }
 
@@ -1769,7 +1795,7 @@ wroteValueToPeripheralNamed:(NSString *)peripheralName
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicFirmwareUpdateDone]]) {
         self.isInBootMode = NO;
     } else if ([uuid isEqualToString:[self uuidForCharacteristic:SLLockManagerCharacteristicTXPowerControl]]) {
-        
+        NSLog(@"Turned power up %@", success ? @"successfully" : @"unseccessfully");
     }
 }
 
