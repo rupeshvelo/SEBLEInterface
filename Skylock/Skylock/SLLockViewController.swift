@@ -551,7 +551,9 @@ SLLockBarViewControllerDelegate
                         width: self.view.bounds.size.width,
                         height: height
                     )}, completion:{(success) in
-                        self.lockBarViewController!.setUpViews()
+                        if let lbvc = self.lockBarViewController {
+                            lbvc.setUpViews()
+                        }
                     }
                 )
             }

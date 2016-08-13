@@ -61,7 +61,6 @@ SLLabelAndSwitchCellDelegate
     }
     
     deinit {
-        print("doing the deinit thing")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -153,10 +152,14 @@ SLLabelAndSwitchCellDelegate
             return
         }
         
-        print("There are \(firmwareValues.count) firmware values")
         self.firmwareVersion = ""
+        print(firmwareValues.description)
         for i in start..<firmwareValues.count {
-            self.firmwareVersion += String(firmwareValues[i])
+            let value = firmwareValues[i]
+            if value.intValue != 0 {
+                self.firmwareVersion += String(value)
+            }
+            
             if i == start + 1 {
                 self.firmwareVersion += "."
             }
@@ -195,22 +198,27 @@ SLLabelAndSwitchCellDelegate
             let leftText:String
             var rightText:String?
             let leftTextColor = UIColor(red: 157, green: 161, blue: 167)
-            let rightTextColor = indexPath.row == 1  ? UIColor(red: 140, green: 140, blue: 140) :
+            let rightTextColor = (indexPath.row == 1 || indexPath.row == 2)  ? UIColor(red: 140, green: 140, blue: 140) :
                 UIColor(red: 69, green: 217, blue: 255)
+            let showArrow:Bool
             
             if indexPath.row == 0 {
                 leftText = NSLocalizedString("Lock name", comment: "")
                 rightText = self.lock?.displayName()
+                showArrow = true
             } else if indexPath.row == 1 {
                 let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
                 leftText = NSLocalizedString("Registered owner", comment: "")
                 rightText = dbManager.currentUser.fullName()
+                showArrow = false
             } else if indexPath.row == 2 {
                 leftText = NSLocalizedString("Serial number", comment: "")
                 rightText = self.serialNumber
+                showArrow = false
             } else {
                 leftText = NSLocalizedString("Firmware", comment: "")
-                rightText = self.firmwareVersion + " " + NSLocalizedString("Update", comment: "")
+                rightText = self.firmwareVersion
+                showArrow = true
             }
             
             cellId = String(SLOpposingLabelsTableViewCell)
@@ -221,7 +229,7 @@ SLLabelAndSwitchCellDelegate
             }
             
             cell?.isEditable = false
-            cell?.showArrow = indexPath.row != 1 || indexPath.row != 2
+            cell?.showArrow = showArrow
             cell?.setProperties(
                 leftText,
                 rightLabelText: rightText,
@@ -296,7 +304,7 @@ SLLabelAndSwitchCellDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let lock = self.lock {
             if indexPath.section == 0 {
-                if indexPath.row == 2 {
+                if indexPath.row == 3 {
                     let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
                     self.presentViewController(fuvc, animated: true, completion: nil)
                 }

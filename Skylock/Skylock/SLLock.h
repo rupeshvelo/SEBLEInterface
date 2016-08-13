@@ -38,7 +38,6 @@ typedef NS_ENUM(NSUInteger, SLLockParameterType) {
 @property (nonatomic, copy) NSNumber *rssiStrength;
 @property (nonatomic, copy) NSNumber *isLocked;
 @property (nonatomic, copy) NSNumber *temperature;
-
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 
 - (NSDictionary *)asDictionary;
@@ -53,6 +52,7 @@ typedef NS_ENUM(NSUInteger, SLLockParameterType) {
 - (void)switchLockNameToProvisioned;
 - (BOOL)isInBootMode;
 - (SLLockParameterRange)rangeForParameterType:(SLLockParameterType)type;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1,8 +1,8 @@
 //
 //  SLUser+CoreDataProperties.m
-//  Skylock
+//  Ellipse
 //
-//  Created by Andre Green on 7/24/16.
+//  Created by Andre Green on 8/12/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,18 +13,20 @@
 
 @implementation SLUser (CoreDataProperties)
 
+@dynamic areCrashAlertsOn;
+@dynamic areTheftAlertsOn;
 @dynamic email;
 @dynamic firstName;
 @dynamic googlePushId;
+@dynamic isAutoLockOn;
+@dynamic isAutoUnlockOn;
 @dynamic isCurrentUser;
 @dynamic lastName;
 @dynamic phoneNumber;
 @dynamic userId;
 @dynamic userType;
-@dynamic areCrashAlertsOn;
-@dynamic areTheftAlertsOn;
-@dynamic isAutoLockOn;
-@dynamic isAutoUnlockOn;
+@dynamic theftSensitivity;
+@dynamic crashMessage;
 @dynamic locks;
 
 @end
