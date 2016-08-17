@@ -19,3 +19,5 @@
 #import "SLEmergencyContact.h"
 #import "SLAccelerometerValues.h"
 #import "SLNotificationManager.h"
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SEBLEInterface/SEBLEPeripheral.h"
