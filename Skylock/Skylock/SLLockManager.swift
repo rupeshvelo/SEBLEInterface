@@ -8,9 +8,39 @@
 
 import UIKit
 
-class SLLockManger: NSObject, SEBLEInterfaceManagerDelegate {
+class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate {
     enum SLLockManagerState {
         case ActiveSearch
+    }
+    
+    private enum BLEService:String {
+        case Security = "5E00"
+        case Hardware = "5E40"
+        case Configuration = "5E80"
+        case Test = "5EC0"
+        case Boot = "5D00"
+    }
+    
+    private enum BLECharacteristic:String {
+        case LED = "5E41"
+        case Lock = "5E42"
+        case HardwareInfo = "5E43"
+        case Reserved = "5E44"
+        case TxPower = "5E45"
+        case Magnet = "5EC3"
+        case Accelerometer = "5E46"
+        case SignedMessage = "5E01"
+        case PublicKey = "5E02"
+        case ChallengeKey = "5E03"
+        case ChallegeData = "5E04"
+        case SecurityState = "5E05"
+        case CodeVersion = "5D01"
+        case WriteFirmware = "5D02"
+        case FirmwareUpdateDone = "5D04"
+        case ResetLock = "5E81"
+        case SerialNumber = "5E83"
+        case ButtonSequece = "5E84"
+        case CommandStatus = "5E05"
     }
     
     static let sharedManager = SLLockManager()
@@ -25,7 +55,19 @@ class SLLockManger: NSObject, SEBLEInterfaceManagerDelegate {
     }()
     
     func getCurrentLock() -> SLLock? {
-        let currentLock:SLLock = self.dbManager.currentLock
+        guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
+            return nil
+        }
+        
+        var currentLock:SLLock? = nil
+        for lock in locks {
+            if let isCurrentLock = lock.isCurrentLock where isCurrentLock.boolValue {
+                currentLock = lock
+                break
+            }
+        }
+        
+        return currentLock
     }
     
     // MARK: SEBLEInterfaceManager Delegate methods

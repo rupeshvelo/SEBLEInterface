@@ -4,9 +4,9 @@
 
 #import "SLLock.h"
 #import "SLRestManager.h"
+#import "SLDatabaseManager.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
-#import "SLLockManager.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import "SLLock.h"
 #import "SLAppDelegate.h"
