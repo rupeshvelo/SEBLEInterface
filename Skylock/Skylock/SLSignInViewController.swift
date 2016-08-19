@@ -123,7 +123,7 @@ class SLSignInViewController: UIViewController {
                 userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
                 
-                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+                let lockManager:SLLockManager = SLLockManager.sharedManager
                 if lockManager.hasLocksForCurrentUser() {
                     let lvc = SLLockViewController()
                     self.presentViewController(lvc, animated: true, completion: nil)

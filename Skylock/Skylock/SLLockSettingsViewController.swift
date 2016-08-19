@@ -108,9 +108,9 @@ SLLabelAndSwitchCellDelegate
             cell.selected = false
         }
         
-        if let lock = self.lock {
-            let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-            lockManager.readFirmwareDataForLockAddress(lock.macAddress)
+        if self.lock != nil {
+            let lockManager:SLLockManager = SLLockManager.sharedManager
+            lockManager.readFirmwareDataForCurrentLock()
             lockManager.readSerialNumberForCurrentLock()
         }
     }

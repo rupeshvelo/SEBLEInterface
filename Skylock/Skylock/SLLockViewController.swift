@@ -22,7 +22,7 @@ SLLockBarViewControllerDelegate
     
     var lock:SLLock?
     
-    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+    let lockManager:SLLockManager = SLLockManager.sharedManager
     
     let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
     
@@ -809,7 +809,7 @@ SLLockBarViewControllerDelegate
             lock.isLocked.boolValue ? .CounterClockwiseMoving : .ClockwiseMoving
         )
         
-        self.lockManager.setLockStateForLock(lock)
+        self.lockManager.setCurrentLockLockedOrUnlocked(!lock.isLocked.boolValue)
     }
     
     // MARK: SLNotificationViewControllerDelegate methods

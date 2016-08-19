@@ -50,7 +50,6 @@ typedef NS_ENUM(NSUInteger, SLLockParameterType) {
 - (CLLocationCoordinate2D)location;
 - (void)setCurrentLocation:(CLLocationCoordinate2D)location;
 - (void)switchLockNameToProvisioned;
-- (BOOL)isInBootMode;
 - (SLLockParameterRange)rangeForParameterType:(SLLockParameterType)type;
 
 @end

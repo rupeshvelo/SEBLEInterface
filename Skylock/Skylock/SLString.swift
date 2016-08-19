@@ -15,4 +15,18 @@ extension String {
         )
         return trimmedString
     }
+    
+    func macAddress() -> String? {
+        let hypenParts = self.componentsSeparatedByString("-")
+        if hypenParts.count == 2 {
+            return hypenParts[1]
+        }
+        
+        let spacedParts = self.componentsSeparatedByString(" ")
+        if spacedParts.count == 2 {
+            return spacedParts[1]
+        }
+        
+        return nil
+    }
 }

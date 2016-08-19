@@ -434,9 +434,8 @@ SLBoxTextFieldWithButtonDelegate
                     ud.setBool(true, forKey: "SLUserDefaultsSignedIn")
                     ud.synchronize()
                     
-                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
                     dispatch_async(dispatch_get_main_queue(), {
-                        if lockManager.hasLocksForCurrentUser() {
+                        if SLLockManager.sharedManager.hasLocksForCurrentUser() {
                             let lvc = SLLockViewController()
                             self.presentViewController(lvc, animated: true, completion: nil)
                         } else {
@@ -596,8 +595,7 @@ SLBoxTextFieldWithButtonDelegate
                 userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
                 
-                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-                if lockManager.hasLocksForCurrentUser() {
+                if SLLockManager.sharedManager.hasLocksForCurrentUser() {
                     let lvc = SLLockViewController()
                     self.presentViewController(lvc, animated: true, completion: nil)
                 } else {

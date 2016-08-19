@@ -129,10 +129,10 @@ class SLLockResetOrDeleteViewController: UIViewController {
     }
     
     func affirmativeButtonPressed() {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        let lockManager = SLLockManager.sharedManager
         switch self.type {
         case .Delete:
-            lockManager.deleteLockFromCurrentUserAccountWithMacAddress(self.lock.macAddress)
+            lockManager.deleteLockFromCurrentUserAccountWithMacAddress(self.lock.macAddress!)
         case .Reset:
             lockManager.factoryResetCurrentLock()
         }

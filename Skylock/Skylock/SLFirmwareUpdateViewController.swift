@@ -145,8 +145,7 @@ class SLFirmwareUpdateViewController: UIViewController {
         self.updateLaterButton.enabled = false
         self.stage = .InProgress
         self.updateLabel.text = self.updateText[self.stage]
-        let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-        lockManager.updateFirmwareForCurrentLock()
+        SLLockManager.sharedManager.updateFirmwareForCurrentLock()
     }
     
     func updateFirmware(notification: NSNotification) {

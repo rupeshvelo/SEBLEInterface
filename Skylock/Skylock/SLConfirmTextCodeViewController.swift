@@ -208,9 +208,8 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
                 userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
                 
-                let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-                dispatch_async(dispatch_get_main_queue(), { 
-                    if lockManager.hasLocksForCurrentUser() {
+                dispatch_async(dispatch_get_main_queue(), {
+                    if SLLockManager.sharedManager.hasLocksForCurrentUser() {
                         let lvc = SLLockViewController()
                         self.presentViewController(lvc, animated: true, completion: nil)
                     } else {

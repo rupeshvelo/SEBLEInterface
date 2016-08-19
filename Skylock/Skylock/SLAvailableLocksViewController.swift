@@ -42,33 +42,26 @@ import UIKit
         
         self.navigationItem.hidesBackButton = self.hideBackButton
         
-        let lockManager = SLLockManager.sharedManager()
-        if lockManager.isBlePoweredOn() && !lockManager.isScanning() {
-            lockManager.shouldEnterActiveSearchMode(true)
-            lockManager.startScan()
+        let lockManager = SLLockManager.sharedManager
+        if lockManager.isBlePoweredOn() && !lockManager.isInActiveSearch() {
+            lockManager.startActiveSearch()
         }
         
-        if let currentLock = lockManager.getCurrentLock() {
-            lockManager.disconnectFromLockWithAddress(currentLock.macAddress)
-        }
-        
-        if let availableLocks = lockManager.locksDiscoveredInSearch() as? [SLLock] {
-            for lock in availableLocks {
-                var addLock = true
-                for listedLock in self.locks {
-                    if lock.macAddress == listedLock.macAddress {
-                        addLock = false
-                        break
-                    }
-                }
-                
-                if addLock {
-                    self.locks.append(lock)
+        for lock in lockManager.availableUnconnectedLocks() {
+            var addLock = true
+            for listedLock in self.locks {
+                if lock.macAddress == listedLock.macAddress {
+                    addLock = false
+                    break
                 }
             }
             
-            self.tableView.reloadData()
+            if addLock {
+                self.locks.append(lock)
+            }
         }
+        
+        self.tableView.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -137,9 +130,8 @@ import UIKit
     }
     
     func bleHardwarePoweredOn(notificaiton: NSNotification) {
-        let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterActiveSearchMode(true)
-        lockManager.startScan()
+        let lockManager = SLLockManager.sharedManager
+        lockManager.startActiveSearch()
     }
     
     func blinkLockButtonPressed(button: UIButton) {
@@ -152,8 +144,7 @@ import UIKit
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
-                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-                    lockManager.flashLEDsForLock(lock)
+                    SLLockManager.sharedManager.flashLEDsForLock(lock)
                     break
                 }
             }
@@ -172,8 +163,7 @@ import UIKit
                     let ccvc = SLConcentricCirclesViewController()
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     
-                    let lockManager = SLLockManager.sharedManager()
-                    lockManager.connectToLockWithName(lock.name)
+                    SLLockManager.sharedManager.connectToLockWithMacAddress(lock.macAddress!)
                     break
                 }
             }

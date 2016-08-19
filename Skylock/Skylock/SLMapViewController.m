@@ -8,7 +8,6 @@
 
 #import "SLMapViewController.h"
 #import "SLConstants.h"
-#import "SLLockManager.h"
 #import "SLUserDefaults.h"
 #import <QuartzCore/QuartzCore.h>
 #import "SLDatabaseManager.h"
@@ -132,7 +131,9 @@
     [SLDatabaseManager.sharedManager setCurrentUser];
     
     self.lockMarkers = [NSMutableDictionary new];
-    self.locks = [NSMutableArray arrayWithArray:[SLLockManager.sharedManager allLocksForCurrentUser]];
+    
+    NSArray *previouslyConnectedLocks = [[SLLockManager sharedManager] allPreviouslyConnectedLocksForCurrentUser];
+    self.locks = [NSMutableArray arrayWithArray: previouslyConnectedLocks];
 
     
     self.isInitialLoad = YES;

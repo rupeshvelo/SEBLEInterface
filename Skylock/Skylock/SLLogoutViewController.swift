@@ -116,10 +116,10 @@ class SLLogoutViewController: UIViewController {
             ud.setBool(false, forKey: SLUserDefaultsSignedIn)
             ud.synchronize()
             
-            let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-            if let lock:SLLock = lockManager.getCurrentLock() {
+            let lockManager:SLLockManager = SLLockManager.sharedManager
+            if let lock:SLLock = lockManager.getCurrentLock(), let macAddress = lock.macAddress {
                 lock.isCurrentLock = NSNumber(bool: false)
-                lockManager.disconnectFromLockWithAddress(lock.macAddress)
+                lockManager.disconnectFromLockWithMacAddress(macAddress)
             }
             
             user.isCurrentUser = NSNumber(bool: false)

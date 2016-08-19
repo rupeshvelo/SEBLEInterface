@@ -202,13 +202,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     func savePinButtonPressed() {
-        let lockManager = SLLockManager.sharedManager()
-        let lock = lockManager.getCurrentLock()
-        lockManager.writeTouchPadButtonPushes(
-            &self.pushes,
-            size: Int32(self.pushes.count),
-            lock:lock
-        )
+        SLLockManager.sharedManager.writeTouchPadButtonPushes(self.pushes)
     }
     
     func numberAndImageNameForTouchPadLocation(location: SLTouchPadLocation) -> [UInt8:String] {

@@ -138,7 +138,7 @@ class SLLockBarViewController: UIViewController {
     }
     
     func setUpViews() {
-        self.lock = SLLockManager.sharedManager().getCurrentLock()
+        self.lock = SLLockManager.sharedManager.getCurrentLock()
         
         if !self.view.subviews.contains(self.lockNameLabel) {
             self.view.addSubview(self.lockNameLabel)
@@ -257,7 +257,7 @@ class SLLockBarViewController: UIViewController {
     }
     
     @objc private func lockPaired(notification: NSNotification) {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        let lockManager = SLLockManager.sharedManager
         if let lock:SLLock = lockManager.getCurrentLock() {
             self.lock = lock
             lockManager.checkLockOpenOrClosed()

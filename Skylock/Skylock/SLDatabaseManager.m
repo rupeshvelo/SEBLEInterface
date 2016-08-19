@@ -69,6 +69,8 @@
         lock.uuid = uuid;
         lock.macAddress = name.macAddress;
         lock.isShallowConnection = @(NO);
+        lock.isDetected = @(NO);
+        lock.isCurrentLock = @(NO);
     }
     
     return lock;
@@ -377,7 +379,7 @@
     NSError *error = nil;
     BOOL success = [self.context save:&error];
     if (success) {
-        NSLog(@"saved lock: %@ to db", lock.name);
+        NSLog(@"saved lock: %@ to db", lock.description);
     } else {
         NSLog(@"Failed to save lock %@ to db with error: %@",
               lock.name,
