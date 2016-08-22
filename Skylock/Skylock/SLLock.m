@@ -136,7 +136,6 @@
     if (dictionary[@"isCurrentLock"]) {
         self.isCurrentLock = dictionary[@"isCurrentLock"];
     }
-    
 }
 
 
