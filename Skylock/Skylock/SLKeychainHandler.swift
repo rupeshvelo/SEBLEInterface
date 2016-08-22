@@ -37,30 +37,40 @@ import Security
     private let prefix = "skylock."
     
     
-    @objc public func getItemForUsername(userName: String, additionalSeviceInfo: String?, handlerCase: SLKeychainHandlerCase) -> String? {
+    @objc public func getItemForUsername(
+        userName: String,
+        additionalSeviceInfo: String?,
+        handlerCase: SLKeychainHandlerCase
+        ) -> String?
+    {
         let service:String = self.getService(additionalSeviceInfo, handlerCase: handlerCase)
         return self.get(userName, service: service)
     }
     
-    @objc public func setItemForUsername(userName: String, inputValue: String, additionalSeviceInfo: String?, handlerCase: SLKeychainHandlerCase) {
+    @objc public func setItemForUsername(
+        userName: String,
+        inputValue: String,
+        additionalSeviceInfo: String?,
+        handlerCase: SLKeychainHandlerCase
+        )
+    {
         let service:String = self.getService(additionalSeviceInfo, handlerCase: handlerCase)
         self.save(userName, service: service, value: inputValue)
     }
     
-    @objc public func deleteItemForUsername(userName: String, additionalServiceInfo: String?, handlerCase: SLKeychainHandlerCase) -> Bool {
-        let service = self.stringForHandlerCase(handlerCase)
-        let keychainQuery:[String:AnyObject] = [
-            kSecClassValue: kSecClassGenericPasswordValue,
-            kSecAttrServiceValue: service,
-            kSecAttrAccountValue: userName,
-        ]
+    @objc public func deleteItemForUsername(
+        userName: String,
+        additionalServiceInfo: String?,
+        handlerCase: SLKeychainHandlerCase) -> Bool
+    {
         
-        return SecItemDelete(keychainQuery as CFDictionaryRef) == errSecSuccess
+        let service:String = self.getService(additionalServiceInfo, handlerCase: handlerCase)
+        return self.delete(userName, service: service)
     }
     
-    private func getService(additionaServiceInfo: String?, handlerCase: SLKeychainHandlerCase) -> String {
+    private func getService(additionalServiceInfo: String?, handlerCase: SLKeychainHandlerCase) -> String {
         var key:String = self.stringForHandlerCase(handlerCase)
-        if let addServiceInfo = additionaServiceInfo {
+        if let addServiceInfo = additionalServiceInfo {
             key += ".\(addServiceInfo)"
         }
         
@@ -84,6 +94,27 @@ import Security
         
         let status: OSStatus = SecItemAdd(keychainQuery as CFDictionaryRef, nil)
         print("saved item to key chain with status \(status)")
+    }
+    
+    private func delete(userName: String, service: String) -> Bool {
+        guard let value = self.get(userName, service: service) else {
+            print("Keychain cannot remove matching value for \(userName)'s service \(service). It does not exist")
+            return true
+        }
+        
+        guard let data:NSData = value.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) else {
+            print("Error: cannot encode string in SLKeychainHanlder delete item for username method")
+            return false;
+        }
+        
+        let keychainQuery:[String:AnyObject] = [
+            kSecClassValue: kSecClassGenericPasswordValue,
+            kSecAttrServiceValue: service,
+            kSecAttrAccountValue: userName,
+            kSecValueDataValue: data
+        ]
+        
+        return SecItemDelete(keychainQuery as CFDictionaryRef) == errSecSuccess
     }
     
     private func get(userName: String, service: String) -> String? {

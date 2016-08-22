@@ -29,6 +29,13 @@ typedef NS_ENUM(NSUInteger, SLLockParameterType) {
     SLLockParameterTypeRSSI
 };
 
+typedef NS_ENUM(NSUInteger, SLLockPosition) {
+    SLLockPositionUnlocked = 0,
+    SLLockPositionLocked = 1,
+    SLLockPositionMiddle = 2,
+    SLLockPositionInvalid = 3
+};
+
 @property (nonatomic, copy) NSNumber * isShallowConnection;
 @property (nonatomic, copy) NSNumber *batteryVoltage;
 @property (nonatomic, copy) NSNumber *wifiStrength;
@@ -36,7 +43,6 @@ typedef NS_ENUM(NSUInteger, SLLockParameterType) {
 @property (nonatomic, copy) NSNumber *lastTime;
 @property (nonatomic, copy) NSNumber *distanceAway;
 @property (nonatomic, copy) NSNumber *rssiStrength;
-@property (nonatomic, copy) NSNumber *isLocked;
 @property (nonatomic, copy) NSNumber *temperature;
 @property (nonatomic, strong) SLAccelerometerValues *accelerometerVales;
 

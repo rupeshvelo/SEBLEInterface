@@ -141,7 +141,7 @@ SLLockBarViewControllerDelegate
     }()
     
     lazy var batteryView:UIImageView = {
-        let image:UIImage = UIImage(named: "battery0")!
+        let image:UIImage = UIImage(named: "battery4")!
         let frame = CGRect(
             x: CGRectGetMaxX(self.underLineView.frame) - image.size.width,
             y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
@@ -156,7 +156,7 @@ SLLockBarViewControllerDelegate
     }()
     
     lazy var rssiView:UIImageView = {
-        let image:UIImage = UIImage(named: "rssi0")!
+        let image:UIImage = UIImage(named: "rssi4")!
         let frame = CGRect(
             x: CGRectGetMinX(self.batteryView.frame) - image.size.width - 20.0,
             y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
@@ -289,7 +289,7 @@ SLLockBarViewControllerDelegate
         super.viewWillAppear(animated)
         
         
-        self.lockManager.checkLockOpenOrClosed()
+        self.lockManager.checkCurrentLockOpenOrClosed()
         self.showAcceptNotificaitonViewController()
         
         if !self.view.subviews.contains(self.thinkerViewController.view) {
@@ -316,17 +316,18 @@ SLLockBarViewControllerDelegate
     }
     
     func registerForNotifications() {
+        // TODO: Get UI to handle the case where the lock position is invalid or middle.
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
-            name: kSLNotificationLockOpened,
+            name: kSLNotificationLockPositionOpen,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockLocked(_:)),
-            name: kSLNotificationLockClosed,
+            name: kSLNotificationLockPositionLocked,
             object: nil
         )
         
@@ -479,16 +480,12 @@ SLLockBarViewControllerDelegate
     
     func lockOpened(notification: NSNotification) {
         self.thinkerViewController.setState(.CounterClockwiseStill)
-        if let lock = self.lock {
-            lock.isLocked = NSNumber(bool: false)
-        }
     }
     
     func lockLocked(notification: NSNotification) {
         self.thinkerViewController.setState(.ClockwiseStill)
         if let lock = self.lock {
             let user:SLUser = self.databaseManager.currentUser
-            lock.isLocked = NSNumber(bool: true)
             lock.setCurrentLocation(user.location)
             //lock.setCurrentLocation(CLLocationCoordinate2DMake(37.345253, -120.585895))
             self.databaseManager.saveLock(lock)
@@ -505,7 +502,7 @@ SLLockBarViewControllerDelegate
             self.lock = lock
             self.lockNameLabel.text = lock.displayName()
             self.lockNameLabel.setNeedsDisplay()
-            self.lockManager.checkLockOpenOrClosed()
+            self.lockManager.checkCurrentLockOpenOrClosed()
             self.lockNameLabel.textColor = UIColor.whiteColor()
             self.toggleViewsHiddenOnConnction(true)
         }
@@ -579,6 +576,8 @@ SLLockBarViewControllerDelegate
             dispatch_async(dispatch_get_main_queue(), { 
                 self.batteryView.image = self.batteryImageForCurrentLock()
                 self.rssiView.image = self.rssiImageForCurrentLock()
+                self.batteryView.setNeedsDisplay()
+                self.rssiView.setNeedsDisplay()
             })
         }
     }
@@ -801,15 +800,21 @@ SLLockBarViewControllerDelegate
     
     // MARK: SLThinkerViewControllerDelegate methods
     func thinkerViewTapped(tvc: SLThinkerViewController) {
-        guard let lock = self.lock else {
+        guard let lockPosition = self.lock?.lockPosition else {
+            print("Error: could not get lock position when thinker view was tapped.")
             return
         }
         
-        self.thinkerViewController.setState(
-            lock.isLocked.boolValue ? .CounterClockwiseMoving : .ClockwiseMoving
-        )
+        guard let position = SLLockPosition(rawValue: lockPosition.unsignedIntegerValue) else {
+            print(
+                "Error: could not get lock position when thinker view was tapped. "
+                + "The value is outside SLLockPosition enum values"
+            )
+            return
+        }
         
-        self.lockManager.setCurrentLockLockedOrUnlocked(!lock.isLocked.boolValue)
+        self.thinkerViewController.setState(position == .Locked ? .CounterClockwiseMoving : .ClockwiseMoving)
+        self.lockManager.toggleLockOpenedClosedShouldLock(position != .Locked)
     }
     
     // MARK: SLNotificationViewControllerDelegate methods

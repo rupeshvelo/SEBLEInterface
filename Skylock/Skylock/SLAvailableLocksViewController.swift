@@ -40,7 +40,14 @@ import UIKit
         
         self.view.addSubview(self.tableView)
         
-        self.navigationItem.hidesBackButton = self.hideBackButton
+        let backButton = UIBarButtonItem(
+            image: UIImage(named: "lock_screen_close_icon"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: #selector(backButtonPressed)
+        )
+        //self.navigationItem.hidesBackButton = self.hideBackButton
+        self.navigationItem.leftBarButtonItem = backButton
         
         let lockManager = SLLockManager.sharedManager
         if lockManager.isBlePoweredOn() && !lockManager.isInActiveSearch() {
@@ -74,13 +81,6 @@ import UIKit
             self, selector:
             #selector(lockShallowlyConntected(_:)),
             name: kSLNotificationLockManagerShallowlyConnectedLock,
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(hardwareServiceFoundForLock(_:)),
-            name: kSLNotificationHardwareServiceFound,
             object: nil
         )
         
@@ -121,34 +121,26 @@ import UIKit
         }
     }
     
-    func hardwareServiceFoundForLock(notification: NSNotification) {
-        guard let macAddress = notification.object as? String else {
-            return
-        }
-        
-        print("hardware service for \(macAddress) found")
-    }
-    
     func bleHardwarePoweredOn(notificaiton: NSNotification) {
         let lockManager = SLLockManager.sharedManager
         lockManager.startActiveSearch()
     }
     
     func blinkLockButtonPressed(button: UIButton) {
-        for (i, lock) in self.locks.enumerate() {
-            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-            print("\(cell.textLabel?.text!)")
-            
-            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
-                let accessoryButtonTag = accessoryButton.tag
-                let buttonTag = button.tag
-                if accessoryButtonTag == buttonTag {
-                    SLLockManager.sharedManager.flashLEDsForLock(lock)
-                    break
-                }
-            }
-        }
+//        for (i, lock) in self.locks.enumerate() {
+//            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
+//            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+//            print("\(cell.textLabel?.text!)")
+//            
+//            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+//                let accessoryButtonTag = accessoryButton.tag
+//                let buttonTag = button.tag
+//                if accessoryButtonTag == buttonTag {
+//                    SLLockManager.sharedManager.flashLEDsForLock(lock)
+//                    break
+//                }
+//            }
+//        }
     }
     
     func connectButtonPressed(button: UIButton) {
@@ -167,6 +159,14 @@ import UIKit
                     break
                 }
             }
+        }
+    }
+    
+    func backButtonPressed() {
+        if self.navigationController?.viewControllers.first == self {
+            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.navigationController?.popViewControllerAnimated(true)
         }
     }
     

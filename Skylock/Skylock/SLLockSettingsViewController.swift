@@ -80,7 +80,7 @@ SLLabelAndSwitchCellDelegate
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(userResestLock(_:)),
+            selector: #selector(userDeletedLock(_:)),
             name: kSLNotificationRemoveLockForUser,
             object: nil
         )
@@ -133,7 +133,7 @@ SLLabelAndSwitchCellDelegate
         return value
     }
     
-    func userResestLock(notification: NSNotification) {
+    func userDeletedLock(notification: NSNotification) {
         self.lock = nil
         self.tableView.reloadData()
     }

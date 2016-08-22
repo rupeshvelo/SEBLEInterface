@@ -21,3 +21,4 @@
 #import "SLNotificationManager.h"
 #import "SEBLEInterface/SEBLEInterfaceManager.h"
 #import "SEBLEInterface/SEBLEPeripheral.h"
+#import "SLCryptoHandler.h"

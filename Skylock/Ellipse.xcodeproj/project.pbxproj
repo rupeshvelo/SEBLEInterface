@@ -84,6 +84,7 @@
 		652306D51D5A22BC00091873 /* rssi4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B11D5A22BC00091873 /* rssi4@3x.png */; };
 		652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B21D5A22BC00091873 /* temp_phone_info@2x.png */; };
 		652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B31D5A22BC00091873 /* temp_phone_info@3x.png */; };
+		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
 		65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */; };
 		65D9DA911D5E9E3400A909AA /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */; };
 		65D9DA931D625E7400A909AA /* SLLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA921D625E7400A909AA /* SLLockManager.swift */; };
@@ -481,6 +482,8 @@
 		652306B11D5A22BC00091873 /* rssi4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rssi4@3x.png"; sourceTree = "<group>"; };
 		652306B21D5A22BC00091873 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
 		652306B31D5A22BC00091873 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
+		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
+		65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCryptoHandler.m; sourceTree = "<group>"; };
 		65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchSliderViewController.swift; sourceTree = "<group>"; };
 		65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
 		65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
@@ -951,6 +954,8 @@
 			children = (
 				DC0250151C81F00A00208508 /* SLUserHandler.swift */,
 				DCCB81B01CB7356C00800E3F /* SLContactHandler.swift */,
+				65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */,
+				65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */,
 			);
 			name = handlers;
 			sourceTree = "<group>";
@@ -1948,6 +1953,7 @@
 				DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */,
 				DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */,
 				DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */,
+				65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */,
 				DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */,
 				DCE6071B1D10879D0034D0B3 /* SLLocationManager.swift in Sources */,
 				DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */,
