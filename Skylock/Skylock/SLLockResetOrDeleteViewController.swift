@@ -123,7 +123,7 @@ class SLLockResetOrDeleteViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(handleLockRemoved(_:)),
-            name: kSLNotificationLockManagerDisconnectedLock,
+            name: kSLNotificationLockManagerDeletedLock,
             object: nil
         )
     }

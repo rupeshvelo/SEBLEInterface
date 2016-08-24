@@ -7,8 +7,8 @@
 //
 
 protocol SLWarningViewControllerDelegate:class {
-    func takeActionButtonPressed(wvc: SLWarningViewController)
-    func cancelActionButtonPressed(wvc: SLWarningViewController)
+    func warningVCTakeActionButtonPressed(wvc: SLWarningViewController)
+    func warningVCCancelActionButtonPressed(wvc: SLWarningViewController)
 }
 
 class SLWarningViewController: UIViewController {
@@ -18,7 +18,7 @@ class SLWarningViewController: UIViewController {
     
     private let cancelButtonTitle:String
     
-    private let actionButtonTitle:String
+    private let actionButtonTitle:String?
     
     private let padding:CGFloat = 10.0
     
@@ -26,24 +26,8 @@ class SLWarningViewController: UIViewController {
     
     weak var delegate:SLWarningViewControllerDelegate?
     
-    private lazy var alertView:UIView = {
-        let width:CGFloat = 228.0
-        let height:CGFloat = 212.0
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - width),
-            0.5*(self.view.bounds.size.height - height),
-            width,
-            height
-        )
-        
-        let view:UIView = UIView(frame: frame)
-        view.backgroundColor = SLUtilities().color(.Color255_255_255)
-        
-        return view
-    }()
-    
     private lazy var headerLabel:UILabel = {
-        let labelWidth = self.alertView.bounds.size.width - 2*self.padding
+        let labelWidth = self.view.bounds.size.width - 2*self.padding
         let height:CGFloat = 24.0
         let frame = CGRectMake(self.padding, 25.0, labelWidth, height)
         
@@ -57,7 +41,7 @@ class SLWarningViewController: UIViewController {
     }()
     
     private lazy var infoLabel:UILabel = {
-        let labelWidth = self.alertView.bounds.size.width - 2*self.padding
+        let labelWidth = self.view.bounds.size.width - 2*self.padding
         let utility = SLUtilities()
         let font = UIFont.systemFontOfSize(10.0)
         let text = self.infoText
@@ -70,7 +54,7 @@ class SLWarningViewController: UIViewController {
         )
         
         let frame = CGRectMake(
-            0.5*(self.alertView.bounds.size.width - labelSize.width),
+            0.5*(self.view.bounds.size.width - labelSize.width),
             CGRectGetMaxY(self.headerLabel.frame) + 15.0,
             labelSize.width,
             labelSize.height
@@ -87,10 +71,16 @@ class SLWarningViewController: UIViewController {
     }()
     
     private lazy var cancelButton:UIButton = {
-        let width = 0.5*(self.alertView.bounds.size.width - self.buttonSpacer) - self.padding
+        let width = self.actionButtonTitle == nil ? self.view.bounds.size.width - 2.0*self.padding
+            : 0.5*(self.view.bounds.size.width - self.buttonSpacer) - self.padding
         let height:CGFloat = 45.0
         let util = SLUtilities()
-        let frame = CGRectMake(self.padding, self.alertView.bounds.size.height - self.padding - height, width, height)
+        let frame = CGRectMake(
+            self.padding,
+            self.view.bounds.size.height - self.padding - height,
+            width,
+            height
+        )
         
         let button:UIButton = UIButton(type: .System)
         button.frame = frame
@@ -107,8 +97,8 @@ class SLWarningViewController: UIViewController {
         let height:CGFloat = 45.0
         let util = SLUtilities()
         let frame = CGRectMake(
-            self.alertView.bounds.size.width - self.padding - width,
-            self.alertView.bounds.size.height - self.padding - height,
+            self.view.bounds.size.width - self.padding - width,
+            self.view.bounds.size.height - self.padding - height,
             width,
             height
         )
@@ -123,7 +113,7 @@ class SLWarningViewController: UIViewController {
         return button
     }()
     
-    init(headerText: String, infoText:String, cancelButtonTitle: String, actionButtonTitle: String) {
+    init(headerText: String, infoText:String, cancelButtonTitle: String, actionButtonTitle: String?) {
         self.headerText = headerText
         self.infoText = infoText
         self.cancelButtonTitle = cancelButtonTitle
@@ -136,25 +126,34 @@ class SLWarningViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.5)
+        self.view.backgroundColor = UIColor.whiteColor()
         
-        if !self.view.subviews.contains(self.alertView) {
-            self.view.addSubview(self.alertView)
-            self.alertView.addSubview(self.headerLabel)
-            self.alertView.addSubview(self.infoLabel)
-            self.alertView.addSubview(self.cancelButton)
-            self.alertView.addSubview(self.actionButton)
+        if !self.view.subviews.contains(self.headerLabel) {
+            self.view.addSubview(self.headerLabel)
+        }
+        
+        if !self.view.subviews.contains(self.infoLabel) {
+            self.view.addSubview(self.infoLabel)
+        }
+        
+        if !self.view.subviews.contains(self.cancelButton) {
+            self.view.addSubview(self.cancelButton)
+        }
+        
+        if !self.view.subviews.contains(self.actionButton) && self.actionButtonTitle != nil {
+            self.view.addSubview(self.actionButton)
         }
     }
     
     func cancelButtonPressed() {
-        self.delegate?.cancelActionButtonPressed(self)
+        self.delegate?.warningVCCancelActionButtonPressed(self)
     }
     
     func actionButtonPressed() {
-        self.delegate?.takeActionButtonPressed(self)
+        self.delegate?.warningVCTakeActionButtonPressed(self)
     }
 }

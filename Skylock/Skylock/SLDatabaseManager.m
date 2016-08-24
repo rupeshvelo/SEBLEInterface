@@ -73,6 +73,9 @@
         lock.isCurrentLock = @(NO);
     }
     
+    [self saveLock:lock];
+    NSLog(@"lock: %@", lock.description);
+    
     return lock;
 }
 

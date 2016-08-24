@@ -2,7 +2,7 @@
 //  SLLock+CoreDataProperties.h
 //  Ellipse
 //
-//  Created by Andre Green on 8/21/16.
+//  Created by Andre Green on 8/23/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -24,11 +24,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *isSetForDeletion;
 @property (nullable, nonatomic, retain) NSDate *lastConnected;
 @property (nullable, nonatomic, retain) NSNumber *latitude;
+@property (nullable, nonatomic, retain) NSNumber *lockPosition;
 @property (nullable, nonatomic, retain) NSNumber *longitude;
 @property (nullable, nonatomic, retain) NSString *macAddress;
 @property (nullable, nonatomic, retain) NSString *name;
 @property (nullable, nonatomic, retain) NSString *uuid;
-@property (nullable, nonatomic, retain) NSNumber *lockPosition;
+@property (nullable, nonatomic, retain) NSNumber *isConnecting;
 @property (nullable, nonatomic, retain) NSSet<SLDbLockSharedContact *> *sharedContacts;
 @property (nullable, nonatomic, retain) SLUser *user;
 

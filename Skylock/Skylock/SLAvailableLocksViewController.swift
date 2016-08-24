@@ -46,7 +46,7 @@ import UIKit
             target: self,
             action: #selector(backButtonPressed)
         )
-        //self.navigationItem.hidesBackButton = self.hideBackButton
+
         self.navigationItem.leftBarButtonItem = backButton
         
         let lockManager = SLLockManager.sharedManager
@@ -54,7 +54,7 @@ import UIKit
             lockManager.startActiveSearch()
         }
         
-        for lock in lockManager.availableUnconnectedLocks() {
+        for lock in lockManager.locksInActiveSearch() {
             var addLock = true
             for listedLock in self.locks {
                 if lock.macAddress == listedLock.macAddress {
@@ -94,13 +94,11 @@ import UIKit
     
     func foundLock(notification: NSNotification) {
         guard let lock = notification.object as? SLLock else {
+            print("Error: found lock but it was not included in notification")
             return
         }
         
         self.locks.append(lock)
-        
-//        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-//        lockManager.shallowConnectLock(lock)
         
         let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
         self.tableView.beginUpdates()
@@ -151,11 +149,23 @@ import UIKit
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
+                let hasConnected = lock.hasConnected!.boolValue
                 if accessoryButtonTag == buttonTag {
                     let ccvc = SLConcentricCirclesViewController()
-                    self.navigationController?.pushViewController(ccvc, animated: true)
+                    ccvc.onExit = {
+                        if hasConnected {
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        } else {
+                            let psvc = SLPairingSuccessViewController()
+                            self.navigationController?.pushViewController(psvc, animated: true)
+                        }
+                    }
                     
-                    SLLockManager.sharedManager.connectToLockWithMacAddress(lock.macAddress!)
+                    self.navigationController?.pushViewController(ccvc, animated: true)
+                    let lockManager = SLLockManager.sharedManager
+                    lockManager.connectToLockWithMacAddress(lock.macAddress!)
+                    lockManager.endActiveSearch()
+                    lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
                     break
                 }
             }
@@ -168,6 +178,10 @@ import UIKit
         } else {
             self.navigationController?.popViewControllerAnimated(true)
         }
+        
+        let lockManager = SLLockManager.sharedManager
+        lockManager.endActiveSearch()
+        lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
     }
     
     func enableButtonAtIndex(index: Int) {

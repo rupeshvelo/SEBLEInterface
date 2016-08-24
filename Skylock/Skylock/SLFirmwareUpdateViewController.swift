@@ -10,18 +10,22 @@ import UIKit
 enum SLFirmwareUpdateStage {
     case Available
     case InProgress
+    case Finished
 }
 
-class SLFirmwareUpdateViewController: UIViewController {
+class SLFirmwareUpdateViewController: UIViewController, SLWarningViewControllerDelegate {
     let xPadding:CGFloat = 25.0
     
     let buttonHeight:CGFloat = 55.0
+    
+    let backgroundViewTag:Int = 1056
     
     var stage:SLFirmwareUpdateStage = .Available
     
     let updateText:[SLFirmwareUpdateStage:String] = [
         .Available: NSLocalizedString("Frimware update available", comment: ""),
-        .InProgress: NSLocalizedString("Firmware update in progress", comment: "")
+        .InProgress: NSLocalizedString("Firmware update in progress", comment: ""),
+        .Finished: NSLocalizedString("All Done! Restarting your Ellipse...", comment: "")
     ]
     
     // This should be passed in in the initialzer once it is implemnted on the server
@@ -30,7 +34,7 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var updateLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
-            y: 40.0,
+            y: 100.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 17.0
         )
@@ -46,9 +50,9 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var progressLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.updateLabel.frame) + 40.0,
+            y: CGRectGetMaxY(self.updateLabel.frame) + 20.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
-            height: 13.0
+            height: 17.0
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -63,12 +67,14 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var progressBar:SLFirmwareUpdateProgressBarView = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.progressLabel.frame) + 20.0,
+            y: CGRectGetMaxY(self.progressLabel.frame) + 5.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 10.0
         )
         
         let bar:SLFirmwareUpdateProgressBarView = SLFirmwareUpdateProgressBarView(frame: frame)
+        bar.hidden = true
+        
         return bar
     }()
     
@@ -108,6 +114,9 @@ class SLFirmwareUpdateViewController: UIViewController {
         return button
     }()
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -125,6 +134,31 @@ class SLFirmwareUpdateViewController: UIViewController {
             name: kSLNotificationLockManagerFirmwareUpdateState,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(firmwareUpdateComplete(_:)),
+            name: kSLNotificationLockManagerEndedFirmwareUpdate,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(disconnectedLock(_:)),
+            name: kSLNotificationLockManagerDisconnectedLock,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockPaired(_:)),
+            name: kSLNotificationLockPaired,
+            object: nil
+        )
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
     }
     
     func setFirmwareStage(stage: SLFirmwareUpdateStage) {
@@ -141,10 +175,12 @@ class SLFirmwareUpdateViewController: UIViewController {
     }
     
     func updateNowButtonPressed() {
-        self.updateLaterButton.enabled = false
-        self.updateLaterButton.enabled = false
         self.stage = .InProgress
         self.updateLabel.text = self.updateText[self.stage]
+        self.progressLabel.hidden = false
+        self.progressBar.hidden = false
+        self.updateNowButton.hidden = true
+        self.updateLaterButton.hidden = true
         SLLockManager.sharedManager.updateFirmwareForCurrentLock()
     }
     
@@ -154,5 +190,76 @@ class SLFirmwareUpdateViewController: UIViewController {
         }
         
         self.progressBar.updateBarWithRatio(progress.doubleValue)
+    }
+    
+    func firmwareUpdateComplete(notification: NSNotification) {
+        self.updateLabel.text = self.updateText[.Finished]
+    }
+    
+    func disconnectedLock(notification: NSNotification) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func lockPaired(notification: NSNotification) {
+        let backgroundView:UIView = UIView(frame: self.view.bounds)
+        backgroundView.backgroundColor = UIColor(white: 0.2, alpha: 0.75)
+        backgroundView.tag = self.backgroundViewTag
+        
+        self.view.addSubview(backgroundView)
+        
+        let width:CGFloat = 268.0
+        let height:CGFloat = 211.0
+        
+        let wvc:SLWarningViewController = SLWarningViewController(
+            headerText: NSLocalizedString("Firmware updated", comment: ""),
+            infoText: NSLocalizedString("The firmware on your ellipse has been updated.", comment: ""),
+            cancelButtonTitle: NSLocalizedString("OK", comment: ""),
+            actionButtonTitle: nil
+        )
+        
+        wvc.view.frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - width),
+            y: 0.5*(self.view.bounds.size.height - height),
+            width: width,
+            height: height
+        )
+        wvc.delegate = self
+        
+        self.addChildViewController(wvc)
+        self.view.addSubview(wvc.view)
+        self.view.bringSubviewToFront(wvc.view)
+        wvc.didMoveToParentViewController(wvc)
+    }
+    
+    // MARK: SLWarningViewControllerDelegate Methods
+    func warningVCTakeActionButtonPressed(wvc: SLWarningViewController) {
+        // This method should not be used as we only have a cancel button in the
+        // warning view contoller
+    }
+    
+    func warningVCCancelActionButtonPressed(wvc: SLWarningViewController) {
+        var backgroundView:UIView?
+        for view in self.view.subviews {
+            if view.tag == self.backgroundViewTag {
+                backgroundView = view
+                break
+            }
+        }
+        
+        if let background = backgroundView {
+            UIView.animateWithDuration(0.2, animations: {
+                wvc.view.alpha = 0.0
+                background.alpha = 0.0
+            }) { (finished) in
+                wvc.view.removeFromSuperview()
+                wvc.removeFromParentViewController()
+                wvc.view.removeFromSuperview()
+                background.removeFromSuperview()
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        } else {
+            print("Error: could not find background view while removing warning view controller")
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
 }

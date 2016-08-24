@@ -25,6 +25,7 @@
 #define kSLNotificationLockManagerUpdatedLock               @"kSLNotificationLockManagerUpdatedLock"
 #define kSLNotificationLockManagerUpdatedLockAlert          @"kSLNotificationLockManagerUpdatedLockAlert"
 #define kSLNotificationLockManagerReadFirmwareVersion       @"kSLNotificationLockManagerReadFirmwareVersion"
+#define kSLNotificationLockManagerDeletedLock               @"kSLNotificationLockManagerDeletedLock"
 #define kSLNotificationAlertOccured                         @"kSLNotificationAlertOccured"
 #define kSLNotificationAlertDismissed                       @"kSLNotificationAlertDismissed"
 #define kSLNotificationTimerValueUpdated                    @"kSLNotificationTimerValueUpdated"

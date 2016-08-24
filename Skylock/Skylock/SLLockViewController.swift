@@ -308,6 +308,7 @@ SLLockBarViewControllerDelegate
         }
         
         self.thinkerViewController.setState(.Inactive)
+        self.lock = self.lockManager.getCurrentLock()
         self.toggleViewsHiddenOnConnction(self.lock != nil)
     }
     
@@ -561,7 +562,6 @@ SLLockBarViewControllerDelegate
         if let lbvc = self.lockBarViewController {
             lbvc.view.removeFromSuperview()
             lbvc.removeFromParentViewController()
-            lbvc.view.removeFromSuperview()
             self.lockBarViewController = nil
         }
     }

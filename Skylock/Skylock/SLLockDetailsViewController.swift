@@ -105,8 +105,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func addLock() {
-        let lockManager:SLLockManager = SLLockManager()
-        lockManager.startActiveSearch()
+        self.lockManager.startActiveSearch()
         
         let alvc = SLAvailableLocksViewController()
         self.navigationController?.pushViewController(alvc, animated: true)
