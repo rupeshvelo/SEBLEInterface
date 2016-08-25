@@ -19,6 +19,7 @@ SLLabelAndSwitchCellDelegate
         case ProximityLockUnlock = 1
         case PinCode = 2
         case DeleteLock = 3
+        case RemoveLock = 4
     }
     
     var lock:SLLock?
@@ -30,7 +31,8 @@ SLLabelAndSwitchCellDelegate
         NSLocalizedString("Theft detection settings", comment: ""),
         NSLocalizedString("Proximity lock/unlock", comment: ""),
         NSLocalizedString("Pin Code", comment: ""),
-        NSLocalizedString("Delete lock", comment: "")
+        NSLocalizedString("Delete lock", comment: ""),
+        "Remove Lock"
     ]
     
     lazy var tableView:UITableView = {
@@ -96,6 +98,13 @@ SLLabelAndSwitchCellDelegate
             self,
             selector: #selector(serialNumberRead(_:)),
             name: kSLNotificationLockManagerReadSerialNumber,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(disconnectedLock(_:)),
+            name: kSLNotificationLockManagerDisconnectedLock,
             object: nil
         )
     }
@@ -177,6 +186,10 @@ SLLabelAndSwitchCellDelegate
         self.serialNumber = serialNumber
         let indexPath = NSIndexPath(forRow: 2, inSection: 0)
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+    }
+    
+    func disconnectedLock(notification: NSNotification) {
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     // Mark: UITableViewDelegate and Datasource methods
@@ -309,10 +322,11 @@ SLLabelAndSwitchCellDelegate
                     self.presentViewController(fuvc, animated: true, completion: nil)
                 }
             } else {
-                if indexPath.row == SettingFieldValue.TheftDetectionSettings.rawValue {
+                switch indexPath.row {
+                case SettingFieldValue.TheftDetectionSettings.rawValue:
                     let tdsvc = SLTheftDetectionSettingsViewController(lock: lock)
                     self.navigationController?.pushViewController(tdsvc, animated: true)
-                } else if indexPath.row == SettingFieldValue.PinCode.rawValue {
+                case SettingFieldValue.PinCode.rawValue:
                     let tpvc = SLTouchPadViewController()
                     tpvc.onCanelExit = {[weak weakTpvc = tpvc] in
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
@@ -320,11 +334,13 @@ SLLabelAndSwitchCellDelegate
                     tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
-                    
-                    self.navigationController?.pushViewController(tpvc, animated: true)
-                } else if indexPath.row == SettingFieldValue.DeleteLock.rawValue {
+                case SettingFieldValue.DeleteLock.rawValue:
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)
+                case SettingFieldValue.RemoveLock.rawValue:
+                    SLLockManager.sharedManager.disconnectFromCurrentLock()
+                default:
+                    print("Lock setting tapped for indexPath \(indexPath.description), but no case handles the path")
                 }
             }
         }

@@ -69,7 +69,6 @@
         lock.uuid = uuid;
         lock.macAddress = name.macAddress;
         lock.isShallowConnection = @(NO);
-        lock.isDetected = @(NO);
         lock.isCurrentLock = @(NO);
     }
     
@@ -302,7 +301,6 @@
 
 - (void)saveUser:(SLUser *)user withCompletion:(void (^)(BOOL))completion
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSError *error;
     BOOL success = NO;
     if ([self.context save:&error]) {

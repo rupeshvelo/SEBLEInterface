@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SLSignInViewController: UIViewController {
+class SLSignInViewController: SLBaseViewController {
     let buttonSpacer:CGFloat = 20
     
     lazy var logoView:UIImageView = {
@@ -136,7 +136,18 @@ class SLSignInViewController: UIViewController {
                     self.presentViewController(nc, animated: true, completion: nil)
                 }
             } else {
-                // TODO: Handle error in UI
+                let texts:[SLWarningViewControllerTextProperty:String?] = [
+                    .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
+                    .Info: NSLocalizedString(
+                        "Sorry. We couln't log you in through Facebook right now. " +
+                        "Please try again later, or you can sign in using your phone number and email.",
+                        comment: ""
+                    ),
+                    .CancelButton: NSLocalizedString("OK", comment: ""),
+                    .ActionButton: nil
+                ]
+                
+                self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
             }
         }
     }

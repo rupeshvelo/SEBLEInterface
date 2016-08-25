@@ -123,12 +123,12 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func lockDisconnected(notification: NSNotification) {
-        guard let disconnectedLock:SLLock = notification.object as? SLLock else {
+        guard let disconnectedAddress = notification.object as? String else {
             return
         }
         
         self.unconnectedLocks = self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
-        if disconnectedLock.macAddress == self.connectedLock?.macAddress {
+        if disconnectedAddress == self.connectedLock?.macAddress {
             self.connectedLock = nil
         }
         

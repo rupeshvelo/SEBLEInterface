@@ -124,6 +124,13 @@ class SLConcentricCirclesViewController: UIViewController {
             name: kSLNotificationLockPaired,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
+            object: nil
+        )
     }
     
     func run() {
@@ -174,11 +181,25 @@ class SLConcentricCirclesViewController: UIViewController {
         self.view.bringSubviewToFront(self.connectingEllipseLabel)
         self.view.bringSubviewToFront(self.getHelpButton)
         self.view.bringSubviewToFront(self.makeSureLabel)
+//        if self.warningBackgroundView != nil {
+//            self.view.bringSubviewToFront(self.warningBackgroundView!)
+//        }
+//        if self.warningViewController != nil {
+//            self.view.bringSubviewToFront(self.warningViewController!.view)
+//        }
     }
     
     func connectedLock() {
         if let onExit = self.onExit {
             onExit()
+        }
+    }
+    
+    func lockConnectionError(notification: NSNotification) {
+        if let navController = self.navigationController {
+            navController.popViewControllerAnimated(true)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
 }

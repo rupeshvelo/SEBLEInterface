@@ -132,7 +132,7 @@
     
     self.lockMarkers = [NSMutableDictionary new];
     
-    NSArray *previouslyConnectedLocks = [[SLLockManager sharedManager] allPreviouslyConnectedLocksForCurrentUser];
+    NSArray *previouslyConnectedLocks = [[SLLockManager sharedManager] allLocksForCurrentUser];
     self.locks = [NSMutableArray arrayWithArray: previouslyConnectedLocks];
 
     

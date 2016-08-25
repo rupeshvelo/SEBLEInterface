@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objc class SLAvailableLocksViewController: SLBaseViewController, UITableViewDelegate, UITableViewDataSource {
     var locks:[SLLock] = [SLLock]()
     
     let buttonTagShift:Int = 1000
@@ -90,6 +90,13 @@ import UIKit
             name: kSLNotificationLockManagerBlePoweredOn,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
+            object: nil
+        )
     }
     
     func foundLock(notification: NSNotification) {
@@ -122,6 +129,38 @@ import UIKit
     func bleHardwarePoweredOn(notificaiton: NSNotification) {
         let lockManager = SLLockManager.sharedManager
         lockManager.startActiveSearch()
+    }
+    
+    func lockConnectionError(notification: NSNotification) {
+        var info:String?
+        if let code = notification.object?["code"] as? NSNumber {
+            if code.unsignedIntegerValue == 0 {
+                info = NSLocalizedString(
+                    "Sorry. This lock belongs to another user. We can't add it to your account.",
+                    comment: ""
+                )
+            }
+        }
+        
+        if info == nil {
+            if let lock = notification.object?["lock"] as? SLLock {
+                info = NSLocalizedString(
+                    "Sorry. There was an error connecting to the lock \(lock.displayName())",
+                    comment: ""
+                )
+            } else {
+                info = NSLocalizedString("Sorry. There was an error connecting to the lock", comment: "")
+            }
+        }
+        
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Failed to connect Ellipse", comment: ""),
+            .Info: info,
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
     }
     
     func blinkLockButtonPressed(button: UIButton) {
@@ -164,8 +203,6 @@ import UIKit
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
                     lockManager.connectToLockWithMacAddress(lock.macAddress!)
-                    lockManager.endActiveSearch()
-                    lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
                     break
                 }
             }

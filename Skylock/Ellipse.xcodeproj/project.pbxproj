@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		533C414A667D227BB725102F /* Pods_Ellipse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */; };
+		6505646B1D6DDF2500201466 /* SLBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6505646A1D6DDF2500201466 /* SLBaseViewController.swift */; };
 		652306541D58E79C00091873 /* hamburger_button_navy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6523063E1D58E79C00091873 /* hamburger_button_navy@2x.png */; };
 		652306551D58E79C00091873 /* hamburger_button_navy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6523063F1D58E79C00091873 /* hamburger_button_navy@3x.png */; };
 		652306561D58E79C00091873 /* map_close_details_x_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306401D58E79C00091873 /* map_close_details_x_icon@2x.png */; };
@@ -406,6 +407,7 @@
 		21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ellipse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.debug.xcconfig"; sourceTree = "<group>"; };
 		5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.debug.xcconfig"; sourceTree = "<group>"; };
+		6505646A1D6DDF2500201466 /* SLBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLBaseViewController.swift; sourceTree = "<group>"; };
 		6523063E1D58E79C00091873 /* hamburger_button_navy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_button_navy@2x.png"; sourceTree = "<group>"; };
 		6523063F1D58E79C00091873 /* hamburger_button_navy@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_button_navy@3x.png"; sourceTree = "<group>"; };
 		652306401D58E79C00091873 /* map_close_details_x_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map_close_details_x_icon@2x.png"; sourceTree = "<group>"; };
@@ -1006,6 +1008,7 @@
 			isa = PBXGroup;
 			children = (
 				DCBAAAE01D03ED380000C6AA /* SLAcceptNotificationsViewController.swift */,
+				6505646A1D6DDF2500201466 /* SLBaseViewController.swift */,
 				65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */,
 				DCA71B011CFFC73F000517CC /* SLPairingSuccessViewController.swift */,
 				DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */,
@@ -1920,6 +1923,7 @@
 				DC4402521B98A69000D1C2B9 /* SLUtilities.swift in Sources */,
 				DCD679781CF77A030081D225 /* SLOnboardingViewController.swift in Sources */,
 				DC77BF631D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift in Sources */,
+				6505646B1D6DDF2500201466 /* SLBaseViewController.swift in Sources */,
 				DC9682C11D2B7B15008C106E /* SLContactsLetterViewController.swift in Sources */,
 				DCBAAAE11D03ED380000C6AA /* SLAcceptNotificationsViewController.swift in Sources */,
 				DCCB81B11CB7356C00800E3F /* SLContactHandler.swift in Sources */,

@@ -21,6 +21,7 @@
 #define kSLNotificationLockManagerEndedFirmwareUpdate       @"kSLNotificationLockManagerEndedFirmwareUpdate"
 #define kSLNotificationLockManagerUpdatedHardwareValues     @"kSLNotificationLockManagerUpdatedHardwareValues"
 #define kSLNotificationLockManagerReadSerialNumber          @"kSLNotificationLockManagerReadSerialNumber"
+#define kSLNotificationLockManagerErrorConnectingLock       @"kSLNotificationLockManagerErrorConnectingLock"
 #define kSLNotificationUserSignedInFacebook                 @"kSLNotificationUserSignedInFacebook"
 #define kSLNotificationLockManagerUpdatedLock               @"kSLNotificationLockManagerUpdatedLock"
 #define kSLNotificationLockManagerUpdatedLockAlert          @"kSLNotificationLockManagerUpdatedLockAlert"

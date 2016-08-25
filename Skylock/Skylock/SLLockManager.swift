@@ -8,6 +8,10 @@
 
 import UIKit
 
+enum SLLockManagerConnectionError:UInt {
+    case NotAuthorized = 0
+}
+
 class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegate {
     private enum SLLockManagerState {
         case FindCurrentLock
@@ -118,10 +122,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return nil
         }
         
-        for lock in locks {
-            if lock.isCurrentLock!.boolValue {
-                return lock
-            }
+        for lock in locks
+            where (lock.isCurrentLock!.boolValue && self.bleManager.hasConnectedPeripheralWithKey(lock.macAddress!))
+        {
+            return lock
         }
         
         return nil
@@ -134,6 +138,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
         
         lock.isCurrentLock = false
+        lock.isConnecting = false
+        lock.hasConnected = true
         self.dbManager.saveLock(lock)
         
         self.bleManager.disconnectFromPeripheralWithKey(lock.macAddress!)
@@ -150,12 +156,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 // If the lock is currently conneting let's continue on our search.
                 // This check is here primarily for clarity.
                 continue
-            } else if lock.isConnected!.boolValue {
+            } else if self.bleManager.hasConnectedPeripheralWithKey(lock.macAddress!) {
                 // The lock is the currently connected lock. Let's continue our search
                 continue
             } else if lock.hasConnected!.boolValue && !lock.isConnecting!.boolValue {
                 // This is the case where the lock has previously connected but is
-                // not the currently connecting. We'll try to remove it from the 
+                // not currently connecting. We'll try to remove it from the 
                 // bluetooth managers not connected peripherals in case it has 
                 // been detected there.
                 self.bleManager.removeNotConnectPeripheralForKey(lock.macAddress!)
@@ -172,8 +178,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 )
             }
         }
-        
-        self.currentState = .FindCurrentLock
     }
     
     func readFirmwareDataForCurrentLock() {
@@ -214,21 +218,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.writeToLockWithMacAddress(lock.macAddress!, service: .Hardware, characteristic: .Lock, data: data)
     }
     
-    func unconnectedLocksInRangeForCurrentUser() -> [SLLock] {
-        guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
-            return [SLLock]()
-        }
-        
-        var unconnectedLocks = [SLLock]()
-        for lock in locks {
-            if let isDetected = lock.isDetected where isDetected.boolValue {
-                unconnectedLocks.append(lock)
-            }
-        }
-        
-        return unconnectedLocks
-    }
-    
     func allPreviouslyConnectedLocksForCurrentUser() -> [SLLock] {
         guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
             return [SLLock]()
@@ -244,18 +233,24 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         return unconnectedLocks
     }
     
+    func allLocksForCurrentUser() -> [SLLock] {
+        guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
+            return [SLLock]()
+        }
+        
+        return locks
+    }
+    
     func locksInActiveSearch() -> [SLLock] {
         guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
             return [SLLock]()
         }
         
         var activeLocks:[SLLock] = [SLLock]()
-        for lock:SLLock in locks {
-            if let isCurrentLock = lock.isCurrentLock, let isDetected = lock.isDetected
-                where (!isCurrentLock.boolValue && isDetected.boolValue)
-            {
-                activeLocks.append(lock)
-            }
+        for lock:SLLock in locks where
+            (!lock.isCurrentLock!.boolValue && self.bleManager.hasNonConnectedPeripheralWithKey(lock.macAddress))
+        {
+            activeLocks.append(lock)
         }
         
         return activeLocks
@@ -268,7 +263,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
         
         for lock in locks {
-            if !lock.isConnected!.boolValue {
+            if !self.bleManager.hasConnectedPeripheralWithKey(lock.macAddress!) {
                 availableLocks.append(lock)
             }
         }
@@ -329,7 +324,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         
         self.deleteLockFromServerWithMacAddress(macAddress) { (success) in
             if success {
-                if lock.isConnected!.boolValue {
+                if self.bleManager.hasConnectedPeripheralWithKey(macAddress) {
                     lock.isSetForDeletion = true
                     self.dbManager.saveLock(lock)
                     
@@ -365,7 +360,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print("Error: could not reset current lock. No current lock in databsase")
             return
         }
-        
         
         var value:UInt8 = 0xBB
         let data = NSData(bytes: &value, length: sizeofValue(value))
@@ -419,7 +413,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.currentState = .FindCurrentLock
         self.bleManager.stopScan()
         let locks = self.locksInActiveSearch()
-        for lock in locks {
+        for lock in locks where !lock.isConnecting!.boolValue {
             self.bleManager.removeNotConnectPeripheralForKey(lock.macAddress!)
         }
     }
@@ -517,85 +511,23 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     func connectToLockWithMacAddress(macAddress: String) {
-        if self.currentState == .UpdateFirmware {
-            print("In update firmware mode. Will attept to connect to lock with address: \(macAddress)")
-            self.bleManager.addPeripheralWithKey(macAddress)
-            return
-        }
-        
-        guard let user = self.dbManager.currentUser else {
-            print("Error: connecting to lock with mac address \(macAddress). No current user in database")
-            return
-        }
-        
-        guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
-            print("Error: connecting to lock with mac address \(macAddress). No lock with that address in db")
-            return
-        }
-        
-        self.currentState = .Connecting
-        
-        let signedMessage = self.keychainHandler.getItemForUsername(
-            user.userId!,
-            additionalSeviceInfo: macAddress,
-            handlerCase: .SignedMessage
-        )
-        
-        let publicKey = self.keychainHandler.getItemForUsername(
-            user.userId!,
-            additionalSeviceInfo: macAddress,
-            handlerCase: .PublicKey
-        )
-        
-        lock.isConnecting = true
-        self.dbManager.saveLock(lock)
-        
-        if  !lock.hasConnected!.boolValue || signedMessage == nil || publicKey == nil {
-            self.getSignedMessageAndPublicKeyFromServerForMacAddress(macAddress)
+        print("Attempting to connect to lock with address: \(macAddress)")
+        if self.getCurrentLock() == nil {
+            // There is no current lock. Let's just connect the lock that
+            // the user has asked to connect.
+            self.connectToLockWithMacAddressHelper(macAddress)
+            self.endActiveSearch()
+            self.deleteAllNeverConnectedAndNotConnectingLocks()
         } else {
-            self.bleManager.addPeripheralWithKey(macAddress)
-        }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            kSLNotificationLockManagerStartedConnectingLock,
-            object: nil
-        )
-    }
-    
-    func resetAllCurrentUserLocksToUndetected() {
-        guard let locks = self.dbManager.locksForCurrentUser() as? [SLLock] else {
-            return
-        }
-        
-        for lock in locks {
-            lock.isDetected = false
-            self.dbManager.saveLock(lock)
-        }
-    }
-    
-    func setAllCurrentUserUnconnectedLocksToUndetected() {
-        guard let locks = self.dbManager.locksForCurrentUser() as? [SLLock] else {
-            return
-        }
-        
-        for lock in locks where !lock.isCurrentLock!.boolValue {
-            lock.isDetected = false
-            self.dbManager.saveLock(lock)
-        }
-    }
-    
-    func setCurrentLockToDetected() {
-        guard let locks = self.dbManager.locksForCurrentUser() as? [SLLock] else {
-            return
-        }
-        
-        for lock in locks {
-            if lock.isCurrentLock!.boolValue && lock.isConnected!.boolValue {
-                lock.isDetected! = true
-                self.dbManager.saveLock(lock)
-                break
+            // If there is we'll need to disconnect from it before 
+            // connecting the new lock.
+            self.afterDisconnectLockClosure = { [unowned self] in
+                self.connectToLockWithMacAddressHelper(macAddress)
             }
+            self.disconnectFromCurrentLock()
         }
+        
+        self.currentState = .FindCurrentLock
     }
     
     func deleteLockWithMacAddress(macAddress: String) {
@@ -604,7 +536,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        if lock.isConnected!.boolValue {
+        if self.bleManager.hasConnectedPeripheralWithKey(lock.macAddress!) {
             // Lock is the current connected lock
             lock.isSetForDeletion = true
             self.dbManager.saveLock(lock)
@@ -643,7 +575,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     func flashLEDsForCurrentLock() {
-        guard let macAddress = self.dbManager.getCurrentLockForCurrentUser()?.macAddress else {
+        guard let macAddress = self.getCurrentLock()?.macAddress else {
             print("Error: could not flash LEDs for current user. No current lock in database.")
             return
         }
@@ -651,10 +583,80 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.flashLEDsForLockMacAddress(macAddress)
     }
     
-
-    
     // MARK: Private methods and private helper methods
-    private func getSignedMessageAndPublicKeyFromServerForMacAddress(macAddress: String) {
+    private func connectToLockWithMacAddressHelper(macAddress: String) {
+        print("Attempting to connect to lock with address: \(macAddress). Lock manager state: \(self.currentState)")
+        
+        guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
+            print("Error: connecting to lock with mac address \(macAddress). No lock with that address in db")
+            return
+        }
+        
+        if self.currentState == .UpdateFirmware {
+            print("In update firmware mode. Will attept to connect to lock with address: \(macAddress)")
+            lock.isConnecting = true;
+            self.dbManager.saveLock(lock)
+            self.bleManager.connectToPeripheralWithKey(macAddress)
+            return
+        }
+        
+        guard let user = self.dbManager.currentUser else {
+            print("Error: connecting to lock with mac address \(macAddress). No current user in database")
+            return
+        }
+        
+        self.currentState = .Connecting
+        
+        print("Attempting to connect to lock: \(lock.description)")
+        
+        let signedMessage = self.keychainHandler.getItemForUsername(
+            user.userId!,
+            additionalSeviceInfo: macAddress,
+            handlerCase: .SignedMessage
+        )
+        
+        let publicKey = self.keychainHandler.getItemForUsername(
+            user.userId!,
+            additionalSeviceInfo: macAddress,
+            handlerCase: .PublicKey
+        )
+        
+        lock.isConnecting = true
+        self.dbManager.saveLock(lock)
+        
+        if  !lock.hasConnected!.boolValue || signedMessage == nil || publicKey == nil {
+            self.securityPhase = .PublicKey
+            self.getSignedMessageAndPublicKeyFromServerForMacAddress(macAddress, completion: { (success: Bool) in
+                if success {
+                    if self.bleManager.notConnectedPeripheralForKey(macAddress) == nil {
+                        print(
+                            "Error: connecting lock. No not connected peripheral " +
+                                "in ble manager with key: \(macAddress)."
+                        )
+                        return
+                    }
+                    
+                    self.bleManager.connectToPeripheralWithKey(macAddress)
+                } else {
+                    // TODO: Handle failure
+                }
+            })
+        } else {
+            self.securityPhase = .SignedMessage
+            self.bleManager.connectToPeripheralWithKey(macAddress)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            kSLNotificationLockManagerStartedConnectingLock,
+            object: nil
+        )
+    }
+    
+    private func getSignedMessageAndPublicKeyFromServerForMacAddress(
+        macAddress: String,
+        completion: ((success: Bool) -> ())?
+        )
+    {
         guard let user = self.dbManager.currentUser else {
             print("Error: could not get singed message and public key. No user in database")
             return
@@ -667,6 +669,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             ) else
         {
             print("Error: could not get singed message and public key. No rest token for user: \(user.fullName()).")
+            let info = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "code": NSNumber(unsignedInteger: SLLockManagerConnectionError.NotAuthorized.rawValue)
+            ]
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: info
+            )
             return
         }
 
@@ -681,13 +691,29 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             additionalHeaders: ["Authorization": authValue]
         ) { (status:UInt, response:[NSObject : AnyObject]!) in
             // TODO: Check what the status is if there is an error and present the correct UI.
-            guard let signedMessage = response["signed_message"] as? String else {
+            guard let signedMessage = response?["signed_message"] as? String else {
                 print("Error: no signed message in response from server.")
+                let info = [
+                    "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                    "code": NSNumber(unsignedInteger: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                ]
+                NSNotificationCenter.defaultCenter().postNotificationName(
+                    kSLNotificationLockManagerErrorConnectingLock,
+                    object: info
+                )
                 return
             }
             
-            guard let publicKey = response["public_key"] as? String else {
+            guard let publicKey = response?["public_key"] as? String else {
                 print("Error: no public key in response from server.")
+                let info = [
+                    "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                    "code": NSNumber(unsignedInteger: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                ]
+                NSNotificationCenter.defaultCenter().postNotificationName(
+                    kSLNotificationLockManagerErrorConnectingLock,
+                    object: info
+                )
                 return
             }
             
@@ -705,13 +731,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 handlerCase: .PublicKey
             )
             
-            // TODO: add/connect lock here
-            if self.bleManager.notConnectedPeripheralForKey(macAddress) == nil {
-                print("Error: connecting lock. No not connected peripheral in ble manager with key: \(macAddress).")
-                return
+            if completion != nil {
+                completion!(success: true)
             }
-            
-            self.bleManager.addPeripheralWithKey(macAddress)
         }
     }
     
@@ -793,7 +815,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // entries of ["boot_loader": "8373739393003fme"] for example.
             // TODO: This should be changed so the server sends the payload as an array
             // of string values
-            guard let payload = response["payload"] as? [[String:AnyObject]] else {
+            guard let payload = response?["payload"] as? [[String:AnyObject]] else {
                 print("Error: getting firmware. No payload in respose")
                 if let completionClosure = completion {
                     completionClosure(success: false)
@@ -887,6 +909,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
     }
     
+    private func setTxPowerForLockWithMacAddress(macAddress: String) {
+        var value:UInt8 = 0x04
+        let data = NSData(bytes: &value, length: sizeofValue(value))
+        self.writeToLockWithMacAddress(macAddress, service: .Hardware, characteristic: .TxPower, data: data)
+    }
+    
     // MARK: Update handlers
     private func handleCommandStatusUpdateForLockMacAddress(macAddress: String, data: NSData) {
         guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
@@ -949,7 +977,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 lock.switchLockNameToProvisioned()
             }
             
-            lock.isConnected = true
             lock.isCurrentLock = true
             lock.hasConnected = true
             lock.isConnecting = false
@@ -962,7 +989,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             
             self.flashLEDsForLockMacAddress(macAddress)
             self.startGettingHardwareInfo()
-            self.setAllCurrentUserUnconnectedLocksToUndetected()
+            self.setTxPowerForLockWithMacAddress(macAddress)
             
             // TODO: Set TxPower here
             NSNotificationCenter.defaultCenter().postNotificationName(
@@ -974,6 +1001,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // If there is no signed message, or public key this could occur. To fix this we can
             // refetch the keys from the server and try writing this again.
             print("Error: command status got invalid security state error.")
+            let info = [
+                "lock": lock,
+                "code": NSNumber(unsignedInteger: SLLockManagerConnectionError.NotAuthorized.rawValue)
+            ]
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: info
+            )
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
             // Although this is not very good encapsulation (the lock/unlock characteristic is
@@ -1099,6 +1134,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     private func handleChallengeDataForLockMacAddress(macAddress: String, data: NSData) {
         if data.length != 32 {
             print("Error: challenge data from lock is not 32 bytes")
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: nil
+            )
             return
         }
         
@@ -1106,6 +1145,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print(
                 "Error: could not write challege data for lock with address: \(macAddress). "
                     + "Could not retrieve user from the database"
+            )
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: nil
             )
             return
         }
@@ -1119,6 +1162,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print(
                 "Error: could not write challege data for lock with address: \(macAddress). "
                 + "Could not retrieve challege key from the keychain"
+            )
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: nil
             )
             return
         }
@@ -1197,6 +1244,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     private func handlePublicKeyConnectionPhaseForMacAddress(macAddress: String) {
         guard let user = self.dbManager.currentUser else {
             print("Error: could not enter public key connection phase. No user.")
+            let info = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "code": NSNumber(unsignedInteger: SLLockManagerConnectionError.NotAuthorized.rawValue)
+            ]
+            NSNotificationCenter.defaultCenter().postNotificationName(
+                kSLNotificationLockManagerErrorConnectingLock,
+                object: info
+            )
             return
         }
         
@@ -1246,7 +1301,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             additionalHeaders: additionalHeaders
         ) { (status:UInt, response:[NSObject:AnyObject]!) in
             // TODO: check what the status should be here and take the necassary actions.
-            guard let challengeKey = response["challenge_key"] as? String else {
+            guard let challengeKey = response?["challenge_key"] as? String else {
                 // TODO: handle this error
                 print("Error while getting challenge key. No challege key returned by server.")
                 return
@@ -1364,13 +1419,13 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
+        let hasBeenDetected = self.bleManager.hasNonConnectedPeripheralWithKey(macAddress)
         self.bleManager.setNotConnectedPeripheral(peripheral, forKey: macAddress)
-        var saveLock = false
         let dbLock:SLLock? = self.dbManager.getLockWithMacAddress(macAddress)
         let lock = dbLock == nil ?
             self.dbManager.newLockWithName(lockName, andUUID: peripheral.CBUUIDAsString()) : dbLock
         
-        print("lock detected \(lock.isDetected!.boolValue)")
+        print("Discoved lock \(lock.description). Lock manager is in state \(self.currentState)")
         
         if lock.isSetForDeletion!.boolValue {
             self.dbManager.deleteLock(lock, withCompletion: nil)
@@ -1386,16 +1441,11 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         } else if self.currentState == .FindCurrentLock && lock.isCurrentLock!.boolValue {
             // Case 1: Check if lock is the current lock. This is the case that happens
             // when the app first connects to the current lock after a disconnection.
-            saveLock = true
             self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
             self.connectToLockWithMacAddress(macAddress)
-        } else if self.currentState == .ActiveSearch && !lock.isDetected!.boolValue {
+        } else if self.currentState == .ActiveSearch && !hasBeenDetected {
             // Case 2: We are actively looking for locks. When a new lock is found 
             // We'll send out an alert to let the rest of the app know that the lock was discovered
-            saveLock = true
-            lock.isDetected = true
-            self.dbManager.saveLock(lock)
-            
             NSNotificationCenter.defaultCenter().postNotificationName(
                 kSLNotificationLockManagerDiscoverdLock,
                 object: lock
@@ -1403,7 +1453,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         } else if self.currentState == .UpdateFirmware && lock.isInBootMode!.boolValue {
             // Case 3: The lock has been reset to boot mode. This is currently used for firmware update,
             // however, there are other use cases for this mode.
-            saveLock = true
             self.connectToLockWithMacAddress(macAddress)
         } else {
             // Case 4: if the lock does not pass any of the preceeding tests we should handle 
@@ -1411,37 +1460,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // then again maybe not. I need to think about that for awhile.
             print("The discovered lock: \(lockName) could not be processed")
         }
-        
-        if saveLock {
-            lock.isDetected = true
-            self.dbManager.saveLock(lock)
-        }
-    }
-    
-    func bleInterfaceManager(
-        interfaceManager: SEBLEInterfaceMangager!,
-        disconnectedPeripheralNamed peripheralName: String!)
-    {
-        guard let macAddress = peripheralName.macAddress() else {
-            print("Could not get mac address from periphreal name: " + peripheralName)
-            return
-        }
-        
-        guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
-            print("Error disconnecting from lock \(peripheralName). Could not retrieve lock from the database")
-            return
-        }
-        
-        lock.isConnected = false
-        lock.isDetected = false
-        self.dbManager.saveLock(lock)
-        
-        self.bleManager.removeConnectedPeripheralForKey(macAddress)
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            kSLNotificationLockManagerDisconnectedLock,
-            object: macAddress
-        )
     }
     
     func bleInterfaceManager(
@@ -1454,14 +1472,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print("Ble Manager does not have a not connect peripheral named: \(peripheralName)")
             return
         }
-        
-        guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
-            print("Could not connect lock \(peripheralName). Lock not found in database")
-            return
-        }
-        
-        lock.isConnected = true
-        self.dbManager.saveLock(lock)
         
         self.bleManager.removeNotConnectPeripheralForKey(macAddress)
         self.bleManager.setConnectedPeripheral(peripheral, forKey: macAddress)
@@ -1483,7 +1493,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                                             forPeripheralNamed peripheralName: String!
         )
     {
-        print("Discoved characteristics for service \(service.description)")
+        print("Discovered characteristics for service \(service.description)")
         guard let macAddress = peripheralName.macAddress() else {
             print("Error: Discovered characteristics for \(peripheralName), but there is no mac address")
             return
@@ -1532,9 +1542,16 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             case .SignedMessage:
                 self.handleSignedMessageConnectionPhaseForMacAddress(macAddress)
             default:
-                print("Changed notification state case not handled for security state: \(self.securityPhase)")
+                print(
+                    "Changed notification state for uuid: \(characteristicUUID) "
+                    + "case not handled for security state: \(self.securityPhase)"
+                )
             }
+        } else {
+            print("Warning: changed notification state for uuid: \(characteristicUUID), but the case is not handled.")
         }
+        
+        
     }
     
     func bleInterfaceManager(
@@ -1621,6 +1638,30 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print("need to write a method to handle the magnet update")
         default:
             print("No matching case updating peripheral: \(peripheralName) for uuid: \(characteristicUUID)")
+        }
+    }
+    
+    func bleInterfaceManager(
+        interfaceManager: SEBLEInterfaceMangager!,
+        disconnectedPeripheralNamed peripheralName: String!)
+    {
+        guard let macAddress = peripheralName.macAddress() else {
+            print("Could not get mac address from periphreal name: " + peripheralName)
+            return
+        }
+        
+        self.stopGettingHardwareInfo()
+        
+        self.bleManager.removeConnectedPeripheralForKey(macAddress)
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            kSLNotificationLockManagerDisconnectedLock,
+            object: macAddress
+        )
+        
+        if self.afterDisconnectLockClosure != nil {
+            self.afterDisconnectLockClosure!()
+            self.afterDisconnectLockClosure = nil
         }
     }
     

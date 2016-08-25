@@ -15,7 +15,7 @@ enum SLCreateAccountFieldPhase {
 }
 
 class SLCreateAccountViewController:
-UIViewController,
+SLBaseViewController,
 UIScrollViewDelegate,
 UITextFieldDelegate,
 SLBoxTextFieldWithButtonDelegate
@@ -406,14 +406,16 @@ SLBoxTextFieldWithButtonDelegate
         subRoutes: nil,
         additionalHeaders: nil,
         completion: { (status: UInt, responseDict:[NSObject: AnyObject]!) in
-            print("responseDict: \(responseDict))")
+            print("Response from server after login request: \(responseDict))")
             guard let response:[String:AnyObject] = responseDict as? [String:AnyObject] else {
                 print("response dictionary is not in the correct format")
+                self.presentWarningController()
                 return
             }
             
             guard let userToken:String = response["token"] as? String else {
                 print("no rest token in server response")
+                self.presentWarningController()
                 return
             }
             
@@ -448,7 +450,7 @@ SLBoxTextFieldWithButtonDelegate
                         }
                     })
                 } else {
-                    // Handle errors here. Should show a popup
+                    self.presentWarningController()
                 }
             } else {
                 let subRoutes:[String] = [
@@ -477,7 +479,7 @@ SLBoxTextFieldWithButtonDelegate
     }
     
     func loginButtonPressed() {
-        
+        self.startLoginProcedure()
     }
     
     func getTextFieldsSectionHeight() -> CGFloat {
@@ -505,6 +507,20 @@ SLBoxTextFieldWithButtonDelegate
             
             y0 += self.yFieldSpacer + field.bounds.size.height
         }
+    }
+    
+    func presentWarningController() {
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Login Failed", comment: ""),
+            .Info: NSLocalizedString(
+                "Sorry. We couln't log you in right now. Please check you info and try again, or you can try using Facebook.",
+                comment: ""
+            ),
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
     }
     
     func setFieldErrorState(fieldName: FieldName, enterErrorMode: Bool) {
