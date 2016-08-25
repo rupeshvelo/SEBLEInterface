@@ -334,6 +334,7 @@ SLLabelAndSwitchCellDelegate
                     tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
+                    self.navigationController?.pushViewController(tpvc, animated: true)
                 case SettingFieldValue.DeleteLock.rawValue:
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)

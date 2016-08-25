@@ -625,7 +625,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.dbManager.saveLock(lock)
         
         if  !lock.hasConnected!.boolValue || signedMessage == nil || publicKey == nil {
-            self.securityPhase = .PublicKey
             self.getSignedMessageAndPublicKeyFromServerForMacAddress(macAddress, completion: { (success: Bool) in
                 if success {
                     if self.bleManager.notConnectedPeripheralForKey(macAddress) == nil {
@@ -636,6 +635,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                         return
                     }
                     
+                    self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
                     self.bleManager.connectToPeripheralWithKey(macAddress)
                 } else {
                     // TODO: Handle failure
