@@ -62,9 +62,10 @@ class SLAcceptNotificationsViewController: UIViewController {
     
     lazy var backgroundView:UIImageView = {
         let image:UIImage = UIImage(named: self.elements[.Location]![.BackgroundImageName]!)!
-        let imageView:UIImageView = UIImageView(image: image)
-        imageView.frame = self.view.bounds
         
+        let imageView:UIImageView = UIImageView(frame: self.view.bounds)
+        imageView.image = image
+
         return imageView
     }()
     

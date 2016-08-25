@@ -631,13 +631,11 @@ SLLockBarViewControllerDelegate
     
     func lockConnectionError(notification: NSNotification) {
         var info:String?
-        if let code = notification.object?["code"] as? NSNumber {
-            if code.unsignedIntegerValue == 0 {
-                info = NSLocalizedString(
-                    "Sorry. This lock belongs to another user. We can't add it to your account.",
-                    comment: ""
-                )
-            }
+        if let code = notification.object?["code"] as? NSNumber where code.unsignedIntegerValue == 0 {
+            info = NSLocalizedString(
+                "Sorry. This lock belongs to another user. We can't add it to your account.",
+                comment: ""
+            )
         }
         
         if info == nil {
@@ -873,7 +871,6 @@ SLLockBarViewControllerDelegate
             
             notificationManager.removeLastNotification()
         }
-        
         
         nvc.dismissViewControllerAnimated(true, completion: completion)
     }

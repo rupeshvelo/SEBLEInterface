@@ -33,7 +33,7 @@ import CoreLocation
         return self.manager.location
     }
     
-    func beginUpdatingLocation() {
+func beginUpdatingLocation() {
         self.manager.startUpdatingLocation()
     }
     
