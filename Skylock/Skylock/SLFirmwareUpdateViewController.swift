@@ -200,7 +200,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     
     func lockPaired(notification: NSNotification) {
         let texts:[SLWarningViewControllerTextProperty:String?] = [
-            .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
+            .Header: NSLocalizedString("Firmware Updated!", comment: ""),
             .Info: NSLocalizedString("The firmware on your ellipse has been updated.", comment: ""),
             .CancelButton: NSLocalizedString("OK", comment: ""),
             .ActionButton: nil

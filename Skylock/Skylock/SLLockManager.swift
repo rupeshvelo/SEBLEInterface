@@ -1650,8 +1650,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        self.stopGettingHardwareInfo()
         
+        self.currentState = .FindCurrentLock
+        self.startBleScan()
+        self.stopGettingHardwareInfo()
         self.bleManager.removeConnectedPeripheralForKey(macAddress)
         
         NSNotificationCenter.defaultCenter().postNotificationName(
