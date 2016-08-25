@@ -345,7 +345,6 @@ SLLabelAndSwitchCellDelegate
                 }
             }
         }
-        // If there is no lock or the lock has disconnected, we should notify the user.
     }
     
     // MARK: SLLabelAndSwitchCellDelegate methods
