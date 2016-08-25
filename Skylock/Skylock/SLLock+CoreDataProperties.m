@@ -1,8 +1,8 @@
 //
 //  SLLock+CoreDataProperties.m
-//  Skylock
+//  Ellipse
 //
-//  Created by Andre Green on 5/22/16.
+//  Created by Andre Green on 8/24/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -14,13 +14,18 @@
 @implementation SLLock (CoreDataProperties)
 
 @dynamic givenName;
+@dynamic hasConnected;
+@dynamic isConnecting;
 @dynamic isCurrentLock;
+@dynamic isInBootMode;
+@dynamic isSetForDeletion;
+@dynamic lastConnected;
 @dynamic latitude;
+@dynamic lockPosition;
 @dynamic longitude;
 @dynamic macAddress;
 @dynamic name;
 @dynamic uuid;
-@dynamic lastConnected;
 @dynamic sharedContacts;
 @dynamic user;
 

@@ -25,7 +25,6 @@
 @synthesize lastTime;
 @synthesize distanceAway;
 @synthesize rssiStrength;
-@synthesize isLocked;
 @synthesize temperature;
 @synthesize accelerometerVales;
 
@@ -38,7 +37,6 @@
     self.distanceAway = dictionary[@"distanceAway"] ? dictionary[@"distanceAway"] : @(0);
     self.rssiStrength = dictionary[@"rssiStrength"] ? dictionary[@"rssiStrength"] : @(0);
     self.temperature = dictionary[@"temperature"] ? dictionary[@"temperature"] : @(0);
-    self.isLocked = dictionary[@"isLocked"] ? dictionary[@"isLocked"] : @(NO);
     self.isShallowConnection = dictionary[@"isShallowConnection"] ? dictionary[@"isShallowConnection"] : @(NO);
 }
 
@@ -68,10 +66,6 @@
         self.rssiStrength = dictionary[@"rssiStrength"];
     }
     
-    if (dictionary[@"isLocked"]) {
-        self.isLocked = dictionary[@"isLocked"];
-    }
-    
     if (dictionary[@"temperature"]) {
         self.temperature = dictionary[@"temperature"];
     }
@@ -93,13 +87,13 @@
             range = SLLockParameterRangeZero;
         }
     } else {
-        if (self.rssiStrength.floatValue  < 62.5f) {
+        if (self.rssiStrength.floatValue > -62.5f) {
             range = SLLockParameterRangeFour;
-        } else if (self.rssiStrength.floatValue < 75.0f) {
+        } else if (self.rssiStrength.floatValue > -75.0f) {
             range = SLLockParameterRangeThree;
-        } else if (self.rssiStrength.floatValue < 82.5f) {
+        } else if (self.rssiStrength.floatValue > -82.5f) {
             range = SLLockParameterRangeTwo;
-        } else if (self.rssiStrength.floatValue < 100.0f) {
+        } else if (self.rssiStrength.floatValue > -100.0f) {
             range = SLLockParameterRangeOne;
         } else {
             range = SLLockParameterRangeZero;
@@ -142,7 +136,6 @@
     if (dictionary[@"isCurrentLock"]) {
         self.isCurrentLock = dictionary[@"isCurrentLock"];
     }
-    
 }
 
 
@@ -192,11 +185,6 @@
     
     NSArray *parts = [self.name componentsSeparatedByString:@"-"];
     self.name = [NSString stringWithFormat:@"%@ %@", parts[0], parts[1]];
-}
-
-- (BOOL)isInBootMode
-{
-    return [self.name.lowercaseString containsString:@"skyboot"];
 }
 
 @end

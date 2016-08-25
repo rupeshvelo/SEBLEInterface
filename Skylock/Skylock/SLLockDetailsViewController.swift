@@ -15,7 +15,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     
     let utilities:SLUtilities = SLUtilities()
     
-    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+    let lockManager:SLLockManager = SLLockManager.sharedManager
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
@@ -34,9 +34,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }()
     
     lazy var unconnectedLocks:[SLLock] = {
-        let locks:[SLLock] = self.lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
-        
-        return locks
+        return self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
     }()
     
     lazy var dataFormatter:NSDateFormatter = {
@@ -63,8 +61,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         )
         self.navigationItem.rightBarButtonItem = addLockButton
         
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-        self.connectedLock = lockManager.getCurrentLock()
+        self.connectedLock = self.lockManager.getCurrentLock()
         
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
@@ -108,8 +105,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func addLock() {
-        let lockManager:SLLockManager = SLLockManager()
-        lockManager.shouldEnterActiveSearchMode(true)
+        self.lockManager.startActiveSearch()
         
         let alvc = SLAvailableLocksViewController()
         self.navigationController?.pushViewController(alvc, animated: true)
@@ -120,21 +116,19 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func lockConnected(notification: NSNotification) {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-        self.unconnectedLocks = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
-        self.connectedLock = lockManager.getCurrentLock()
+        self.unconnectedLocks = self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
+        self.connectedLock = self.lockManager.getCurrentLock()
         
         self.tableView.reloadData()
     }
     
     func lockDisconnected(notification: NSNotification) {
-        guard let disconnectedLock:SLLock = notification.object as? SLLock else {
+        guard let disconnectedAddress = notification.object as? String else {
             return
         }
         
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-        self.unconnectedLocks = lockManager.unconnectedLocksForCurrentUser() as! [SLLock]
-        if disconnectedLock.macAddress == self.connectedLock?.macAddress {
+        self.unconnectedLocks = self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
+        if disconnectedAddress == self.connectedLock?.macAddress {
             self.connectedLock = nil
         }
         

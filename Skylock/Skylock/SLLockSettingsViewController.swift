@@ -19,6 +19,7 @@ SLLabelAndSwitchCellDelegate
         case ProximityLockUnlock = 1
         case PinCode = 2
         case DeleteLock = 3
+        case RemoveLock = 4
     }
     
     var lock:SLLock?
@@ -30,7 +31,8 @@ SLLabelAndSwitchCellDelegate
         NSLocalizedString("Theft detection settings", comment: ""),
         NSLocalizedString("Proximity lock/unlock", comment: ""),
         NSLocalizedString("Pin Code", comment: ""),
-        NSLocalizedString("Delete lock", comment: "")
+        NSLocalizedString("Delete lock", comment: ""),
+        "Remove Lock"
     ]
     
     lazy var tableView:UITableView = {
@@ -61,7 +63,6 @@ SLLabelAndSwitchCellDelegate
     }
     
     deinit {
-        print("doing the deinit thing")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -81,7 +82,7 @@ SLLabelAndSwitchCellDelegate
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(userResestLock(_:)),
+            selector: #selector(userDeletedLock(_:)),
             name: kSLNotificationRemoveLockForUser,
             object: nil
         )
@@ -99,6 +100,13 @@ SLLabelAndSwitchCellDelegate
             name: kSLNotificationLockManagerReadSerialNumber,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(disconnectedLock(_:)),
+            name: kSLNotificationLockManagerDisconnectedLock,
+            object: nil
+        )
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -109,9 +117,9 @@ SLLabelAndSwitchCellDelegate
             cell.selected = false
         }
         
-        if let lock = self.lock {
-            let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-            lockManager.readFirmwareDataForLockAddress(lock.macAddress)
+        if self.lock != nil {
+            let lockManager:SLLockManager = SLLockManager.sharedManager
+            lockManager.readFirmwareDataForCurrentLock()
             lockManager.readSerialNumberForCurrentLock()
         }
     }
@@ -134,7 +142,7 @@ SLLabelAndSwitchCellDelegate
         return value
     }
     
-    func userResestLock(notification: NSNotification) {
+    func userDeletedLock(notification: NSNotification) {
         self.lock = nil
         self.tableView.reloadData()
     }
@@ -153,10 +161,14 @@ SLLabelAndSwitchCellDelegate
             return
         }
         
-        print("There are \(firmwareValues.count) firmware values")
         self.firmwareVersion = ""
+        print(firmwareValues.description)
         for i in start..<firmwareValues.count {
-            self.firmwareVersion += String(firmwareValues[i])
+            let value = firmwareValues[i]
+            if value.intValue != 0 {
+                self.firmwareVersion += String(value)
+            }
+            
             if i == start + 1 {
                 self.firmwareVersion += "."
             }
@@ -174,6 +186,10 @@ SLLabelAndSwitchCellDelegate
         self.serialNumber = serialNumber
         let indexPath = NSIndexPath(forRow: 2, inSection: 0)
         self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+    }
+    
+    func disconnectedLock(notification: NSNotification) {
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     // Mark: UITableViewDelegate and Datasource methods
@@ -195,22 +211,27 @@ SLLabelAndSwitchCellDelegate
             let leftText:String
             var rightText:String?
             let leftTextColor = UIColor(red: 157, green: 161, blue: 167)
-            let rightTextColor = indexPath.row == 1  ? UIColor(red: 140, green: 140, blue: 140) :
+            let rightTextColor = (indexPath.row == 1 || indexPath.row == 2)  ? UIColor(red: 140, green: 140, blue: 140) :
                 UIColor(red: 69, green: 217, blue: 255)
+            let showArrow:Bool
             
             if indexPath.row == 0 {
                 leftText = NSLocalizedString("Lock name", comment: "")
                 rightText = self.lock?.displayName()
+                showArrow = true
             } else if indexPath.row == 1 {
                 let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
                 leftText = NSLocalizedString("Registered owner", comment: "")
                 rightText = dbManager.currentUser.fullName()
+                showArrow = false
             } else if indexPath.row == 2 {
                 leftText = NSLocalizedString("Serial number", comment: "")
                 rightText = self.serialNumber
+                showArrow = false
             } else {
                 leftText = NSLocalizedString("Firmware", comment: "")
-                rightText = self.firmwareVersion + " " + NSLocalizedString("Update", comment: "")
+                rightText = self.firmwareVersion
+                showArrow = true
             }
             
             cellId = String(SLOpposingLabelsTableViewCell)
@@ -221,7 +242,7 @@ SLLabelAndSwitchCellDelegate
             }
             
             cell?.isEditable = false
-            cell?.showArrow = indexPath.row != 1 || indexPath.row != 2
+            cell?.showArrow = showArrow
             cell?.setProperties(
                 leftText,
                 rightLabelText: rightText,
@@ -296,15 +317,16 @@ SLLabelAndSwitchCellDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let lock = self.lock {
             if indexPath.section == 0 {
-                if indexPath.row == 2 {
+                if indexPath.row == 3 {
                     let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
                     self.presentViewController(fuvc, animated: true, completion: nil)
                 }
             } else {
-                if indexPath.row == SettingFieldValue.TheftDetectionSettings.rawValue {
+                switch indexPath.row {
+                case SettingFieldValue.TheftDetectionSettings.rawValue:
                     let tdsvc = SLTheftDetectionSettingsViewController(lock: lock)
                     self.navigationController?.pushViewController(tdsvc, animated: true)
-                } else if indexPath.row == SettingFieldValue.PinCode.rawValue {
+                case SettingFieldValue.PinCode.rawValue:
                     let tpvc = SLTouchPadViewController()
                     tpvc.onCanelExit = {[weak weakTpvc = tpvc] in
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
@@ -312,11 +334,13 @@ SLLabelAndSwitchCellDelegate
                     tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
                         weakTpvc!.dismissViewControllerAnimated(true, completion: nil)
                     }
-                    
-                    self.navigationController?.pushViewController(tpvc, animated: true)
-                } else if indexPath.row == SettingFieldValue.DeleteLock.rawValue {
+                case SettingFieldValue.DeleteLock.rawValue:
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)
+                case SettingFieldValue.RemoveLock.rawValue:
+                    SLLockManager.sharedManager.disconnectFromCurrentLock()
+                default:
+                    print("Lock setting tapped for indexPath \(indexPath.description), but no case handles the path")
                 }
             }
         }

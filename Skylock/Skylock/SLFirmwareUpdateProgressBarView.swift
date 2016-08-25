@@ -10,11 +10,11 @@ import UIKit
 
 class SLFirmwareUpdateProgressBarView: UIView {
     lazy var barView:UIView = {
-        let frame = CGRect(x: 0.0, y: 0.0, width: 0.0, height: self.bounds.size.height)
+        let frame = CGRect(x: 0.0, y: 0.0, width: 1.0, height: self.bounds.size.height)
         
         let view:UIView = UIView(frame: frame)
         view.backgroundColor = UIColor(red: 102, green: 177, blue: 227)
-        
+
         return view
     }()
     

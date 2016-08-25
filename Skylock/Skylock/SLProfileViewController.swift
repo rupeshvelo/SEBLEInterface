@@ -317,11 +317,11 @@ class SLProfileViewController:
             let blueTextColor = UIColor(red: 87, green: 216, blue: 255)
             
             cellId = String(SLOpposingLabelsTableViewCell)
-            var cell: SLOpposingLabelsTableViewCell? =
+            let cell: SLOpposingLabelsTableViewCell? =
                 tableView.dequeueReusableCellWithIdentifier(cellId) as? SLOpposingLabelsTableViewCell
-            if cell == nil {
-                cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
-            }
+//            if cell == nil {
+//                cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
+//            }
             
             cell?.selectionStyle = .None
             cell?.delegate = self
@@ -338,11 +338,11 @@ class SLProfileViewController:
         }
         
         cellId = String(SLLabelAndSwitchTableViewCell)
-        var cell: SLLabelAndSwitchTableViewCell? =
+        let cell: SLLabelAndSwitchTableViewCell? =
             tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
-        if cell == nil {
-            cell = SLLabelAndSwitchTableViewCell(accessoryType: .Arrow, reuseId: cellId)
-        }
+//        if cell == nil {
+//            cell = SLLabelAndSwitchTableViewCell(accessoryType: .Arrow, reuseId: cellId)
+//        }
         
         cell?.delegate = self
         cell?.leftAccessoryType = .Arrow
@@ -414,7 +414,7 @@ class SLProfileViewController:
             case 2:
                 let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
                 self.navigationController?.pushViewController(msdvc, animated: true)
-            case 4:
+            case 3:
                 let lvc:SLLogoutViewController = SLLogoutViewController()
                 self.presentViewController(lvc, animated: true, completion: nil)
             default:
@@ -438,7 +438,12 @@ class SLProfileViewController:
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    func imagePickerController(
+        picker: UIImagePickerController,
+        didFinishPickingImage image: UIImage,
+                              editingInfo: [String : AnyObject]?
+        )
+    {
         self.profilePictureView.image = image
         let user:SLUser = SLDatabaseManager.sharedManager().currentUser
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager

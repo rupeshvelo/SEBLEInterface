@@ -13,7 +13,6 @@
 #import "SLUserDefaults.h"
 #import "UIColor+RGB.h"
 #import "SLUserDefaults.h"
-#import "SLLockManager.h"
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
 #import "Ellipse-Swift.h"
@@ -33,7 +32,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
     [SLDatabaseManager.sharedManager setCurrentUser];
-    [SLLockManager.sharedManager startBlueToothManager];
+    [[SLLockManager sharedManager] startBluetoothManager];
     
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
@@ -71,7 +70,6 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    
     application.applicationIconBadgeNumber = 0;
     [SLFacebookManger.sharedManager applicationBecameActive];
 }

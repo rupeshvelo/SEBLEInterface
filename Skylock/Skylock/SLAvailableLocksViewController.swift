@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class SLAvailableLocksViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+@objc class SLAvailableLocksViewController: SLBaseViewController, UITableViewDelegate, UITableViewDataSource {
     var locks:[SLLock] = [SLLock]()
     
     let buttonTagShift:Int = 1000
@@ -40,35 +40,35 @@ import UIKit
         
         self.view.addSubview(self.tableView)
         
-        self.navigationItem.hidesBackButton = self.hideBackButton
+        let backButton = UIBarButtonItem(
+            image: UIImage(named: "lock_screen_close_icon"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: #selector(backButtonPressed)
+        )
+
+        self.navigationItem.leftBarButtonItem = backButton
         
-        let lockManager = SLLockManager.sharedManager()
-        if lockManager.isBlePoweredOn() && !lockManager.isScanning() {
-            lockManager.shouldEnterActiveSearchMode(true)
-            lockManager.startScan()
+        let lockManager = SLLockManager.sharedManager
+        if lockManager.isBlePoweredOn() && !lockManager.isInActiveSearch() {
+            lockManager.startActiveSearch()
         }
         
-        if let currentLock = lockManager.getCurrentLock() {
-            lockManager.disconnectFromLockWithAddress(currentLock.macAddress)
-        }
-        
-        if let availableLocks = lockManager.locksDiscoveredInSearch() as? [SLLock] {
-            for lock in availableLocks {
-                var addLock = true
-                for listedLock in self.locks {
-                    if lock.macAddress == listedLock.macAddress {
-                        addLock = false
-                        break
-                    }
-                }
-                
-                if addLock {
-                    self.locks.append(lock)
+        for lock in lockManager.locksInActiveSearch() {
+            var addLock = true
+            for listedLock in self.locks {
+                if lock.macAddress == listedLock.macAddress {
+                    addLock = false
+                    break
                 }
             }
             
-            self.tableView.reloadData()
+            if addLock {
+                self.locks.append(lock)
+            }
         }
+        
+        self.tableView.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -86,28 +86,26 @@ import UIKit
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(hardwareServiceFoundForLock(_:)),
-            name: kSLNotificationHardwareServiceFound,
+            selector: #selector(bleHardwarePoweredOn(_:)),
+            name: kSLNotificationLockManagerBlePoweredOn,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: #selector(bleHardwarePoweredOn(_:)),
-            name: kSLNotificationLockManagerBlePoweredOn,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
             object: nil
         )
     }
     
     func foundLock(notification: NSNotification) {
         guard let lock = notification.object as? SLLock else {
+            print("Error: found lock but it was not included in notification")
             return
         }
         
         self.locks.append(lock)
-        
-//        let lockManager = SLLockManager.sharedManager() as! SLLockManager
-//        lockManager.shallowConnectLock(lock)
         
         let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
         self.tableView.beginUpdates()
@@ -128,36 +126,58 @@ import UIKit
         }
     }
     
-    func hardwareServiceFoundForLock(notification: NSNotification) {
-        guard let macAddress = notification.object as? String else {
-            return
-        }
-        
-        print("hardware service for \(macAddress) found")
+    func bleHardwarePoweredOn(notificaiton: NSNotification) {
+        let lockManager = SLLockManager.sharedManager
+        lockManager.startActiveSearch()
     }
     
-    func bleHardwarePoweredOn(notificaiton: NSNotification) {
-        let lockManager = SLLockManager.sharedManager()
-        lockManager.shouldEnterActiveSearchMode(true)
-        lockManager.startScan()
+    func lockConnectionError(notification: NSNotification) {
+        var info:String?
+        if let code = notification.object?["code"] as? NSNumber {
+            if code.unsignedIntegerValue == 0 {
+                info = NSLocalizedString(
+                    "Sorry. This lock belongs to another user. We can't add it to your account.",
+                    comment: ""
+                )
+            }
+        }
+        
+        if info == nil {
+            if let lock = notification.object?["lock"] as? SLLock {
+                info = NSLocalizedString(
+                    "Sorry. There was an error connecting to the lock \(lock.displayName())",
+                    comment: ""
+                )
+            } else {
+                info = NSLocalizedString("Sorry. There was an error connecting to the lock", comment: "")
+            }
+        }
+        
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Failed to connect Ellipse", comment: ""),
+            .Info: info,
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
     }
     
     func blinkLockButtonPressed(button: UIButton) {
-        for (i, lock) in self.locks.enumerate() {
-            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-            print("\(cell.textLabel?.text!)")
-            
-            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
-                let accessoryButtonTag = accessoryButton.tag
-                let buttonTag = button.tag
-                if accessoryButtonTag == buttonTag {
-                    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-                    lockManager.flashLEDsForLock(lock)
-                    break
-                }
-            }
-        }
+//        for (i, lock) in self.locks.enumerate() {
+//            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
+//            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
+//            print("\(cell.textLabel?.text!)")
+//            
+//            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+//                let accessoryButtonTag = accessoryButton.tag
+//                let buttonTag = button.tag
+//                if accessoryButtonTag == buttonTag {
+//                    SLLockManager.sharedManager.flashLEDsForLock(lock)
+//                    break
+//                }
+//            }
+//        }
     }
     
     func connectButtonPressed(button: UIButton) {
@@ -168,16 +188,37 @@ import UIKit
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
+                let hasConnected = lock.hasConnected!.boolValue
                 if accessoryButtonTag == buttonTag {
                     let ccvc = SLConcentricCirclesViewController()
-                    self.navigationController?.pushViewController(ccvc, animated: true)
+                    ccvc.onExit = {
+                        if hasConnected {
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        } else {
+                            let psvc = SLPairingSuccessViewController()
+                            self.navigationController?.pushViewController(psvc, animated: true)
+                        }
+                    }
                     
-                    let lockManager = SLLockManager.sharedManager()
-                    lockManager.connectToLockWithName(lock.name)
+                    self.navigationController?.pushViewController(ccvc, animated: true)
+                    let lockManager = SLLockManager.sharedManager
+                    lockManager.connectToLockWithMacAddress(lock.macAddress!)
                     break
                 }
             }
         }
+    }
+    
+    func backButtonPressed() {
+        if self.navigationController?.viewControllers.first == self {
+            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.navigationController?.popViewControllerAnimated(true)
+        }
+        
+        let lockManager = SLLockManager.sharedManager
+        lockManager.endActiveSearch()
+        lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
     }
     
     func enableButtonAtIndex(index: Int) {

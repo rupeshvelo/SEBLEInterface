@@ -124,6 +124,10 @@ class SLLockOnboardingTouchEllipseViewController: UIViewController {
     
     func touchPadOnButtonPressed() {
         let ccvc = SLConcentricCirclesViewController()
+        ccvc.onExit = {
+            let psvc = SLPairingSuccessViewController()
+            self.navigationController?.pushViewController(psvc, animated: true)
+        }
         self.navigationController?.pushViewController(ccvc, animated: true)
     }
 }

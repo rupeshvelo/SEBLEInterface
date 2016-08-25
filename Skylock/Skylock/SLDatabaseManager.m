@@ -69,7 +69,11 @@
         lock.uuid = uuid;
         lock.macAddress = name.macAddress;
         lock.isShallowConnection = @(NO);
+        lock.isCurrentLock = @(NO);
     }
+    
+    [self saveLock:lock];
+    NSLog(@"lock: %@", lock.description);
     
     return lock;
 }
@@ -297,7 +301,6 @@
 
 - (void)saveUser:(SLUser *)user withCompletion:(void (^)(BOOL))completion
 {
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSError *error;
     BOOL success = NO;
     if ([self.context save:&error]) {
@@ -377,7 +380,7 @@
     NSError *error = nil;
     BOOL success = [self.context save:&error];
     if (success) {
-        NSLog(@"saved lock: %@ to db", lock.name);
+        NSLog(@"saved lock: %@ to db", lock.description);
     } else {
         NSLog(@"Failed to save lock %@ to db with error: %@",
               lock.name,

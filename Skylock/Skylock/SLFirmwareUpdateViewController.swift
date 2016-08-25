@@ -10,9 +10,10 @@ import UIKit
 enum SLFirmwareUpdateStage {
     case Available
     case InProgress
+    case Finished
 }
 
-class SLFirmwareUpdateViewController: UIViewController {
+class SLFirmwareUpdateViewController: SLBaseViewController {
     let xPadding:CGFloat = 25.0
     
     let buttonHeight:CGFloat = 55.0
@@ -21,7 +22,8 @@ class SLFirmwareUpdateViewController: UIViewController {
     
     let updateText:[SLFirmwareUpdateStage:String] = [
         .Available: NSLocalizedString("Frimware update available", comment: ""),
-        .InProgress: NSLocalizedString("Firmware update in progress", comment: "")
+        .InProgress: NSLocalizedString("Firmware update in progress", comment: ""),
+        .Finished: NSLocalizedString("All Done! Restarting your Ellipse...", comment: "")
     ]
     
     // This should be passed in in the initialzer once it is implemnted on the server
@@ -30,7 +32,7 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var updateLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
-            y: 40.0,
+            y: 100.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 17.0
         )
@@ -46,9 +48,9 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var progressLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.updateLabel.frame) + 40.0,
+            y: CGRectGetMaxY(self.updateLabel.frame) + 20.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
-            height: 13.0
+            height: 17.0
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -63,12 +65,14 @@ class SLFirmwareUpdateViewController: UIViewController {
     lazy var progressBar:SLFirmwareUpdateProgressBarView = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.progressLabel.frame) + 20.0,
+            y: CGRectGetMaxY(self.progressLabel.frame) + 5.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 10.0
         )
         
         let bar:SLFirmwareUpdateProgressBarView = SLFirmwareUpdateProgressBarView(frame: frame)
+        bar.hidden = true
+        
         return bar
     }()
     
@@ -108,6 +112,9 @@ class SLFirmwareUpdateViewController: UIViewController {
         return button
     }()
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -125,6 +132,31 @@ class SLFirmwareUpdateViewController: UIViewController {
             name: kSLNotificationLockManagerFirmwareUpdateState,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(firmwareUpdateComplete(_:)),
+            name: kSLNotificationLockManagerEndedFirmwareUpdate,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(disconnectedLock(_:)),
+            name: kSLNotificationLockManagerDisconnectedLock,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockPaired(_:)),
+            name: kSLNotificationLockPaired,
+            object: nil
+        )
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
     }
     
     func setFirmwareStage(stage: SLFirmwareUpdateStage) {
@@ -141,12 +173,13 @@ class SLFirmwareUpdateViewController: UIViewController {
     }
     
     func updateNowButtonPressed() {
-        self.updateLaterButton.enabled = false
-        self.updateLaterButton.enabled = false
         self.stage = .InProgress
         self.updateLabel.text = self.updateText[self.stage]
-        let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
-        lockManager.updateFirmwareForCurrentLock()
+        self.progressLabel.hidden = false
+        self.progressBar.hidden = false
+        self.updateNowButton.hidden = true
+        self.updateLaterButton.hidden = true
+        SLLockManager.sharedManager.updateFirmwareForCurrentLock()
     }
     
     func updateFirmware(notification: NSNotification) {
@@ -155,5 +188,30 @@ class SLFirmwareUpdateViewController: UIViewController {
         }
         
         self.progressBar.updateBarWithRatio(progress.doubleValue)
+    }
+    
+    func firmwareUpdateComplete(notification: NSNotification) {
+        self.updateLabel.text = self.updateText[.Finished]
+    }
+    
+    func disconnectedLock(notification: NSNotification) {
+        //self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func lockPaired(notification: NSNotification) {
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
+            .Info: NSLocalizedString("The firmware on your ellipse has been updated.", comment: ""),
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        self.presentWarningViewControllerWithTexts(texts) {
+            if let navController = self.navigationController {
+                navController.popViewControllerAnimated(true)
+            } else {
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
     }
 }

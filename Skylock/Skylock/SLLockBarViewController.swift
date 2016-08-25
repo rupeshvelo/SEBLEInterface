@@ -104,14 +104,14 @@ class SLLockBarViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
-            name: kSLNotificationLockOpened,
+            name: kSLNotificationLockPositionOpen,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockLocked(_:)),
-            name: kSLNotificationLockClosed,
+            name: kSLNotificationLockPositionLocked,
             object: nil
         )
         
@@ -138,7 +138,7 @@ class SLLockBarViewController: UIViewController {
     }
     
     func setUpViews() {
-        self.lock = SLLockManager.sharedManager().getCurrentLock()
+        self.lock = SLLockManager.sharedManager.getCurrentLock()
         
         if !self.view.subviews.contains(self.lockNameLabel) {
             self.view.addSubview(self.lockNameLabel)
@@ -152,23 +152,15 @@ class SLLockBarViewController: UIViewController {
             self.view.addSubview(self.tapActionLabel)
         }
         
-        if let lock = self.lock {
-            if lock.isLocked.boolValue {
-                self.setUpForLockedState()
-            } else {
-                self.setUpForUnlockedState()
-            }
-        } else {
+        if self.lock == nil {
             self.setUpForDisconnectedState()
+        } else {
+            self.setUpForLockedState()
         }
     }
     
     private func currentElementState() -> LockState {
-        guard let lock = self.lock else {
-            return .Disconnected
-        }
-        
-        return lock.isLocked.boolValue ? .Locked : .Unlocked
+        return .Locked
     }
     
     private func valueForLockState(lockState: LockState, element: Element) -> String {
@@ -257,10 +249,10 @@ class SLLockBarViewController: UIViewController {
     }
     
     @objc private func lockPaired(notification: NSNotification) {
-        let lockManager = SLLockManager.sharedManager() as! SLLockManager
+        let lockManager = SLLockManager.sharedManager
         if let lock:SLLock = lockManager.getCurrentLock() {
             self.lock = lock
-            lockManager.checkLockOpenOrClosed()
+            lockManager.checkCurrentLockOpenOrClosed()
         }
     }
 }

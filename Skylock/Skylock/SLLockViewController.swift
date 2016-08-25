@@ -9,7 +9,7 @@
 import UIKit
 
 @objc class SLLockViewController:
-UIViewController,
+SLBaseViewController,
 SLSlideViewControllerDelegate,
 SLLocationManagerDelegate,
 SLAcceptNotificationsViewControllerDelegate,
@@ -22,7 +22,7 @@ SLLockBarViewControllerDelegate
     
     var lock:SLLock?
     
-    let lockManager:SLLockManager = SLLockManager.sharedManager() as! SLLockManager
+    let lockManager:SLLockManager = SLLockManager.sharedManager
     
     let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
     
@@ -141,7 +141,7 @@ SLLockBarViewControllerDelegate
     }()
     
     lazy var batteryView:UIImageView = {
-        let image:UIImage = UIImage(named: "battery0")!
+        let image:UIImage = UIImage(named: "battery4")!
         let frame = CGRect(
             x: CGRectGetMaxX(self.underLineView.frame) - image.size.width,
             y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
@@ -156,7 +156,7 @@ SLLockBarViewControllerDelegate
     }()
     
     lazy var rssiView:UIImageView = {
-        let image:UIImage = UIImage(named: "rssi0")!
+        let image:UIImage = UIImage(named: "rssi4")!
         let frame = CGRect(
             x: CGRectGetMinX(self.batteryView.frame) - image.size.width - 20.0,
             y: CGRectGetMidY(self.lockNameLabel.frame) - 0.5*image.size.height,
@@ -289,7 +289,7 @@ SLLockBarViewControllerDelegate
         super.viewWillAppear(animated)
         
         
-        self.lockManager.checkLockOpenOrClosed()
+        self.lockManager.checkCurrentLockOpenOrClosed()
         self.showAcceptNotificaitonViewController()
         
         if !self.view.subviews.contains(self.thinkerViewController.view) {
@@ -308,6 +308,7 @@ SLLockBarViewControllerDelegate
         }
         
         self.thinkerViewController.setState(.Inactive)
+        self.lock = self.lockManager.getCurrentLock()
         self.toggleViewsHiddenOnConnction(self.lock != nil)
     }
     
@@ -316,17 +317,18 @@ SLLockBarViewControllerDelegate
     }
     
     func registerForNotifications() {
+        // TODO: Get UI to handle the case where the lock position is invalid or middle.
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockOpened(_:)),
-            name: kSLNotificationLockOpened,
+            name: kSLNotificationLockPositionOpen,
             object: nil
         )
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(lockLocked(_:)),
-            name: kSLNotificationLockClosed,
+            name: kSLNotificationLockPositionLocked,
             object: nil
         )
         
@@ -376,6 +378,13 @@ SLLockBarViewControllerDelegate
             self,
             selector: #selector(hardwareValuesUpdated(_:)),
             name: kSLNotificationLockManagerUpdatedHardwareValues,
+            object: nil
+        )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
             object: nil
         )
     }
@@ -479,16 +488,12 @@ SLLockBarViewControllerDelegate
     
     func lockOpened(notification: NSNotification) {
         self.thinkerViewController.setState(.CounterClockwiseStill)
-        if let lock = self.lock {
-            lock.isLocked = NSNumber(bool: false)
-        }
     }
     
     func lockLocked(notification: NSNotification) {
         self.thinkerViewController.setState(.ClockwiseStill)
         if let lock = self.lock {
             let user:SLUser = self.databaseManager.currentUser
-            lock.isLocked = NSNumber(bool: true)
             lock.setCurrentLocation(user.location)
             //lock.setCurrentLocation(CLLocationCoordinate2DMake(37.345253, -120.585895))
             self.databaseManager.saveLock(lock)
@@ -505,7 +510,7 @@ SLLockBarViewControllerDelegate
             self.lock = lock
             self.lockNameLabel.text = lock.displayName()
             self.lockNameLabel.setNeedsDisplay()
-            self.lockManager.checkLockOpenOrClosed()
+            self.lockManager.checkCurrentLockOpenOrClosed()
             self.lockNameLabel.textColor = UIColor.whiteColor()
             self.toggleViewsHiddenOnConnction(true)
         }
@@ -551,7 +556,9 @@ SLLockBarViewControllerDelegate
                         width: self.view.bounds.size.width,
                         height: height
                     )}, completion:{(success) in
-                        self.lockBarViewController!.setUpViews()
+                        if let lbvc = self.lockBarViewController {
+                            lbvc.setUpViews()
+                        }
                     }
                 )
             }
@@ -562,7 +569,6 @@ SLLockBarViewControllerDelegate
         if let lbvc = self.lockBarViewController {
             lbvc.view.removeFromSuperview()
             lbvc.removeFromParentViewController()
-            lbvc.view.removeFromSuperview()
             self.lockBarViewController = nil
         }
     }
@@ -577,6 +583,8 @@ SLLockBarViewControllerDelegate
             dispatch_async(dispatch_get_main_queue(), { 
                 self.batteryView.image = self.batteryImageForCurrentLock()
                 self.rssiView.image = self.rssiImageForCurrentLock()
+                self.batteryView.setNeedsDisplay()
+                self.rssiView.setNeedsDisplay()
             })
         }
     }
@@ -619,6 +627,38 @@ SLLockBarViewControllerDelegate
         self.theftButton.hidden = true
         self.batteryView.hidden = true
         self.rssiView.hidden = true
+    }
+    
+    func lockConnectionError(notification: NSNotification) {
+        var info:String?
+        if let code = notification.object?["code"] as? NSNumber {
+            if code.unsignedIntegerValue == 0 {
+                info = NSLocalizedString(
+                    "Sorry. This lock belongs to another user. We can't add it to your account.",
+                    comment: ""
+                )
+            }
+        }
+        
+        if info == nil {
+            if let lock = notification.object?["lock"] as? SLLock {
+                info = NSLocalizedString(
+                    "Sorry. There was an error connecting to the lock \(lock.displayName())",
+                    comment: ""
+                )
+            } else {
+                info = NSLocalizedString("Sorry. There was an error connecting to the lock", comment: "")
+            }
+        }
+        
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Failed to connect Ellipse", comment: ""),
+            .Info: info,
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
     }
     
     func setLockDisabled() {
@@ -799,15 +839,21 @@ SLLockBarViewControllerDelegate
     
     // MARK: SLThinkerViewControllerDelegate methods
     func thinkerViewTapped(tvc: SLThinkerViewController) {
-        guard let lock = self.lock else {
+        guard let lockPosition = self.lock?.lockPosition else {
+            print("Error: could not get lock position when thinker view was tapped.")
             return
         }
         
-        self.thinkerViewController.setState(
-            lock.isLocked.boolValue ? .CounterClockwiseMoving : .ClockwiseMoving
-        )
+        guard let position = SLLockPosition(rawValue: lockPosition.unsignedIntegerValue) else {
+            print(
+                "Error: could not get lock position when thinker view was tapped. "
+                + "The value is outside SLLockPosition enum values"
+            )
+            return
+        }
         
-        self.lockManager.setLockStateForLock(lock)
+        self.thinkerViewController.setState(position == .Locked ? .CounterClockwiseMoving : .ClockwiseMoving)
+        self.lockManager.toggleLockOpenedClosedShouldLock(position != .Locked)
     }
     
     // MARK: SLNotificationViewControllerDelegate methods

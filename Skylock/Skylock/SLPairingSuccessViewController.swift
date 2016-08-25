@@ -307,8 +307,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     func saveNewLockName() {
         if let lockName = self.nameField.text where lockName != "" {
             let trimmedString = lockName.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-            let lockManager = SLLockManager.sharedManager() as! SLLockManager
-            lockManager.changeCurrentLockGivenNameToName(trimmedString)
+            SLLockManager.sharedManager.changeCurrentLockGivenNameTo(trimmedString)
         }
     }
     

@@ -4,9 +4,9 @@
 
 #import "SLLock.h"
 #import "SLRestManager.h"
+#import "SLDatabaseManager.h"
 #import "SLMapViewController.h"
 #import "SLUserDefaults.h"
-#import "SLLockManager.h"
 #import <GoogleMaps/GoogleMaps.h>
 #import "SLLock.h"
 #import "SLAppDelegate.h"
@@ -19,3 +19,8 @@
 #import "SLEmergencyContact.h"
 #import "SLAccelerometerValues.h"
 #import "SLNotificationManager.h"
+#import "SEBLEInterface/SEBLEInterfaceManager.h"
+#import "SEBLEInterface/SEBLEPeripheral.h"
+#import "SLCryptoHandler.h"
+#import "SLAccelerometerValues.h"
+#import "SLLockValue.h"

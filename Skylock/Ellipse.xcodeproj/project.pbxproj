@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		533C414A667D227BB725102F /* Pods_Ellipse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */; };
+		6505646B1D6DDF2500201466 /* SLBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6505646A1D6DDF2500201466 /* SLBaseViewController.swift */; };
 		652306541D58E79C00091873 /* hamburger_button_navy@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6523063E1D58E79C00091873 /* hamburger_button_navy@2x.png */; };
 		652306551D58E79C00091873 /* hamburger_button_navy@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6523063F1D58E79C00091873 /* hamburger_button_navy@3x.png */; };
 		652306561D58E79C00091873 /* map_close_details_x_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306401D58E79C00091873 /* map_close_details_x_icon@2x.png */; };
@@ -84,7 +85,10 @@
 		652306D51D5A22BC00091873 /* rssi4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B11D5A22BC00091873 /* rssi4@3x.png */; };
 		652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B21D5A22BC00091873 /* temp_phone_info@2x.png */; };
 		652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B31D5A22BC00091873 /* temp_phone_info@3x.png */; };
-		6535E1031D57EF9600A46225 /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 6535E1021D57EF9600A46225 /* SLUser+CoreDataProperties.m */; };
+		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
+		65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */; };
+		65D9DA911D5E9E3400A909AA /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */; };
+		65D9DA931D625E7400A909AA /* SLLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA921D625E7400A909AA /* SLLockManager.swift */; };
 		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0250151C81F00A00208508 /* SLUserHandler.swift */; };
 		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
@@ -278,7 +282,6 @@
 		DC77BF611D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77BF601D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift */; };
 		DC77BF631D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77BF621D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift */; };
 		DC77BF981D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77BF971D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift */; };
-		DC77BF9A1D0B29B60081C7B6 /* SLTheftDetectionSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77BF991D0B29B60081C7B6 /* SLTheftDetectionSliderView.swift */; };
 		DC77BF9C1D0B67BF0081C7B6 /* SLLockResetOrDeleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77BF9B1D0B67BF0081C7B6 /* SLLockResetOrDeleteViewController.swift */; };
 		DC77CA731D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77CA721D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift */; };
 		DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC77CA741D4BEB61009D2E41 /* SLBoxTextField.swift */; };
@@ -299,7 +302,6 @@
 		DC9682C11D2B7B15008C106E /* SLContactsLetterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */; };
 		DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D191C38976600797CF1 /* SLKeychainHandler.swift */; };
 		DC974D231C3A0F6800797CF1 /* SLPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */; };
-		DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */; };
 		DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */ = {isa = PBXBuildFile; fileRef = DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */; };
 		DCA142191D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA142181D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift */; };
 		DCA71B021CFFC73F000517CC /* SLPairingSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA71B011CFFC73F000517CC /* SLPairingSuccessViewController.swift */; };
@@ -405,6 +407,7 @@
 		21CECDB17A6FED4F7E595044 /* Pods_Ellipse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ellipse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A4FF149696B440E58E7105A /* Pods-Skylock.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.debug.xcconfig"; sourceTree = "<group>"; };
 		5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.debug.xcconfig"; sourceTree = "<group>"; };
+		6505646A1D6DDF2500201466 /* SLBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLBaseViewController.swift; sourceTree = "<group>"; };
 		6523063E1D58E79C00091873 /* hamburger_button_navy@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_button_navy@2x.png"; sourceTree = "<group>"; };
 		6523063F1D58E79C00091873 /* hamburger_button_navy@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hamburger_button_navy@3x.png"; sourceTree = "<group>"; };
 		652306401D58E79C00091873 /* map_close_details_x_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map_close_details_x_icon@2x.png"; sourceTree = "<group>"; };
@@ -481,8 +484,12 @@
 		652306B11D5A22BC00091873 /* rssi4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rssi4@3x.png"; sourceTree = "<group>"; };
 		652306B21D5A22BC00091873 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
 		652306B31D5A22BC00091873 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
-		6535E1011D57EF9600A46225 /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
-		6535E1021D57EF9600A46225 /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
+		65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCryptoHandler.m; sourceTree = "<group>"; };
+		65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchSliderViewController.swift; sourceTree = "<group>"; };
+		65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLUser+CoreDataProperties.h"; sourceTree = "<group>"; };
+		65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65D9DA921D625E7400A909AA /* SLLockManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockManager.swift; sourceTree = "<group>"; };
 		714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.release.xcconfig"; sourceTree = "<group>"; };
 		8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skylock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
@@ -685,7 +692,6 @@
 		DC77BF601D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLOpposingLabelsTableViewCell.swift; sourceTree = "<group>"; };
 		DC77BF621D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLabelAndSwitchTableViewCell.swift; sourceTree = "<group>"; };
 		DC77BF971D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTheftDetectionSettingsViewController.swift; sourceTree = "<group>"; };
-		DC77BF991D0B29B60081C7B6 /* SLTheftDetectionSliderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTheftDetectionSliderView.swift; sourceTree = "<group>"; };
 		DC77BF9B1D0B67BF0081C7B6 /* SLLockResetOrDeleteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockResetOrDeleteViewController.swift; sourceTree = "<group>"; };
 		DC77CA721D4BCF38009D2E41 /* SLOnboardingMapBackgroundViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLOnboardingMapBackgroundViewController.swift; sourceTree = "<group>"; };
 		DC77CA741D4BEB61009D2E41 /* SLBoxTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLBoxTextField.swift; sourceTree = "<group>"; };
@@ -710,8 +716,6 @@
 		DC9682C01D2B7B15008C106E /* SLContactsLetterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContactsLetterViewController.swift; sourceTree = "<group>"; };
 		DC974D191C38976600797CF1 /* SLKeychainHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLKeychainHandler.swift; sourceTree = "<group>"; };
 		DC974D221C3A0F6800797CF1 /* SLPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageViewController.swift; sourceTree = "<group>"; };
-		DC9EADED1B34EFB100DA1692 /* SLLockManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLLockManager.h; sourceTree = "<group>"; };
-		DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLLockManager.m; sourceTree = "<group>"; };
 		DC9EAE001B350CF200DA1692 /* NSString+Skylock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Skylock.h"; sourceTree = "<group>"; };
 		DC9EAE011B350CF200DA1692 /* NSString+Skylock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Skylock.m"; sourceTree = "<group>"; };
 		DCA142181D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockScreenAlertButtonView.swift; sourceTree = "<group>"; };
@@ -952,6 +956,8 @@
 			children = (
 				DC0250151C81F00A00208508 /* SLUserHandler.swift */,
 				DCCB81B01CB7356C00800E3F /* SLContactHandler.swift */,
+				65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */,
+				65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */,
 			);
 			name = handlers;
 			sourceTree = "<group>";
@@ -988,7 +994,6 @@
 				DC6F1CE21CBB007900D44739 /* SLUnderlinedCharacterView.swift */,
 				DC77BF601D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift */,
 				DC77BF621D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift */,
-				DC77BF991D0B29B60081C7B6 /* SLTheftDetectionSliderView.swift */,
 				DCA142181D1C9C4E0071C276 /* SLLockScreenAlertButtonView.swift */,
 				DC4EF63B1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift */,
 				DCAAEBBE1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift */,
@@ -1003,6 +1008,8 @@
 			isa = PBXGroup;
 			children = (
 				DCBAAAE01D03ED380000C6AA /* SLAcceptNotificationsViewController.swift */,
+				6505646A1D6DDF2500201466 /* SLBaseViewController.swift */,
+				65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */,
 				DCA71B011CFFC73F000517CC /* SLPairingSuccessViewController.swift */,
 				DC80915A1CFD652B00C4F093 /* SLConcentricCirclesViewController.swift */,
 				DCE5C2251CFB6E510084F8A2 /* SLAvailableLocksViewController.swift */,
@@ -1055,8 +1062,8 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
-				6535E1011D57EF9600A46225 /* SLUser+CoreDataProperties.h */,
-				6535E1021D57EF9600A46225 /* SLUser+CoreDataProperties.m */,
+				65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */,
+				65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */,
 				DC081B451D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.h */,
 				DC081B461D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m */,
 				DCAAEBB81D32DDE600946B61 /* SLEmergencyContact.h */,
@@ -1092,14 +1099,13 @@
 		DC0520CA1B4C0F1B00FBAAB7 /* managers */ = {
 			isa = PBXGroup;
 			children = (
+				65D9DA921D625E7400A909AA /* SLLockManager.swift */,
 				DC7E70CE1B8C3382006E74DC /* SLNotificationManager.h */,
 				DC7E70CF1B8C3382006E74DC /* SLNotificationManager.m */,
 				DCEAD1001B4C53EF0065D9BE /* SLFacebookManger.h */,
 				DCEAD1011B4C53EF0065D9BE /* SLFacebookManger.m */,
 				DCC1E73D1B49800B0083A665 /* SLDatabaseManager.h */,
 				DCC1E73E1B49800B0083A665 /* SLDatabaseManager.m */,
-				DC9EADED1B34EFB100DA1692 /* SLLockManager.h */,
-				DC9EADEE1B34EFB100DA1692 /* SLLockManager.m */,
 				DCF944FF1B29CC2E00136E39 /* SLRestManager.h */,
 				DCF945001B29CC2E00136E39 /* SLRestManager.m */,
 				DC17ACAC1B5C3C3B0090BE8A /* SLPicManager.h */,
@@ -1912,14 +1918,16 @@
 				6523068E1D597B2300091873 /* SLFirmwareUpdateProgressBarView.swift in Sources */,
 				DCE5C2031CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift in Sources */,
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
+				65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */,
 				DCAAEBBB1D32DDE600946B61 /* SLEmergencyContact.m in Sources */,
 				DC4402521B98A69000D1C2B9 /* SLUtilities.swift in Sources */,
 				DCD679781CF77A030081D225 /* SLOnboardingViewController.swift in Sources */,
 				DC77BF631D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift in Sources */,
+				6505646B1D6DDF2500201466 /* SLBaseViewController.swift in Sources */,
 				DC9682C11D2B7B15008C106E /* SLContactsLetterViewController.swift in Sources */,
-				6535E1031D57EF9600A46225 /* SLUser+CoreDataProperties.m in Sources */,
 				DCBAAAE11D03ED380000C6AA /* SLAcceptNotificationsViewController.swift in Sources */,
 				DCCB81B11CB7356C00800E3F /* SLContactHandler.swift in Sources */,
+				65D9DA911D5E9E3400A909AA /* SLUser+CoreDataProperties.m in Sources */,
 				DCF36BAE1B524B5000070F11 /* SLUnderlineTextField.m in Sources */,
 				DCD679761CF779920081D225 /* SLOnboardingPageViewController.swift in Sources */,
 				DC2B94721B63DD720047583D /* SLSettingsViewController.swift in Sources */,
@@ -1949,6 +1957,7 @@
 				DC6DB5A21D060C8900B159B3 /* SLSlideViewController.swift in Sources */,
 				DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */,
 				DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */,
+				65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */,
 				DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */,
 				DCE6071B1D10879D0034D0B3 /* SLLocationManager.swift in Sources */,
 				DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */,
@@ -1962,6 +1971,7 @@
 				DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */,
 				DCAAEBA91D32D9A100946B61 /* SLEmergencyContactsViewController.swift in Sources */,
 				DCAAEB871D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift in Sources */,
+				65D9DA931D625E7400A909AA /* SLLockManager.swift in Sources */,
 				DC3003731D4405FD004CE560 /* SLNotificationViewController.swift in Sources */,
 				DCD679811CFA444E0081D225 /* SLSignInViewController.swift in Sources */,
 				DC763D371CB471C800037EF9 /* SLChooseContactViewController.swift in Sources */,
@@ -1978,7 +1988,6 @@
 				DC3003751D440EEF004CE560 /* SLTheftNotificationViewController.swift in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
-				DC9EADEF1B34EFB100DA1692 /* SLLockManager.m in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
 				DCF36BB11B52503000070F11 /* UIColor+RGB.m in Sources */,
 				DC77BF981D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift in Sources */,
@@ -1990,7 +1999,6 @@
 				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
 				DC974D1A1C38976600797CF1 /* SLKeychainHandler.swift in Sources */,
 				DCEAD1021B4C53EF0065D9BE /* SLFacebookManger.m in Sources */,
-				DC77BF9A1D0B29B60081C7B6 /* SLTheftDetectionSliderView.swift in Sources */,
 				DC4EF63C1D2486BF005FFA3D /* SLNoEllipseConnectedView.swift in Sources */,
 				DC9682BF1D2B3012008C106E /* SLInsetTextField.swift in Sources */,
 				DCD88AF11D1B6F8300A3618D /* SLConfirmTextCodeViewController.swift in Sources */,

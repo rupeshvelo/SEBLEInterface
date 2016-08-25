@@ -92,6 +92,12 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         self.contentView.addSubview(self.rightField)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.accessoryView = nil
+    }
+    
 //    override func setSelected(selected: Bool, animated: Bool) {
 //        let view:UIView = UIView(frame: self.bounds)
 //        //view.backgroundColor = UIColor.clearColor()

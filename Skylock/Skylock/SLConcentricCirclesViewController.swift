@@ -10,12 +10,20 @@ import UIKit
 
 class SLConcentricCirclesViewController: UIViewController {
     let interval:Double = 2.3
+    
     var circleIndex:Int = 0
+    
     let startDiameter:CGFloat = 10.0
+    
     var finalDiamter:CGFloat = 0.0
+    
     var initialCircleFrame:CGRect = CGRectZero
+    
     let numberOfCircles:Int = 5
+    
     let xPadding:CGFloat = 35.0
+    
+    var onExit:(() -> ())?
     
     lazy var connectingEllipseLabel:UILabel = {
         let frame = CGRect(
@@ -103,6 +111,13 @@ class SLConcentricCirclesViewController: UIViewController {
             height: self.startDiameter
         )
         
+        self.finalDiamter = pow(pow(self.view.bounds.size.width, 2) + pow(self.view.bounds.size.height, 2), 0.5)
+        
+        self.view.addSubview(self.getHelpButton)
+        self.view.addSubview(self.makeSureLabel)
+        
+        self.run()
+        
         NSNotificationCenter.defaultCenter().addObserver(
             self,
             selector: #selector(connectedLock),
@@ -110,12 +125,12 @@ class SLConcentricCirclesViewController: UIViewController {
             object: nil
         )
         
-        self.finalDiamter = pow(pow(self.view.bounds.size.width, 2) + pow(self.view.bounds.size.height, 2), 0.5)
-        
-        self.view.addSubview(self.getHelpButton)
-        self.view.addSubview(self.makeSureLabel)
-        
-        self.run()
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
+            object: nil
+        )
     }
     
     func run() {
@@ -166,10 +181,25 @@ class SLConcentricCirclesViewController: UIViewController {
         self.view.bringSubviewToFront(self.connectingEllipseLabel)
         self.view.bringSubviewToFront(self.getHelpButton)
         self.view.bringSubviewToFront(self.makeSureLabel)
+//        if self.warningBackgroundView != nil {
+//            self.view.bringSubviewToFront(self.warningBackgroundView!)
+//        }
+//        if self.warningViewController != nil {
+//            self.view.bringSubviewToFront(self.warningViewController!.view)
+//        }
     }
     
     func connectedLock() {
-        let psvc = SLPairingSuccessViewController()
-        self.navigationController?.pushViewController(psvc, animated: true)
+        if let onExit = self.onExit {
+            onExit()
+        }
+    }
+    
+    func lockConnectionError(notification: NSNotification) {
+        if let navController = self.navigationController {
+            navController.popViewControllerAnimated(true)
+        } else {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
     }
 }
