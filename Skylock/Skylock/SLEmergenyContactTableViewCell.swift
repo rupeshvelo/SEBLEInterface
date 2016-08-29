@@ -72,15 +72,28 @@ class SLEmergenyContactTableViewCell: UITableViewCell {
             self.removeContactButton.enabled = false
         }
         
-        if let image = properties[.Pic] as? UIImage, let imageView = self.imageView {
-            imageView.image = image
-        }
+//        if let image = properties[.Pic] as? UIImage, let imageView = self.imageView {
+//            imageView.image = UIImage(named: "sharing_default_picture")!
+//        }
+        
+        self.imageView?.image = UIImage(named: "sharing_default_picture")!
         
         if let contactIdentifier = properties[.ContactId] as? String {
             self.contactId = contactIdentifier
         } else {
             self.contactId = nil
         }
+    }
+    
+    func updateImage(image: UIImage?) {
+        if let pic = image {
+            self.imageView?.image = pic
+        } else {
+            let pic = UIImage(named: "sharing_default_picture")!
+            self.imageView?.image = pic
+        }
+        
+        self.imageView?.setNeedsDisplay()
     }
     
     func removeContactButtonPressed() {

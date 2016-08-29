@@ -174,7 +174,10 @@ class SLConcentricCirclesViewController: UIViewController {
     }
     
     func getHelpButtonPressed() {
-        print("Get help button pressed")
+        let webView = SLWebViewController(baseUrl: .Help)
+        self.navigationController == nil ? self.presentViewController(webView, animated: true, completion: nil)
+            : self.navigationController!.pushViewController(webView, animated: true)
+        
     }
     
     func bringTopViewsToFront() {

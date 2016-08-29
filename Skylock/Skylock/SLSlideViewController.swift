@@ -35,8 +35,8 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             NSLocalizedString("PROFILE & SETTINGS", comment: ""),
             NSLocalizedString("EMERGENCY CONTACTS", comment: ""),
             NSLocalizedString("HELP", comment: ""),
-            NSLocalizedString("RATE THE APP", comment: ""),
-            NSLocalizedString("INVITE FRIENDS & EARN CREDIT", comment: ""),
+//            NSLocalizedString("RATE THE APP", comment: ""),
+//            NSLocalizedString("INVITE FRIENDS & EARN CREDIT", comment: ""),
             NSLocalizedString("ORDER YOU ELLIPSE NOW", comment: "")
         ]
     ]
@@ -85,7 +85,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 2 : 6
+        return section == 0 ? 2 : 4
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -141,10 +141,10 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
                 action = .EmergencyContacts
             case 2:
                 action = .HelpPressed
-            case 3:
-                action = .RateTheAppPressed
-            case 4:
-                action = .InviteFriendsPressed
+//            case 3:
+//                action = .RateTheAppPressed
+//            case 4:
+//                action = .InviteFriendsPressed
             default:
                 action = .OrderNowPressed
             }

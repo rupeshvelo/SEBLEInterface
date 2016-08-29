@@ -21,7 +21,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     var stage:SLFirmwareUpdateStage = .Available
     
     let updateText:[SLFirmwareUpdateStage:String] = [
-        .Available: NSLocalizedString("Frimware update available", comment: ""),
+        .Available: NSLocalizedString("Firmware update available", comment: ""),
         .InProgress: NSLocalizedString("Firmware update in progress", comment: ""),
         .Finished: NSLocalizedString("All Done! Restarting your Ellipse...", comment: "")
     ]

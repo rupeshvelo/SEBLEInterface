@@ -19,6 +19,8 @@ SLEmergenyContactTableViewCellDelegate
     
     var onExit:(() -> Void)?
     
+    let contactHandler:SLContactHandler = SLContactHandler()
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
         table.delegate = self
@@ -146,7 +148,20 @@ SLEmergenyContactTableViewCellDelegate
             if indexPath.row < self.contacts.count {
                 let contact = self.contacts[indexPath.row]
                 name = contact.fullName()
+                if let identifier = contact.contactId {
+                    self.contactHandler.getImageForContact(identifier, completion: { (imageData:NSData?) in
+                        dispatch_async(dispatch_get_main_queue(), { 
+                            if let data = imageData {
+                                let image = UIImage(data: data)
+                                cell?.updateImage(image)
+                            } else {
+                                cell?.updateImage(nil)
+                            }
+                        })
+                    })
+                }
             }
+            
             
             let image = UIImage(named: "sharing_default_picture")!
             let properties:[SLEmergencyContactTableViewCellProperty:AnyObject] = [
