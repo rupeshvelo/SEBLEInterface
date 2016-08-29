@@ -458,7 +458,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         return [
             self.characteristicUUID(.Magnet),
             self.characteristicUUID(.Accelerometer),
-            self.characteristicUUID(.CommandStatus),
+            self.characteristicUUID(.CommandStatus)
         ]
     }
     
@@ -1284,7 +1284,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        guard let restToken = self.keychainHandler.getItemForUsername(user.userId!, additionalSeviceInfo: nil, handlerCase: .RestToken) else {
+        guard let restToken = self.keychainHandler.getItemForUsername(
+            user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
             print("Error: keychain handler does not have a rest token for user \(user.fullName()).")
             return
         }

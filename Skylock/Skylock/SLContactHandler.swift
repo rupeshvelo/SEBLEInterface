@@ -81,6 +81,26 @@ enum SLUserDefaultsEmergencyContactId: String {
         return newContact
     }
     
+    func getImageForContact(identifier: String, completion:((imageData: NSData?) -> ())?) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+            var contact:CNContact?
+            do {
+                contact = try CNContactStore().unifiedContactWithIdentifier(
+                    identifier,
+                    keysToFetch: [CNContactImageDataKey]
+                )
+            } catch {
+                if let exit = completion {
+                    exit(imageData: nil)
+                }
+            }
+            
+            if let exit = completion {
+                exit(imageData: contact?.imageData)
+            }
+        })
+    }
+    
     func getActiveEmergencyContacts() -> [SLEmergencyContact]? {
         guard let contacts = self.dbEmegencyContacts() else {
             return nil

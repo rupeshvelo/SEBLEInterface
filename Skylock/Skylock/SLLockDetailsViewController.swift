@@ -151,12 +151,15 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         var mainText:String?
         var detailText:String?
         var isConnected = false
+        var cellEnabled = true
         
         if let lock = self.connectedLock where indexPath.section == 0 {
             mainText = lock.displayName()
             detailText = NSLocalizedString("Connected", comment: "")
             isConnected = true
-        } else if indexPath.section != 0 {
+        } else if indexPath.section == 0 {
+            cellEnabled = false
+        } else {
             let unconnectedLock = self.unconnectedLocks[indexPath.row]
             mainText = unconnectedLock.displayName()
             if let lastConnectedDate = unconnectedLock.lastConnected {
@@ -172,6 +175,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         cell.setProperties(isConnected, mainText: mainText, detailText: detailText)
         cell.accessoryView = mainText == nil ? nil : optionsDotsView
         cell.selectionStyle = .None
+        cell.userInteractionEnabled = cellEnabled
         
         return cell
     }

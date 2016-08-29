@@ -27,6 +27,23 @@ import UIKit
         return table
     }()
     
+    lazy var headerLabel:UILabel = {
+        let frame = CGRect(
+            x: 0,
+            y: 0,
+            width: self.tableView.bounds.size.width,
+            height: self.tableView(self.tableView, heightForHeaderInSection: 0)
+        )
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textAlignment = .Center
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
+        label.textColor = UIColor(red: 130, green: 156, blue: 178)
+        label.numberOfLines = 2
+
+        return label
+    }()
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -69,6 +86,7 @@ import UIKit
         }
         
         self.tableView.reloadData()
+        self.setHeaderTextForNuberOfLocks(self.locks.count)
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -106,6 +124,9 @@ import UIKit
         }
         
         self.locks.append(lock)
+        
+        // If this is the first lock found, we need to update the header text.
+        self.setHeaderTextForNuberOfLocks(self.locks.count)
         
         let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
         self.tableView.beginUpdates()
@@ -235,6 +256,11 @@ import UIKit
         }
     }
     
+    func setHeaderTextForNuberOfLocks(numberOfLocks: Int) {
+        self.headerLabel.text = numberOfLocks == 0 ? NSLocalizedString("Searching...", comment: "")
+            : NSLocalizedString("We've found the following Ellipses", comment: "")
+    }
+    
     // MARK: UITableView delegate and datasource methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -279,7 +305,6 @@ import UIKit
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let labelHeight:CGFloat = self.tableView(tableView, heightForHeaderInSection: section)
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -290,21 +315,7 @@ import UIKit
         let view:UIView = UIView(frame: viewFrame)
         view.backgroundColor = UIColor.whiteColor()
         
-        let frame = CGRect(
-            x: 0,
-            y: 0.5*(view.bounds.size.height - labelHeight),
-            width: tableView.bounds.size.width,
-            height: view.bounds.size.height
-        )
-        
-        let label:UILabel = UILabel(frame: frame)
-        label.text = NSLocalizedString("We've found the\nfollowing Ellipses", comment: "")
-        label.textAlignment = .Center
-        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
-        label.textColor = UIColor(red: 130, green: 156, blue: 178)
-        label.numberOfLines = 2
-        
-        view.addSubview(label)
+        view.addSubview(self.headerLabel)
         
         let inset:UIEdgeInsets = tableView.separatorInset
         let lineViewFrame = CGRect(

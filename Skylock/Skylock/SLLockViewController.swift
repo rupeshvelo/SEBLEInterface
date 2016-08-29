@@ -784,13 +784,15 @@ SLLockBarViewControllerDelegate
                 self.presentViewControllerWithNavigationController(rcvc)
             }
         case .HelpPressed:
-            print("help pressed")
+            let webView = SLWebViewController(baseUrl: .Help)
+            self.presentViewControllerWithNavigationController(webView)
         case .RateTheAppPressed:
             print("rate the app pressed")
         case .InviteFriendsPressed:
             print("Invite friends pressed")
         case .OrderNowPressed:
-            print("order now pressed")
+            let webView = SLWebViewController(baseUrl: .Skylock)
+            self.presentViewControllerWithNavigationController(webView)
         }
     }
     

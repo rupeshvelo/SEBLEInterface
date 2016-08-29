@@ -85,6 +85,7 @@
 		652306D51D5A22BC00091873 /* rssi4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B11D5A22BC00091873 /* rssi4@3x.png */; };
 		652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B21D5A22BC00091873 /* temp_phone_info@2x.png */; };
 		652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B31D5A22BC00091873 /* temp_phone_info@3x.png */; };
+		65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */; };
 		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
 		65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */; };
 		65D9DA911D5E9E3400A909AA /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */; };
@@ -484,6 +485,7 @@
 		652306B11D5A22BC00091873 /* rssi4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rssi4@3x.png"; sourceTree = "<group>"; };
 		652306B21D5A22BC00091873 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
 		652306B31D5A22BC00091873 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
+		65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWebViewController.swift; sourceTree = "<group>"; };
 		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
 		65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCryptoHandler.m; sourceTree = "<group>"; };
 		65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchSliderViewController.swift; sourceTree = "<group>"; };
@@ -1055,6 +1057,7 @@
 				DC535E6B1D52BE82006D5CDE /* SLLogoutViewController.swift */,
 				DC52B3501D537FFD00DEF5EC /* SLLockOnboardingTouchEllipseViewController.swift */,
 				6523068B1D59753B00091873 /* SLFirmwareUpdateViewController.swift */,
+				65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */,
 			);
 			name = controllers;
 			sourceTree = "<group>";
@@ -1993,6 +1996,7 @@
 				DC77BF981D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift in Sources */,
 				6523068C1D59753B00091873 /* SLFirmwareUpdateViewController.swift in Sources */,
 				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
+				65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */,
 				DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */,
 				DC4402591B98EEB300D1C2B9 /* SLTouchPadView.swift in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
@@ -2174,9 +2178,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "698a8504-25dc-4dd7-969d-0c86601172e6";
+				PROVISIONING_PROFILE = "bbbbb1e0-fbaa-48ef-b50a-3d1ce845b5a4";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2210,9 +2214,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "d88d1db5-9f0a-4a80-8c59-7f3ec62369ee";
+				PROVISIONING_PROFILE = "e2c75c50-78ac-452d-9ad0-675a3e09b903";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 			};
