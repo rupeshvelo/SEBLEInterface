@@ -139,7 +139,7 @@ class SLSignInViewController: SLBaseViewController {
                 let texts:[SLWarningViewControllerTextProperty:String?] = [
                     .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
                     .Info: NSLocalizedString(
-                        "Sorry. We couln't log you in through Facebook right now. " +
+                        "Sorry. We couldn't log you in through Facebook right now. " +
                         "Please try again later, or you can sign in using your phone number and email.",
                         comment: ""
                     ),

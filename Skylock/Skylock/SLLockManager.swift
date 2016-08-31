@@ -811,12 +811,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     completionClosure(success: false)
                 }
             }
-            // The payload should be in the format of an array of dictionaries with
+            // The firmware should be in the format of an array of dictionaries with
             // entries of ["boot_loader": "8373739393003fme"] for example.
             // TODO: This should be changed so the server sends the payload as an array
-            // of string values
-            guard let payload = response?["payload"] as? [[String:AnyObject]] else {
-                print("Error: getting firmware. No payload in respose")
+            // of string values.
+            guard let firmware = response?["firmware"] as? [[String:AnyObject]] else {
+                print("Error getting firmware from server payload.")
                 if let completionClosure = completion {
                     completionClosure(success: false)
                 }
@@ -825,12 +825,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             }
             
             self.firmware = [String]()
-            self.maxFirmwareLines = payload.count
+            self.maxFirmwareLines = firmware.count
             // Doing this in reverse order so on writing to the lock
             // we can just pop the last value off the firmware array.
             // This is an 0(1) vs 0(n) which would be the runtime each
             // time we got an item from the front of the array.
-            for firmwareDictionary in payload.reverse() {
+            for firmwareDictionary in firmware.reverse() {
                 if let entry = firmwareDictionary["boot_loader"] as? String {
                     self.firmware?.append(entry)
                 }
@@ -1555,8 +1555,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         } else {
             print("Warning: changed notification state for uuid: \(characteristicUUID), but the case is not handled.")
         }
-        
-        
     }
     
     func bleInterfaceManager(

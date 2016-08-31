@@ -14,6 +14,7 @@ enum SLFont:String {
     case OpenSansBold = "OpenSans-Bold"
     case MontserratRegular = "Montserrat-Regular"
     case MonserratBold = "Montserrat-Bold"
+    case YosemiteRegular = "System-San-Francisco-Display-Regular"
 }
 
 enum SLColor {

@@ -13,7 +13,7 @@ enum SLLockResetOrDeleteViewControllerType {
     case Delete
 }
 
-class SLLockResetOrDeleteViewController: UIViewController {
+class SLLockResetOrDeleteViewController: SLBaseViewController {
     var type:SLLockResetOrDeleteViewControllerType
     
     let lock:SLLock
@@ -132,13 +132,18 @@ class SLLockResetOrDeleteViewController: UIViewController {
         let lockManager = SLLockManager.sharedManager
         switch self.type {
         case .Delete:
+            self.navigationItem.hidesBackButton = true
+            let message = NSLocalizedString("Deleting", comment: "") + " " + self.lock.displayName() + "..."
             lockManager.deleteLockFromCurrentUserAccountWithMacAddress(self.lock.macAddress!)
+            self.presentLoadingViewWithMessage(message)
         case .Reset:
             lockManager.factoryResetCurrentLock()
         }
     }
     
     func handleLockRemoved(notifciation: NSNotification) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismissLoadingViewWithCompletion({ [weak self] in
+            self?.dismissViewControllerAnimated(true, completion: nil)
+        })
     }
 }
