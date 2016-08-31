@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SLConcentricCirclesViewController: UIViewController {
+class SLConcentricCirclesViewController: SLBaseViewController {
     let interval:Double = 2.3
     
     var circleIndex:Int = 0
@@ -24,6 +24,10 @@ class SLConcentricCirclesViewController: UIViewController {
     let xPadding:CGFloat = 35.0
     
     var onExit:(() -> ())?
+    
+    var viewHasAppeard:Bool = false
+    
+    var lockConnectionErrorClosure:(() -> ())?
     
     lazy var connectingEllipseLabel:UILabel = {
         let frame = CGRect(
@@ -131,6 +135,22 @@ class SLConcentricCirclesViewController: UIViewController {
             name: kSLNotificationLockManagerErrorConnectingLock,
             object: nil
         )
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(lockConnectionError(_:)),
+            name: kSLNotificationLockManagerErrorConnectingLock,
+            object: nil
+        )
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.viewHasAppeard = true
+        if let connectionClosure = self.lockConnectionErrorClosure {
+            connectionClosure()
+        }
     }
     
     func run() {
@@ -184,12 +204,12 @@ class SLConcentricCirclesViewController: UIViewController {
         self.view.bringSubviewToFront(self.connectingEllipseLabel)
         self.view.bringSubviewToFront(self.getHelpButton)
         self.view.bringSubviewToFront(self.makeSureLabel)
-//        if self.warningBackgroundView != nil {
-//            self.view.bringSubviewToFront(self.warningBackgroundView!)
-//        }
-//        if self.warningViewController != nil {
-//            self.view.bringSubviewToFront(self.warningViewController!.view)
-//        }
+        if self.warningBackgroundView != nil {
+            self.view.bringSubviewToFront(self.warningBackgroundView!)
+        }
+        if self.warningViewController != nil {
+            self.view.bringSubviewToFront(self.warningViewController!.view)
+        }
     }
     
     func connectedLock() {
@@ -199,10 +219,54 @@ class SLConcentricCirclesViewController: UIViewController {
     }
     
     func lockConnectionError(notification: NSNotification) {
-        if let navController = self.navigationController {
-            navController.popViewControllerAnimated(true)
+        var info:String?
+        if let code = notification.object?["code"] as? NSNumber {
+            if code.unsignedIntegerValue == 0 {
+                info = NSLocalizedString(
+                    "Sorry. This lock belongs to another user. We can't add it to your account.",
+                    comment: ""
+                )
+            }
+        }
+        
+        if info == nil {
+            if let lock = notification.object?["lock"] as? SLLock {
+                info = NSLocalizedString(
+                    "Sorry. There was an error connecting to the lock \(lock.displayName())",
+                    comment: ""
+                )
+            } else {
+                info = NSLocalizedString("Sorry. There was an error connecting to the lock", comment: "")
+            }
+        }
+        
+        let texts:[SLWarningViewControllerTextProperty:String?] = [
+            .Header: NSLocalizedString("Failed to connect Ellipse", comment: ""),
+            .Info: info,
+            .CancelButton: NSLocalizedString("OK", comment: ""),
+            .ActionButton: nil
+        ]
+        
+        if self.viewHasAppeard {
+            self.presentWarningViewControllerWithTexts(texts, cancelClosure: {
+                if let navController = self.navigationController {
+                    navController.popViewControllerAnimated(true)
+                } else {
+                    self.dismissViewControllerAnimated(true, completion: nil)
+                }
+            })
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.lockConnectionErrorClosure = { [weak self] in
+                if let weakSelf = self {
+                    weakSelf.presentWarningViewControllerWithTexts(texts, cancelClosure: {
+                        if let navController = weakSelf.navigationController {
+                            navController.popViewControllerAnimated(true)
+                        } else {
+                            weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                        }
+                    })
+                }
+            }
         }
     }
 }

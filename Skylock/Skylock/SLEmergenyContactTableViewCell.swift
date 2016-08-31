@@ -72,10 +72,6 @@ class SLEmergenyContactTableViewCell: UITableViewCell {
             self.removeContactButton.enabled = false
         }
         
-//        if let image = properties[.Pic] as? UIImage, let imageView = self.imageView {
-//            imageView.image = UIImage(named: "sharing_default_picture")!
-//        }
-        
         self.imageView?.image = UIImage(named: "sharing_default_picture")!
         
         if let contactIdentifier = properties[.ContactId] as? String {

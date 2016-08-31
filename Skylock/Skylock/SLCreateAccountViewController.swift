@@ -432,7 +432,7 @@ SLBoxTextFieldWithButtonDelegate
             )
             
             if self.currentPhase == .SignIn {
-                if status == 200 {
+                if status == 200 || status == 201 {
                     ud.setBool(true, forKey: "SLUserDefaultsSignedIn")
                     ud.synchronize()
                     
@@ -513,7 +513,8 @@ SLBoxTextFieldWithButtonDelegate
         let texts:[SLWarningViewControllerTextProperty:String?] = [
             .Header: NSLocalizedString("Login Failed", comment: ""),
             .Info: NSLocalizedString(
-                "Sorry. We couln't log you in right now. Please check you info and try again, or you can try using Facebook.",
+                "Sorry. We couldn't log you in right now. Please check your info and try again, "
+                + "or you can try using Facebook.",
                 comment: ""
             ),
             .CancelButton: NSLocalizedString("OK", comment: ""),
@@ -620,7 +621,18 @@ SLBoxTextFieldWithButtonDelegate
                     self.presentViewController(navController, animated: true, completion: nil)
                 }
             } else {
-                // TODO: Handle error in UI
+                let texts:[SLWarningViewControllerTextProperty:String?] = [
+                    .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
+                    .Info: NSLocalizedString(
+                        "Sorry. We couldn't log you in through Facebook right now. " +
+                        "Please try again later, or you can sign in using your phone number and email.",
+                        comment: ""
+                    ),
+                    .CancelButton: NSLocalizedString("OK", comment: ""),
+                    .ActionButton: nil
+                ]
+                
+                self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
             }
         }
     }

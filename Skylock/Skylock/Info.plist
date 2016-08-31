@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>FacebookAppID</key>
 	<string>1057259287662727</string>
 	<key>FacebookDisplayName</key>
@@ -137,6 +137,10 @@
 		<string>Montserrat-Bold.ttf</string>
 		<string>OpenSans-Regular.ttf</string>
 		<string>OpenSans-Semibold.ttf</string>
+		<string>System-San-Francisco-Display-Regular.tff</string>
+		<string>System-San-Francisco-Display-Bold.tff</string>
+		<string>System-San-Francisco-Display-Thin.tff</string>
+		<string>System-San-Francisco-Display-Ultralight.tff</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

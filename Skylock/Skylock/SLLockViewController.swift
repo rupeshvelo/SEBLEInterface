@@ -630,6 +630,10 @@ SLLockBarViewControllerDelegate
     }
     
     func lockConnectionError(notification: NSNotification) {
+        if self.viewIfLoaded?.window == nil {
+            return
+        }
+        
         var info:String?
         if let code = notification.object?["code"] as? NSNumber where code.unsignedIntegerValue == 0 {
             info = NSLocalizedString(

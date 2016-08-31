@@ -299,9 +299,6 @@
         return;
     }
     
-    [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
-                                                   @"Got response from server: %@", serverReply.description]];
-    
     NSLog(@"server reply: %@", serverReply.description);
     NSNumber *status = serverReply[@"status"];
     if (serverReply[@"error"] == [NSNull null]) {
