@@ -319,10 +319,6 @@ class SLProfileViewController:
             cellId = String(SLOpposingLabelsTableViewCell)
             let cell: SLOpposingLabelsTableViewCell? =
                 tableView.dequeueReusableCellWithIdentifier(cellId) as? SLOpposingLabelsTableViewCell
-//            if cell == nil {
-//                cell = SLOpposingLabelsTableViewCell(style: .Default, reuseIdentifier: cellId)
-//            }
-            
             cell?.selectionStyle = .None
             cell?.delegate = self
             cell?.setProperties(
@@ -340,10 +336,6 @@ class SLProfileViewController:
         cellId = String(SLLabelAndSwitchTableViewCell)
         let cell: SLLabelAndSwitchTableViewCell? =
             tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
-//        if cell == nil {
-//            cell = SLLabelAndSwitchTableViewCell(accessoryType: .Arrow, reuseId: cellId)
-//        }
-        
         cell?.delegate = self
         cell?.leftAccessoryType = .Arrow
         cell?.textLabel?.text = self.tableInfo[1][indexPath.row]

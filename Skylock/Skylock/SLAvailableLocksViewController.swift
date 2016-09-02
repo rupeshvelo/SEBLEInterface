@@ -71,22 +71,7 @@ import UIKit
             lockManager.startActiveSearch()
         }
         
-        for lock in lockManager.locksInActiveSearch() {
-            var addLock = true
-            for listedLock in self.locks {
-                if lock.macAddress == listedLock.macAddress {
-                    addLock = false
-                    break
-                }
-            }
-            
-            if addLock {
-                self.locks.append(lock)
-            }
-        }
-        
-        self.tableView.reloadData()
-        self.setHeaderTextForNuberOfLocks(self.locks.count)
+        self.setHeaderTextForNumberOfLocks(self.locks.count)
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
@@ -110,21 +95,46 @@ import UIKit
         )
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        for lock in SLLockManager.sharedManager.locksInActiveSearch() {
+            self.addLock(lock)
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    func addLock(lock: SLLock) {
+        var addLock = true
+        for listedLock in self.locks {
+            if lock.macAddress == listedLock.macAddress {
+                addLock = false
+                break
+            }
+        }
+        
+        if addLock {
+            self.locks.append(lock)
+        }
+    }
     func foundLock(notification: NSNotification) {
         guard let lock = notification.object as? SLLock else {
             print("Error: found lock but it was not included in notification")
             return
         }
         
-        self.locks.append(lock)
-        
-        // If this is the first lock found, we need to update the header text.
-        self.setHeaderTextForNuberOfLocks(self.locks.count)
-        
-        let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
-        self.tableView.beginUpdates()
-        self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-        self.tableView.endUpdates()
+        for knownLock in self.locks where knownLock.macAddress == lock.macAddress {
+            self.locks.append(lock)
+            // If this is the first lock found, we need to update the header text.
+            self.setHeaderTextForNumberOfLocks(self.locks.count)
+            
+            let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
+            self.tableView.beginUpdates()
+            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+            self.tableView.endUpdates()
+            break
+        }
     }
     
     func lockShallowlyConntected(notificaiton: NSNotification) {
@@ -217,7 +227,7 @@ import UIKit
         }
     }
     
-    func setHeaderTextForNuberOfLocks(numberOfLocks: Int) {
+    func setHeaderTextForNumberOfLocks(numberOfLocks: Int) {
         self.headerLabel.text = numberOfLocks == 0 ? NSLocalizedString("Searching...", comment: "")
             : NSLocalizedString("We've found the following Ellipses", comment: "")
     }

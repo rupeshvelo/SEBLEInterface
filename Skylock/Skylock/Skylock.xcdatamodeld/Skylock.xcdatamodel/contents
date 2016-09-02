@@ -13,7 +13,7 @@
         <attribute name="countyCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isCurrentContact" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isCurrentContact" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -39,15 +39,15 @@
         <attribute name="entry" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="SLUser" representedClassName="SLUser" syncable="YES">
-        <attribute name="areCrashAlertsOn" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="areTheftAlertsOn" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="areCrashAlertsOn" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="areTheftAlertsOn" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="crashMessage" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="googlePushId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isAutoLockOn" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isAutoUnlockOn" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isAutoLockOn" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isAutoUnlockOn" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isCurrentUser" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="theftSensitivity" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
