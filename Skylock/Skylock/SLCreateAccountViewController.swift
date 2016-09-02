@@ -26,6 +26,11 @@ SLBoxTextFieldWithButtonDelegate
         case PhoneNumber
     }
     
+    private enum ResponseError {
+        case InternalServer
+        case SignInFailure
+    }
+    
     var textFieldSize:CGSize = CGSizeZero
     
     let xPadding:CGFloat = 15.0
@@ -409,13 +414,13 @@ SLBoxTextFieldWithButtonDelegate
             print("Response from server after login request: \(responseDict))")
             guard let response:[String:AnyObject] = responseDict as? [String:AnyObject] else {
                 print("response dictionary is not in the correct format")
-                self.presentWarningController()
+                self.presentWarningController(.InternalServer)
                 return
             }
             
             guard let userToken:String = response["token"] as? String else {
                 print("no rest token in server response")
-                self.presentWarningController()
+                self.presentWarningController(.InternalServer)
                 return
             }
             
@@ -450,7 +455,7 @@ SLBoxTextFieldWithButtonDelegate
                         }
                     })
                 } else {
-                    self.presentWarningController()
+                    self.presentWarningController(.SignInFailure)
                 }
             } else {
                 let subRoutes:[String] = [
@@ -509,14 +514,26 @@ SLBoxTextFieldWithButtonDelegate
         }
     }
     
-    func presentWarningController() {
+    private func presentWarningController(errorType: ResponseError) {
+        let info:String
+        switch errorType {
+        case .InternalServer:
+            info = NSLocalizedString(
+                "Sorry. We couldn't log you in right now. It looks like we're having problems on " +
+                "our servers at the moment. Please try again later. You can also sign up using your Facebook account.",
+                comment: ""
+            )
+        case .SignInFailure:
+            info = NSLocalizedString(
+                "Sorry. We couldn't log you in right now. Please check your info and try again. "
+                    + "You can also sign up using your Facebook account.",
+                comment: ""
+            )
+        }
+        
         let texts:[SLWarningViewControllerTextProperty:String?] = [
             .Header: NSLocalizedString("Login Failed", comment: ""),
-            .Info: NSLocalizedString(
-                "Sorry. We couldn't log you in right now. Please check your info and try again, "
-                + "or you can try using Facebook.",
-                comment: ""
-            ),
+            .Info: info,
             .CancelButton: NSLocalizedString("OK", comment: ""),
             .ActionButton: nil
         ]
@@ -538,7 +555,7 @@ SLBoxTextFieldWithButtonDelegate
     func areFieldsValid() -> Bool {
         var allFieldsValid = true
         for (key, value) in self.fieldValues {
-            // Don't need to validate email on sign in since there in no email field
+            // We don't need to validate email on sign in since there in no email field.
             if self.currentPhase == .SignIn && key == .Email {
                 continue
             }

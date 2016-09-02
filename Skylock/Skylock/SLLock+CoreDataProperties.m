@@ -2,7 +2,7 @@
 //  SLLock+CoreDataProperties.m
 //  Ellipse
 //
-//  Created by Andre Green on 8/24/16.
+//  Created by Andre Green on 9/2/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu

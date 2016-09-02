@@ -446,17 +446,12 @@ SLLockBarViewControllerDelegate
             return
         }
         
-        if let crashAlertsOn = user.areCrashAlertsOn where crashAlertsOn.boolValue {
-            return
-        }
-        
-        if user.areTheftAlertsOn == nil {
-             user.areTheftAlertsOn = NSNumber(bool: false)
-        }
-        
+        user.areCrashAlertsOn = NSNumber(bool: false)
         user.areTheftAlertsOn = NSNumber(bool: !user.areTheftAlertsOn!.boolValue)
         self.databaseManager.saveUser(user, withCompletion: nil)
+        
         self.theftButton.selected = user.areTheftAlertsOn!.boolValue
+        self.crashButton.selected = false
     }
     
     func crashButtonPressed() {
@@ -468,17 +463,12 @@ SLLockBarViewControllerDelegate
             return
         }
         
-        if let theftAlertsOn = user.areTheftAlertsOn where theftAlertsOn.boolValue {
-            return
-        }
-        
-        if user.areCrashAlertsOn == nil {
-            user.areCrashAlertsOn = NSNumber(bool: false)
-        }
-        
+        user.areTheftAlertsOn = NSNumber(bool: false)
         user.areCrashAlertsOn = NSNumber(bool: !user.areCrashAlertsOn!.boolValue)
         self.databaseManager.saveUser(user, withCompletion: nil)
+        
         self.crashButton.selected = user.areCrashAlertsOn!.boolValue
+        self.theftButton.selected = false
     }
     
     func findEllipseButtonPressed() {

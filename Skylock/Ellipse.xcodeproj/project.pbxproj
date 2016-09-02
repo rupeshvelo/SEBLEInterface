@@ -2258,9 +2258,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
+				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "bbbbb1e0-fbaa-48ef-b50a-3d1ce845b5a4";
+				PROVISIONING_PROFILE = "698a8504-25dc-4dd7-969d-0c86601172e6";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2294,9 +2294,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
+				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "e2c75c50-78ac-452d-9ad0-675a3e09b903";
+				PROVISIONING_PROFILE = "d88d1db5-9f0a-4a80-8c59-7f3ec62369ee";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 			};

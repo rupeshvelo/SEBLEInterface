@@ -2,7 +2,7 @@
 //  SLUser+CoreDataProperties.m
 //  Ellipse
 //
-//  Created by Andre Green on 8/12/16.
+//  Created by Andre Green on 9/2/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -15,6 +15,7 @@
 
 @dynamic areCrashAlertsOn;
 @dynamic areTheftAlertsOn;
+@dynamic crashMessage;
 @dynamic email;
 @dynamic firstName;
 @dynamic googlePushId;
@@ -23,10 +24,9 @@
 @dynamic isCurrentUser;
 @dynamic lastName;
 @dynamic phoneNumber;
+@dynamic theftSensitivity;
 @dynamic userId;
 @dynamic userType;
-@dynamic theftSensitivity;
-@dynamic crashMessage;
 @dynamic locks;
 
 @end

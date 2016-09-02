@@ -118,6 +118,7 @@ class SLLogoutViewController: UIViewController {
             
             let lockManager:SLLockManager = SLLockManager.sharedManager
             lockManager.disconnectFromCurrentLock()
+            lockManager.endActiveSearch()
             
             user.isCurrentUser = NSNumber(bool: false)
             dbManager.saveUser(user, withCompletion: nil)
@@ -126,6 +127,5 @@ class SLLogoutViewController: UIViewController {
             let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
             appDelegate.window.rootViewController = svc
         }
-        
     }
 }
