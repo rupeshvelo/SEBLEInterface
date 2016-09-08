@@ -117,8 +117,9 @@ class SLLogoutViewController: UIViewController {
             ud.synchronize()
             
             let lockManager:SLLockManager = SLLockManager.sharedManager
-            lockManager.disconnectFromCurrentLock()
-            lockManager.endActiveSearch()
+            lockManager.disconnectFromCurrentLock({ [unowned lockManager] in
+                lockManager.endActiveSearch()
+            })
             
             user.isCurrentUser = NSNumber(bool: false)
             dbManager.saveUser(user, withCompletion: nil)

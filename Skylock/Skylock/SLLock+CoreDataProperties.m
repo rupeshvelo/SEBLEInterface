@@ -2,7 +2,7 @@
 //  SLLock+CoreDataProperties.m
 //  Ellipse
 //
-//  Created by Andre Green on 9/2/16.
+//  Created by Andre Green on 9/8/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -26,6 +26,7 @@
 @dynamic macAddress;
 @dynamic name;
 @dynamic uuid;
+@dynamic isLocked;
 @dynamic sharedContacts;
 @dynamic user;
 

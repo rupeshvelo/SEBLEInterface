@@ -208,6 +208,7 @@ class SLConnectLockInfoViewController: UIViewController {
     
     func yesButtonPressed() {
         let alvc = SLAvailableLocksViewController()
+        alvc.dismissConcentricCirclesViewController = false
         self.navigationController?.pushViewController(alvc, animated: true)
     }
     

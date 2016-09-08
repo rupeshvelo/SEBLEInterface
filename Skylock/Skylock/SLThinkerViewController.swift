@@ -58,7 +58,9 @@ class SLThinkerViewController: UIViewController {
     private var shouldContinueAnimation:Bool = false
     
     private var thinkerState:SLThinkerViewControllerState = .Inactive
-
+    
+    private var hasBeenTapped:Bool = false
+    
     weak var delegate:SLThinkerViewControllerDelegate?
     
     lazy var backgroundView:UIView = {
@@ -263,6 +265,11 @@ class SLThinkerViewController: UIViewController {
     }
     
     @objc private func viewTapped() {
+        if self.hasBeenTapped {
+            return
+        }
+        
+        self.hasBeenTapped = true
         self.delegate?.thinkerViewTapped(self)
     }
     
@@ -279,6 +286,7 @@ class SLThinkerViewController: UIViewController {
     func setState(state: SLThinkerViewControllerState) {
         switch state {
         case .ClockwiseStill:
+            self.hasBeenTapped = false
             self.wormView.hidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.secondBackgroundColor
@@ -292,6 +300,7 @@ class SLThinkerViewController: UIViewController {
             self.setLabelTextForTopState(.ClockwiseTopMoving, bottomState: .ClockwiseBottomMoving)
             self.rotateWormView(true)
         case .CounterClockwiseStill:
+            self.hasBeenTapped = false
             self.wormView.hidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.firstBackgroundColor
@@ -305,6 +314,7 @@ class SLThinkerViewController: UIViewController {
             self.setLabelTextForTopState(.CounterClockwiseTopMoving, bottomState: .CounterClockwiseBottomMoving)
             self.rotateWormView(false)
         case .Inactive:
+            self.hasBeenTapped = false
             self.wormView.hidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.inActiveBackgroundColor

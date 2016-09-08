@@ -473,6 +473,7 @@ SLLockBarViewControllerDelegate
     
     func findEllipseButtonPressed() {
         let alvc = SLAvailableLocksViewController()
+        alvc.dismissConcentricCirclesViewController = true
         self.presentViewControllerWithNavigationController(alvc)
     }
     

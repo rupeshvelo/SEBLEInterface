@@ -46,7 +46,7 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         label.text = text
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         label.font = font
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = .Center
         label.numberOfLines = 0
         
         return label
@@ -60,19 +60,25 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
             height: 50.0
         )
         
-        let field:SLInsetTextField = SLInsetTextField(frame: frame)
         let text:String
+        let placeHolder:String
+        let keyboardType:UIKeyboardType
         if self.type == .PhoneNumber {
             text = (self.user.phoneNumber == nil || self.user.phoneNumber == "") ? "+" : self.user.phoneNumber!
+            placeHolder = NSLocalizedString("Enter phone number", comment: "")
+            keyboardType = .NumberPad
         } else {
             text = ""
+            placeHolder = NSLocalizedString("Password", comment: "")
+            keyboardType = .Default
         }
+        
+        let field:SLInsetTextField = SLInsetTextField(frame: frame)
         field.text = text
-        field.placeholder = self.type == .PhoneNumber ?
-            NSLocalizedString("Enter phone number", comment: "") : NSLocalizedString("Password", comment: "")
+        field.placeholder = placeHolder
         field.font = UIFont.systemFontOfSize(24)
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        field.keyboardType = self.type == .PhoneNumber ? .NumberPad : .Default
+        field.keyboardType = keyboardType
         field.borderStyle = .Line
         field.secureTextEntry = self.type == .Password
         field.layer.borderWidth = 1.0

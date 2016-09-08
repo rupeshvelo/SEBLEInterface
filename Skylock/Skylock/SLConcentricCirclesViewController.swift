@@ -23,7 +23,7 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     let xPadding:CGFloat = 35.0
     
-    var onExit:(() -> ())?
+    var shouldDismiss:Bool = false
     
     var viewHasAppeard:Bool = false
     
@@ -213,8 +213,11 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     }
     
     func connectedLock() {
-        if let onExit = self.onExit {
-            onExit()
+        if self.shouldDismiss {
+            self.dismissViewControllerAnimated(true, completion: nil)
+        } else if self.navigationController != nil {
+            let psvc = SLPairingSuccessViewController()
+            self.navigationController?.pushViewController(psvc, animated: true)
         }
     }
     
