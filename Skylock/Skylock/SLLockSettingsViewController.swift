@@ -16,10 +16,11 @@ SLLabelAndSwitchCellDelegate
 {
     enum SettingFieldValue: Int {
         case TheftDetectionSettings = 0
-        case ProximityLockUnlock = 1
-        case PinCode = 2
-        case DeleteLock = 3
-        case RemoveLock = 4
+        case ProximityLock = 1
+        case ProximityUnlock = 2
+        case PinCode = 3
+        case DeleteLock = 4
+        case RemoveLock = 5
     }
     
     var lock:SLLock?
@@ -27,12 +28,13 @@ SLLabelAndSwitchCellDelegate
     var firmwareVersion:String = ""
     
     var serialNumber:String = ""
+    
     let settingTitles:[String] = [
         NSLocalizedString("Theft detection settings", comment: ""),
-        NSLocalizedString("Proximity lock/unlock", comment: ""),
+        NSLocalizedString("Proximity lock", comment: ""),
+        NSLocalizedString("Proximity unlock", comment: ""),
         NSLocalizedString("Pin Code", comment: ""),
-        NSLocalizedString("Delete lock", comment: ""),
-        "Remove Lock"
+        NSLocalizedString("Delete lock", comment: "")
     ]
     
     lazy var tableView:UITableView = {
@@ -130,10 +132,12 @@ SLLabelAndSwitchCellDelegate
         case 0:
             value = .TheftDetectionSettings
         case 1:
-            value = .ProximityLockUnlock
+            value = .ProximityLock
         case 2:
-            value = .PinCode
+            value = .ProximityUnlock
         case 3:
+            value = .PinCode
+        case 4:
             value = .DeleteLock
         default:
             value = .TheftDetectionSettings
@@ -254,9 +258,20 @@ SLLabelAndSwitchCellDelegate
             return cell!
         }
         
+        
+        var shouldTurnOn:Bool = false
+        if let user:SLUser = SLDatabaseManager.sharedManager().currentUser {
+            if self.fieldValueForIndex(indexPath.row) == .ProximityLock {
+                shouldTurnOn = user.isAutoLockOn!.boolValue
+            } else if self.fieldValueForIndex(indexPath.row) == .ProximityUnlock {
+                shouldTurnOn = user.isAutoUnlockOn!.boolValue
+            }
+        }
+        
         let leftText = self.settingTitles[indexPath.row]
         let accessoryType:SLLabelAndSwitchTableViewCellAccessoryType =
-            indexPath.row == SettingFieldValue.ProximityLockUnlock.rawValue ? .ToggleSwitch : .Arrow
+            (indexPath.row == SettingFieldValue.ProximityLock.rawValue ||
+                indexPath.row == SettingFieldValue.ProximityUnlock.rawValue) ? .ToggleSwitch : .Arrow
         
         cellId = String(SLLabelAndSwitchTableViewCell)
         var cell: SLLabelAndSwitchTableViewCell? =
@@ -269,6 +284,7 @@ SLLabelAndSwitchCellDelegate
         cell?.leftAccessoryType = accessoryType
         cell?.textLabel?.text = leftText
         cell?.selectionStyle = accessoryType == .ToggleSwitch ? .None : .Default
+        cell?.turnSwitchOn(shouldTurnOn)
         
         return cell!
     }
@@ -339,7 +355,7 @@ SLLabelAndSwitchCellDelegate
                     let lrodvc = SLLockResetOrDeleteViewController(type: .Delete, lock: lock)
                     self.navigationController?.pushViewController(lrodvc, animated: true)
                 case SettingFieldValue.RemoveLock.rawValue:
-                    SLLockManager.sharedManager.disconnectFromCurrentLock()
+                    SLLockManager.sharedManager.disconnectFromCurrentLock(nil)
                 default:
                     print("Lock setting tapped for indexPath \(indexPath.description), but no case handles the path")
                 }
@@ -349,6 +365,26 @@ SLLabelAndSwitchCellDelegate
     
     // MARK: SLLabelAndSwitchCellDelegate methods
     func switchFlippedForCell(cell: SLLabelAndSwitchTableViewCell, isNowOn: Bool) {
+        guard let user = SLDatabaseManager.sharedManager().currentUser else {
+            print("Error: could not assign auto lock/unlock property to current user. No current user in db")
+            return
+        }
         
+        for i in 0..<self.tableView.numberOfRowsInSection(1) {
+            let indexPath = NSIndexPath(forRow: i, inSection: 1)
+            if let cellAtPath = self.tableView.cellForRowAtIndexPath(indexPath) as? SLLabelAndSwitchTableViewCell
+                where cellAtPath == cell
+            {
+                if self.fieldValueForIndex(i) == .ProximityLock {
+                    user.isAutoLockOn = NSNumber(bool: isNowOn)
+                    SLDatabaseManager.sharedManager().saveUser(user, withCompletion: nil)
+                } else if self.fieldValueForIndex(i) == .ProximityUnlock {
+                    user.isAutoUnlockOn = NSNumber(bool: isNowOn)
+                    SLDatabaseManager.sharedManager().saveUser(user, withCompletion: nil)
+                }
+                
+                break
+            }
+        }
     }
 }

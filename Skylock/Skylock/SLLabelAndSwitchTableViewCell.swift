@@ -19,9 +19,13 @@ protocol SLLabelAndSwitchCellDelegate:class {
 
 class SLLabelAndSwitchTableViewCell: UITableViewCell {
     let xPadding:CGFloat = 5.0
+    
     let labelHeight:CGFloat = 14.0
+    
     var leftText:String?
+    
     weak var delegate:SLLabelAndSwitchCellDelegate?
+    
     var leftAccessoryType:SLLabelAndSwitchTableViewCellAccessoryType
     
     lazy var toggleSwitch:UISwitch = {
@@ -60,6 +64,14 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
         self.textLabel?.textColor = UIColor(red: 157, green: 161, blue: 167)
         
         self.setAccessoryView()
+    }
+    
+    func turnSwitchOn(shouldTurnOn: Bool) {
+        if self.leftAccessoryType != .ToggleSwitch {
+            return
+        }
+        
+        self.toggleSwitch.setOn(shouldTurnOn, animated: false)
     }
     
     func switchFlipped(toggleSwitch: UISwitch) {

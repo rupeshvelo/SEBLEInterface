@@ -17,11 +17,18 @@ class SLProfileViewController:
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate
 {
-    var keyboardShowing:Bool = false
+    private enum UserProperty {
+        case FirstName
+        case LastName
+        case Password
+        case Email
+    }
     
-    var selectedPath:NSIndexPath?
+    private var keyboardShowing:Bool = false
     
-    let tableInfo:[[String]] = [
+    private var selectedPath:NSIndexPath?
+    
+    private let tableInfo:[[String]] = [
         [
             NSLocalizedString("First name", comment: ""),
             NSLocalizedString("Last name", comment: ""),
@@ -29,12 +36,21 @@ class SLProfileViewController:
             NSLocalizedString("Email address", comment: ""),
         ],
         [
-            NSLocalizedString("Alerts & notifications", comment: ""),
+            NSLocalizedString("Change first name", comment: ""),
+            NSLocalizedString("Change last name", comment: ""),
             NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
+            NSLocalizedString("Alerts & notifications", comment: ""),
             //NSLocalizedString("Delete my account", comment: ""),
             NSLocalizedString("Logout", comment: "")
         ]
+    ]
+    
+    private var changedUserProperties: [UserProperty:String?] = [
+        .FirstName: nil,
+        .LastName: nil,
+        .Password: nil,
+        .Email: nil
     ]
     
     let headerHeight:CGFloat = 50.0
@@ -326,7 +342,7 @@ class SLProfileViewController:
                 rightLabelText: rightText,
                 leftLabelTextColor: greyTextColor,
                 rightLabelTextColor: blueTextColor,
-                shouldEnableTextField: true
+                shouldEnableTextField: false
             )
             cell?.tag = indexPath.row
             

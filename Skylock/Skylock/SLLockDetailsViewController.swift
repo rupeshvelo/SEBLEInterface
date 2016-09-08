@@ -108,6 +108,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         self.lockManager.startActiveSearch()
         
         let alvc = SLAvailableLocksViewController()
+        alvc.dismissConcentricCirclesViewController = false
         self.navigationController?.pushViewController(alvc, animated: true)
     }
     

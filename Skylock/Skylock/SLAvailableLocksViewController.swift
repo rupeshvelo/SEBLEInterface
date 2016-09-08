@@ -17,6 +17,8 @@ import UIKit
     
     var hideBackButton:Bool = false
     
+    var dismissConcentricCirclesViewController:Bool = false
+    
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .Plain)
         table.rowHeight = 110.0
@@ -124,7 +126,13 @@ import UIKit
             return
         }
         
+        var addLock = true
         for knownLock in self.locks where knownLock.macAddress == lock.macAddress {
+            addLock = false
+            break
+        }
+        
+        if addLock {
             self.locks.append(lock)
             // If this is the first lock found, we need to update the header text.
             self.setHeaderTextForNumberOfLocks(self.locks.count)
@@ -133,7 +141,6 @@ import UIKit
             self.tableView.beginUpdates()
             self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
             self.tableView.endUpdates()
-            break
         }
     }
     
@@ -180,18 +187,10 @@ import UIKit
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
-                let hasConnected = lock.hasConnected!.boolValue
                 if accessoryButtonTag == buttonTag {
                     let ccvc = SLConcentricCirclesViewController()
-                    ccvc.onExit = {
-                        if hasConnected {
-                            self.dismissViewControllerAnimated(true, completion: nil)
-                        } else {
-                            let psvc = SLPairingSuccessViewController()
-                            self.navigationController?.pushViewController(psvc, animated: true)
-                        }
-                    }
-                    
+                    ccvc.shouldDismiss = self.dismissConcentricCirclesViewController
+
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
                     lockManager.connectToLockWithMacAddress(lock.macAddress!)

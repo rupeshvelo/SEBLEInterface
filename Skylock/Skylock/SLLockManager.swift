@@ -99,6 +99,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     private var afterDisconnectLockClosure:(() -> ())?
     
+    private var afterUserDisconnectLockClosure:(() -> ())?
+    
     lazy var bleManager:SEBLEInterfaceMangager = {
         let manager:SEBLEInterfaceMangager = SEBLEInterfaceMangager.sharedManager() as! SEBLEInterfaceMangager
         manager.delegate = self
@@ -131,7 +133,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         return nil
     }
     
-    func disconnectFromCurrentLock() {
+    func disconnectFromCurrentLock(completion:(() -> ())?) {
         guard let lock = self.getCurrentLock() else {
             print("Error: could not disconnect from current lock. No current lock in database")
             return
@@ -141,6 +143,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         lock.isConnecting = false
         lock.hasConnected = true
         self.dbManager.saveLock(lock)
+        
+        self.afterUserDisconnectLockClosure = completion
         
         self.bleManager.disconnectFromPeripheralWithKey(lock.macAddress!)
     }
@@ -246,9 +250,19 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return [SLLock]()
         }
         
+        guard let user = self.dbManager.currentUser else {
+            return [SLLock]()
+        }
+        
         var activeLocks:[SLLock] = [SLLock]()
         for lock:SLLock in locks where self.bleManager.hasNonConnectedPeripheralWithKey(lock.macAddress) {
-            activeLocks.append(lock)
+            if let lockUser = lock.user {
+                if lockUser.userId! == user.userId! {
+                    activeLocks.append(lock)
+                }
+            } else {
+                activeLocks.append(lock)
+            }
         }
         
         return activeLocks
@@ -441,7 +455,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             self.afterDisconnectLockClosure = { [unowned self] in
                 self.connectToLockWithMacAddressHelper(macAddress)
             }
-            self.disconnectFromCurrentLock()
+            self.disconnectFromCurrentLock(nil)
         }
         
         self.currentState = .FindCurrentLock
@@ -800,7 +814,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     private func startGettingHardwareInfo() {
         self.hardwareTimer = NSTimer.scheduledTimerWithTimeInterval(
-            5.0,
+            2.0,
             target: self,
             selector: #selector(getHardwareInfo(_:)),
             userInfo: nil,
@@ -1062,11 +1076,30 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         lock.rssiStrength = NSNumber(char: values[3])
         
         self.dbManager.saveLock(lock)
-        
+    
         NSNotificationCenter.defaultCenter().postNotificationName(
             kSLNotificationLockManagerUpdatedHardwareValues,
             object: lock.macAddress!
         )
+        
+        // TODO: move this somewhere more appropriate. I'm just hacking it in here for now
+        guard let user = self.dbManager.currentUser else {
+            print("Error no current user. Could not check auto lock/unlock")
+            return
+        }
+        
+        print("Lock rssi: \(lock.rssiStrength)")
+        var value:UInt8?
+        if lock.isLocked!.boolValue && user.isAutoUnlockOn!.boolValue && lock.rssiStrength.floatValue >= -65.0 {
+            value = 0x00
+        } else if !lock.isLocked!.boolValue && user.isAutoLockOn!.boolValue && lock.rssiStrength.floatValue <= -70.0 {
+            value = 0x01
+        }
+        
+        if var lockValue = value {
+            let lockData = NSData(bytes: &lockValue, length: sizeofValue(lockValue))
+            self.writeToLockWithMacAddress(macAddress, service: .Hardware, characteristic: .Lock, data: lockData)
+        }
     }
     
     private func handleLockStateForLockMacAddress(macAddress: String, data: NSData) {
@@ -1086,18 +1119,21 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
+        
         let notification:String
+        var isLocked = false
         switch position {
         case .Invalid:
             notification = kSLNotificationLockPositionInvalid
         case .Locked:
             notification = kSLNotificationLockPositionLocked
-        case .Middle:
-            notification = kSLNotificationLockPositionMiddle
-        case .Unlocked:
+            isLocked = true
+        // TODO: the middle case should be handled on its own.
+        case .Unlocked, .Middle:
             notification = kSLNotificationLockPositionOpen
         }
         
+        lock.isLocked = NSNumber(bool: isLocked)
         lock.lockPosition = NSNumber(unsignedInteger: position.rawValue)
         self.dbManager.saveLock(lock)
         
@@ -1437,12 +1473,17 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         if let lockName = peripheral.peripheral.name {
            print("Found lock named \(lockName)")
         }
-
+        
         guard let lockName = advertisementData["kCBAdvDataLocalName"] as? String else {
             print(
                 "Discovered peripheral \(peripheral.description) but cannot connect. " +
                 "No local name in advertisement data."
             )
+            return
+        }
+        
+        guard let user = self.dbManager.currentUser else {
+            print("Error: discovered peripheral \(lockName), but there is no current user.")
             return
         }
         
@@ -1460,6 +1501,13 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             self.dbManager.saveLock(lock)
         } else {
             lock = self.dbManager.newLockWithName(lockName, andUUID: peripheral.CBUUIDAsString())
+        }
+        
+        if let lockUser = lock.user, let lockUserId = lockUser.userId, let currentUserId = user.userId
+            where lockUserId != currentUserId
+        {
+                print("Discoved lock \(lockName), but it does not belong to the current user \(user.userId)")
+                return
         }
         
         print("Discoved lock \(lock.description). Lock manager is in state \(self.currentState)")
@@ -1699,7 +1747,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             self.afterDisconnectLockClosure = nil
         }
         
-        self.startBleScan()
+        self.afterUserDisconnectLockClosure == nil ? self.startBleScan() : self.afterUserDisconnectLockClosure!()
     }
     
     // MARK: SLLockValueDelegate Methods

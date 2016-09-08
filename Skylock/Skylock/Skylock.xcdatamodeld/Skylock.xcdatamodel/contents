@@ -23,6 +23,7 @@
         <attribute name="isConnecting" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isCurrentLock" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isInBootMode" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isLocked" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="isSetForDeletion" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="lastConnected" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -58,7 +59,7 @@
     <elements>
         <element name="SLDbLockSharedContact" positionX="-729" positionY="342" width="128" height="133"/>
         <element name="SLEmergencyContact" positionX="-810" positionY="-171" width="128" height="150"/>
-        <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="270"/>
+        <element name="SLLock" positionX="-1017" positionY="-333" width="128" height="285"/>
         <element name="SLLog" positionX="-819" positionY="-189" width="128" height="75"/>
         <element name="SLUser" positionX="-63" positionY="9" width="128" height="270"/>
     </elements>
