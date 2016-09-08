@@ -40,7 +40,6 @@ class SLProfileViewController:
             NSLocalizedString("Change last name", comment: ""),
             NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
-            NSLocalizedString("Alerts & notifications", comment: ""),
             //NSLocalizedString("Delete my account", comment: ""),
             NSLocalizedString("Logout", comment: "")
         ]
@@ -414,15 +413,18 @@ class SLProfileViewController:
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                let usvc:SLUserSettingsViewController = SLUserSettingsViewController()
-                self.navigationController?.pushViewController(usvc, animated: true)
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .FirstName)
+                self.navigationController?.pushViewController(msdvc, animated: true)
             case 1:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .PhoneNumber)
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .LastName)
                 self.navigationController?.pushViewController(msdvc, animated: true)
             case 2:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .PhoneNumber)
                 self.navigationController?.pushViewController(msdvc, animated: true)
             case 3:
+                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
+                self.navigationController?.pushViewController(msdvc, animated: true)
+            case 4:
                 let lvc:SLLogoutViewController = SLLogoutViewController()
                 self.presentViewController(lvc, animated: true, completion: nil)
             default:

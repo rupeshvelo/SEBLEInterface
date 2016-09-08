@@ -7,6 +7,8 @@
 //
 
 enum SLModifySensitiveDataViewControllerType {
+    case FirstName
+    case LastName
     case Password
     case PhoneNumber
 }
@@ -62,15 +64,21 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         
         let text:String
         let placeHolder:String
-        let keyboardType:UIKeyboardType
-        if self.type == .PhoneNumber {
-            text = (self.user.phoneNumber == nil || self.user.phoneNumber == "") ? "+" : self.user.phoneNumber!
+        var keyboardType:UIKeyboardType = .Default
+        switch self.type {
+        case .PhoneNumber:
+            text = self.user.phoneNumber == nil ? "" : self.user.phoneNumber!
             placeHolder = NSLocalizedString("Enter phone number", comment: "")
             keyboardType = .NumberPad
-        } else {
-            text = ""
+        case .Password:
+            text = NSLocalizedString("Password", comment: "")
             placeHolder = NSLocalizedString("Password", comment: "")
-            keyboardType = .Default
+        case .FirstName:
+            text = self.user.firstName == nil ? "" : self.user.firstName!
+            placeHolder = NSLocalizedString("First name", comment: "")
+        case .LastName:
+            text = self.user.lastName == nil ? "" : self.user.lastName!
+            placeHolder = NSLocalizedString("Last name", comment: "")
         }
         
         let field:SLInsetTextField = SLInsetTextField(frame: frame)
@@ -141,16 +149,17 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         let text:String
         switch self.type {
         case .Password:
-            text = NSLocalizedString(
-                "Enter a new password",
-                comment: ""
-            )
+            text = NSLocalizedString("Enter a new password", comment: "")
         case .PhoneNumber:
             text = NSLocalizedString(
                 "You can change your phone number but we’ll need to send you an SMS " +
                 "to verify your new number. You cannot undo this.",
                 comment: ""
             )
+        case .FirstName:
+            text = NSLocalizedString("Go ahead and change your first name", comment: "")
+        case .LastName:
+            text = NSLocalizedString("Go ahead and change your last name",comment: "")
         }
         
         return text
@@ -161,10 +170,24 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
     }
     
     func saveButtonPressed() {
+        var shouldSave = false
         if self.type == .Password && self.textField.text?.characters.count >= self.passwordLength {
-            
+            // TODO: Handle the password case
+            print("User has changed password")
         } else if self.type == .PhoneNumber && self.textField.text?.characters.count >= self.phoneNumberLength {
             self.user.phoneNumber = self.textField.text
+            shouldSave = true
+        } else if self.type == .FirstName && self.textField.text?.characters.count > 0 {
+            self.user.firstName = self.textField.text
+            shouldSave = true
+        } else if self.type == .LastName && self.textField.text?.characters.count > 0 {
+            self.user.lastName = self.textField.text
+            shouldSave = true
+        }
+        
+        if shouldSave {
+            let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+            dbManager.saveUser(self.user, withCompletion: nil)
         }
     }
     
