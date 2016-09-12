@@ -126,6 +126,7 @@
 		659BA2381D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2101D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf */; };
 		659BA2391D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */; };
 		659BA23A1D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */; };
+		65C12D261D86F0CA0067D1BA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */; };
 		65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */; };
 		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
 		65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */; };
@@ -218,7 +219,6 @@
 		DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */; };
 		DC3CCE271BA34EF000528992 /* SLDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */; };
 		DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */; };
-		DC3E26801C4EC92900BF7AC2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC3E267F1C4EC92900BF7AC2 /* GoogleService-Info.plist */; };
 		DC43C7121B27E51E00CEA7CF /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554401B27D65E0035B78C /* CoreLocation.framework */; };
 		DC43C7131B27E52C00CEA7CF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCD554421B27D6650035B78C /* QuartzCore.framework */; };
 		DC4402521B98A69000D1C2B9 /* SLUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4402511B98A69000D1C2B9 /* SLUtilities.swift */; };
@@ -528,6 +528,7 @@
 		659BA2101D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Regular.ttf"; sourceTree = "<group>"; };
 		659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Thin.ttf"; sourceTree = "<group>"; };
 		659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Ultralight.ttf"; sourceTree = "<group>"; };
+		65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWebViewController.swift; sourceTree = "<group>"; };
 		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
 		65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLCryptoHandler.m; sourceTree = "<group>"; };
@@ -633,7 +634,6 @@
 		DC3CCE251BA34EF000528992 /* SLDirectionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDirectionsViewController.m; sourceTree = "<group>"; };
 		DC3CCE281BA3534000528992 /* SLDirectionsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLDirectionsTableViewCell.h; sourceTree = "<group>"; };
 		DC3CCE291BA3534000528992 /* SLDirectionsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLDirectionsTableViewCell.m; sourceTree = "<group>"; };
-		DC3E267F1C4EC92900BF7AC2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DC4402511B98A69000D1C2B9 /* SLUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUtilities.swift; sourceTree = "<group>"; };
 		DC4402541B98D21800D1C2B9 /* SkylockTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SkylockTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		DC4402581B98EEB300D1C2B9 /* SLTouchPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTouchPadView.swift; sourceTree = "<group>"; };
@@ -1471,7 +1471,7 @@
 		DCD82FD81B1FCBBC00B38910 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DC3E267F1C4EC92900BF7AC2 /* GoogleService-Info.plist */,
+				65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */,
 				DCD82FD91B1FCBBC00B38910 /* Info.plist */,
 				DCD82FDA1B1FCBBC00B38910 /* main.m */,
 			);
@@ -1704,6 +1704,7 @@
 				652306851D5941AF00091873 /* emergency_contact_circle@2x.png in Resources */,
 				652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */,
 				652306BA1D5A22BC00091873 /* battery3@2x.png in Resources */,
+				65C12D261D86F0CA0067D1BA /* GoogleService-Info.plist in Resources */,
 				659BA22A1D7655BF000001E2 /* ProximaNova-Regular.otf in Resources */,
 				DCD6797F1CF9FFB50081D225 /* placeholder_logo_animation@3x.png in Resources */,
 				652306CB1D5A22BC00091873 /* lock_screen_theft_detection_on@3x.png in Resources */,
@@ -1751,7 +1752,6 @@
 				DC2DDD2B1D1C85AB004A5857 /* button_blink_device_Onboarding@2x.png in Resources */,
 				652306871D5941AF00091873 /* emergency_contacts_phone_image@2x.png in Resources */,
 				DC52B3DF1D53B2D800DEF5EC /* button_keypad_right@2x.png in Resources */,
-				DC3E26801C4EC92900BF7AC2 /* GoogleService-Info.plist in Resources */,
 				659BA23A1D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf in Resources */,
 				652306681D58E79C00091873 /* show_current location_button@2x.png in Resources */,
 				652306841D5941AF00091873 /* contacts_unselected_circle@3x.png in Resources */,

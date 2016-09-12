@@ -37,7 +37,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             NSLocalizedString("HELP", comment: ""),
 //            NSLocalizedString("RATE THE APP", comment: ""),
 //            NSLocalizedString("INVITE FRIENDS & EARN CREDIT", comment: ""),
-            NSLocalizedString("ORDER YOU ELLIPSE NOW", comment: "")
+            NSLocalizedString("ORDER YOUR ELLIPSE NOW", comment: "")
         ]
     ]
     
