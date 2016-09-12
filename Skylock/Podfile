@@ -4,7 +4,7 @@ target "Ellipse" do
        pod 'GoogleMaps', '~> 1.10'
        pod "FBSDKCoreKit"
        pod "FBSDKLoginKit"
-       pod 'Google/CloudMessaging'
+       pod 'Firebase'
        pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
        pod 'SWTableViewCell', '~> 0.3.7'
 end 
