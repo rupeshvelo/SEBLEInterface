@@ -993,7 +993,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // We now need to get the challege data from the lock.
             self.readFromLockWithMacAddress(macAddress, service: .Security, characteristic: .ChallengeData)
         } else if value == 3 {
-            // Challege data written successfully. Now guest verified
+            //                                                                                                                                                                                                                                                                                                                                                          data written successfully. Now guest verified
             // TODO: This should be update when sharing is implemented
             print("Challege data written successfully. Now guest verified")
         } else if value == 4 {

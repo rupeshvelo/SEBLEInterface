@@ -81,12 +81,6 @@
                                                        annotation:annotation];
 }
 
-- (BOOL)currentToken
-{
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    return [FBSDKAccessToken currentAccessToken];
-}
-
 - (void)loginFromViewController:(UIViewController *)fromViewController withCompletion:(void (^)(BOOL success))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
