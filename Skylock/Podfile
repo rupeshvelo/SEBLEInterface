@@ -1,10 +1,16 @@
 use_frameworks!
-platform :ios, '9.0'
+platform :ios, '10.0'
 target "Ellipse" do
-       pod 'GoogleMaps', '~> 1.10'
+       pod 'GoogleMaps', '~> 2.1.0'
        pod "FBSDKCoreKit"
        pod "FBSDKLoginKit"
        pod 'Google/CloudMessaging'
-       pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
        pod 'SWTableViewCell', '~> 0.3.7'
+       post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['SWIFT_VERSION'] = '2.2.0'
+    end
+  end
+end
 end 

@@ -31,8 +31,8 @@ class SLFullScreenAnimation:NSObject, UIViewControllerAnimatedTransitioning {
             
             switch self.phase {
             case .Presenting:
-                transitionContext.containerView()?.addSubview(fromController.view)
-                transitionContext.containerView()?.addSubview(toController.view)
+                transitionContext.containerView().addSubview(fromController.view)
+                transitionContext.containerView().addSubview(toController.view)
                 
                 toController.view.frame = CGRect(
                     x: fromController.view.bounds.size.width,

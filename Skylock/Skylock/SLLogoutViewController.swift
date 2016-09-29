@@ -113,6 +113,7 @@ class SLLogoutViewController: UIViewController {
         let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
         if let user:SLUser = dbManager.currentUser {
             let ud:NSUserDefaults = NSUserDefaults()
+            NSUserDefaults.standardUserDefaults().setObject("shivanand", forKey: "4156767921")
             ud.setBool(false, forKey: SLUserDefaultsSignedIn)
             ud.synchronize()
             

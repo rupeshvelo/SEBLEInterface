@@ -104,13 +104,13 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: height
         )
-        
+        print("called")
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(saveButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(saveButtonPressed),forControlEvents: .TouchDown)
         button.backgroundColor = UIColor.color(102, green: 177, blue: 227)
         button.setTitle(NSLocalizedString("Save", comment: ""), forState: .Normal)
         button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        button.hidden = true
+        button.hidden = false
         
         return button
     }()
@@ -130,9 +130,7 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = UIColor.whiteColor()
-        
         self.view.addSubview(self.infoLabel)
         self.view.addSubview(self.textField)
         self.view.addSubview(self.saveButton)
@@ -169,11 +167,13 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         self.textField.resignFirstResponder()
     }
     
-    func saveButtonPressed() {
+    func saveButtonPressed(sender: UIButton!) {
+        print(self.type)
         var shouldSave = false
         if self.type == .Password && self.textField.text?.characters.count >= self.passwordLength {
             // TODO: Handle the password case
             print("User has changed password")
+            shouldSave = true
         } else if self.type == .PhoneNumber && self.textField.text?.characters.count >= self.phoneNumberLength {
             self.user.phoneNumber = self.textField.text
             shouldSave = true
@@ -184,7 +184,7 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
             self.user.lastName = self.textField.text
             shouldSave = true
         }
-        
+        print(shouldSave)
         if shouldSave {
             let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
             dbManager.saveUser(self.user, withCompletion: nil)

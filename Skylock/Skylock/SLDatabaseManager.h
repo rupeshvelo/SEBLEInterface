@@ -44,5 +44,5 @@
 - (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId;
 - (SLEmergencyContact *)newEmergencyContact;
 - (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion;
-
+- (SLUser *)getUserWithPhoneNumber:(NSString *)phoneNumber;
 @end
