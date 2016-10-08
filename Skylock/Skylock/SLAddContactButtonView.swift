@@ -25,14 +25,14 @@ class SLAddContactButtonView: UIView {
     
     private lazy var picView:UIImageView = {
         let defaultImage: UIImage = UIImage(named: "btn_add_new_contact")!
-        let frame =  CGRectMake(
-            0.5*(self.bounds.size.width - defaultImage.size.width),
-            0,
-            defaultImage.size.width,
-            defaultImage.size.height
+        let frame =  CGRect(
+            x: 0.5*(self.bounds.size.width - defaultImage.size.width),
+            y: 0.0,
+            width: defaultImage.size.width,
+            height: defaultImage.size.height
         )
         let imageView:UIImageView = UIImageView(frame: frame)
-        if let imageData = self.imageData, let image:UIImage = UIImage(data: imageData){
+        if let imageData = self.imageData, let image:UIImage = UIImage(data: imageData as Data){
             imageView.image = image
         } else {
             imageView.image = defaultImage
@@ -51,17 +51,17 @@ class SLAddContactButtonView: UIView {
         let text = self.name
         let width = self.bounds.size.width
         let size = utility.sizeForLabel(
-            self.font!,
+            font: self.font!,
             text: text,
             maxWidth: width,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
-        let frame = CGRectMake(
-            0,
-            CGRectGetMaxY(self.picView.frame) + 5,
-            width,
-            size.height
+        let frame = CGRect(
+            x: 0.0,
+            y: self.picView.frame.maxY + 5.0,
+            width: width,
+            height: size.height
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -69,7 +69,7 @@ class SLAddContactButtonView: UIView {
         label.font = self.font
         label.textColor = UIColor(red: 97, green: 100, blue: 100)
         label.numberOfLines = 0
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
         return label
     }()
@@ -80,17 +80,17 @@ class SLAddContactButtonView: UIView {
         let text = self.phoneNumber
         let width = self.bounds.size.width
         let size = utility.sizeForLabel(
-            self.font!,
+            font: self.font!,
             text: text,
             maxWidth: width,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
-        let frame = CGRectMake(
-            0,
-            CGRectGetMaxY(self.nameLabel.frame),
-            width,
-            20
+        let frame = CGRect(
+            x: 0.0,
+            y: self.nameLabel.frame.maxY,
+            width: width,
+            height: 20.0
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -98,7 +98,7 @@ class SLAddContactButtonView: UIView {
         label.font = self.font
         label.textColor = UIColor(red: 97, green: 100, blue: 100)
         label.numberOfLines = 0
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
         return label
     }()
@@ -118,7 +118,7 @@ class SLAddContactButtonView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.userInteractionEnabled = true
+        self.isUserInteractionEnabled = true
         
         if self.tgr == nil {
             self.tgr = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
@@ -134,7 +134,7 @@ class SLAddContactButtonView: UIView {
     
     @objc private func viewTapped() {
         if let delegate = self.delegate {
-            delegate.addContactButtonViewTapped(self)
+            delegate.addContactButtonViewTapped(addContactButtonView: self)
         }
     }
     

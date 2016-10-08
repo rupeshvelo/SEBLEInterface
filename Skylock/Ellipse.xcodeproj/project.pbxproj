@@ -126,6 +126,9 @@
 		659BA2381D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2101D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf */; };
 		659BA2391D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */; };
 		659BA23A1D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */; };
+		659EF8431DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */; };
+		659EF8441DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */; };
+		65ACCE211DA59624009525C6 /* SLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ACCE201DA59624009525C6 /* SLData.swift */; };
 		65C12D261D86F0CA0067D1BA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */; };
 		65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */; };
 		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
@@ -161,7 +164,6 @@
 		DC06EF911D484C1A00C96DF9 /* locks_delete_lock_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC06EF771D484C1A00C96DF9 /* locks_delete_lock_button@3x.png */; };
 		DC06EF921D484C1A00C96DF9 /* locks_setting_button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC06EF781D484C1A00C96DF9 /* locks_setting_button@2x.png */; };
 		DC06EF931D484C1A00C96DF9 /* locks_setting_button@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC06EF791D484C1A00C96DF9 /* locks_setting_button@3x.png */; };
-		DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DC081B461D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m */; };
 		DC0E36021BDFB64700F61EC4 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */; };
 		DC0FBFD41D14C683008ED381 /* SLString.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0FBFD31D14C683008ED381 /* SLString.swift */; };
 		DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */; };
@@ -314,7 +316,6 @@
 		DCA71B021CFFC73F000517CC /* SLPairingSuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA71B011CFFC73F000517CC /* SLPairingSuccessViewController.swift */; };
 		DCAAEB871D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAAEB861D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift */; };
 		DCAAEBA91D32D9A100946B61 /* SLEmergencyContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAAEBA81D32D9A100946B61 /* SLEmergencyContactsViewController.swift */; };
-		DCAAEBBB1D32DDE600946B61 /* SLEmergencyContact.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAAEBB91D32DDE600946B61 /* SLEmergencyContact.m */; };
 		DCAAEBBF1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAAEBBE1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift */; };
 		DCB6D24B1D42F62E00BCF465 /* SLUserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */; };
 		DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB6D24D1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift */; };
@@ -528,6 +529,9 @@
 		659BA2101D7655BF000001E2 /* System-San-Francisco-Display-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Regular.ttf"; sourceTree = "<group>"; };
 		659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Thin.ttf"; sourceTree = "<group>"; };
 		659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Ultralight.ttf"; sourceTree = "<group>"; };
+		659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SLEmergencyContact+CoreDataClass.swift"; sourceTree = "<group>"; };
+		659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SLEmergencyContact+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		65ACCE201DA59624009525C6 /* SLData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLData.swift; sourceTree = "<group>"; };
 		65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWebViewController.swift; sourceTree = "<group>"; };
 		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
@@ -569,8 +573,6 @@
 		DC06EF771D484C1A00C96DF9 /* locks_delete_lock_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locks_delete_lock_button@3x.png"; sourceTree = "<group>"; };
 		DC06EF781D484C1A00C96DF9 /* locks_setting_button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locks_setting_button@2x.png"; sourceTree = "<group>"; };
 		DC06EF791D484C1A00C96DF9 /* locks_setting_button@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "locks_setting_button@3x.png"; sourceTree = "<group>"; };
-		DC081B451D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLEmergencyContact+CoreDataProperties.h"; sourceTree = "<group>"; };
-		DC081B461D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLEmergencyContact+CoreDataProperties.m"; sourceTree = "<group>"; };
 		DC0E35FC1BDF33AD00F61EC4 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Pods/GoogleMaps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
 		DC0FBFD31D14C683008ED381 /* SLString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLString.swift; sourceTree = "<group>"; };
 		DC10D25A1C52C86000C8F023 /* SLLoginTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoginTextField.swift; sourceTree = "<group>"; };
@@ -732,8 +734,6 @@
 		DCA71B011CFFC73F000517CC /* SLPairingSuccessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPairingSuccessViewController.swift; sourceTree = "<group>"; };
 		DCAAEB861D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLRequestContactsAccessViewController.swift; sourceTree = "<group>"; };
 		DCAAEBA81D32D9A100946B61 /* SLEmergencyContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLEmergencyContactsViewController.swift; sourceTree = "<group>"; };
-		DCAAEBB81D32DDE600946B61 /* SLEmergencyContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLEmergencyContact.h; sourceTree = "<group>"; };
-		DCAAEBB91D32DDE600946B61 /* SLEmergencyContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SLEmergencyContact.m; sourceTree = "<group>"; };
 		DCAAEBBE1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLEmergenyContactTableViewCell.swift; sourceTree = "<group>"; };
 		DCB6D24A1D42F62E00BCF465 /* SLUserSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUserSettingsViewController.swift; sourceTree = "<group>"; };
 		DCB6D24D1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLUserSettingTableViewCell.swift; sourceTree = "<group>"; };
@@ -1164,12 +1164,10 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */,
+				659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */,
 				65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */,
 				65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */,
-				DC081B451D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.h */,
-				DC081B461D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m */,
-				DCAAEBB81D32DDE600946B61 /* SLEmergencyContact.h */,
-				DCAAEBB91D32DDE600946B61 /* SLEmergencyContact.m */,
 				DCD511D91CF2A16200CFAEAA /* SLLock+CoreDataProperties.h */,
 				DCD511DA1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m */,
 				DCF41CA41CE7F56C008C17DE /* SLLog+CoreDataProperties.h */,
@@ -1305,6 +1303,7 @@
 				DC4402541B98D21800D1C2B9 /* SkylockTests-Bridging-Header.h */,
 				AB66E177922F1A8561753E36 /* SkylockColors.swift */,
 				DC0FBFD31D14C683008ED381 /* SLString.swift */,
+				65ACCE201DA59624009525C6 /* SLData.swift */,
 			);
 			name = extenstions;
 			sourceTree = "<group>";
@@ -1586,12 +1585,13 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Andre Green";
 				TargetAttributes = {
 					DCD82FD41B1FCBBC00B38910 = {
 						CreatedOnToolsVersion = 6.3.2;
 						DevelopmentTeam = 4WD59CZ9Z6;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1604,6 +1604,7 @@
 					DCD82FF01B1FCBBC00B38910 = {
 						CreatedOnToolsVersion = 6.3.2;
 						DevelopmentTeam = 4WD59CZ9Z6;
+						LastSwiftMigration = 0800;
 						TestTargetID = DCD82FD41B1FCBBC00B38910;
 					};
 				};
@@ -1961,6 +1962,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				659EF8441DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift in Sources */,
 				DC77BF611D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift in Sources */,
 				DC30034F1D43D9D2004CE560 /* SLWarningViewController.swift in Sources */,
 				DCF41CA81CE7F56C008C17DE /* SLLog+CoreDataProperties.m in Sources */,
@@ -1977,7 +1979,6 @@
 				DCE5C2031CFB5AAE0084F8A2 /* SLConnectLockInfoViewController.swift in Sources */,
 				DC9EAE021B350CF200DA1692 /* NSString+Skylock.m in Sources */,
 				65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */,
-				DCAAEBBB1D32DDE600946B61 /* SLEmergencyContact.m in Sources */,
 				DC4402521B98A69000D1C2B9 /* SLUtilities.swift in Sources */,
 				DCD679781CF77A030081D225 /* SLOnboardingViewController.swift in Sources */,
 				DC77BF631D0A27B70081C7B6 /* SLLabelAndSwitchTableViewCell.swift in Sources */,
@@ -2016,7 +2017,6 @@
 				DCB6D24E1D42FAA700BCF465 /* SLUserSettingTableViewCell.swift in Sources */,
 				DC77CA751D4BEB61009D2E41 /* SLBoxTextField.swift in Sources */,
 				65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */,
-				DC081B471D3ABBC60015A183 /* SLEmergencyContact+CoreDataProperties.m in Sources */,
 				DCE6071B1D10879D0034D0B3 /* SLLocationManager.swift in Sources */,
 				DC5C16571C56D009006A41A5 /* SLMapCalloutViewController.swift in Sources */,
 				DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */,
@@ -2025,6 +2025,7 @@
 				DC4402721B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
 				DCF41CA91CE7F56C008C17DE /* SLLog.m in Sources */,
 				DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */,
+				659EF8431DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift in Sources */,
 				DC94E1321D0CC4A3002D32C3 /* SLProfileViewController.swift in Sources */,
 				DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */,
 				DCAAEBA91D32D9A100946B61 /* SLEmergencyContactsViewController.swift in Sources */,
@@ -2052,6 +2053,7 @@
 				DC77BF981D0B29530081C7B6 /* SLTheftDetectionSettingsViewController.swift in Sources */,
 				6523068C1D59753B00091873 /* SLFirmwareUpdateViewController.swift in Sources */,
 				DC3CCE261BA34EF000528992 /* SLDirectionsViewController.m in Sources */,
+				65ACCE211DA59624009525C6 /* SLData.swift in Sources */,
 				65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */,
 				DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */,
 				DC4402591B98EEB300D1C2B9 /* SLTouchPadView.swift in Sources */,
@@ -2105,6 +2107,7 @@
 		DCD82FF91B1FCBBC00B38910 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2116,8 +2119,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Andre Green (LZ69U36ACZ)";
@@ -2125,7 +2130,6 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2149,7 +2153,7 @@
 					"\"$(SRCROOT)dmdb/\"/**",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "79942854-61e4-4de6-86f5-468cfe75fb59";
@@ -2160,6 +2164,7 @@
 		DCD82FFA1B1FCBBC00B38910 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2171,8 +2176,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Velo Labs Inc. (4WD59CZ9Z6)";
@@ -2180,7 +2187,6 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2197,11 +2203,12 @@
 					"\"$(SRCROOT)dmdb/\"/**",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "094603bc-4c70-493b-9558-1e5f5ad2cd5d";
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -2210,15 +2217,16 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5F649EF31E2EE3969830B030 /* Pods-Ellipse.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Andre Green (LZ69U36ACZ)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
+				DEVELOPMENT_TEAM = 4WD59CZ9Z6;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2234,12 +2242,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "698a8504-25dc-4dd7-969d-0c86601172e6";
+				PROVISIONING_PROFILE = "5cac8192-3dfe-4df2-98c2-7037e264caa5";
+				PROVISIONING_PROFILE_SPECIFIER = "EllipseLockDev-2016-10-02-Development";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -2247,6 +2257,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_MODULE_DEBUGGING = NO;
@@ -2254,7 +2265,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Velo Labs Inc. (4WD59CZ9Z6)";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEFINES_MODULE = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
+				DEVELOPMENT_TEAM = 4WD59CZ9Z6;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2270,11 +2281,12 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.skylock.www.EllipseDev;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "d88d1db5-9f0a-4a80-8c59-7f3ec62369ee";
+				PROVISIONING_PROFILE = "550848ac-2e42-4841-9c38-676f3615a53b";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -2300,6 +2312,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/SkylockTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellipse.app/Ellipse";
 			};
 			name = Debug;
@@ -2321,6 +2334,7 @@
 				PRODUCT_NAME = Ellipse;
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/SkylockTests-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ellipse.app/Ellipse";
 			};
 			name = Release;

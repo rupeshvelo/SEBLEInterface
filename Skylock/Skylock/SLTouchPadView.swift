@@ -9,15 +9,15 @@
 import UIKit
 
 enum SLTouchPadLocation {
-    case Top
-    case Right
-    case Bottom
-    case Left
+    case top
+    case right
+    case bottom
+    case left
 }
 
 protocol SLTouchPadViewDelegate:class {
     func touchPadViewLocationSelected(
-        touchPadViewController: SLTouchPadView,
+        _ touchPadViewController: SLTouchPadView,
         location:SLTouchPadLocation
     )
 }
@@ -32,80 +32,80 @@ class SLTouchPadView: UIView {
     
     lazy var topButton: UIButton = {
         let image:UIImage = UIImage(named: "button_keypad_up_Onboarding")!
-        let frame = CGRectMake(
-            0.5*(self.bounds.size.width - image.size.width),
-            0,
-            image.size.width,
-            image.size.height
+        let frame = CGRect(
+            x: 0.5*(self.bounds.size.width - image.size.width),
+            y: 0,
+            width: image.size.width,
+            height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        button.setImage(image, forState: .Normal)
+        button.setImage(image, for: UIControlState())
         
         return button
     }()
     
     lazy var rightButton: UIButton = {
         let image:UIImage = UIImage(named: "button_keypad_right_Onboarding")!
-        let frame = CGRectMake(
-            self.bounds.size.width - image.size.width,
-            CGRectGetMidY(self.bounds) - 0.5*image.size.height,
-            image.size.width,
-            image.size.height
+        let frame = CGRect(
+            x: self.bounds.size.width - image.size.width,
+            y: self.bounds.midY - 0.5*image.size.height,
+            width: image.size.width,
+            height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        button.setImage(image, forState: .Normal)
+        button.setImage(image, for: UIControlState())
         
         return button
     }()
     
     lazy var bottomButton: UIButton = {
         let image:UIImage = UIImage(named: "button_keypad_down_Onboarding")!
-        let frame = CGRectMake(
-            0.5*(self.bounds.size.width - image.size.width),
-            self.bounds.size.height - image.size.height,
-            image.size.width,
-            image.size.height
+        let frame = CGRect(
+            x: 0.5*(self.bounds.size.width - image.size.width),
+            y: self.bounds.size.height - image.size.height,
+            width: image.size.width,
+            height: image.size.height
         )
         
         let button:UIButton = UIButton(frame:frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        button.setImage(image, forState: .Normal)
+        button.setImage(image, for: UIControlState())
         
         return button
     }()
     
     lazy var leftButton: UIButton = {
         let image:UIImage = UIImage(named: "button_keypad_left_Onboarding")!
-        let frame = CGRectMake(
-            0,
-            CGRectGetMidY(self.bounds) - 0.5*image.size.width,
-            image.size.width,
-            image.size.width
+        let frame = CGRect(
+            x: 0,
+            y: self.bounds.midY - 0.5*image.size.width,
+            width: image.size.width,
+            height: image.size.width
         )
 
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(
             self,
             action: #selector(touchPadButtonPressed(_:)),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        button.setImage(image, forState: .Normal)
+        button.setImage(image, for: UIControlState())
         
         return button
     }()
@@ -119,19 +119,19 @@ class SLTouchPadView: UIView {
         self.addSubview(self.leftButton)        
     }
     
-    func touchPadButtonPressed(sender: UIButton) {        
+    func touchPadButtonPressed(_ sender: UIButton) {        
         let location: SLTouchPadLocation
         switch sender {
         case self.topButton:
-            location = .Top
+            location = .top
         case self.rightButton:
-            location = .Right
+            location = .right
         case self.bottomButton:
-            location = .Bottom
+            location = .bottom
         case self.leftButton:
-            location = .Left
+            location = .left
         default:
-            location = .Top
+            location = .top
         }
     
         self.delegate?.touchPadViewLocationSelected(self, location: location)

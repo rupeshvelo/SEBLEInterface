@@ -30,13 +30,13 @@ class SLWarningViewController: UIViewController {
     private lazy var headerLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.padding
         let height:CGFloat = 24.0
-        let frame = CGRectMake(self.padding, 25.0, labelWidth, height)
+        let frame = CGRect(x: self.padding, y: 25.0, width: labelWidth, height: height)
         
         let label:UILabel = UILabel(frame: frame)
-        label.text = self.getTextForProperty(.Header)
-        label.textColor = SLUtilities().color(.Color76_79_97)
-        label.font = UIFont.systemFontOfSize(20)
-        label.textAlignment = .Center
+        label.text = self.getText(property: .Header)
+        label.textColor = SLUtilities().color(colorCode: .Color76_79_97)
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.textAlignment = .center
         
         return label
     }()
@@ -44,27 +44,27 @@ class SLWarningViewController: UIViewController {
     private lazy var infoLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.padding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(10.0)
-        let text = self.getTextForProperty(.Info) == nil ? "" : self.getTextForProperty(.Info)!
+        let font = UIFont.systemFont(ofSize: 10.0)
+        let text = self.getText(property: .Info) == nil ? "" : self.getText(property: .Info)!
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - labelSize.width),
-            CGRectGetMaxY(self.headerLabel.frame) + 15.0,
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - labelSize.width),
+            y: self.headerLabel.frame.maxY + 15.0,
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = utility.color(.Color76_79_97)
+        label.textColor = utility.color(colorCode: .Color76_79_97)
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = font
         label.numberOfLines = 0
         
@@ -72,24 +72,24 @@ class SLWarningViewController: UIViewController {
     }()
     
     private lazy var cancelButton:UIButton = {
-        let actionButtonTitle = self.getTextForProperty(.ActionButton)
+        let actionButtonTitle = self.getText(property: .ActionButton)
         let width = actionButtonTitle == nil ? self.view.bounds.size.width - 2.0*self.padding
             : 0.5*(self.view.bounds.size.width - self.buttonSpacer) - self.padding
         let height:CGFloat = 45.0
         let util = SLUtilities()
-        let frame = CGRectMake(
-            self.padding,
-            self.view.bounds.size.height - self.padding - height,
-            width,
-            height
+        let frame = CGRect(
+            x: self.padding,
+            y: self.view.bounds.size.height - self.padding - height,
+            width: width,
+            height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.setTitle(self.getTextForProperty(.CancelButton), forState: .Normal)
-        button.setTitleColor(util.color(.Color155_155_155), forState: .Normal)
-        button.backgroundColor = util.color(.Color239_239_239)
-        button.addTarget(self, action: #selector(cancelButtonPressed), forControlEvents: .TouchDown)
+        button.setTitle(self.getText(property: .CancelButton), for: .normal)
+        button.setTitleColor(util.color(colorCode: .Color155_155_155), for: .normal)
+        button.backgroundColor = util.color(colorCode: .Color239_239_239)
+        button.addTarget(self, action: #selector(cancelButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -98,27 +98,27 @@ class SLWarningViewController: UIViewController {
         let width = self.cancelButton.bounds.size.width
         let height:CGFloat = 45.0
         let util = SLUtilities()
-        let frame = CGRectMake(
-            self.view.bounds.size.width - self.padding - width,
-            self.view.bounds.size.height - self.padding - height,
-            width,
-            height
+        let frame = CGRect(
+            x: self.view.bounds.size.width - self.padding - width,
+            y: self.view.bounds.size.height - self.padding - height,
+            width: width,
+            height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.setTitle(self.getTextForProperty(.ActionButton), forState: .Normal)
-        button.setTitleColor(util.color(.Color255_255_255), forState: .Normal)
-        button.backgroundColor = util.color(.Color102_177_227)
-        button.addTarget(self, action: #selector(actionButtonPressed), forControlEvents: .TouchDown)
+        button.setTitle(self.getText(property: .ActionButton), for: .normal)
+        button.setTitleColor(util.color(colorCode: .Color255_255_255), for: .normal)
+        button.backgroundColor = util.color(colorCode: .Color102_177_227)
+        button.addTarget(self, action: #selector(actionButtonPressed), for: .touchDown)
         
         return button
     }()
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         if !self.view.subviews.contains(self.headerLabel) {
             self.view.addSubview(self.headerLabel)
@@ -132,12 +132,12 @@ class SLWarningViewController: UIViewController {
             self.view.addSubview(self.cancelButton)
         }
         
-        if !self.view.subviews.contains(self.actionButton) && self.getTextForProperty(.ActionButton) != nil {
+        if !self.view.subviews.contains(self.actionButton) && self.getText(property: .ActionButton) != nil {
             self.view.addSubview(self.actionButton)
         }
     }
     
-    private func getTextForProperty(property: SLWarningViewControllerTextProperty) -> String? {
+    private func getText(property: SLWarningViewControllerTextProperty) -> String? {
         if let text = texts[property] {
             return text
         }
@@ -150,10 +150,10 @@ class SLWarningViewController: UIViewController {
     }
     
     @objc private func cancelButtonPressed() {
-        self.delegate?.warningVCCancelActionButtonPressed(self)
+        self.delegate?.warningVCCancelActionButtonPressed(wvc: self)
     }
     
     @objc private func actionButtonPressed() {
-        self.delegate?.warningVCTakeActionButtonPressed(self)
+        self.delegate?.warningVCTakeActionButtonPressed(wvc: self)
     }
 }

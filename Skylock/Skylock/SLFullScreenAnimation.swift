@@ -21,18 +21,18 @@ class SLFullScreenAnimation:NSObject, UIViewControllerAnimatedTransitioning {
         super.init()
     }
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.4
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        if let fromController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey), let toController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey) {
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        if let fromController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from), let toController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to) {
             let endFrame:CGRect
             
             switch self.phase {
             case .Presenting:
-                transitionContext.containerView()?.addSubview(fromController.view)
-                transitionContext.containerView()?.addSubview(toController.view)
+                transitionContext.containerView.addSubview(fromController.view)
+                transitionContext.containerView.addSubview(toController.view)
                 
                 toController.view.frame = CGRect(
                     x: fromController.view.bounds.size.width,
@@ -41,9 +41,9 @@ class SLFullScreenAnimation:NSObject, UIViewControllerAnimatedTransitioning {
                     height: toController.view.bounds.size.height
                 )
                 
-                endFrame = transitionContext.finalFrameForViewController(fromController)
-                UIView.animateWithDuration(
-                    self.transitionDuration(transitionContext),
+                endFrame = transitionContext.finalFrame(for: fromController)
+                UIView.animate(
+                    withDuration: self.transitionDuration(using: transitionContext),
                     animations: {
                         toController.view.frame = endFrame
                     },
@@ -59,8 +59,8 @@ class SLFullScreenAnimation:NSObject, UIViewControllerAnimatedTransitioning {
                     height: fromController.view.bounds.size.height
                 )
                 
-                UIView.animateWithDuration(
-                    self.transitionDuration(transitionContext),
+                UIView.animate(
+                    withDuration: self.transitionDuration(using: transitionContext),
                     animations: {
                         fromController.view.frame = endFrame
                     },

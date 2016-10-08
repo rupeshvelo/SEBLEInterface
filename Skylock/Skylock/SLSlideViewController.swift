@@ -42,11 +42,11 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     ]
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         table.delegate = self
         table.dataSource = self
-        table.separatorStyle = UITableViewCellSeparatorStyle.None
-        table.backgroundColor = UIColor.clearColor()
+        table.separatorStyle = UITableViewCellSeparatorStyle.none
+        table.backgroundColor = UIColor.clear
         table.rowHeight = 50.0
         
         return table
@@ -55,10 +55,10 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = SLUtilities().color(.Color130_156_178)
+        self.view.backgroundColor = SLUtilities().color(colorCode: .Color130_156_178)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !self.view.subviews.contains(self.tableView) {
@@ -66,12 +66,12 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         if let path = self.tableView.indexPathForSelectedRow {
-            let cell = self.tableView.cellForRowAtIndexPath(path)
-            cell?.selected = false
+            let cell = self.tableView.cellForRow(at: path)
+            cell?.isSelected = false
         }
         
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            kSLNotificationHideLockBar,
+        NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: kSLNotificationHideLockBar),
             object: nil
         )
     }
@@ -84,29 +84,29 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         return 2
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? 2 : 4
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellId = self.cellId(indexPath.section)
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellId = self.cellId(section: indexPath.section)
+        var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId)
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: cellId)
         }
         
         let text = self.cellText[indexPath.section][indexPath.row]
         let fontSize:CGFloat = indexPath.section == 0 ? 16.0 : 11.0
         
         cell?.textLabel?.text = text
-        cell?.textLabel?.textColor = UIColor.whiteColor()
+        cell?.textLabel?.textColor = UIColor.white
         cell?.textLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: fontSize)
-        cell?.backgroundColor = UIColor.clearColor()
+        cell?.backgroundColor = UIColor.clear
     
         return cell!
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let frame = CGRect(
             x: 0,
             y: 0,
@@ -115,16 +115,16 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         )
         
         let view:UIView = UIView(frame: frame)
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
         return view
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 77.0 : 100.0
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let action:SLSlideViewControllerAction
         if indexPath.section == 0 {
             switch indexPath.row {
@@ -150,6 +150,6 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
         
-        self.delegate?.handleAction(self, action: action)
+        self.delegate?.handleAction(svc: self, action: action)
     }
 }

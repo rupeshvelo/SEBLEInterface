@@ -40,12 +40,12 @@ func beginUpdatingLocation() {
     // MARK: CLLocationMangerDelegate methods
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         var didAccept = false
-        if status == .AuthorizedAlways || status == .AuthorizedWhenInUse {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             manager.startUpdatingLocation()
             didAccept = true
         }
         
-        self.delegate?.locationManagerDidAcceptedLocationAuthorization(self, didAccept: didAccept)
+        self.delegate?.locationManagerDidAcceptedLocationAuthorization(locationManager: self, didAccept: didAccept)
     }
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -53,6 +53,6 @@ func beginUpdatingLocation() {
             return
         }
         
-        self.delegate?.locationManagerUpdatedUserPosition(self, userLocation: userLocation)
+        self.delegate?.locationManagerUpdatedUserPosition(locationManager: self, userLocation: userLocation)
     }
 }

@@ -22,12 +22,12 @@ class SLLoginTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func textRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, self.xInset, 0)
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: self.xInset, dy: 0)
     }
     
-    override func editingRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, self.xInset, 0)
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: self.xInset, dy: 0)
     }
     
     override func layoutSubviews() {
@@ -38,6 +38,6 @@ class SLLoginTextField: UITextField {
         self.textColor = UIColor(red: 146, green: 148, blue: 151)
         self.layer.cornerRadius = 2.0
         self.clipsToBounds = true
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
     }
 }

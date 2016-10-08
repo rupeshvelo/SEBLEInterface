@@ -29,7 +29,10 @@ class SLTouchSliderViewController: UIViewController {
             height: self.sliderHeight
         )
         
-        let pgr:UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(sliderViewDragged(_:)))
+        let pgr:UIPanGestureRecognizer = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(sliderViewDragged(pgr:))
+        )
         pgr.minimumNumberOfTouches = 1
         
         let view:UIView = UIView(frame: frame)
@@ -51,15 +54,15 @@ class SLTouchSliderViewController: UIViewController {
         let view:UIView = UIView(frame: frame)
         
         let colors:[CGColor] = [
-            UIColor(red: 60, green: 83, blue: 119).CGColor,
-            UIColor(red: 87, green: 216, blue: 255).CGColor
+            UIColor(red: 60, green: 83, blue: 119).cgColor,
+            UIColor(red: 87, green: 216, blue: 255).cgColor
         ]
         
         let locations = [0.0, 1.0]
         
         self.sliderLayer.frame = view.frame
         self.sliderLayer.colors = colors
-        self.sliderLayer.locations = locations
+        self.sliderLayer.locations = locations as [NSNumber]?
         
         view.layer.addSublayer(self.sliderLayer)
         return view
@@ -70,25 +73,25 @@ class SLTouchSliderViewController: UIViewController {
         let text = NSLocalizedString("Low", comment: "")
         let utility = SLUtilities()
         let labelSize:CGSize = utility.sizeForLabel(
-            self.labelFont,
+            font: self.labelFont,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMinY(self.sliderBackgroundView.frame) - 18.0,
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.sliderBackgroundView.frame.minY - 18.0,
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame:frame)
         label.text = text
         label.font = self.labelFont
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.textAlignment = .Left
+        label.textAlignment = .left
         
         return label
     }()
@@ -98,25 +101,25 @@ class SLTouchSliderViewController: UIViewController {
         let text = NSLocalizedString("Medium", comment: "")
         let utility = SLUtilities()
         let labelSize:CGSize = utility.sizeForLabel(
-            self.labelFont,
+            font: self.labelFont,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - labelSize.width),
-            CGRectGetMinY(self.lowLabel.frame),
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - labelSize.width),
+            y: self.lowLabel.frame.minY,
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame:frame)
         label.text = text
         label.font = self.labelFont
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         
         return label
     }()
@@ -126,25 +129,25 @@ class SLTouchSliderViewController: UIViewController {
         let text = NSLocalizedString("High", comment: "")
         let utility = SLUtilities()
         let labelSize:CGSize = utility.sizeForLabel(
-            self.labelFont,
+            font: self.labelFont,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            self.view.bounds.size.width - labelSize.width - self.xPadding,
-            CGRectGetMinY(self.lowLabel.frame),
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: self.view.bounds.size.width - labelSize.width - self.xPadding,
+            y: self.lowLabel.frame.minY,
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame:frame)
         label.text = text
         label.font = self.labelFont
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.textAlignment = .Right
+        label.textAlignment = .right
         
         return label
     }()
@@ -152,10 +155,10 @@ class SLTouchSliderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !self.view.subviews.contains(self.sliderBackgroundView) {
@@ -180,7 +183,7 @@ class SLTouchSliderViewController: UIViewController {
     }
     
     func sliderViewDragged(pgr: UIPanGestureRecognizer) {
-        let location:CGPoint = pgr.locationInView(self.sliderBackgroundView)
+        let location:CGPoint = pgr.location(in: self.sliderBackgroundView)
         self.sliderLayer.frame = CGRect(x: 0.0, y: 0.0, width: location.x, height: self.sliderHeight)
         self.sliderValue = Double(location.x/self.sliderBackgroundView.bounds.size.width)
     }

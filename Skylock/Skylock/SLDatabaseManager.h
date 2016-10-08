@@ -14,35 +14,33 @@
 
 @interface SLDatabaseManager : NSObject
 
-@property (strong) SLUser *currentUser;
 
++(id _Nonnull)sharedManager;
 
-+(id)sharedManager;
-
-- (void)setContext:(NSManagedObjectContext *)context;
-
-- (void)saveLockToDb:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
-- (NSArray *)allLocks;
-- (NSArray *)locksForCurrentUser;
-- (void)deleteLock:(SLLock *)lock withCompletion:(void(^)(BOOL success))completion;
-- (void)saveUser:(SLUser *)user withCompletion:(void(^)(BOOL success))completion;
-- (void)saveUserWithDictionary:(NSDictionary *)dictionary isFacebookUser:(BOOL)isFacebookUser;
+- (void)setContext:(NSManagedObjectContext * _Nonnull)context;
+- (SLUser * _Nullable)getCurrentUser;
+- (void)saveLockToDb:(SLLock * _Nonnull)lock withCompletion:(void(^ _Nullable)(BOOL success))completion;
+- (NSArray * _Nullable)allLocks;
+- (NSArray * _Nullable)locksForCurrentUser;
+- (void)deleteLock:(SLLock * _Nonnull)lock withCompletion:(void(^ _Nullable)(BOOL success))completion;
+- (void)saveUser:(SLUser * _Nonnull)user withCompletion:(void(^ _Nullable)(BOOL success))completion;
+- (void)saveUserWithDictionary:(NSDictionary * _Nonnull)dictionary isFacebookUser:(BOOL)isFacebookUser;
 - (void)setCurrentUser;
-- (SLLock *)getCurrentLockForCurrentUser;
-- (NSArray *)sharedContactsForLock:(SLLock *)lock;
-- (void)setCurrentLock:(SLLock *)lock;
+- (SLLock * _Nullable)getCurrentLockForCurrentUser;
+- (NSArray * _Nullable)sharedContactsForLock:(SLLock * _Nonnull)lock;
+- (void)setCurrentLock:(SLLock * _Nonnull)lock;
 - (void)deselectAllLocks;
-- (SLLock *)getLockWithMacAddress:(NSString *)macAddress;
-- (SLLock *)newLockWithName:(NSString *)name andUUID:(NSString *)uuid;
-- (BOOL)doesCurrentUserHaveLock:(SLLock *)lock;
-- (NSArray *)getAllLogs;
-- (void)saveLogEntry:(NSString *)entry;
-- (void)saveLockConnectedDate:(SLLock *)lock;
-- (void)saveLock:(SLLock *)lock;
-- (NSArray *)emergencyContacts;
-- (void)saveEmergencyContact:(SLEmergencyContact *)contact;
-- (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId;
-- (SLEmergencyContact *)newEmergencyContact;
-- (void)deleteContactWithId:(NSString *)contactId completion:(void(^)(BOOL success))completion;
+- (SLLock * _Nullable)getLockWithMacAddress:(NSString * _Nonnull)macAddress;
+- (SLLock * _Nullable)newLockWithName:(NSString * _Nonnull)name andUUID:(NSString * _Nonnull)uuid;
+- (BOOL)doesCurrentUserHaveLock:(SLLock * _Nonnull)lock;
+- (NSArray * _Nonnull)getAllLogs;
+- (void)saveLogEntry:(NSString * _Nonnull)entry;
+- (void)saveLockConnectedDate:(SLLock * _Nonnull)lock;
+- (void)saveLock:(SLLock * _Nullable)lock;
+- (NSArray * _Nullable)emergencyContacts;
+- (void)saveEmergencyContact:(SLEmergencyContact * _Nonnull)contact;
+- (SLEmergencyContact * _Nullable)getContactWithContactId:(NSString * _Nonnull)contactId;
+- (SLEmergencyContact * _Nonnull)newEmergencyContact;
+- (void)deleteContactWithId:(NSString * _Nonnull)contactId completion:(void(^ _Nullable)(BOOL success))completion;
 
 @end

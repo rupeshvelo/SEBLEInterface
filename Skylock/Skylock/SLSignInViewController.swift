@@ -34,11 +34,11 @@ class SLSignInViewController: SLBaseViewController {
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
+        button.setImage(image, for: UIControlState.normal)
         button.addTarget(
             self,
             action: #selector(signUpWithFacebookButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
         
         return button
@@ -46,25 +46,25 @@ class SLSignInViewController: SLBaseViewController {
 
     lazy var existingUserButton:UIButton = {
         let frame = CGRect(
-            x: CGRectGetMinX(self.signUpWithFacebookButton.frame),
-            y: CGRectGetMinY(self.signUpWithFacebookButton.frame)
+            x: self.signUpWithFacebookButton.frame.minX,
+            y: self.signUpWithFacebookButton.frame.minY
                 - self.signUpWithFacebookButton.bounds.size.height - self.buttonSpacer,
             width: self.signUpWithFacebookButton.bounds.size.width,
             height: self.signUpWithFacebookButton.bounds.size.height
         )
         
-        let button:UIButton = UIButton(type: UIButtonType.System)
+        let button:UIButton = UIButton(type: UIButtonType.system)
         button.frame = frame
-        button.backgroundColor = UIColor.clearColor()
-        button.setTitle(NSLocalizedString("LOG IN", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.color(87, green: 216, blue: 255), forState: .Normal)
+        button.backgroundColor = UIColor.clear
+        button.setTitle(NSLocalizedString("LOG IN", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.color(87, green: 216, blue: 255), for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.color(87, green: 216, blue: 255).CGColor
+        button.layer.borderColor = UIColor.color(87, green: 216, blue: 255).cgColor
         button.addTarget(
             self,
             action: #selector(existingUserButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
         
         return button
@@ -72,23 +72,23 @@ class SLSignInViewController: SLBaseViewController {
 
     lazy var signUpWithEmailButton:UIButton = {
         let frame = CGRect(
-            x: CGRectGetMinX(self.signUpWithFacebookButton.frame),
-            y: CGRectGetMinY(self.existingUserButton.frame)
+            x: self.signUpWithFacebookButton.frame.minX,
+            y: self.existingUserButton.frame.minY
                 - self.signUpWithFacebookButton.bounds.size.height - self.buttonSpacer,
             width: self.signUpWithFacebookButton.bounds.size.width,
             height: self.signUpWithFacebookButton.bounds.size.height
         )
         
-        let button:UIButton = UIButton(type: UIButtonType.System)
+        let button:UIButton = UIButton(type: UIButtonType.system)
         button.frame = frame
         button.backgroundColor = UIColor.color(87, green: 216, blue: 255)
-        button.setTitle(NSLocalizedString("SIGN UP", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.setTitle(NSLocalizedString("SIGN UP", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         button.addTarget(
             self,
             action: #selector(signUpWithEmailButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
         
         return button
@@ -97,7 +97,7 @@ class SLSignInViewController: SLBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.view.addSubview(self.logoView)
         self.view.addSubview(self.existingUserButton)
@@ -107,33 +107,33 @@ class SLSignInViewController: SLBaseViewController {
     
     func existingUserButtonPressed() {
         let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.SignIn)    
-        self.presentViewController(createAccountVC, animated: true, completion: nil)
+        self.present(createAccountVC, animated: true, completion: nil)
     }
     
     func signUpWithEmailButtonPressed() {
         let createAccountVC = SLCreateAccountViewController(phase: SLCreateAccountFieldPhase.Create)
-        self.presentViewController(createAccountVC, animated: true, completion: nil)
+        self.present(createAccountVC, animated: true, completion: nil)
     }
     
     func signUpWithFacebookButtonPressed() {
         let facebookManager:SLFacebookManger = SLFacebookManger.sharedManager() as! SLFacebookManger
-        facebookManager.loginFromViewController(self) { (success) in
+        facebookManager.login(from: self) { (success) in
             if success {
-                let userDefaults = NSUserDefaults.standardUserDefaults()
-                userDefaults.setBool(true, forKey: "SLUserDefaultsSignedIn")
+                let userDefaults = UserDefaults.standard
+                userDefaults.set(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
                 
                 let lockManager:SLLockManager = SLLockManager.sharedManager
                 if lockManager.hasLocksForCurrentUser() {
                     let lvc = SLLockViewController()
-                    self.presentViewController(lvc, animated: true, completion: nil)
+                    self.present(lvc, animated: true, completion: nil)
                 } else {
                     let clvc = SLConnectLockInfoViewController()
                     let nc:UINavigationController = UINavigationController(rootViewController: clvc)
-                    nc.navigationBar.barStyle = UIBarStyle.Black
-                    nc.navigationBar.tintColor = UIColor.whiteColor()
+                    nc.navigationBar.barStyle = UIBarStyle.black
+                    nc.navigationBar.tintColor = UIColor.white
                     nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
-                    self.presentViewController(nc, animated: true, completion: nil)
+                    self.present(nc, animated: true, completion: nil)
                 }
             } else {
                 let texts:[SLWarningViewControllerTextProperty:String?] = [
@@ -147,7 +147,7 @@ class SLSignInViewController: SLBaseViewController {
                     .ActionButton: nil
                 ]
                 
-                self.presentWarningViewControllerWithTexts(texts, cancelClosure: nil)
+                self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
             }
         }
     }

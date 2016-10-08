@@ -17,18 +17,18 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         let image:UIImage = UIImage(named: "button_close_window_extra_large_Onboarding")!
         let frame:CGRect = CGRect(
             x: self.view.bounds.size.width - image.size.width - 10.0,
-            y: CGRectGetMinY(self.successLabel.frame) - image.size.height - 5.0,
+            y: self.successLabel.frame.minY - image.size.height - 5.0,
             width: image.size.width,
             height: image.size.height
         )
         let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
+        button.setImage(image, for: UIControlState.normal)
         button.addTarget(
             self,
             action: #selector(dismissKeyboardButtonPressed),
-            forControlEvents: .TouchDown
+            for: .touchDown
         )
-        button.hidden = true
+        button.isHidden = true
         
         return button
     }()
@@ -36,27 +36,27 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     lazy var successLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(24)
+        let font = UIFont.systemFont(ofSize: 24)
         let text = NSLocalizedString("Success!", comment: "")
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            100.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 100.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = self.lightBlueColor
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 1
         
@@ -66,27 +66,27 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     lazy var successSubLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(20)
+        let font = UIFont.systemFont(ofSize: 20)
         let text = NSLocalizedString("Your Ellipse has been paired.", comment: "")
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.successLabel.frame) + 5.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.successLabel.frame.maxY + 5.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = self.lightBlueColor
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -96,31 +96,31 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     lazy var detailsLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(10)
+        let font = UIFont.systemFont(ofSize: 10)
         let text = NSLocalizedString(
             "We just need a few details from you to set up your Ellipse " +
             "and your profile and you're ready to go.",
             comment: ""
         )
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.successSubLabel.frame) + 10.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.successSubLabel.frame.maxY + 10.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -130,30 +130,30 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     lazy var chooseNameLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(12)
+        let font = UIFont.systemFont(ofSize: 12)
         let text = NSLocalizedString(
             "Choose a name for your Ellipse\n(max 40 characters)",
             comment: ""
         )
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.detailsLabel.frame) + 55.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.detailsLabel.frame.maxY + 55.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = self.lightBlueColor
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -164,27 +164,27 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         let xSpacer:CGFloat = 10.0
         let frame = CGRect(
             x: xSpacer,
-            y: CGRectGetMaxY(self.chooseNameLabel.frame) + 15.0,
+            y: self.chooseNameLabel.frame.maxY + 15.0,
             width: self.view.bounds.size.width - 2*xSpacer,
             height: 20
         )
         
         let field:UITextField = UITextField(frame: frame)
-        field.font = UIFont.systemFontOfSize(18)
+        field.font = UIFont.systemFont(ofSize: 18)
         field.placeholder = NSLocalizedString("Name your Ellipse.", comment: "")
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1)
-        field.textAlignment = .Center
+        field.textAlignment = .center
         field.delegate = self
-        field.autocapitalizationType = .Words
-        field.returnKeyType = .Done
+        field.autocapitalizationType = .words
+        field.returnKeyType = .done
         
         return field
     }()
     
     lazy var underlineView:UIView = {
         let frame = CGRect(
-            x: CGRectGetMinX(self.nameField.frame),
-            y: CGRectGetMaxY(self.nameField.frame) + 1.0,
+            x: self.nameField.frame.minX,
+            y: self.nameField.frame.maxY + 1.0,
             width: self.nameField.bounds.size.width,
             height: 1.0
         )
@@ -205,8 +205,8 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(noButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.addTarget(self, action: #selector(noButtonPressed), for: .touchDown)
+        button.setImage(image, for: .normal)
         
         return button
     }()
@@ -215,14 +215,14 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         let image:UIImage = UIImage(named: "button_yes_small_Onboarding")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width + self.buttonSeperation),
-            y: CGRectGetMinY(self.noButton.frame),
+            y: self.noButton.frame.minY,
             width: image.size.width,
             height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(yesButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.addTarget(self, action: #selector(yesButtonPressed), for: .touchDown)
+        button.setImage(image, for: .normal)
         
         return button
     }()
@@ -230,30 +230,30 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     lazy var setPinNowLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
+        let font = UIFont.systemFont(ofSize: 14)
         let text = NSLocalizedString(
             "Would you like to set a PIN now?",
             comment: ""
         )
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMinY(self.noButton.frame) - 25.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.noButton.frame.minY - 25.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = self.lightBlueColor
         label.text = text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -266,7 +266,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         self.navigationItem.title = NSLocalizedString("NAME YOUR ELLIPSE", comment: "")
         self.navigationItem.hidesBackButton = true
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.view.addSubview(self.successLabel)
         self.view.addSubview(self.successSubLabel)
@@ -283,13 +283,13 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     func yesButtonPressed() {
         let tpvc = SLTouchPadViewController()
         tpvc.onCanelExit = {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
         tpvc.onSaveExit = {[weak weakTpvc = tpvc] in
             let lvc = SLLockViewController()
-            weakTpvc?.presentViewController(lvc, animated: false, completion: nil)
+            weakTpvc?.present(lvc, animated: false, completion: nil)
         }
-        self.presentViewController(tpvc, animated: true, completion: nil)
+        self.present(tpvc, animated: true, completion: nil)
         self.saveNewLockName()
     }
     
@@ -297,7 +297,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         self.saveNewLockName()
         
         let lvc = SLLockViewController()
-        self.presentViewController(lvc, animated: false, completion: nil)
+        self.present(lvc, animated: false, completion: nil)
     }
     
     func dismissKeyboardButtonPressed() {
@@ -305,21 +305,21 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     }
     
     func saveNewLockName() {
-        if let lockName = self.nameField.text where lockName != "" {
-            let trimmedString = lockName.stringByTrimmingCharactersInSet(NSCharacterSet(charactersInString: " "))
-            SLLockManager.sharedManager.changeCurrentLockGivenNameTo(trimmedString)
+        if let lockName = self.nameField.text , !lockName.isEmpty {
+            let trimmedString = lockName.trimmedWhiteSpaces()
+            SLLockManager.sharedManager.changeCurrentLockGivenNameTo(newName: trimmedString)
         }
     }
     
-    func textFieldDidBeginEditing(textField: UITextField) {
-        self.dismissKeyboardButton.hidden = false
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.dismissKeyboardButton.isHidden = false
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
-        self.dismissKeyboardButton.hidden = true
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.dismissKeyboardButton.isHidden = true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }

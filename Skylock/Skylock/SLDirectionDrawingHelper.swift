@@ -21,10 +21,10 @@ class SLDirectionDrawingHelper: NSObject {
         self.directions = directions;
     }
     
-    func drawDirections(completion: () -> ()) {
+    func drawDirections(_ completion: () -> ()) {
         let path = GMSMutablePath()
         for direction in self.directions where direction.start != nil {
-            path.addCoordinate(direction.start!)
+            path.add(direction.start!)
         }
         
         if self.polyline != nil {
@@ -33,7 +33,7 @@ class SLDirectionDrawingHelper: NSObject {
         
         self.polyline = GMSPolyline(path: path)
         self.polyline!.strokeWidth = 5
-        self.polyline!.strokeColor = UIColor.redColor()
+        self.polyline!.strokeColor = UIColor.red
         self.polyline!.map = self.mapView
         
         completion()

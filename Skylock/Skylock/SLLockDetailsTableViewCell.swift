@@ -14,7 +14,7 @@ class SLLockDetailsTableViewCell: UITableViewCell {
     var isConnected:Bool = false
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .Subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -28,7 +28,7 @@ class SLLockDetailsTableViewCell: UITableViewCell {
         let yPadding:CGFloat = 20.0
         let xPadding:CGFloat = 10.0
         if let textLabel = self.textLabel {
-            textLabel.textColor = utilities.color(.Color155_155_155)
+            textLabel.textColor = utilities.color(colorCode: .Color155_155_155)
             textLabel.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
             
             let textLabelFrame = CGRect(
@@ -43,7 +43,7 @@ class SLLockDetailsTableViewCell: UITableViewCell {
         if let detailTextLabel = self.detailTextLabel {
             let colorCode:SLColor = self.isConnected ? .Color160_200_224  : .Color188_187_187
             detailTextLabel.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)
-            detailTextLabel.textColor = utilities.color(colorCode)
+            detailTextLabel.textColor = utilities.color(colorCode: colorCode)
             
             let detailTextLabelFrame = CGRect(
                 x: detailTextLabel.frame.origin.x,
@@ -56,7 +56,7 @@ class SLLockDetailsTableViewCell: UITableViewCell {
         }
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     

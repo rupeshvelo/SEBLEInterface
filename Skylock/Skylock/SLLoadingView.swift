@@ -14,9 +14,9 @@ class SLLoadingView: UIView {
     private lazy var loadingLabel:UILabel = {
         let frame = CGRect(x: self.xPadding, y: 0.0, width: self.bounds.size.width - 2.0*self.xPadding, height: 34.0)
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.font = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 15.0)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         
         return label
     }()
@@ -25,7 +25,7 @@ class SLLoadingView: UIView {
         let image:UIImage = UIImage(named: "loading_icon")!
         let frame = CGRect(
             x: 0.5*(self.bounds.size.width - image.size.width),
-            y: CGRectGetMaxY(self.loadingLabel.frame) + 20.0,
+            y: self.loadingLabel.frame.maxY + 20.0,
             width: image.size.width,
             height: image.size.height
         )
@@ -36,10 +36,10 @@ class SLLoadingView: UIView {
         return imageView
     }()
     
-    override func drawRect(rect: CGRect) {
-        super.drawRect(rect)
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
         
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
         if !self.subviews.contains(self.loadingLabel) {
             self.addSubview(self.loadingLabel)
@@ -56,8 +56,8 @@ class SLLoadingView: UIView {
     
     func rotate() {
         self.loadingIconView.center = self.loadingIconView.center
-        UIView.animateWithDuration(0.3, delay: 0.0, options: .CurveEaseInOut, animations: {
-            self.loadingIconView.transform = CGAffineTransformRotate(self.loadingIconView.transform, CGFloat(M_PI))
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseInOut, animations: {
+            self.loadingIconView.transform = self.loadingIconView.transform.rotated(by: CGFloat(M_PI))
         }) { (finished) in
             self.rotate()
         }

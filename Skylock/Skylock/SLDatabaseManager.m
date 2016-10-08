@@ -12,7 +12,7 @@
 #import "SLUser.h"
 #import "SLLog.h"
 #import "SLNotifications.h"
-#import "SLEmergencyContact.h"
+#import "Ellipse-Swift.h"
 
 #define kSLDatabaseManagerEnityLock             @"SLLock"
 #define kSLDatabaseManagerEnityUser             @"SLUser"
@@ -22,6 +22,7 @@
 @interface SLDatabaseManager()
 
 @property (nonatomic, strong) NSManagedObjectContext *context;
+@property (strong, nullable) SLUser *currentUser;
 
 @end
 
@@ -76,6 +77,11 @@
     NSLog(@"lock: %@", lock.description);
     
     return lock;
+}
+
+- (SLUser * _Nullable)getCurrentUser
+{
+    return self.currentUser;
 }
 
 - (NSArray *)sharedContactsForLock:(SLLock *)lock

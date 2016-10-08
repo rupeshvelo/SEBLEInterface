@@ -23,14 +23,14 @@ class SLBoxTextFieldWithButton: SLBoxTextField {
             height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.backgroundColor = UIColor.clearColor()
-        button.setTitle(NSLocalizedString("SHOW", comment: ""), forState: .Normal)
-        button.setTitle(NSLocalizedString("HIDE", comment: ""), forState: .Selected)
-        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), forState: .Normal)
+        button.backgroundColor = UIColor.clear
+        button.setTitle(NSLocalizedString("SHOW", comment: ""), for: .normal)
+        button.setTitle(NSLocalizedString("HIDE", comment: ""), for: .selected)
+        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 10.0)
-        button.addTarget(self, action: #selector(showButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(showButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -38,14 +38,14 @@ class SLBoxTextFieldWithButton: SLBoxTextField {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.rightViewMode = UITextFieldViewMode.Always
+        self.rightViewMode = UITextFieldViewMode.always
         self.rightView = self.showButton
-        self.rightView?.frame = CGRectOffset(self.rightView!.frame, -5.0, 0.0)
+        self.rightView?.frame = self.rightView!.frame.offsetBy(dx: -5.0, dy: 0.0)
     }
     
     func showButtonPressed() {
-        self.showButton.selected = !self.showButton.selected
-        self.textBoxDelegate?.showButtonToggledToShow(self, shouldShow: self.showButton.selected)
+        self.showButton.isSelected = !self.showButton.isSelected
+        self.textBoxDelegate?.showButtonToggledToShow(textField: self, shouldShow: self.showButton.isSelected)
     }
     
     override func exitErrorMode() {

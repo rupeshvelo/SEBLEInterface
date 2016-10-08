@@ -15,26 +15,26 @@
     lazy var infoLabel:UILabel = {
         let labelWidth = self.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(14)
+        let font = UIFont.systemFont(ofSize: 14)
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: self.text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            0.5*(self.bounds.size.height - labelSize.height - 2.0*self.yPadding),
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 0.5*(self.bounds.size.height - labelSize.height - 2.0*self.yPadding),
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         label.text = self.text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -54,6 +54,6 @@
         super.layoutSubviews()
         
         self.addSubview(self.infoLabel)
-        self.backgroundColor = UIColor.whiteColor()
+        self.backgroundColor = UIColor.white
     }
 }

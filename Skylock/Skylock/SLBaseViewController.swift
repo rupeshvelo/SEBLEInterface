@@ -25,7 +25,7 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
         )
         
         let view:SLLoadingView = SLLoadingView(frame: frame)
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
         return view
     }()
@@ -39,14 +39,14 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
         cancelClosure: (() -> ())?
         )
     {
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.addWarningBackgroundView()
             
             let width:CGFloat = 268.0
             let height:CGFloat = 211.0
             
             self.warningViewController = SLWarningViewController()
-            self.warningViewController!.setTextProperties(texts)
+            self.warningViewController!.setTextProperties(texts: texts)
             self.warningViewController!.view.frame = CGRect(
                 x: 0.5*(self.view.bounds.size.width - width),
                 y: 100.0,
@@ -58,20 +58,20 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
             
             self.addChildViewController(self.warningViewController!)
             self.view.addSubview(self.warningViewController!.view)
-            self.view.bringSubviewToFront(self.warningViewController!.view)
-            self.warningViewController!.didMoveToParentViewController(self.warningViewController!)
+            self.view.bringSubview(toFront: self.warningViewController!.view)
+            self.warningViewController!.didMove(toParentViewController: self.warningViewController!)
         }
     }
     
     func presentLoadingViewWithMessage(message: String) {
         self.addWarningBackgroundView()
-        self.loadingView.setMessage(message)
+        self.loadingView.setMessage(message: message)
         self.view.addSubview(self.loadingView)
         self.loadingView.rotate()
     }
     
     func dismissLoadingViewWithCompletion(completion: (() -> ())?) {
-        UIView.animateWithDuration(0.2, animations: { 
+        UIView.animate(withDuration: 0.2, animations: { 
             self.warningBackgroundView?.alpha = 0.0
             self.loadingView.alpha = 0.0
             }) { (finished) in
@@ -101,7 +101,7 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
     
     func warningVCCancelActionButtonPressed(wvc: SLWarningViewController) {
         if let background = self.warningBackgroundView {
-            UIView.animateWithDuration(0.2, animations: {
+            UIView.animate(withDuration: 0.2, animations: {
                 wvc.view.alpha = 0.0
                 background.alpha = 0.0
             }) { (finished) in

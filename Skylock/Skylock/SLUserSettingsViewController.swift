@@ -41,14 +41,14 @@ SLUserSettingTableViewCellDelegate
     ]
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: .Plain)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .plain)
         table.delegate = self
         table.dataSource = self
         table.rowHeight = 80.0
-        table.backgroundColor = UIColor.whiteColor()
-        table.registerClass(
+        table.backgroundColor = UIColor.white
+        table.register(
             SLUserSettingTableViewCell.self,
-            forCellReuseIdentifier: String(SLUserSettingTableViewCell)
+            forCellReuseIdentifier: String(describing: SLUserSettingTableViewCell.self)
         )
         
         return table
@@ -66,13 +66,13 @@ SLUserSettingTableViewCellDelegate
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.settings.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellId = String(SLUserSettingTableViewCell)
-        let cell:SLUserSettingTableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellId = String(describing: SLUserSettingTableViewCell.self)
+        let cell:SLUserSettingTableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId)
             as? SLUserSettingTableViewCell
         cell?.delegate = self
         
@@ -87,11 +87,11 @@ SLUserSettingTableViewCellDelegate
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 80.0
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -112,7 +112,7 @@ SLUserSettingTableViewCellDelegate
         )
         
         let label:UILabel = UILabel(frame: labelFrame)
-        label.font = UIFont.systemFontOfSize(18.0)
+        label.font = UIFont.systemFont(ofSize: 18.0)
         label.text = NSLocalizedString("Push notifications", comment: "")
         label.textColor = textColor
         
@@ -136,9 +136,9 @@ SLUserSettingTableViewCellDelegate
     // Mark: SLUserSettingsTableViewCellDelegate methods
     func userSettingsSwitchFlippedOn(cell: SLUserSettingTableViewCell, isOn: Bool) {
         for i in 0..<self.settings.count {
-            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            if let tableCell:SLUserSettingTableViewCell = self.tableView.cellForRowAtIndexPath(indexPath)
-                as? SLUserSettingTableViewCell where tableCell == cell
+            let indexPath = IndexPath(row: i, section: 0)
+            if let tableCell:SLUserSettingTableViewCell = self.tableView.cellForRow(at: indexPath)
+                as? SLUserSettingTableViewCell , tableCell == cell
             {
                 print("cell at \(indexPath.row) is flipped to \(isOn)")
             }

@@ -40,7 +40,7 @@ class SLUnderlineTextView: UIView {
             attributes: [NSForegroundColorAttributeName: self.color]
         )
         field.textColor = self.color
-        field.font = UIFont.systemFontOfSize(14)
+        field.font = UIFont.systemFont(ofSize: 14)
         return field
     }()
     
@@ -60,7 +60,7 @@ class SLUnderlineTextView: UIView {
         
         self.addSubview(self.textField)
         //self.addSubview(self.underlineView)
-        self.layer.borderColor = UIColor.whiteColor().CGColor
+        self.layer.borderColor = UIColor.white.cgColor
         self.layer.borderWidth = 1.0
     }
     

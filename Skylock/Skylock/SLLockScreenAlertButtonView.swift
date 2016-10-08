@@ -18,10 +18,10 @@ class SLLockScreenAlertButton: UIButton {
         let utility = SLUtilities()
         let font = UIFont(name: SLFont.MonserratBold.rawValue, size: 9.0)!
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: titleText,
-            maxWidth: CGFloat.max,
-            maxHeight: CGFloat.max,
+            maxWidth: CGFloat.greatestFiniteMagnitude,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
@@ -34,16 +34,16 @@ class SLLockScreenAlertButton: UIButton {
         
         super.init(frame: frame)
 
-        self.setTitle(titleText, forState: .Normal)
-        self.setTitleColor(textColor, forState: .Selected)
-        self.setTitleColor(textColor.colorWithAlphaComponent(0.4), forState: .Normal)
+        self.setTitle(titleText, for: .normal)
+        self.setTitleColor(textColor, for: .selected)
+        self.setTitleColor(textColor.withAlphaComponent(0.4), for: .normal)
         self.titleLabel?.font = font
-        self.contentVerticalAlignment = .Center
-        self.contentHorizontalAlignment = .Center
+        self.contentVerticalAlignment = .center
+        self.contentHorizontalAlignment = .center
         self.titleLabel?.numberOfLines = 0
-        self.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        self.setImage(activeImage, forState: .Selected)
-        self.setImage(inactiveImage, forState: .Normal)
+        self.titleLabel?.lineBreakMode = NSLineBreakMode.byWordWrapping
+        self.setImage(activeImage, for: .selected)
+        self.setImage(inactiveImage, for: .normal)
 //        self.imageEdgeInsets = UIEdgeInsets(
 //            top: 0,
 //            left: 0.5*(self.bounds.size.width - (self.imageView?.bounds.size.width)!),

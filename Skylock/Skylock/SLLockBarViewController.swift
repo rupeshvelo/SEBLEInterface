@@ -34,18 +34,18 @@ class SLLockBarViewController: UIViewController {
     private lazy var lockNameLabel:UILabel = {
         let width = 0.75*self.view.bounds.size.width
         let height:CGFloat = 20.0
-        let font = UIFont.systemFontOfSize(13)
-        let frame = CGRectMake(
-            self.xPadding,
-            0.5*self.view.bounds.size.height - height,
-            width,
-            height
+        let font = UIFont.systemFont(ofSize: 13)
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 0.5*self.view.bounds.size.height - height,
+            width: width,
+            height: height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = self.lock?.displayName()
-        label.textAlignment = NSTextAlignment.Left
+        label.textAlignment = NSTextAlignment.left
         label.font = font
         label.numberOfLines = 1
         
@@ -70,18 +70,18 @@ class SLLockBarViewController: UIViewController {
     private lazy var tapActionLabel:UILabel = {
         let width = self.lockNameLabel.bounds.size.width
         let height:CGFloat = 20.0
-        let font = UIFont.systemFontOfSize(13)
-        let frame = CGRectMake(
-            self.xPadding,
-            0.5*self.view.bounds.size.height,
-            width,
-            height
+        let font = UIFont.systemFont(ofSize: 13)
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 0.5*self.view.bounds.size.height,
+            width: width,
+            height: height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = NSLocalizedString("Tap to unlock", comment: "")
-        label.textAlignment = .Left
+        label.textAlignment = .left
         label.font = font
         label.numberOfLines = 1
         
@@ -89,7 +89,7 @@ class SLLockBarViewController: UIViewController {
     }()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -101,39 +101,39 @@ class SLLockBarViewController: UIViewController {
         tgr.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(tgr)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockOpened(_:)),
-            name: kSLNotificationLockPositionOpen,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPositionOpen),
+            object: nil,
+            queue: nil,
+            using: lockOpened
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockLocked(_:)),
-            name: kSLNotificationLockPositionLocked,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPositionLocked),
+            object: nil,
+            queue: nil,
+            using: lockLocked
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockDisconneted(_:)),
-            name: kSLNotificationLockManagerDisconnectedLock,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDisconnectedLock),
+            object: nil,
+            queue: nil,
+            using: lockDisconneted
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self, selector:
-            #selector(lockPaired(_:)),
-            name: kSLNotificationLockPaired,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPaired),
+            object: nil,
+            queue: nil,
+            using: lockPaired
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self, selector:
-            #selector(lockDisconneted(_:)),
-            name: kSLNotificationRemoveLockForUser,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationRemoveLockForUser),
+            object: nil,
+            queue: nil,
+            using: lockDisconneted
         )
     }
     
@@ -199,28 +199,32 @@ class SLLockBarViewController: UIViewController {
     }
     
     private func setUpForDisconnectedState() {
-        self.lockImageView.image = UIImage(named: self.valueForLockState(.Disconnected, element: .LockImageName))
-        self.lockNameLabel.text = self.valueForLockState(.Disconnected, element: .LockNameText)
-        self.tapActionLabel.text = self.valueForLockState(.Disconnected, element: .TapActionText)
+        self.lockImageView.image = UIImage(named: self.valueForLockState(
+            lockState: .Disconnected,
+            element: .LockImageName
+            )
+        )
+        self.lockNameLabel.text = self.valueForLockState(lockState: .Disconnected, element: .LockNameText)
+        self.tapActionLabel.text = self.valueForLockState(lockState: .Disconnected, element: .TapActionText)
     }
     
     private func setUpForLockedState() {
-        self.lockImageView.image = UIImage(named: self.valueForLockState(.Locked, element: .LockImageName))
-        self.lockNameLabel.text = self.valueForLockState(.Locked, element: .LockNameText)
-        self.tapActionLabel.text = self.valueForLockState(.Locked, element: .TapActionText)
+        self.lockImageView.image = UIImage(named: self.valueForLockState(lockState: .Locked, element: .LockImageName))
+        self.lockNameLabel.text = self.valueForLockState(lockState: .Locked, element: .LockNameText)
+        self.tapActionLabel.text = self.valueForLockState(lockState: .Locked, element: .TapActionText)
     }
     
     private func setUpForUnlockedState() {
-        self.lockImageView.image = UIImage(named: self.valueForLockState(.Unlocked, element: .LockImageName))
-        self.lockNameLabel.text = self.valueForLockState(.Unlocked, element: .LockNameText)
-        self.tapActionLabel.text = self.valueForLockState(.Unlocked, element: .TapActionText)
+        self.lockImageView.image = UIImage(named: self.valueForLockState(lockState: .Unlocked, element: .LockImageName))
+        self.lockNameLabel.text = self.valueForLockState(lockState: .Unlocked, element: .LockNameText)
+        self.tapActionLabel.text = self.valueForLockState(lockState: .Unlocked, element: .TapActionText)
     }
     
     @objc private func lockBarTapped() {
-        self.delegate?.lockBarTapped(self)
+        self.delegate?.lockBarTapped(lockBar: self)
     }
     
-    @objc private func lockOpened(notification: NSNotification) {
+    @objc private func lockOpened(notification: Notification) {
         if self.lock == nil {
             self.setUpForDisconnectedState()
         } else {
@@ -228,7 +232,7 @@ class SLLockBarViewController: UIViewController {
         }
     }
     
-    @objc private func lockLocked(notification: NSNotification) {
+    @objc private func lockLocked(notification: Notification) {
         if self.lock == nil {
             self.setUpForDisconnectedState()
         } else {
@@ -236,19 +240,19 @@ class SLLockBarViewController: UIViewController {
         }
     }
     
-    @objc private func lockDisconneted(notification: NSNotification) {
+    @objc private func lockDisconneted(notification: Notification) {
         // TODO Set up view to handl when there is no lock
         guard let disconnectedAddress = notification.object as? String else {
             return
         }
         
-        if let currentLock = self.lock where disconnectedAddress == currentLock.macAddress {
+        if let currentLock = self.lock, disconnectedAddress == currentLock.macAddress {
             self.lock = nil
             self.setUpForDisconnectedState()
         }
     }
     
-    @objc private func lockPaired(notification: NSNotification) {
+    @objc private func lockPaired(notification: Notification) {
         let lockManager = SLLockManager.sharedManager
         if let lock:SLLock = lockManager.getCurrentLock() {
             self.lock = lock

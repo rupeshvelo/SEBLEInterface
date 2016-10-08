@@ -46,26 +46,26 @@ class SLOnboardingViewController: UIViewController {
     lazy var titleLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(22)
+        let font = UIFont.systemFont(ofSize: 22)
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: self.titleText,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            60.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 60.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = self.titleText
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -75,26 +75,26 @@ class SLOnboardingViewController: UIViewController {
     lazy var textLabel:UILabel = {
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFontOfSize(12)
+        let font = UIFont.systemFont(ofSize: 12)
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: self.text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.titleLabel.frame) + 20.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.titleLabel.frame.maxY + 20.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = self.text
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         
@@ -105,8 +105,8 @@ class SLOnboardingViewController: UIViewController {
         super.viewDidLoad()
         
         let colors:[CGColor] = [
-                UIColor.color(160, green: 200, blue: 224).CGColor,
-                UIColor.color(62, green: 83, blue: 121).CGColor
+                UIColor.color(160, green: 200, blue: 224).cgColor,
+                UIColor.color(62, green: 83, blue: 121).cgColor
             ]
 
         let locations = [0.0, 1.0]
@@ -114,7 +114,7 @@ class SLOnboardingViewController: UIViewController {
         let gradientLayer:CAGradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = colors
-        gradientLayer.locations = locations
+        gradientLayer.locations = locations as [NSNumber]?
         
         self.view.layer.addSublayer(gradientLayer)
         

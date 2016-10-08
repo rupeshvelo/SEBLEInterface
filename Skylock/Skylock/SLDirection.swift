@@ -9,23 +9,23 @@
 import Foundation;
 import CoreLocation;
 
-public class SLDirection: NSObject {
-    public var start: CLLocationCoordinate2D?
-    public var end: CLLocationCoordinate2D?
-    public var directions: String?
-    public var distance: Int?
-    public var address: String?
-    public var duration: Double?
-    private let milesPerMeter:Float = 0.000621371
+open class SLDirection: NSObject {
+    open var start: CLLocationCoordinate2D?
+    open var end: CLLocationCoordinate2D?
+    open var directions: String?
+    open var distance: Int?
+    open var address: String?
+    open var duration: Double?
+    fileprivate let milesPerMeter:Float = 0.000621371
     
     convenience init(input: [String: AnyObject]) {
         self.init()
         
         if let instructions = input["html_instructions"] as? String {
-            self.directions = instructions.stringByReplacingOccurrencesOfString(
-                "<[^>]+>",
-                withString: "",
-                options: .RegularExpressionSearch,
+            self.directions = instructions.replacingOccurrences(
+                of: "<[^>]+>",
+                with: "",
+                options: .regularExpression,
                 range: nil
             )
         }
@@ -52,19 +52,19 @@ public class SLDirection: NSObject {
         }
     }
     
-    @objc public func getDirections() -> String? {
+    @objc open func getDirections() -> String? {
         return self.directions
     }
     
-    @objc public func distanceInMiles() -> CGFloat {
+    @objc open func distanceInMiles() -> CGFloat {
         if let distance = self.distance {
             return CGFloat(distance)*CGFloat(self.milesPerMeter)
         }
         
-        return CGFloat.max
+        return CGFloat.greatestFiniteMagnitude
     }
     
-    @objc public func getDuration() -> Double {
+    @objc open func getDuration() -> Double {
         guard let duration = self.duration else {
             return 0.0
         }

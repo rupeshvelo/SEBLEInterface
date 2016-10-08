@@ -44,9 +44,9 @@ class SLUtilities: NSObject {
         numberOfLines: NSInteger
         ) -> CGSize
     {
-        let label:UILabel = UILabel(frame: CGRectMake(0, 0, maxWidth, maxHeight))
+        let label:UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
         label.numberOfLines = numberOfLines
-        label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        label.lineBreakMode = NSLineBreakMode.byWordWrapping
         label.font = font
         label.text = text
         label.sizeToFit()
@@ -57,7 +57,7 @@ class SLUtilities: NSObject {
         let color:UIColor
         switch colorCode {
         case .Color0_0_0:
-            color = UIColor.blackColor()
+            color = UIColor.black
         case .Color60_83_119:
             color = UIColor.color(60, green: 83, blue: 119)
         case .Color76_79_97:
@@ -85,14 +85,14 @@ class SLUtilities: NSObject {
         case .Color247_247_248:
             color = UIColor.color(247, green: 247, blue: 248)
         case .Color255_255_255:
-            color = UIColor.whiteColor()
+            color = UIColor.white
         }
         
         return color
     }
     
     func statusBarAndNavControllerHeight(viewController: UIViewController) -> CGFloat {
-        return UIApplication.sharedApplication().statusBarFrame.height +
+        return UIApplication.shared.statusBarFrame.height +
             (viewController.navigationController == nil ? 0.0 :
                 viewController.navigationController!.navigationBar.frame.size.height)
     }

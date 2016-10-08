@@ -25,7 +25,7 @@ class SLUnderlinedCharacterView: UIView {
             size: frame.size.height > frame.size.width ? frame.size.width : frame.size.height
         )
         label.textColor = UIColor(red: 110, green: 223, blue: 158)
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
         return label
     }()

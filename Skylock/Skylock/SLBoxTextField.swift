@@ -13,7 +13,7 @@ class SLBoxTextField: UITextField {
     
     let errorColor:UIColor = UIColor(red: 245, green: 153, blue: 174)
     
-    let normalTextColor:UIColor = UIColor.whiteColor()
+    let normalTextColor:UIColor = UIColor.white
     
     private var inErrorMode:Bool = false
     
@@ -30,7 +30,7 @@ class SLBoxTextField: UITextField {
         let label:UILabel = UILabel(frame: frame)
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 9.0)
         label.textColor = self.errorColor
-        label.textAlignment = .Right
+        label.textAlignment = .right
         
         return label
     }()
@@ -52,7 +52,7 @@ class SLBoxTextField: UITextField {
         
         self.textColor = self.normalTextColor
         self.font = self.textFont
-        self.layer.borderColor = UIColor.whiteColor().CGColor
+        self.layer.borderColor = UIColor.white.cgColor
         self.layer.borderWidth = 1.0
     }
     
@@ -64,19 +64,19 @@ class SLBoxTextField: UITextField {
         super.layoutSubviews()
     }
     
-    override func drawTextInRect(rect: CGRect) {
+    override func drawText(in rect: CGRect) {
         let textRect = UIEdgeInsetsInsetRect(rect, self.insets())
         
-        super.drawTextInRect(textRect)
+        super.drawText(in: textRect)
     }
     
-    override func drawPlaceholderInRect(rect: CGRect) {
+    override func drawPlaceholder(in rect: CGRect) {
         let textRect = UIEdgeInsetsInsetRect(rect, self.insets())
         
-        super.drawPlaceholderInRect(textRect)
+        super.drawPlaceholder(in: textRect)
     }
     
-    override func editingRectForBounds(bounds: CGRect) -> CGRect {
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
         let textRect = UIEdgeInsetsInsetRect(bounds, self.insets())
 
         return textRect
@@ -96,7 +96,7 @@ class SLBoxTextField: UITextField {
             height: self.bounds.size.height
         )
         if self.rightView != nil {
-            frame = CGRectOffset(frame, -self.rightView!.bounds.size.width, 0.0)
+            frame = frame.offsetBy(dx: -self.rightView!.bounds.size.width, dy: 0.0)
         }
         self.errorLabel.frame = frame
         self.addSubview(self.errorLabel)

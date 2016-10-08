@@ -14,7 +14,11 @@ private enum SLOnboardingViewControllerInfo {
     case Text
 }
 
-@objc public class SLOnboardingPageViewController:UIViewController, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
+@objc public class SLOnboardingPageViewController:
+UIViewController,
+UIPageViewControllerDelegate,
+UIPageViewControllerDataSource
+{
     var pageIndex:Int = 0
     
     var onboardingControllers = [SLOnboardingViewController]()
@@ -85,13 +89,13 @@ private enum SLOnboardingViewControllerInfo {
     
     lazy var pageViewController:UIPageViewController = {
         let pageController:UIPageViewController = UIPageViewController(
-            transitionStyle: UIPageViewControllerTransitionStyle.Scroll,
-            navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal,
+            transitionStyle: UIPageViewControllerTransitionStyle.scroll,
+            navigationOrientation: UIPageViewControllerNavigationOrientation.horizontal,
             options: nil
         )
         pageController.setViewControllers(
             [self.onboardingControllers[0]],
-            direction: UIPageViewControllerNavigationDirection.Forward,
+            direction: UIPageViewControllerNavigationDirection.forward,
             animated: false,
             completion: nil
         )
@@ -110,15 +114,15 @@ private enum SLOnboardingViewControllerInfo {
             height: height
         )
         
-        let button:UIButton = UIButton(type: UIButtonType.System)
+        let button:UIButton = UIButton(type: UIButtonType.system)
         button.frame = frame
         button.addTarget(
             self,
             action: #selector(getStartedButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        button.setTitle(NSLocalizedString("GET STARTED", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.setTitle(NSLocalizedString("GET STARTED", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.backgroundColor = UIColor.color(86, green: 216, blue: 255)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
         return button
@@ -126,35 +130,35 @@ private enum SLOnboardingViewControllerInfo {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         
         let obvc0 = SLOnboardingViewController(
             picName: self.controllerData[0][.Pic]!,
             titleText: self.controllerData[0][.Title]!,
             text: self.controllerData[0][.Text]!,
-            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
+            yBottomBound: self.getStartedButton.frame.minY
         )
         
         let obvc1 = SLOnboardingViewController(
             picName: self.controllerData[1][.Pic]!,
             titleText: self.controllerData[1][.Title]!,
             text: self.controllerData[1][.Text]!,
-            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
+            yBottomBound: self.getStartedButton.frame.minY
         )
         
         let obvc2 = SLOnboardingViewController(
             picName: self.controllerData[2][.Pic]!,
             titleText: self.controllerData[2][.Title]!,
             text: self.controllerData[2][.Text]!,
-            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
+            yBottomBound: self.getStartedButton.frame.minY
         )
         
         let obvc3 = SLOnboardingMapBackgroundViewController(
             picName: self.controllerData[3][.Pic]!,
             titleText: self.controllerData[3][.Title]!,
             text: self.controllerData[3][.Text]!,
-            yBottomBound: CGRectGetMinY(self.getStartedButton.frame)
+            yBottomBound: self.getStartedButton.frame.minY
         )
         
         self.onboardingControllers = [
@@ -166,7 +170,7 @@ private enum SLOnboardingViewControllerInfo {
         
         self.addChildViewController(self.pageViewController)
         self.view.addSubview(self.pageViewController.view)
-        self.pageViewController.didMoveToParentViewController(self)
+        self.pageViewController.didMove(toParentViewController: self)
         
         self.view.addSubview(self.getStartedButton)
         self.view.addSubview(self.pageControl)
@@ -174,20 +178,20 @@ private enum SLOnboardingViewControllerInfo {
     
     func getStartedButtonPressed() {
         let signInViewController = SLSignInViewController()
-        self.presentViewController(signInViewController, animated: true, completion: nil)
+        self.present(signInViewController, animated: true, completion: nil)
     }
     
     func indexForOnboardingViewController(onboardingViewController: SLOnboardingViewController) -> Int? {
-        return self.onboardingControllers.indexOf(onboardingViewController)
+        return self.onboardingControllers.index(of: onboardingViewController)
     }
     
     public func pageViewController(
-        pageViewController: UIPageViewController,
-        viewControllerAfterViewController viewController: UIViewController
+        _ pageViewController: UIPageViewController,
+        viewControllerAfter viewController: UIViewController
         ) -> UIViewController?
     {
-        if let index = self.onboardingControllers.indexOf(viewController as! SLOnboardingViewController) where
-            index < self.onboardingControllers.count - 1
+        if let index = self.onboardingControllers.index(of: viewController as! SLOnboardingViewController),
+            index < self.onboardingControllers.count - 2
         {
             return self.onboardingControllers[index + 1]
         }
@@ -196,19 +200,20 @@ private enum SLOnboardingViewControllerInfo {
     }
     
     public func pageViewController(
-        pageViewController: UIPageViewController,
-        viewControllerBeforeViewController viewController: UIViewController
+        _ pageViewController: UIPageViewController,
+        viewControllerBefore viewController: UIViewController
         ) -> UIViewController?
     {
-        if let index = self.onboardingControllers.indexOf(viewController as! SLOnboardingViewController) where index > 0 {
+        if let index = self.onboardingControllers.index(of: viewController as! SLOnboardingViewController), index > 0 {
             return self.onboardingControllers[index - 1]
         }
         
         return nil
     }
+
     
     public func pageViewController(
-        pageViewController: UIPageViewController,
+        _ pageViewController: UIPageViewController,
         didFinishAnimating finished: Bool,
                            previousViewControllers: [UIViewController],
                            transitionCompleted completed: Bool
@@ -222,7 +227,7 @@ private enum SLOnboardingViewControllerInfo {
             return
         }
         
-        if let fromIndex = self.onboardingControllers.indexOf(previousViewController) {
+        if let fromIndex = self.onboardingControllers.index(of: previousViewController) {
             let diff = self.toViewControllerIndex - fromIndex
             if (diff > 0 && self.toViewControllerIndex < self.onboardingControllers.count) ||
                 (diff < 0 && self.toViewControllerIndex >= 0)
@@ -233,15 +238,15 @@ private enum SLOnboardingViewControllerInfo {
     }
     
     public func pageViewController(
-        pageViewController: UIPageViewController,
-        willTransitionToViewControllers pendingViewControllers: [UIViewController]
+        _ pageViewController: UIPageViewController,
+        willTransitionTo pendingViewControllers: [UIViewController]
         )
     {
         guard let viewController = pendingViewControllers.first as? SLOnboardingViewController else {
             return
         }
         
-        if let index = self.onboardingControllers.indexOf(viewController) {
+        if let index = self.onboardingControllers.index(of: viewController) {
             self.toViewControllerIndex = index
         }
     }

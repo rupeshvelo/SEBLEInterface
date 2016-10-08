@@ -60,7 +60,7 @@ UISearchBarDelegate
     
     var currentText: String = ""
     
-    let contactCellId:String = String(SLAddContactTableViewCell)
+    let contactCellId:String = String(describing: SLAddContactTableViewCell.self)
     
     var shouldShowNavController: Bool?
     
@@ -77,19 +77,19 @@ UISearchBarDelegate
     var emergencyContacts = [String:SLEmergencyContact]()
     
     lazy var tableView: UITableView = {
-        let frame = CGRectMake(
-            0,
-            CGRectGetMaxY(self.searchBar.frame),
-            self.view.bounds.size.width,
-            self.view.bounds.size.height - self.searchBar.bounds.size.height
+        let frame = CGRect(
+            x: 0,
+            y: self.searchBar.frame.maxY,
+            width: self.view.bounds.size.width,
+            height: self.view.bounds.size.height - self.searchBar.bounds.size.height
         )
         
-        let table:UITableView = UITableView.init(frame: frame, style: .Grouped)
+        let table:UITableView = UITableView.init(frame: frame, style: .grouped)
         table.dataSource = self;
         table.delegate = self;
         table.rowHeight = 40.0
-        table.separatorInset = UIEdgeInsetsZero
-        table.registerClass(SLAddContactTableViewCell.self, forCellReuseIdentifier: self.contactCellId)
+        table.separatorInset = UIEdgeInsets.zero
+        table.register(SLAddContactTableViewCell.self, forCellReuseIdentifier: self.contactCellId)
 
         return table
     }()
@@ -104,7 +104,7 @@ UISearchBarDelegate
     lazy var searchBar:UISearchBar = {
         let frame = CGRect(
             x: 0.0,
-            y: UIApplication.sharedApplication().statusBarFrame.size.height
+            y: UIApplication.shared.statusBarFrame.size.height
                 + self.navigationController!.navigationBar.bounds.size.height,
             width: self.view.bounds.size.width,
             height: 50.0
@@ -120,7 +120,7 @@ UISearchBarDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         self.navigationItem.title = NSLocalizedString("FIND EMERGENCY CONTACTS", comment: "")
         
         self.getContacts()
@@ -135,57 +135,53 @@ UISearchBarDelegate
         self.view.addSubview(self.tableView)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
         if !self.view.subviews.contains(self.letterViewController.view) {
             let width:CGFloat = 25.0
-            let height:CGFloat = self.view.bounds.size.height - CGRectGetMaxY(self.searchBar.frame) - 40.0
+            let height:CGFloat = self.view.bounds.size.height - self.searchBar.frame.maxY - 40.0
             self.letterViewController.view.frame = CGRect(
                 x: self.view.bounds.size.width - width,
-                y: CGRectGetMaxY(self.searchBar.frame),
+                y: self.searchBar.frame.maxY,
                 width: width,
                 height: height
             )
             
             self.addChildViewController(self.letterViewController)
             self.view.addSubview(self.letterViewController.view)
-            self.view.bringSubviewToFront(self.letterViewController.view)
-            self.letterViewController.didMoveToParentViewController(self)
+            self.view.bringSubview(toFront: self.letterViewController.view)
+            self.letterViewController.didMove(toParentViewController: self)
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIKeyboardWillShowNotification,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.UIKeyboardWillShow,
+            object: nil,
+            queue: nil,
+            using: keyboardWillShow
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(keyboardWillDisappear(_:)),
-            name: UIKeyboardWillHideNotification,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.UIKeyboardWillHide,
+            object: nil,
+            queue: nil,
+            using: keyboardWillDisappear
         )
     }
     
     func getContacts() {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+        DispatchQueue.global().async {
             for letter in self.letters {
                 self.contacts[letter] = [CNContact]()
             }
             
             do {
-                try self.contactHandler.allContacts({ (fetchedContacts:[CNContact]) in
-                    dispatch_async(dispatch_get_main_queue(), {
+                try self.contactHandler.allContacts(completion: { (fetchedContacts:[CNContact]) in
+                    DispatchQueue.main.sync {
                         for contact in fetchedContacts {
-                            if contact.givenName.characters.count > 0 &&
-                                contact.givenName.substringToIndex(contact.givenName.startIndex.advancedBy(1)) != " "
-                            {
-                                let firstLetter = contact.givenName.substringToIndex(
-                                    contact.givenName.startIndex.advancedBy(1)
-                                    ).lowercaseString
-                                
+                            let index = contact.givenName.index(contact.givenName.startIndex, offsetBy: 1)
+                            let firstLetter = contact.givenName.substring(to: index).lowercased()
+                            if contact.givenName.characters.count > 0 && firstLetter != " "{
                                 if var contacts:[CNContact] = self.contacts[firstLetter] {
                                     contacts.append(contact)
                                     self.contacts[firstLetter] = contacts
@@ -194,13 +190,12 @@ UISearchBarDelegate
                         }
                         
                         for (letter, unsortedContacts) in self.contacts {
-                            var contacts = unsortedContacts
-                            contacts.sortInPlace({ (contact1, contact2) -> Bool in
-                                if contact1.givenName.lowercaseString == contact2.givenName.lowercaseString {
-                                    return contact1.familyName.lowercaseString < contact2.familyName.lowercaseString
+                            let contacts = unsortedContacts.sorted(by: { (contact1, contact2) -> Bool in
+                                if contact1.givenName.lowercased() == contact2.givenName.lowercased() {
+                                    return contact1.familyName.lowercased() < contact2.familyName.lowercased()
                                 }
                                 
-                                return contact1.givenName.lowercaseString < contact2.givenName.lowercaseString
+                                return contact1.givenName.lowercased() < contact2.givenName.lowercased()
                             })
                             
                             self.contacts[letter] = contacts
@@ -209,12 +204,12 @@ UISearchBarDelegate
                         self.displayedContacts = self.contacts
                         
                         self.tableView.reloadData()
-                    })
+                    }
                 })
             } catch {
                 print("error retreiving contacts")
             }
-        })
+        }
     }
     
     func getContactsFromCurrentText() {
@@ -228,8 +223,8 @@ UISearchBarDelegate
             var i = contacts.count - 1
             while i >= 0 {
                 let contact = contacts[i]
-                let name = self.contactHandler.fullNameForContact(contact).lowercaseString
-                if name.rangeOfString(self.currentText.lowercaseString) != nil {
+                let name = self.contactHandler.fullNameForContact(contact: contact).lowercased()
+                if name.range(of: self.currentText.lowercased()) != nil {
                     sortedContacts.append(contact)
                 }
                 
@@ -237,9 +232,9 @@ UISearchBarDelegate
             }
             
             if sortedContacts.count == 0 {
-                self.displayedContacts.removeValueForKey(letter)
+                self.displayedContacts.removeValue(forKey: letter)
             } else {
-                self.displayedContacts[letter] = sortedContacts.reverse()
+                self.displayedContacts[letter] = sortedContacts.reversed()
             }
         }
     }
@@ -264,22 +259,22 @@ UISearchBarDelegate
             return nil
         }
         
-        let keys = self.displayedContacts.keys.sort()
-        return keys.indexOf(key)
+        let keys = self.displayedContacts.keys.sorted()
+        return keys.index(of: key)
     }
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(notification: Notification) {
         if let info = notification.userInfo, let frameValue = info[UIKeyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardFrame: CGRect = frameValue.CGRectValue()
-            let appDelegate:SLAppDelegate = UIApplication.sharedApplication().delegate as! SLAppDelegate
+            let keyboardFrame: CGRect = frameValue.cgRectValue
+            let appDelegate:SLAppDelegate = UIApplication.shared.delegate as! SLAppDelegate
             let rootVC: UIViewController = appDelegate.window.rootViewController!
-            let convertedFrame = self.view.convertRect(keyboardFrame, fromView: rootVC.view)
+            let convertedFrame = self.view.convert(keyboardFrame, from: rootVC.view)
             
             self.tableYOffset = keyboardFrame.height - (keyboardFrame.origin.y - convertedFrame.origin.y)
             
             if let navController = self.navigationController {
                 self.tableYOffset += navController.navigationBar.bounds.size.height
-                    + UIApplication.sharedApplication().statusBarFrame.size.height
+                    + UIApplication.shared.statusBarFrame.size.height
             }
             
             self.tableView.contentInset = UIEdgeInsetsMake(
@@ -291,15 +286,15 @@ UISearchBarDelegate
         }
     }
     
-    func keyboardWillDisappear(notification: NSNotification) {
+    func keyboardWillDisappear(notification: Notification) {
         if let info = notification.userInfo,
             let durration:Double = info[UIKeyboardAnimationDurationUserInfoKey] as? Double,
             let curve = info[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber {
             
-            UIView.animateWithDuration(
-                durration,
+            UIView.animate(
+                withDuration: durration,
                 delay: 0,
-                options: UIViewAnimationOptions(rawValue: curve.unsignedLongValue),
+                options: UIViewAnimationOptions(rawValue: curve.uintValue),
                 animations: {
                     self.tableView.contentInset = UIEdgeInsetsMake(
                         self.tableView.contentInset.top,
@@ -314,12 +309,12 @@ UISearchBarDelegate
     }
 
     // MARK: UITableViewDelegate & DataSource Methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return self.displayedContacts.keys.count
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let key = self.keyForSection(section) else {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let key = self.keyForSection(section: section) else {
             return 0
         }
         
@@ -330,36 +325,36 @@ UISearchBarDelegate
         return 0
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var text = ""
         var isSelectedContact = false
-        if let key = self.keyForSection(indexPath.section) {
+        if let key = self.keyForSection(section: indexPath.section) {
             let contact:CNContact = self.displayedContacts[key]![indexPath.row]
-            text = self.contactHandler.fullNameForContact(contact)
+            text = self.contactHandler.fullNameForContact(contact: contact)
             isSelectedContact = self.emergencyContacts[contact.identifier] != nil
         }
         
-        var cell: SLAddContactTableViewCell? = tableView.dequeueReusableCellWithIdentifier(
-            self.contactCellId,
-            forIndexPath: indexPath
+        var cell: SLAddContactTableViewCell? = tableView.dequeueReusableCell(
+            withIdentifier: self.contactCellId,
+            for: indexPath as IndexPath
             ) as? SLAddContactTableViewCell
         
         if cell == nil {
-            cell = SLAddContactTableViewCell(style: .Default, reuseIdentifier: self.contactCellId)
+            cell = SLAddContactTableViewCell(style: .default, reuseIdentifier: self.contactCellId)
         }
         
-        cell!.selectionStyle = .None
+        cell!.selectionStyle = .none
         cell!.textLabel!.text = text
         cell!.isSelectedContact = isSelectedContact
         
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 65.0 : 26.0
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         var view:UIView
         let labelWrapperView:UIView
         let letterLabelHeight = self.tableView(tableView, heightForHeaderInSection: 1)
@@ -375,21 +370,24 @@ UISearchBarDelegate
             )
             
             view = UIView(frame: frame)
-            view.backgroundColor = UIColor.whiteColor()
+            view.backgroundColor = UIColor.white
             
             let height:CGFloat = 16.0
             let labelFrame = CGRect(
                 x: 0.0,
-                y: 0.5*(view.bounds.size.height - height) - 0.5*self.tableView(tableView, heightForHeaderInSection: 1),
+                y: 0.5*(view.bounds.size.height - height) - 0.5*self.tableView(
+                    tableView,
+                    heightForHeaderInSection: 1
+                ),
                 width: view.bounds.size.width,
                 height: height
             )
             
             let label:UILabel = UILabel(frame: labelFrame)
-            label.font = UIFont.systemFontOfSize(14)
+            label.font = UIFont.systemFont(ofSize: 14)
             label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
             label.text = NSLocalizedString("Nominate up to 3 emergency contacts.", comment: "")
-            label.textAlignment = .Center
+            label.textAlignment = .center
             
             view.addSubview(label)
 
@@ -412,11 +410,11 @@ UISearchBarDelegate
             )
             
             var text = ""
-            if let letter = self.keyForSection(section) {
-                text = letter.uppercaseString
+            if let letter = self.keyForSection(section: section) {
+                text = letter.uppercased()
             }
             let letterLabel:UILabel = UILabel(frame: letterLabelFrame)
-            letterLabel.font = UIFont.systemFontOfSize(12.0)
+            letterLabel.font = UIFont.systemFont(ofSize: 12.0)
             letterLabel.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
             letterLabel.text = text
             
@@ -451,11 +449,11 @@ UISearchBarDelegate
             )
             
             var text = ""
-            if let letter = self.keyForSection(section) {
-                text = letter.uppercaseString
+            if let letter = self.keyForSection(section: section) {
+                text = letter.uppercased()
             }
             let letterLabel:UILabel = UILabel(frame: letterLabelFrame)
-            letterLabel.font = UIFont.systemFontOfSize(12.0)
+            letterLabel.font = UIFont.systemFont(ofSize: 12.0)
             letterLabel.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
             letterLabel.text = text
             
@@ -465,23 +463,22 @@ UISearchBarDelegate
         return view
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.000001
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        guard let key = self.keyForSection(indexPath.section) else {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let key = self.keyForSection(section: indexPath.section) else {
             return
         }
-        
-        let cell = self.tableView(tableView, cellForRowAtIndexPath: indexPath) as! SLAddContactTableViewCell
+        let cell = self.tableView(tableView, cellForRowAt: indexPath) as! SLAddContactTableViewCell
         cell.isSelectedContact = !cell.isSelectedContact
         cell.setNeedsDisplay()
         
         let contact = self.displayedContacts[key]![indexPath.row]
-        let emergencyContact = self.contactHandler.emergencyContactFromCNContact(contact)
+        let emergencyContact = self.contactHandler.emergencyContactFromCNContact(contact: contact)
         self.delegate?.contactViewControllerContactSelected(
-            self,
+            cvc: self,
             contact: emergencyContact,
             isSelected: cell.isSelectedContact
         )
@@ -489,8 +486,8 @@ UISearchBarDelegate
     
     // MARK: SLContactsLetterViewControllerDelegate methods
     func contactsLetterViewController(letterViewController: SLContactsLetterViewController, letter: String) {
-        let key = letter.lowercaseString
-        guard let section = self.sectionForKey(key) else {
+        let key = letter.lowercased()
+        guard let section = self.sectionForKey(key: key) else {
             return
         }
         
@@ -502,16 +499,16 @@ UISearchBarDelegate
             return
         }
         
-        let indexPath = NSIndexPath(forRow: 0, inSection: section)
-        self.tableView.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Top, animated: true)
+        let indexPath = IndexPath(row: 0, section: section)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     // MARK: SLSearchBarDelegate methods
-    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
     }
 
-    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
         searchBar.text = ""
         self.currentText = ""
@@ -519,11 +516,11 @@ UISearchBarDelegate
         self.tableView.reloadData()
     }
     
-    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }
     
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.currentText = searchText
         self.getContactsFromCurrentText()
         self.tableView.reloadData()

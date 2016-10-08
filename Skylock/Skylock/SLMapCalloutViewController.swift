@@ -83,8 +83,8 @@ import UIKit
         )
         
         let view = UIView(frame:frame)
-        view.backgroundColor = UIColor.whiteColor()
-        view.transform = CGAffineTransformMakeRotation(0.25*CGFloat(M_PI))
+        view.backgroundColor = UIColor.white
+        view.transform = CGAffineTransform(rotationAngle: 0.25*CGFloat(M_PI))
         
         return view
     }()
@@ -92,11 +92,11 @@ import UIKit
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         self.view.layer.cornerRadius = 5.0
     }
     
-    override public func viewWillAppear(animated: Bool) {
+    override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.view.addSubview(self.triangleView)
@@ -110,16 +110,16 @@ import UIKit
     }
     
     @objc public func setCalloutViewUnselected() {
-        self.leftCalloutView.setSelected(false)
-        self.rightCalloutView.setSelected(false)
+        self.leftCalloutView.setSelected(isSelected: false)
+        self.rightCalloutView.setSelected(isSelected: false)
     }
     
     // MARK: callout view delegate methods
     func calloutViewTapped(calloutView: SLMapCalloutView) {
         if calloutView == self.leftCalloutView, let delegate = self.delegate {
-            delegate.leftCalloutViewTapped(self)
+            delegate.leftCalloutViewTapped(calloutController: self)
         } else if calloutView == self.rightCalloutView, let delegate = self.delegate {
-            delegate.rightCalloutViewTapped(self)
+            delegate.rightCalloutViewTapped(calloutController: self)
         }
     }
 }

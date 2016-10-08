@@ -15,7 +15,7 @@ class SLTheftNotificationViewController: SLNotificationViewController {
     
     var finalDiamter:CGFloat = 0.0
     
-    var initialCircleFrame:CGRect = CGRectZero
+    var initialCircleFrame:CGRect = CGRect.zero
     
     let numberOfCircles:Int = 5
     
@@ -36,27 +36,27 @@ class SLTheftNotificationViewController: SLNotificationViewController {
         self.run()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.infoLabel.frame = CGRect(
-            x: CGRectGetMinX(self.infoLabel.frame),
-            y: CGRectGetMinY(self.cancelButton.frame) - self.infoLabel.bounds.size.height - 30.0,
+            x: self.infoLabel.frame.minX,
+            y: self.cancelButton.frame.minY - self.infoLabel.bounds.size.height - 30.0,
             width: self.infoLabel.bounds.size.width,
             height: self.infoLabel.bounds.size.height
         )
         
         self.titleLabel.frame = CGRect(
-            x: CGRectGetMinX(self.titleLabel.frame),
-            y: CGRectGetMinY(self.infoLabel.frame) - self.titleLabel.bounds.size.height - 10.0,
+            x: self.titleLabel.frame.minX,
+            y: self.infoLabel.frame.minY - self.titleLabel.bounds.size.height - 10.0,
             width: self.titleLabel.bounds.size.width,
             height: self.titleLabel.bounds.size.height
         )
     }
     
     func run() {
-        NSTimer.scheduledTimerWithTimeInterval(
-            self.interval/Double(self.numberOfCircles),
+        Timer.scheduledTimer(
+            timeInterval: self.interval/Double(self.numberOfCircles),
             target: self,
             selector: #selector(timerFired),
             userInfo: nil,
@@ -68,18 +68,18 @@ class SLTheftNotificationViewController: SLNotificationViewController {
         let circleView = self.createCircleView()
         self.view.addSubview(circleView)
         self.bringTopViewsToFront()
-        self.makeAnimation(circleView)
+        self.makeAnimation(circleView: circleView)
     }
     
     func makeAnimation(circleView: UIView) {
         let scale:CGFloat = self.finalDiamter/circleView.frame.size.width
         
-        UIView.animateWithDuration(
-            self.interval,
+        UIView.animate(
+            withDuration: self.interval,
             delay: 0.0,
-            options: UIViewAnimationOptions.CurveLinear,
+            options: UIViewAnimationOptions.curveLinear,
             animations: {
-                circleView.transform = CGAffineTransformScale(circleView.transform, scale, scale)
+                circleView.transform = circleView.transform.scaledBy(x: scale, y: scale)
                 circleView.alpha = 0.0
         }) { (finished) in
             circleView.removeFromSuperview()
@@ -95,9 +95,9 @@ class SLTheftNotificationViewController: SLNotificationViewController {
     }
     
     func bringTopViewsToFront() {
-        self.view.bringSubviewToFront(self.takeActionButton)
-        self.view.bringSubviewToFront(self.cancelButton)
-        self.view.bringSubviewToFront(self.titleLabel)
-        self.view.bringSubviewToFront(self.infoLabel)
+        self.view.bringSubview(toFront: self.takeActionButton)
+        self.view.bringSubview(toFront: self.cancelButton)
+        self.view.bringSubview(toFront: self.titleLabel)
+        self.view.bringSubview(toFront: self.infoLabel)
     }
 }

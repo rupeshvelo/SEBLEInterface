@@ -35,18 +35,18 @@ class SLPageViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setUpDots()
     }
     
     func setUpDots() {
         for i in 0...self.numberOfDots - 1 {
-            let rect = CGRectMake(
-                self.xPadding + CGFloat(i)*self.horizontalSpacer - 0.5*self.dotDiameter,
-                0.5*(self.view.bounds.size.height - self.dotDiameter),
-                self.dotDiameter,
-                self.dotDiameter
+            let rect = CGRect(
+                x: self.xPadding + CGFloat(i)*self.horizontalSpacer - 0.5*self.dotDiameter,
+                y: 0.5*(self.view.bounds.size.height - self.dotDiameter),
+                width: self.dotDiameter,
+                height: self.dotDiameter
             )
             
             let dotView = UIView(frame: rect)
@@ -60,13 +60,13 @@ class SLPageViewController: UIViewController {
     }
     
     func makeDotActive(dotIndex: Int) {
-        for (index, dotView) in self.dotViews.enumerate() {
+        for (index, dotView) in self.dotViews.enumerated() {
             dotView.backgroundColor = index == dotIndex ? self.activeColor : self.nonActiveColor
         }
     }
     
     func viewRect() -> CGRect {
-        return CGRectMake(0.0, 0.0, self.viewWidth, self.dotDiameter)
+        return CGRect(x: 0.0, y: 0.0, width: self.viewWidth, height: self.dotDiameter)
     }
     
     func increaseActiveDot() {
