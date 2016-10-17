@@ -127,7 +127,9 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Allow Ellipse to use your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>I'm a mini eye...but still nefarious</string>
+	<string>I&apos;m a mini eye...but still nefarious</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Allow Ellipse to use your contacts</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>
