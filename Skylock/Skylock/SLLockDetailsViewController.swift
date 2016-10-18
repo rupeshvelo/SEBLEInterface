@@ -295,7 +295,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         return actions
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let lock = self.connectedLock , indexPath.section == 0 && indexPath.row == 1 {
             let lsvc = SLLockSettingsViewController(lock: lock)
             self.navigationController?.pushViewController(lsvc, animated: true)

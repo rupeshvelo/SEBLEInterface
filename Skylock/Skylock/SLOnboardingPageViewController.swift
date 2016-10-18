@@ -191,7 +191,7 @@ UIPageViewControllerDataSource
         ) -> UIViewController?
     {
         if let index = self.onboardingControllers.index(of: viewController as! SLOnboardingViewController),
-            index < self.onboardingControllers.count - 2
+            index < self.onboardingControllers.count - 1    
         {
             return self.onboardingControllers[index + 1]
         }

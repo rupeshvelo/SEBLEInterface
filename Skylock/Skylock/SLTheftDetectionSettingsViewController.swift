@@ -166,6 +166,8 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         user.theftSensitivity = NSNumber(value: self.slider.getSliderValue())
         let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
         dbManager.save(user, withCompletion: nil)
-        self.navigationController?.popViewController(animated: true)
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
     }
 }

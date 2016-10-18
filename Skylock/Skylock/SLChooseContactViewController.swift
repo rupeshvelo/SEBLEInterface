@@ -177,8 +177,12 @@ UISearchBarDelegate
             
             do {
                 try self.contactHandler.allContacts(completion: { (fetchedContacts:[CNContact]) in
-                    DispatchQueue.main.sync {
+                    DispatchQueue.main.async {
                         for contact in fetchedContacts {
+                            if contact.givenName.isEmpty {
+                                continue
+                            }
+                            
                             let index = contact.givenName.index(contact.givenName.startIndex, offsetBy: 1)
                             let firstLetter = contact.givenName.substring(to: index).lowercased()
                             if contact.givenName.characters.count > 0 && firstLetter != " "{

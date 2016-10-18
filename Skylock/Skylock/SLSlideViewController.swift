@@ -80,7 +80,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         return section == 0 ? "SLSlideViewControllerSectionMainCell" : "SLSlideViewControllerSectionDetailCell"
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
@@ -124,7 +124,7 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
         return section == 0 ? 77.0 : 100.0
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let action:SLSlideViewControllerAction
         if indexPath.section == 0 {
             switch indexPath.row {
@@ -141,10 +141,10 @@ class SLSlideViewController: UIViewController, UITableViewDelegate, UITableViewD
                 action = .EmergencyContacts
             case 2:
                 action = .HelpPressed
-//            case 3:
-//                action = .RateTheAppPressed
-//            case 4:
-//                action = .InviteFriendsPressed
+                //            case 3:
+                //                action = .RateTheAppPressed
+                //            case 4:
+            //                action = .InviteFriendsPressed
             default:
                 action = .OrderNowPressed
             }

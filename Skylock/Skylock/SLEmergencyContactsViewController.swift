@@ -128,7 +128,7 @@ SLEmergenyContactTableViewCellDelegate
     }
     
     // MARK: UITableView Delegate and Datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
@@ -256,7 +256,7 @@ SLEmergenyContactTableViewCellDelegate
         return view
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let ccvc = SLChooseContactViewController()
             ccvc.delegate = self

@@ -144,7 +144,7 @@
     BOOL sendAlert = YES;
     SLNotificationType alert = SLNotificationTypeNone;
     SLDatabaseManager *dbManager = [SLDatabaseManager sharedManager];
-    SLUser *user = dbManager.currentUser;
+    SLUser *user = dbManager.getCurrentUser;
     if (!user) {
         return;
     }

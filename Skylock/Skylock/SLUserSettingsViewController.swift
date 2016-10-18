@@ -62,7 +62,7 @@ SLUserSettingTableViewCellDelegate
     }
     
     // MARK: UITableView Delegate and Datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     

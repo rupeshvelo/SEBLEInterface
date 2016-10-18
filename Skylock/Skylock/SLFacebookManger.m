@@ -142,14 +142,18 @@
     NSString *facebookUserId = info[@"id"];
     [SLPicManager.sharedManager facebookPicForFBUserId:facebookUserId completion:nil];
     
-    SLUser *user = [SLDatabaseManager.sharedManager currentUser];
+    SLUser *user = [SLDatabaseManager.sharedManager getCurrentUser];
+    if (!user) {
+        // TODO: handle this error in UI
+        return;
+    }
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asRestDictionary];
     userDict[@"password"] = facebookUserId;
     
-    [keychainHandler setItemForUsername:user.userId
-                             inputValue:facebookUserId
-                   additionalSeviceInfo:nil
-                            handlerCase:SLKeychainHandlerCasePassword];
+    [keychainHandler setItemForUsernameWithUserName:user.userId
+                                         inputValue:facebookUserId
+                               additionalSeviceInfo:nil
+                                        handlerCase:SLKeychainHandlerCasePassword];
     
     [SLRestManager.sharedManager postObject:userDict
                                   serverKey:SLRestManagerServerKeyMain
@@ -171,10 +175,10 @@
                                      NSLog(@"%@", message);
                                      [SLDatabaseManager.sharedManager saveLogEntry:message];
                                      
-                                     [keychainHandler setItemForUsername:user.userId
-                                                              inputValue:responseDict[@"token"]
-                                                    additionalSeviceInfo:nil
-                                                             handlerCase:SLKeychainHandlerCaseRestToken];;
+                                     [keychainHandler setItemForUsernameWithUserName:user.userId
+                                                                          inputValue:responseDict[@"token"]
+                                                                additionalSeviceInfo:nil
+                                                                         handlerCase:SLKeychainHandlerCaseRestToken];
                                  }];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook

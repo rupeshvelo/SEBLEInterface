@@ -147,7 +147,7 @@ SLBoxTextFieldWithButtonDelegate
         field.delegate = self
         field.textBoxDelegate = self
         field.autocapitalizationType = UITextAutocapitalizationType.none
-        field.secureTextEntry = true
+        field.isSecureTextEntry = true
         
         return field
     }()
@@ -386,23 +386,28 @@ SLBoxTextFieldWithButtonDelegate
 //        }
         
         let networkInfo:CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
-        var countryCode:String?
+        var countryCode:Any = NSNull()
         if let providerInfo:CTCarrier = networkInfo.subscriberCellularProvider,
             let cc = providerInfo.isoCountryCode
         {
             countryCode = cc
         }
         
+        let email:Any = self.emailField.text == nil ? NSNull() : self.emailField.text!
+        let user_id:Any = self.phoneNumberField.text == nil ? NSNull() : self.phoneNumberField.text!
+        let password:Any = self.passwordField.text == nil ? NSNull() : self.passwordField.text!
+        
         let userProperties:[String:Any] = [
             "first_name": NSNull(),
             "last_name": NSNull(),
-            "email": self.emailField.text == nil ? NSNull() : self.emailField.text!,
-            "user_id": self.phoneNumberField.text == nil ? NSNull() : self.phoneNumberField.text!,
-            "password": self.passwordField.text == nil ? NSNull() : self.passwordField.text!,
+            "email": email,
+            "user_id": user_id,
+            "password": password,
             "user_type": kSLUserTypeEllipse,
             "reg_id": "000000000000000000",
-            "country_code": countryCode == nil ? NSNull() : countryCode!
+            "country_code": countryCode
         ]
+        
         print(userProperties.description)
         
         let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
@@ -734,17 +739,13 @@ SLBoxTextFieldWithButtonDelegate
         textField.keyboardType = keyboardType
         textField.returnKeyType = .done
     }
-    func textFieldDidBeginEditing(textField: UITextField) {
-        
-    }
     
     func textField(
-        textField: UITextField,
-        shouldChangeCharactersInRange range: NSRange,
-                                      replacementString string: String
-        ) -> Bool
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String) -> Bool
     {
-        let fieldName = self.fieldNameFromTextField(textField)
+        let fieldName = self.fieldNameFromTextField(textField: textField)
         if let text = self.fieldValues[fieldName] {
             let tempText:NSString = text as NSString
             let newText = tempText.replacingCharacters(in: range, with: string)
@@ -785,13 +786,13 @@ SLBoxTextFieldWithButtonDelegate
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
     
     // MARK: SLBoxtTextFieldWithButtonDelegate methods
     func showButtonToggledToShow(textField: SLBoxTextFieldWithButton, shouldShow: Bool) {
-        textField.secureTextEntry = !shouldShow
+        textField.isSecureTextEntry = !shouldShow
     }
 }

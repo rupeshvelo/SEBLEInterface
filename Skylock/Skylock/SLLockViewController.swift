@@ -316,8 +316,6 @@ SLLockBarViewControllerDelegate
         self.toggleViewsHiddenOnConnction(isConnected: self.lock != nil)
     }
     
-    
-    
     func registerForNotifications() {
         // TODO: Get UI to handle the case where the lock position is invalid or middle.
         NotificationCenter.default.addObserver(
@@ -393,15 +391,7 @@ SLLockBarViewControllerDelegate
     
     func showAcceptNotificaitonViewController() {
         let ud = UserDefaults.standard;
-        if let isComplete:Bool = ud.bool(forKey: SLUserDefaultsOnBoardingComplete) {
-            if !isComplete {
-                self.present(
-                    self.acceptNotificationViewController,
-                    animated: true,
-                    completion: nil
-                )
-            }
-        } else {
+        if !ud.bool(forKey: SLUserDefaultsOnBoardingComplete) {
             self.present(
                 self.acceptNotificationViewController,
                 animated: true,
@@ -861,7 +851,7 @@ SLLockBarViewControllerDelegate
     func takeActionButtonPressed(nvc: SLNotificationViewController) {
         let notificationManager:SLNotificationManager = SLNotificationManager.sharedManager() as! SLNotificationManager
         var completion:(() -> Void)?
-        if let notification:SLNotification = notificationManager.lastNotification() as SLNotification {
+        if let notification:SLNotification = notificationManager.lastNotification() {
             if notification.type == SLNotificationType.crashPre {
                 // this is where the emergency contacts should be contacted, 
                 // and any associated UI should be presented.

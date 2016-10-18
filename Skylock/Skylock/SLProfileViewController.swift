@@ -205,7 +205,7 @@ class SLProfileViewController:
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
         if user.userType == kSLUserTypeFacebook {
             picManager.facebookPic(forFBUserId: user.userId, completion: { (image) in
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     self.profilePictureView.image = image
                     self.profilePictureView.setNeedsDisplay()
                 }
@@ -213,7 +213,7 @@ class SLProfileViewController:
         } else {
             picManager.getPicWithUserId(user.userId, withCompletion: { (cachedImage) in
                 if let image = cachedImage {
-                    DispatchQueue.main.sync {
+                    DispatchQueue.main.async {
                         self.profilePictureView.image = image
                         self.profilePictureView.setNeedsDisplay()
                     }
@@ -322,7 +322,7 @@ class SLProfileViewController:
     }
     
     // MARK tableview delegate & datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
@@ -382,7 +382,7 @@ class SLProfileViewController:
         return self.tableView(tableView, heightForHeaderInSection: section)
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -421,7 +421,7 @@ class SLProfileViewController:
         return view
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
@@ -455,8 +455,7 @@ class SLProfileViewController:
         self.selectedPath = self.tableView.indexPath(for: cell)
     }
     
-    // MARK: UIImagePickerViewControllerDelegate methods
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
     }
     

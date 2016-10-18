@@ -22,12 +22,12 @@ typedef NS_ENUM(NSUInteger, SLLockValueThreshold) {
 
 @interface SLNotificationManager : NSObject
 
-+ (id)sharedManager;
++ (id _Nonnull)sharedManager;
 - (void)createNotificationOfType:(SLNotificationType)notficationType;
-- (NSArray *)getNotifications;
-- (SLNotification *)lastNotification;
-- (void)dismissNotificationWithId:(NSString *)notificationId;
-- (void)checkIfLockNeedsNotification:(SLLock *)lock;
+- (NSArray * _Nullable)getNotifications;
+- (SLNotification * _Nullable)lastNotification;
+- (void)dismissNotificationWithId:(NSString * _Nonnull)notificationId;
+- (void)checkIfLockNeedsNotification:(SLLock * _Nonnull)lock;
 - (void)sendEmergencyText;
 - (void)removeLastNotification;
 

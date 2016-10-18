@@ -38,7 +38,7 @@ func beginUpdatingLocation() {
     }
     
     // MARK: CLLocationMangerDelegate methods
-    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         var didAccept = false
         if status == .authorizedAlways || status == .authorizedWhenInUse {
             manager.startUpdatingLocation()
@@ -48,7 +48,7 @@ func beginUpdatingLocation() {
         self.delegate?.locationManagerDidAcceptedLocationAuthorization(locationManager: self, didAccept: didAccept)
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let userLocation = locations.first else {
             return
         }
