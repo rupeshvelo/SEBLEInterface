@@ -323,16 +323,6 @@
     return (users && users.count > 0) ? users[0] : nil;
 }
 
-- (SLUser *)getUserWithPhoneNumber:(NSString *)phoneNumber
-{
-    NSLog(@"getUser Called");
-    NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"phoneNumber == %@", phoneNumber];
-    NSArray *users = [self getUsersWithPredicate:predicate];
-    
-    return (users && users.count > 0) ? users[0] : nil;
-}
-
 - (NSArray *)getUsersWithPredicate:(NSPredicate *)predicate
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
