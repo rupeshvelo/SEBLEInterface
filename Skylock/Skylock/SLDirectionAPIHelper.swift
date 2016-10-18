@@ -1,14 +1,14 @@
-
+//
 //  SLDirectionAPIHelper.swift
 //  Skylock
 //
 //  Created by Andre Green on 9/16/15.
 //  Copyright (c) 2015 Andre Green. All rights reserved.
-
+//
 
 import Foundation
 import CoreLocation
-import GoogleMaps
+import SwiftyJSON
 
 class SLDirectionAPIHelper: NSObject {
     let startPoint: CLLocationCoordinate2D
@@ -29,17 +29,26 @@ class SLDirectionAPIHelper: NSObject {
         
         SLRestManager.sharedManager().getGoogleDirectionsFromUrl(url) { (responseData: NSData?) -> Void in
             if let data = responseData {
-                var json : NSDictionary;
-                do {
-                    if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary {
-                        json = jsonResult
-                        print(json);
-                    }
-                } catch let error as NSError {
-                    return;
+                let json = JSON(data: data)
+                var endAddress:String?
+                if let address = json["routes"][0]["legs"][0]["end_address"].string {
+                    endAddress = address
                 }
                 
-                
+                if let steps = json["routes"][0]["legs"][0]["steps"].arrayObject {
+                    var directions = [SLDirection]()
+                    for step in steps where step is [String: AnyObject] {
+                        let direction = SLDirection(input: step as! [String : AnyObject])
+                        directions.append(direction)
+                    }
+                    
+                    completion(directions, endAddress)
+                } else {
+                    completion(nil, nil)
+                }
+            } else {
+                completion(nil, nil)
+            }
         }
     }
     
@@ -51,5 +60,4 @@ class SLDirectionAPIHelper: NSObject {
             range: nil
         )
     }
-}
 }

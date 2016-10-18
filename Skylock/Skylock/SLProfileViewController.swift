@@ -190,7 +190,7 @@ class SLProfileViewController:
             cell?.selected = false
         }
     }
-    
+
     func cameraButtonPressed() {
         self.presentViewController(self.alertViewController, animated: true, completion: nil)
     }
@@ -202,7 +202,7 @@ class SLProfileViewController:
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
         if user.userType == kSLUserTypeFacebook {
             picManager.facebookPicForFBUserId(user.userId, completion: { (image) in
-                dispatch_async(dispatch_get_main_queue(), {
+                dispatch_async(dispatch_get_main_queue(), { 
                     self.profilePictureView.image = image
                     self.profilePictureView.setNeedsDisplay()
                 })
@@ -222,7 +222,7 @@ class SLProfileViewController:
     func profileInfomationRightText(row: Int) -> String? {
         if let user = SLDatabaseManager.sharedManager().currentUser {
             if row == 0 || row == 1 {
-                return row == 0 ? NSUserDefaults.standardUserDefaults().stringForKey("4156767921")! : user.lastName
+                return row == 0 ? user.firstName : user.lastName
             } else if row == 2 {
                 return user.phoneNumber
             } else if row == 3 {
@@ -299,9 +299,9 @@ class SLProfileViewController:
     }
     
     func menuButtonPressed() {
-        //        let transitionHandler = SLViewControllerTransitionHandler()
-        //        self.modalPresentationStyle = .Custom
-        //        self.transitioningDelegate = transitionHandler
+//        let transitionHandler = SLViewControllerTransitionHandler()
+//        self.modalPresentationStyle = .Custom
+//        self.transitioningDelegate = transitionHandler
         if let navController = self.navigationController {
             navController.dismissViewControllerAnimated(true, completion: nil)
         } else {
