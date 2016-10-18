@@ -7,27 +7,27 @@
 //
 
 enum SLThinkerViewControllerState {
-    case ClockwiseMoving
-    case ClockwiseStill
-    case CounterClockwiseMoving
-    case CounterClockwiseStill
-    case Inactive
-    case Connecting
+    case clockwiseMoving
+    case clockwiseStill
+    case counterClockwiseMoving
+    case counterClockwiseStill
+    case inactive
+    case connecting
 }
 
 enum SLThinkerViewControllerLabelTextState {
-    case ClockwiseTopStill
-    case ClockwiseTopMoving
-    case ClockwiseBottomStill
-    case ClockwiseBottomMoving
-    case CounterClockwiseTopStill
-    case CounterClockwiseTopMoving
-    case CounterClockwiseBottomStill
-    case CounterClockwiseBottomMoving
-    case InactiveTop
-    case InactiveBottom
-    case ConnectingTop
-    case ConnectingBottom
+    case clockwiseTopStill
+    case clockwiseTopMoving
+    case clockwiseBottomStill
+    case clockwiseBottomMoving
+    case counterClockwiseTopStill
+    case counterClockwiseTopMoving
+    case counterClockwiseBottomStill
+    case counterClockwiseBottomMoving
+    case inactiveTop
+    case inactiveBottom
+    case connectingTop
+    case connectingBottom
 }
 
 protocol SLThinkerViewControllerDelegate:class {
@@ -57,7 +57,7 @@ class SLThinkerViewController: UIViewController {
     
     private var shouldContinueAnimation:Bool = false
     
-    private var thinkerState:SLThinkerViewControllerState = .Inactive
+    private var thinkerState:SLThinkerViewControllerState = .inactive
     
     private var hasBeenTapped:Bool = false
     
@@ -74,7 +74,7 @@ class SLThinkerViewController: UIViewController {
     
     lazy var wormView:UIView = {
         let view:UIView = UIView(frame: self.view.bounds)
-        view.backgroundColor = UIColor.clearColor()
+        view.backgroundColor = UIColor.clear
         
         return view
     }()
@@ -95,7 +95,7 @@ class SLThinkerViewController: UIViewController {
         view.backgroundColor = self.foregroundColor
         view.layer.cornerRadius = 0.5*diameter
         view.clipsToBounds = true
-        view.userInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         view.addGestureRecognizer(tgr)
         
         return view
@@ -112,7 +112,7 @@ class SLThinkerViewController: UIViewController {
         
         let label:UILabel = UILabel(frame: frame)
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 21.0)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.textColor = self.textColor
         return label
     }()
@@ -128,7 +128,7 @@ class SLThinkerViewController: UIViewController {
         
         let label:UILabel = UILabel(frame: frame)
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 21.0)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.textColor = self.textColor
         
         return label
@@ -157,7 +157,7 @@ class SLThinkerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !self.view.subviews.contains(self.backgroundView) {
@@ -181,11 +181,11 @@ class SLThinkerViewController: UIViewController {
     }
     
     private func rotateWormView(shouldRotateClockwise: Bool) {
-        UIView.animateWithDuration(self.animationDuration, delay: 0.0, options: .CurveLinear, animations: {
-            self.wormView.transform = CGAffineTransformRotate(self.wormView.transform, CGFloat(M_PI))
+        UIView.animate(withDuration: self.animationDuration, delay: 0.0, options: .curveLinear, animations: {
+            self.wormView.transform = self.wormView.transform.rotated(by: CGFloat(M_PI))
         }) { (finished) in
             if self.shouldContinueAnimation {
-                self.rotateWormView(shouldRotateClockwise)
+                self.rotateWormView(shouldRotateClockwise: shouldRotateClockwise)
             }
         }
     }
@@ -199,35 +199,35 @@ class SLThinkerViewController: UIViewController {
         
         let innerRadius = self.foregroundScaler*self.viewRadius()
         let halfArcHeight = 0.5*(self.viewRadius() - innerRadius)
-        let startPoint = CGPointMake(self.wormView.center.x, self.wormView.center.y - innerRadius)
-        let center1 = CGPointMake(self.wormView.center.x, halfArcHeight)
-        let center2 = CGPointMake(self.wormView.center.x, self.wormView.bounds.size.height - halfArcHeight)
+        let startPoint = CGPoint(x: self.wormView.center.x, y: self.wormView.center.y - innerRadius)
+        let center1 = CGPoint(x: self.wormView.center.x, y: halfArcHeight)
+        let center2 = CGPoint(x: self.wormView.center.x, y: self.wormView.bounds.size.height - halfArcHeight)
         
         let bezierPath:UIBezierPath = UIBezierPath()
-        bezierPath.moveToPoint(startPoint)
-        bezierPath.addArcWithCenter(
-            center1,
+        bezierPath.move(to: startPoint)
+        bezierPath.addArc(
+            withCenter: center1,
             radius: halfArcHeight,
             startAngle: CGFloat(M_PI_2),
             endAngle: 3.0*CGFloat(M_PI_2),
             clockwise: true
         )
-        bezierPath.addArcWithCenter(
-            self.wormView.center,
+        bezierPath.addArc(
+            withCenter: self.wormView.center,
             radius: self.viewRadius(),
             startAngle: -CGFloat(M_PI_2),
             endAngle: CGFloat(M_PI_2),
             clockwise: true
         )
-        bezierPath.addArcWithCenter(
-            center2,
+        bezierPath.addArc(
+            withCenter: center2,
             radius: halfArcHeight,
             startAngle: CGFloat(M_PI)/2.0,
             endAngle: 3.0*CGFloat(M_PI_2),
             clockwise: true
         )
-        bezierPath.addArcWithCenter(
-            self.wormView.center,
+        bezierPath.addArc(
+            withCenter: self.wormView.center,
             radius: innerRadius,
             startAngle: 0,
             endAngle: -CGFloat(M_PI)/2.0,
@@ -235,14 +235,14 @@ class SLThinkerViewController: UIViewController {
         )
         
         let shapeLayer:CAShapeLayer = CAShapeLayer()
-        shapeLayer.path = bezierPath.CGPath
-        shapeLayer.fillColor = self.currentBackgroundColor?.CGColor
+        shapeLayer.path = bezierPath.cgPath
+        shapeLayer.fillColor = self.currentBackgroundColor?.cgColor
         
         var colors:[CGColor]?
         if let backgroundColor = self.currentBackgroundColor, let tintColor = self.currentTintColor {
             colors = [
-                backgroundColor.CGColor,
-                tintColor.CGColor
+                backgroundColor.cgColor,
+                tintColor.cgColor
             ]
         }
         let locations = [0.0, 1.0]
@@ -250,7 +250,7 @@ class SLThinkerViewController: UIViewController {
         let gradientLayer:CAGradientLayer = CAGradientLayer()
         gradientLayer.frame = view.bounds
         gradientLayer.colors = colors
-        gradientLayer.locations = locations
+        gradientLayer.locations = locations as [NSNumber]?
         gradientLayer.mask = shapeLayer
         
         self.wormView.layer.addSublayer(gradientLayer)
@@ -270,63 +270,63 @@ class SLThinkerViewController: UIViewController {
         }
         
         self.hasBeenTapped = true
-        self.delegate?.thinkerViewTapped(self)
+        self.delegate?.thinkerViewTapped(tvc: self)
     }
     
-    private func setLabelTextForTopState(
+    private func setLabelTextFor(
         topState: SLThinkerViewControllerLabelTextState,
         bottomState: SLThinkerViewControllerLabelTextState
         )
     {
-        self.topLabel.text = self.getTextForState(topState)
-        self.bottomLabel.text = self.getTextForState(bottomState)
+        self.topLabel.text = self.getTextForState(state: topState)
+        self.bottomLabel.text = self.getTextForState(state: bottomState)
     }
     
     // Mark: Public class functions
     func setState(state: SLThinkerViewControllerState) {
         switch state {
-        case .ClockwiseStill:
+        case .clockwiseStill:
             self.hasBeenTapped = false
-            self.wormView.hidden = true
+            self.wormView.isHidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.secondBackgroundColor
             self.currentTintColor = self.secondBackgroundColor
-            self.setLabelTextForTopState(.ClockwiseTopStill, bottomState: .ClockwiseBottomStill)
-        case .ClockwiseMoving:
-            self.wormView.hidden = false
+            self.setLabelTextFor(topState: .clockwiseTopStill, bottomState: .clockwiseBottomStill)
+        case .clockwiseMoving:
+            self.wormView.isHidden = false
             self.shouldContinueAnimation = true
             self.currentBackgroundColor = self.firstBackgroundColor
             self.currentTintColor = self.secondBackgroundColor
-            self.setLabelTextForTopState(.ClockwiseTopMoving, bottomState: .ClockwiseBottomMoving)
-            self.rotateWormView(true)
-        case .CounterClockwiseStill:
+            self.setLabelTextFor(topState: .clockwiseTopMoving, bottomState: .clockwiseBottomMoving)
+            self.rotateWormView(shouldRotateClockwise: true)
+        case .counterClockwiseStill:
             self.hasBeenTapped = false
-            self.wormView.hidden = true
+            self.wormView.isHidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.firstBackgroundColor
             self.currentTintColor = self.firstBackgroundColor
-            self.setLabelTextForTopState(.CounterClockwiseTopStill, bottomState: .CounterClockwiseBottomStill)
-        case .CounterClockwiseMoving:
-            self.wormView.hidden = false
+            self.setLabelTextFor(topState: .counterClockwiseTopStill, bottomState: .counterClockwiseBottomStill)
+        case .counterClockwiseMoving:
+            self.wormView.isHidden = false
             self.shouldContinueAnimation = true
             self.currentBackgroundColor = self.secondBackgroundColor
             self.currentTintColor = self.firstBackgroundColor
-            self.setLabelTextForTopState(.CounterClockwiseTopMoving, bottomState: .CounterClockwiseBottomMoving)
-            self.rotateWormView(false)
-        case .Inactive:
+            self.setLabelTextFor(topState: .counterClockwiseTopMoving, bottomState: .counterClockwiseBottomMoving)
+            self.rotateWormView(shouldRotateClockwise: false)
+        case .inactive:
             self.hasBeenTapped = false
-            self.wormView.hidden = true
+            self.wormView.isHidden = true
             self.shouldContinueAnimation = false
             self.currentBackgroundColor = self.inActiveBackgroundColor
             self.currentTintColor = self.inActiveBackgroundColor
-            self.setLabelTextForTopState(.InactiveTop, bottomState: .InactiveBottom)
-        case .Connecting:
-            self.wormView.hidden = false
+            self.setLabelTextFor(topState: .inactiveTop, bottomState: .inactiveBottom)
+        case .connecting:
+            self.wormView.isHidden = false
             self.shouldContinueAnimation = true
             self.currentBackgroundColor = self.secondBackgroundColor
             self.currentTintColor = self.firstBackgroundColor
-            self.setLabelTextForTopState(.ConnectingTop, bottomState: .ConnectingBottom)
-            self.rotateWormView(false)
+            self.setLabelTextFor(topState: .connectingTop, bottomState: .connectingBottom)
+            self.rotateWormView(shouldRotateClockwise: false)
         }
         
         self.thinkerState = state
@@ -339,24 +339,24 @@ class SLThinkerViewController: UIViewController {
         let bottomTextState:SLThinkerViewControllerLabelTextState
         
         switch state {
-        case .Inactive:
-            topTextState = .InactiveTop
-            bottomTextState = .InactiveBottom
-        case .ClockwiseMoving:
-            topTextState = .ClockwiseTopMoving
-            bottomTextState = .ClockwiseBottomMoving
-        case .ClockwiseStill:
-            topTextState = .ClockwiseTopStill
-            bottomTextState = .ClockwiseBottomStill
-        case .CounterClockwiseMoving:
-            topTextState = .CounterClockwiseTopMoving
-            bottomTextState = .CounterClockwiseBottomMoving
-        case .CounterClockwiseStill:
-            topTextState = .CounterClockwiseTopStill
-            bottomTextState = .CounterClockwiseBottomStill
-        case .Connecting:
-            topTextState = .ConnectingTop
-            bottomTextState = .ConnectingBottom
+        case .inactive:
+            topTextState = .inactiveTop
+            bottomTextState = .inactiveBottom
+        case .clockwiseMoving:
+            topTextState = .clockwiseTopMoving
+            bottomTextState = .clockwiseBottomMoving
+        case .clockwiseStill:
+            topTextState = .clockwiseTopStill
+            bottomTextState = .clockwiseBottomStill
+        case .counterClockwiseMoving:
+            topTextState = .counterClockwiseTopMoving
+            bottomTextState = .counterClockwiseBottomMoving
+        case .counterClockwiseStill:
+            topTextState = .counterClockwiseTopStill
+            bottomTextState = .counterClockwiseBottomStill
+        case .connecting:
+            topTextState = .connectingTop
+            bottomTextState = .connectingBottom
         }
         
         if let top = topText {
@@ -368,7 +368,7 @@ class SLThinkerViewController: UIViewController {
         }
         
         if state == self.thinkerState {
-            self.setLabelTextForTopState(topTextState, bottomState: bottomTextState)
+            self.setLabelTextFor(topState: topTextState, bottomState: bottomTextState)
         }
     }
 }

@@ -29,6 +29,10 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     // This should be passed in in the initialzer once it is implemnted on the server
     let newFeatures:[String] = [String]()
     
+    override var preferredStatusBarStyle:UIStatusBarStyle {
+        return .lightContent
+    }
+    
     lazy var updateLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
@@ -40,7 +44,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         let label:UILabel = UILabel(frame: frame)
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         label.text = self.updateText[self.stage]
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         
         return label
     }()
@@ -48,7 +52,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     lazy var progressLabel:UILabel = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.updateLabel.frame) + 20.0,
+            y: self.updateLabel.frame.maxY + 20.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 17.0
         )
@@ -56,8 +60,8 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         let label:UILabel = UILabel(frame: frame)
         label.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 11.0)
         label.text = NSLocalizedString("Progress", comment: "") + "..."
-        label.textColor = UIColor.whiteColor()
-        label.hidden = self.stage == .Available
+        label.textColor = UIColor.white
+        label.isHidden = self.stage == .Available
         
         return label
     }()
@@ -65,55 +69,55 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     lazy var progressBar:SLFirmwareUpdateProgressBarView = {
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMaxY(self.progressLabel.frame) + 5.0,
+            y: self.progressLabel.frame.maxY + 5.0,
             width: self.view.bounds.size.width - 2*self.xPadding,
             height: 10.0
         )
         
         let bar:SLFirmwareUpdateProgressBarView = SLFirmwareUpdateProgressBarView(frame: frame)
-        bar.hidden = true
+        bar.isHidden = true
         
         return bar
     }()
     
     lazy var updateLaterButton:UIButton = {
-        let frame = CGRectMake(
-            0.0,
-            self.view.bounds.size.height - self.buttonHeight,
-            0.5*self.view.bounds.size.width,
-            self.buttonHeight
+        let frame = CGRect(
+            x: 0.0,
+            y: self.view.bounds.size.height - self.buttonHeight,
+            width: 0.5*self.view.bounds.size.width,
+            height: self.buttonHeight
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.setTitle(NSLocalizedString("LATER", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor(red: 188, green: 187, blue: 187), forState: .Normal)
+        button.setTitle(NSLocalizedString("LATER", comment: ""), for: .normal)
+        button.setTitleColor(UIColor(red: 188, green: 187, blue: 187), for: .normal)
         button.backgroundColor = UIColor(red: 231, green: 231, blue: 233)
-        button.addTarget(self, action: #selector(updateLaterButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(updateLaterButtonPressed), for: .touchDown)
         
         return button
     }()
     
     lazy var updateNowButton:UIButton = {
-        let frame = CGRectMake(
-            0.5*self.view.bounds.size.width,
-            self.view.bounds.size.height - self.buttonHeight,
-            0.5*self.view.bounds.size.width,
-            self.buttonHeight
+        let frame = CGRect(
+            x: 0.5*self.view.bounds.size.width,
+            y: self.view.bounds.size.height - self.buttonHeight,
+            width: 0.5*self.view.bounds.size.width,
+            height: self.buttonHeight
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.setTitle(NSLocalizedString("UPDATE NOW", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.setTitle(NSLocalizedString("UPDATE NOW", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
-        button.addTarget(self, action: #selector(updateNowButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(updateNowButtonPressed), for: .touchDown)
         
         return button
     }()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,37 +130,33 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         self.view.addSubview(self.updateLaterButton)
         self.view.addSubview(self.updateNowButton)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(updateFirmware(_:)),
-            name: kSLNotificationLockManagerFirmwareUpdateState,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerFirmwareUpdateState),
+            object: nil,
+            queue: nil,
+            using: updateFirmware
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(firmwareUpdateComplete(_:)),
-            name: kSLNotificationLockManagerEndedFirmwareUpdate,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerEndedFirmwareUpdate),
+            object: nil,
+            queue: nil,
+            using: firmwareUpdateComplete
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(disconnectedLock(_:)),
-            name: kSLNotificationLockManagerDisconnectedLock,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDisconnectedLock),
+            object: nil,
+            queue: nil,
+            using: disconnectedLock
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockPaired(_:)),
-            name: kSLNotificationLockPaired,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPaired),
+            object: nil,
+            queue: nil,
+            using: lockPaired
         )
-    }
-    
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
     }
     
     func setFirmwareStage(stage: SLFirmwareUpdateStage) {
@@ -165,40 +165,40 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     }
     
     func updateViewsForStage() {
-        self.progressBar.hidden = self.stage == .Available
+        self.progressBar.isHidden = self.stage == .Available
     }
     
     func updateLaterButtonPressed() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func updateNowButtonPressed() {
         self.stage = .InProgress
         self.updateLabel.text = self.updateText[self.stage]
-        self.progressLabel.hidden = false
-        self.progressBar.hidden = false
-        self.updateNowButton.hidden = true
-        self.updateLaterButton.hidden = true
+        self.progressLabel.isHidden = false
+        self.progressBar.isHidden = false
+        self.updateNowButton.isHidden = true
+        self.updateLaterButton.isHidden = true
         SLLockManager.sharedManager.updateFirmwareForCurrentLock()
     }
     
-    func updateFirmware(notification: NSNotification) {
+    func updateFirmware(notification: Notification) {
         guard let progress = notification.object as? NSNumber else {
             return
         }
         
-        self.progressBar.updateBarWithRatio(progress.doubleValue)
+        self.progressBar.updateBarWithRatio(ratio: progress.doubleValue)
     }
     
-    func firmwareUpdateComplete(notification: NSNotification) {
+    func firmwareUpdateComplete(notification: Notification) {
         self.updateLabel.text = self.updateText[.Finished]
     }
     
-    func disconnectedLock(notification: NSNotification) {
+    func disconnectedLock(notification: Notification) {
         //self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func lockPaired(notification: NSNotification) {
+    func lockPaired(notification: Notification) {
         let texts:[SLWarningViewControllerTextProperty:String?] = [
             .Header: NSLocalizedString("Firmware Updated!", comment: ""),
             .Info: NSLocalizedString("The firmware on your ellipse has been updated.", comment: ""),
@@ -206,11 +206,11 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
             .ActionButton: nil
         ]
         
-        self.presentWarningViewControllerWithTexts(texts) {
+        self.presentWarningViewControllerWithTexts(texts: texts) {
             if let navController = self.navigationController {
-                navController.popViewControllerAnimated(true)
+                navController.popViewController(animated: true)
             } else {
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
         }
     }

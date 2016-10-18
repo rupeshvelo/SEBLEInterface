@@ -13,13 +13,13 @@ class SLLogDetailViewController: UIViewController {
     let padding:CGFloat = 10.0
     
     lazy var scrollView:UIScrollView = {
-        let font = UIFont.systemFontOfSize(15)
+        let font = UIFont.systemFont(ofSize: 15)
         let utility: SLUtilities = SLUtilities()
         let size: CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text:self.text,
             maxWidth:self.view.bounds.size.width - 2*self.padding,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
@@ -37,16 +37,16 @@ class SLLogDetailViewController: UIViewController {
         
         let scroll:UIScrollView = UIScrollView(frame: self.view.bounds)
         scroll.contentSize = label.bounds.size
-        scroll.backgroundColor = UIColor.whiteColor()
+        scroll.backgroundColor = UIColor.white
         scroll.addSubview(label)
         
         return scroll
     }()
     
-    init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?, log:SLLog) {
-        let dateFormatter = NSDateFormatter()
+    init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?, log:SLLog) {
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        self.text = dateFormatter.stringFromDate(log.date!) + "\n\n" + log.entry!
+        self.text = dateFormatter.string(from: log.date!) + "\n\n" + log.entry!
         
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }

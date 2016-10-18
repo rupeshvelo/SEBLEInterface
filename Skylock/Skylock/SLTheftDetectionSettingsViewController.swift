@@ -13,7 +13,7 @@ class SLTheftDetectionSettingsViewController: UIViewController {
     
     let xPadding:CGFloat = 25.0
     
-    let user:SLUser = SLDatabaseManager.sharedManager().currentUser
+    let user:SLUser = (SLDatabaseManager.sharedManager() as! SLDatabaseManager).getCurrentUser()!
     
     init(lock:SLLock) {
         self.lock = lock
@@ -28,7 +28,7 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         let height:CGFloat = 66.0
         let frame = CGRect(
             x: 0.0,
-            y: CGRectGetMidY(self.view.frame) - 0.5*height,
+            y: self.view.frame.midY - 0.5*height,
             width: self.view.bounds.size.width,
             height: height
         )
@@ -46,7 +46,7 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         
         let label:UILabel = UILabel(frame: labelFrame)
         label.text = NSLocalizedString("SECURITY SENSITIVITY", comment: "")
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         label.textColor = UIColor(red: 140, green: 140, blue: 140)
         
@@ -61,16 +61,16 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         
         
         let y0 = self.navigationController!.navigationBar.bounds.size.height
-            + UIApplication.sharedApplication().statusBarFrame.size.height
+            + UIApplication.shared.statusBarFrame.size.height
         let viewFrame = CGRect(
             x: 0.0,
             y: y0,
             width: self.view.bounds.size.width,
-            height: CGRectGetMinY(self.sensitivityView.frame) - y0
+            height: self.sensitivityView.frame.minY - y0
         )
         
         let view:UIView = UIView(frame: viewFrame)
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         
         let maxWidth = self.view.bounds.size.width - 2*self.xPadding
         let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14.0)!
@@ -81,25 +81,25 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         )
         let utility = SLUtilities()
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: maxWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            0.5*(view.bounds.size.height - labelSize.height),
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 0.5*(view.bounds.size.height - labelSize.height),
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame:frame)
         label.text = text
         label.font = font
         label.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
-        label.textAlignment = .Left
+        label.textAlignment = .left
         label.numberOfLines = 0
         
         view.addSubview(label)
@@ -121,12 +121,12 @@ class SLTheftDetectionSettingsViewController: UIViewController {
             height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
         button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
-        button.setTitle(NSLocalizedString("SAVE CHANGES", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        button.addTarget(self, action: #selector(saveChangesButtonPressed), forControlEvents: .TouchDown)
+        button.setTitle(NSLocalizedString("SAVE CHANGES", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.addTarget(self, action: #selector(saveChangesButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -134,7 +134,7 @@ class SLTheftDetectionSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.navigationItem.title = NSLocalizedString("THEFT DETECTION SETTINGS", comment: "")
         
@@ -143,13 +143,13 @@ class SLTheftDetectionSettingsViewController: UIViewController {
         self.view.addSubview(self.saveChangesButton)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if !self.view.subviews.contains(self.slider.view) {
             let frame = CGRect(
                 x: 0.0,
-                y: CGRectGetMaxY(self.sensitivityView.frame) + 22.0,
+                y: self.sensitivityView.frame.maxY + 22.0,
                 width: self.view.bounds.size.width,
                 height: 36.0
             )
@@ -157,15 +157,17 @@ class SLTheftDetectionSettingsViewController: UIViewController {
             self.slider.view.frame = frame
             self.addChildViewController(self.slider)
             self.view.addSubview(self.slider.view)
-            self.view.bringSubviewToFront(self.slider.view)
-            self.slider.didMoveToParentViewController(self)
+            self.view.bringSubview(toFront: self.slider.view)
+            self.slider.didMove(toParentViewController: self)
         }
     }
     
     func saveChangesButtonPressed() {
-        user.theftSensitivity = NSNumber(double: self.slider.getSliderValue())
+        user.theftSensitivity = NSNumber(value: self.slider.getSliderValue())
         let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        dbManager.saveUser(user, withCompletion: nil)
-        self.navigationController?.popViewControllerAnimated(true)
+        dbManager.save(user, withCompletion: nil)
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
     }
 }

@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4</string>
+	<string>5</string>
 	<key>FacebookAppID</key>
 	<string>1057259287662727</string>
 	<key>FacebookDisplayName</key>
@@ -128,6 +128,8 @@
 	<string>Allow Ellipse to use your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>I'm a mini eye...but still nefarious</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Ellipse can detect if you’ve been in an accident and alert your loved ones by SMS. You can switch this off at any time.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>

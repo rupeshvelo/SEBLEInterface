@@ -395,7 +395,7 @@
     SLDirectionAPIHelper *directionsHelper = [[SLDirectionAPIHelper alloc] initWithStart:self.userLocation
                                                                                      end:self.selectedLock.location
                                                                                 isBiking:NO];
-    [directionsHelper getDirections:^(NSArray *directions, NSString *endAddress) {
+    [directionsHelper getDirectionsWithCompletion:^(NSArray * _Nullable directions, NSString * _Nullable endAddress) {
         if (!directions || !endAddress) {
             NSLog(@"Error: could not retrieve directions");
             return;
@@ -508,7 +508,7 @@
 }
 
 #pragma mark - SLLockInfoViewControllerDelegate methods
-- (void)directionsButtonPressed:(SLLockInfoViewController *)livc
+- (void)directionsButtonPressedWithLivc:(SLLockInfoViewController *)livc
 {
     if (!self.selectedLock) {
         return;

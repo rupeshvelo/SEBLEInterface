@@ -44,10 +44,10 @@ class SLContactsLetterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.fillButtons()
     }
@@ -59,14 +59,14 @@ class SLContactsLetterViewController: UIViewController {
         
         let height = self.view.bounds.size.height/CGFloat(self.letters.count)
         
-        for (index, letter) in self.letters.enumerate() {
+        for (index, letter) in self.letters.enumerated() {
             let frame = CGRect(x: 0.0, y: CGFloat(index)*height, width: self.view.bounds.size.width, height: height)
             let button:UIButton = UIButton(frame: frame)
             button.tag = index
-            button.addTarget(self, action: #selector(buttonPressed(_:)), forControlEvents: .TouchUpInside)
-            button.addTarget(self, action: #selector(buttonPressed(_:)), forControlEvents: .TouchUpOutside)
-            button.setTitle(letter, forState: .Normal)
-            button.setTitleColor(UIColor(red: 102, green: 177, blue: 227), forState: .Normal)
+            button.addTarget(self, action: #selector(buttonPressed(button:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(buttonPressed(button:)), for: .touchUpOutside)
+            button.setTitle(letter, for: .normal)
+            button.setTitleColor(UIColor(red: 102, green: 177, blue: 227), for: .normal)
             
             self.view.addSubview(button)
         }
@@ -77,6 +77,6 @@ class SLContactsLetterViewController: UIViewController {
             return
         }
         
-        self.delegate?.contactsLetterViewController(self, letter: self.letters[button.tag])
+        self.delegate?.contactsLetterViewController(letterViewController: self, letter: self.letters[button.tag])
     }
 }

@@ -15,25 +15,25 @@ class SLRequestContactsAccessViewController: UIViewController {
         let utility = SLUtilities()
         let font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 22.0)!
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            (self.navigationController?.navigationBar.bounds.size.height)!
-                + UIApplication.sharedApplication().statusBarFrame.size.height + 20.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: (self.navigationController?.navigationBar.bounds.size.height)!
+                + UIApplication.shared.statusBarFrame.size.height + 20.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = font
         label.numberOfLines = 0
         
@@ -51,24 +51,24 @@ class SLRequestContactsAccessViewController: UIViewController {
         let utility = SLUtilities()
         let font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)!
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.mainInfoLabel.frame) + 20.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.mainInfoLabel.frame.maxY + 20.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = font
         label.numberOfLines = 0
         
@@ -84,11 +84,11 @@ class SLRequestContactsAccessViewController: UIViewController {
             height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.addTarget(self, action: #selector(acceptButtonPressed), forControlEvents: .TouchDown)
-        button.setTitle(NSLocalizedString("SET UP EMERGENCY CONTACTS", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.addTarget(self, action: #selector(acceptButtonPressed), for: .touchDown)
+        button.setTitle(NSLocalizedString("SET UP EMERGENCY CONTACTS", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
         
@@ -99,7 +99,7 @@ class SLRequestContactsAccessViewController: UIViewController {
         let image = UIImage(named: "emergency_contacts_phone_image")!
         let frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
-            y: CGRectGetMinY(self.acceptButton.frame) - image.size.height,
+            y: self.acceptButton.frame.minY - image.size.height,
             width: image.size.width,
             height: image.size.height
         )
@@ -124,18 +124,18 @@ class SLRequestContactsAccessViewController: UIViewController {
     func acceptButtonPressed() {
         let contactHandler = SLContactHandler()
         contactHandler.requestAuthorization { (allowedAccess) in
-            dispatch_async(dispatch_get_main_queue(), { 
+            DispatchQueue.main.async {
                 if allowedAccess {
                     let ecvc = SLEmergencyContactsViewController()
                     ecvc.onExit = {
-                        self.dismissViewControllerAnimated(true, completion: nil)
+                        self.dismiss(animated: true, completion: nil)
                     }
                     
                     self.navigationController?.pushViewController(ecvc, animated: true)
                 } else {
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismiss(animated: true, completion: nil)
                 }
-            })
+            }
         }
     }
 }

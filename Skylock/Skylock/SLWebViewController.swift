@@ -40,7 +40,7 @@ class SLWebViewController: UIViewController, UIWebViewDelegate {
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
             image: menuImage,
-            style: .Plain,
+            style: .plain,
             target: self,
             action: #selector(menuButtonPressed)
         )
@@ -48,20 +48,20 @@ class SLWebViewController: UIViewController, UIWebViewDelegate {
         self.navigationItem.leftBarButtonItem = menuButton
         
         if let url:NSURL = NSURL(string: self.baseUrl.rawValue) {
-            let request:NSURLRequest = NSURLRequest(URL: url)
-            self.webView.loadRequest(request)
+            let request:NSURLRequest = NSURLRequest(url: url as URL)
+            self.webView.load(request as URLRequest)
         }
     }
     
     func menuButtonPressed() {
         if let navController = self.navigationController {
             if navController.viewControllers.first == self {
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             } else {
-                navController.popViewControllerAnimated(true)
+                navController.popViewController(animated: true)
             }
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
 }

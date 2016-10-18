@@ -43,19 +43,19 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
         }
         
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - labelSize.width),
-            (self.navigationController?.navigationBar.bounds.size.height)!
-                + UIApplication.sharedApplication().statusBarFrame.size.height + 33.0,
-            labelSize.width,
-            labelSize.height
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - labelSize.width),
+            y: (self.navigationController?.navigationBar.bounds.size.height)!
+                + UIApplication.shared.statusBarFrame.size.height + 33.0,
+            width: labelSize.width,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
@@ -71,15 +71,15 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
         let width = (self.view.bounds.size.width - 2.0*self.xPadding)
         let frame = CGRect(
             x: self.xPadding,
-            y: CGRectGetMidY(self.view.bounds),
+            y: self.view.bounds.midY,
             width: width,
             height: 44.0
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(affirmativeButtonPressed), forControlEvents: .TouchDown)
-        button.setTitle(NSLocalizedString("DELETE ELLIPSE", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.addTarget(self, action: #selector(affirmativeButtonPressed), for: .touchDown)
+        button.setTitle(NSLocalizedString("DELETE ELLIPSE", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
         
@@ -88,7 +88,7 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
     
     init(
         nibName nibNameOrNil: String?,
-                bundle nibBundleOrNil: NSBundle?,
+                bundle nibBundleOrNil: Bundle?,
                        type: SLLockResetOrDeleteViewControllerType,
                        lock: SLLock
         )
@@ -107,24 +107,24 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.navigationItem.title = NSLocalizedString("DELETE THIS ELLIPSE", comment: "")
 
         self.view.addSubview(self.affirmativeButton)
         self.view.addSubview(self.infoLabel)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(handleLockRemoved(_:)),
-            name: kSLNotificationLockManagerDeletedLock,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name(rawValue: kSLNotificationLockManagerDeletedLock),
+            object: self,
+            queue: nil,
+            using: handleLockRemoved
         )
     }
     
@@ -134,16 +134,16 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
         case .Delete:
             self.navigationItem.hidesBackButton = true
             let message = NSLocalizedString("Deleting", comment: "") + " " + self.lock.displayName() + "..."
-            lockManager.deleteLockFromCurrentUserAccountWithMacAddress(self.lock.macAddress!)
-            self.presentLoadingViewWithMessage(message)
+            lockManager.deleteLockFromCurrentUserAccountWithMacAddress(macAddress: self.lock.macAddress!)
+            self.presentLoadingViewWithMessage(message: message)
         case .Reset:
             lockManager.factoryResetCurrentLock()
         }
     }
     
-    func handleLockRemoved(notifciation: NSNotification) {
-        self.dismissLoadingViewWithCompletion({ [weak self] in
-            self?.dismissViewControllerAnimated(true, completion: nil)
+    func handleLockRemoved(notifciation: Notification) {
+        self.dismissLoadingViewWithCompletion(completion: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
         })
     }
 }

@@ -25,111 +25,117 @@ class SLSettingsViewController: UIViewController {
     lazy var controlView: UIView = {
         let y0: CGFloat = self.navigationController == nil ? 20.0 :
             self.navigationController!.navigationBar.bounds.size.height +
-                UIApplication.sharedApplication().statusBarFrame.size.height + 20.0
-        var view: UIView = UIView(frame: CGRectMake(
-            0,
-            y0,
-            self.view.bounds.size.width,
-            150.0
-            )
+                UIApplication.shared.statusBarFrame.size.height + 20.0
+        let frame = CGRect(
+            x: 0,
+            y: y0,
+            width: self.view.bounds.size.width,
+            height: 150.0
         )
+        var view: UIView = UIView(frame: frame)
         
         let labelDividerHeight: CGFloat = 45.0
         let labelWidth = 0.5*view.bounds.size.width
         let utility = SLUtilities()
         let labelSize:CGSize = utility.sizeForLabel(
-            self.titleFont!,
+            font: self.titleFont!,
             text: "Looking for height",
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
         let labelStart: CGFloat = 0.5*(view.bounds.size.height  - 2.0*labelSize.height - labelDividerHeight)
-        let touchPadLabel: UILabel = UILabel(frame: CGRectMake(
-            self.xPadding,
-            labelStart,
-            labelWidth,
-            labelSize.height
-            )
+        let touchPadLabelFrame = CGRect(
+            x: self.xPadding,
+            y: labelStart,
+            width: labelWidth,
+            height: labelSize.height
         )
+        let touchPadLabel: UILabel = UILabel(frame: touchPadLabelFrame)
         touchPadLabel.text = NSLocalizedString("Capactive Touch Pad", comment: "")
         touchPadLabel.font = self.titleFont
         touchPadLabel.textColor = self.infoColor
         touchPadLabel.sizeToFit()
         view.addSubview(touchPadLabel)
         
-        let autoLockLabel: UILabel = UILabel(frame: CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(touchPadLabel.frame) + labelDividerHeight,
-            labelWidth,
-            labelSize.height
-            )
+        let autoLockLabelFrame = CGRect(
+            x: self.xPadding,
+            y: touchPadLabel.frame.maxY + labelDividerHeight,
+            width: labelWidth,
+            height: labelSize.height
         )
+        let autoLockLabel: UILabel = UILabel(frame: autoLockLabelFrame)
         autoLockLabel.text = NSLocalizedString("Proximity Lock/Unlock", comment: "")
         autoLockLabel.font = self.titleFont
         autoLockLabel.textColor = self.infoColor
         view.addSubview(autoLockLabel)
         
         let touchPadSwitch: UISwitch = UISwitch()
-        touchPadSwitch.frame = CGRectMake(
-            view.bounds.size.width - touchPadSwitch.bounds.size.width - self.xPadding,
-            CGRectGetMidY(touchPadLabel.frame) - 0.5*touchPadSwitch.bounds.size.height,
-            touchPadSwitch.bounds.size.width,
-            touchPadSwitch.bounds.size.height
+        touchPadSwitch.frame = CGRect(
+                x: view.bounds.size.width - touchPadSwitch.bounds.size.width - self.xPadding,
+                y: touchPadLabel.frame.midY - 0.5*touchPadSwitch.bounds.size.height,
+                width: touchPadSwitch.bounds.size.width,
+                height: touchPadSwitch.bounds.size.height
         )
         touchPadSwitch.addTarget(
             self,
-            action: #selector(touchPadSwitchFlipped(_:)),
-            forControlEvents: UIControlEvents.ValueChanged
+            action: #selector(touchPadSwitchFlipped(sender:)),
+            for: UIControlEvents.valueChanged
         )
         view.addSubview(touchPadSwitch)
         
         let autoLockSwitch: UISwitch = UISwitch()
-        autoLockSwitch.frame = CGRectMake(
-            view.bounds.size.width - autoLockSwitch.bounds.size.width - self.xPadding,
-            CGRectGetMidY(autoLockLabel.frame) - 0.5*autoLockSwitch.bounds.size.height,
-            autoLockSwitch.bounds.size.width,
-            autoLockSwitch.bounds.size.height
+        autoLockSwitch.frame = CGRect(
+            x: view.bounds.size.width - autoLockSwitch.bounds.size.width - self.xPadding,
+            y: autoLockLabel.frame.midY - 0.5*autoLockSwitch.bounds.size.height,
+            width: autoLockSwitch.bounds.size.width,
+            height: autoLockSwitch.bounds.size.height
         )
-        autoLockSwitch.addTarget(self, action: #selector(autoLockSwitchFlipped(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        autoLockSwitch.addTarget(
+            self, action:
+            #selector(autoLockSwitchFlipped(sender:)),
+            for: UIControlEvents.valueChanged
+        )
         view.addSubview(autoLockSwitch)
         
         return view
     }()
     
     lazy var pinCodeView:UIView = {
-        let view: UIView = UIView(frame: CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.controlView.frame),
-            self.view.bounds.size.width - 2*self.xPadding,
-            125
-            )
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.controlView.frame.maxY,
+            width: self.view.bounds.size.width - 2*self.xPadding,
+            height: 125.0
         )
-        
+        let view: UIView = UIView(frame: frame)
         let dividerHeight: CGFloat = 0.5
         
-        let dividerViewTop: UIView = UIView(frame: CGRectMake(0, 10, view.bounds.size.width, dividerHeight))
+        let dividerFrame = CGRect(x: 0, y: 10, width: view.bounds.size.width, height: dividerHeight)
+        let dividerViewTop: UIView = UIView(frame: dividerFrame)
         dividerViewTop.backgroundColor = self.dividerColor
         view.addSubview(dividerViewTop)
         
         let text: String = NSLocalizedString("Change Pin Code", comment: "")
         let utility: SLUtilities = SLUtilities()
         let size: CGSize = utility.sizeForLabel(
-            self.titleFont!,
+            font: self.titleFont!,
             text:text,
             maxWidth:self.view.bounds.size.width - 2*self.xPadding,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let headerLabel: UILabel = UILabel(frame: CGRectMake(0, 20, view.bounds.size.width, size.height))
+        let headerLabelFrame = CGRect(x: 0, y: 20, width: view.bounds.size.width, height: size.height)
+        let headerLabel: UILabel = UILabel(frame: headerLabelFrame)
         headerLabel.text = text
         headerLabel.textColor = self.titleColor
         headerLabel.font = self.titleFont
         view.addSubview(headerLabel)
         
-        self.pinLabel = UILabel(frame:CGRectMake(0, 0, view.bounds.size.width, CGFloat.max))
+        let pinLabelFrame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: CGFloat.greatestFiniteMagnitude)
+        self.pinLabel = UILabel(frame: pinLabelFrame)
         self.pinLabel!.text = NSLocalizedString(
             "A pin code can be set to unlock Skylock without a mobile device.\n" +
             "*You must be in range of Skylock to chage the pin code",
@@ -139,31 +145,31 @@ class SLSettingsViewController: UIViewController {
         self.pinLabel!.textColor = self.infoColor
         self.pinLabel!.numberOfLines = 0
         self.pinLabel!.sizeToFit()
-        self.pinLabel!.frame = CGRectMake(
-            0,
-            CGRectGetMaxY(headerLabel.frame) + 13,
-            self.pinLabel!.bounds.size.width,
-            self.pinLabel!.bounds.size.height
+        self.pinLabel!.frame = CGRect(
+            x: 0.0,
+            y: headerLabel.frame.maxY + 13.0,
+            width: self.pinLabel!.bounds.size.width,
+            height: self.pinLabel!.bounds.size.height
         )
         
         view.addSubview(self.pinLabel!)
         
         let buttonImageNormal: UIImage = UIImage(named: "settings_change_pin_button")!
         let buttonImageDissabled: UIImage = UIImage(named: "settings_change_pin_button_dissabled")!
-        let changePinButton:UIButton  = UIButton(frame: CGRectMake(
-            0.5*(view.bounds.size.width - buttonImageNormal.size.width),
-            CGRectGetMaxY(self.pinLabel!.frame) + 15,
-            buttonImageNormal.size.width,
-            buttonImageNormal.size.height
-            )
+        let changePinButtonFrame = CGRect(
+            x: 0.5*(view.bounds.size.width - buttonImageNormal.size.width),
+            y: self.pinLabel!.frame.maxY + 15,
+            width: buttonImageNormal.size.width,
+            height: buttonImageNormal.size.height
         )
+        let changePinButton:UIButton  = UIButton(frame: changePinButtonFrame)
         changePinButton.addTarget(
             self, action:
             #selector(changePinButtonPressed),
-            forControlEvents: UIControlEvents.TouchDown
+            for: UIControlEvents.touchDown
         )
-        changePinButton.setBackgroundImage(buttonImageNormal, forState: UIControlState.Normal)
-        changePinButton.setBackgroundImage(buttonImageDissabled, forState: UIControlState.Disabled)
+        changePinButton.setBackgroundImage(buttonImageNormal, for: UIControlState.normal)
+        changePinButton.setBackgroundImage(buttonImageDissabled, for: UIControlState.disabled)
         view.addSubview(changePinButton)
         
         return view
@@ -173,7 +179,7 @@ class SLSettingsViewController: UIViewController {
     lazy var backButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
             image: UIImage(named: "icon_chevron_left"),
-            style: UIBarButtonItemStyle.Plain,
+            style: UIBarButtonItemStyle.plain,
             target: self,
             action: #selector(backButtonPushed)
         )
@@ -185,7 +191,7 @@ class SLSettingsViewController: UIViewController {
         super.viewDidLoad()
 
         self.navigationController?.navigationBar.barTintColor = self.settingGreenColor
-        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.tintColor = UIColor.white
         
         self.navigationItem.leftBarButtonItem = self.backButton;
         
@@ -194,7 +200,7 @@ class SLSettingsViewController: UIViewController {
         
     }
 
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.navBarTgr = UITapGestureRecognizer(
@@ -217,7 +223,7 @@ class SLSettingsViewController: UIViewController {
     
     func backButtonPushed() {
         print("back button pushed")
-        self.dismissViewControllerAnimated(true, completion: nil);
+        self.dismiss(animated: true, completion: nil);
     }
     
     func changePinButtonPressed() {

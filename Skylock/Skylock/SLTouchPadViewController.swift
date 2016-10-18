@@ -31,7 +31,7 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     
     var arrowInputViews:[UIView] = [UIView]()
     
-    var arrowButtonSize:CGSize = CGSizeZero
+    var arrowButtonSize:CGSize = CGSize.zero
     
     let arrowViewSpacer:CGFloat = 3.0
     
@@ -39,16 +39,16 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         let image:UIImage = UIImage(named: "button_close_window_large_Onboarding")!
         let frame:CGRect = CGRect(
             x: self.view.bounds.size.width - image.size.width - 10.0,
-            y: UIApplication.sharedApplication().statusBarFrame.size.height + 10.0,
+            y: UIApplication.shared.statusBarFrame.size.height + 10.0,
             width: image.size.width,
             height: image.size.height
         )
         let button:UIButton = UIButton(frame: frame)
-        button.setImage(image, forState: UIControlState.Normal)
+        button.setImage(image, for: UIControlState.normal)
         button.addTarget(
             self,
             action: #selector(xExitButtonPressed),
-            forControlEvents: .TouchDown
+            for: .touchDown
         )
         
         return button
@@ -63,18 +63,18 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         )
         let utility: SLUtilities = SLUtilities()
         let size: CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text:text,
             maxWidth:self.view.bounds.size.width - 2*self.xPadding,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            utility.statusBarAndNavControllerHeight(self) + 40.0,
-            size.width,
-            size.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: utility.statusBarAndNavControllerHeight(viewController: self) + 40.0,
+            width: size.width,
+            height: size.height
         )
         
         let label: UILabel = UILabel(frame: frame)
@@ -82,18 +82,18 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         label.textColor = UIColor(red: 160, green: 200, blue: 224)
         label.font = font
         label.numberOfLines = 0
-        label.textAlignment = .Center
+        label.textAlignment = .center
         
         return label
     }()
     
     lazy var pinEntryView:UIView = {
         let width = CGFloat(self.maximunCodeNumber) * (self.arrowButtonSize.width + self.arrowViewSpacer)
-        let frame = CGRectMake(
-            0.5*(self.view.bounds.size.width - width),
-            CGRectGetMaxY(self.subInfoLabel.frame) + 15.0,
-            width,
-            38.0
+        let frame = CGRect(
+            x: 0.5*(self.view.bounds.size.width - width),
+            y: self.subInfoLabel.frame.maxY + 15.0,
+            width: width,
+            height: 38.0
         )
         
         let view: UIView = UIView(frame: frame)
@@ -104,24 +104,24 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     lazy var deleteButton:UIButton = {
         let image:UIImage = UIImage(named: "button_backspace_Onboarding")!
         let frame = CGRect(
-            x: CGRectGetMaxX(self.pinEntryView.frame) + 5.0,
-            y: CGRectGetMidY(self.pinEntryView.frame) - 0.5*image.size.height,
+            x: self.pinEntryView.frame.maxX + 5.0,
+            y: self.pinEntryView.frame.midY - 0.5*image.size.height,
             width: image.size.width,
             height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(deleteButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
-        button.hidden = true
+        button.addTarget(self, action: #selector(deleteButtonPressed), for: .touchDown)
+        button.setImage(image, for: .normal)
+        button.isHidden = true
         
         return button
     }()
     
     lazy var underlineView:UIView = {
         let frame = CGRect(
-            x: CGRectGetMinX(self.pinEntryView.frame),
-            y: CGRectGetMaxY(self.pinEntryView.frame) + 3.0,
+            x: self.pinEntryView.frame.minX,
+            y: self.pinEntryView.frame.maxY + 3.0,
             width: self.pinEntryView.bounds.size.width,
             height: 1
         )
@@ -135,34 +135,34 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     lazy var savePinButton: UIButton = {
         let padding:CGFloat = 15.0
         let height:CGFloat = 44.0
-        let frame = CGRectMake(
-            padding,
-            self.view.bounds.size.height - height - 10.0,
-            self.view.bounds.size.width - 2.0*padding,
-            height
+        let frame = CGRect(
+            x: padding,
+            y: self.view.bounds.size.height - height - 10.0,
+            width: self.view.bounds.size.width - 2.0*padding,
+            height: height
         )
         
-        let button: UIButton = UIButton(type: .System)
+        let button: UIButton = UIButton(type: .system)
         button.frame = frame
-        button.addTarget(self, action: #selector(savePinButtonPressed), forControlEvents: UIControlEvents.TouchDown)
-        button.setTitle(NSLocalizedString("SAVE PIN", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        button.setTitleColor(UIColor.color(188, green: 187, blue: 187), forState: .Disabled)
+        button.addTarget(self, action: #selector(savePinButtonPressed), for: UIControlEvents.touchDown)
+        button.setTitle(NSLocalizedString("SAVE PIN", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.setTitleColor(UIColor.color(188, green: 187, blue: 187), for: .disabled)
         button.backgroundColor = UIColor(red: 231, green: 231, blue: 233)
-        button.enabled = false
+        button.isEnabled = false
         
         return button
     }()
     
     lazy var touchPadView: SLTouchPadView = {
         let height:CGFloat = 250.0;
-        let y0:CGFloat = CGRectGetMaxY(self.underlineView.frame) +
-            0.5*(CGRectGetMinY(self.savePinButton.frame) - CGRectGetMaxY(self.underlineView.frame) - height)
-        let frame = CGRectMake(
-            CGRectGetMidX(self.view.bounds) - 0.5*height,
-            y0,
-            height,
-            height
+        let y0:CGFloat = self.underlineView.frame.maxY +
+            0.5*(self.savePinButton.frame.minY - self.underlineView.frame.maxY - height)
+        let frame = CGRect(
+            x: self.view.bounds.midX - 0.5*height,
+            y: y0,
+            width: height,
+            height: height
         )
         
         let padView: SLTouchPadView = SLTouchPadView(frame: frame)
@@ -172,13 +172,13 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.navigationItem.title = NSLocalizedString("ENTER A PIN CODE", comment: "")
         
@@ -193,32 +193,32 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         self.view.addSubview(self.savePinButton)
         self.view.addSubview(self.touchPadView)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self, selector:
-            #selector(lockCodeWritten),
-            name: kSLNotificationLockSequenceWritten,
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(lockCodeWritten),
+            name: NSNotification.Name(rawValue: kSLNotificationLockSequenceWritten),
             object: nil
         )
     }
     
     func savePinButtonPressed() {
-        SLLockManager.sharedManager.writeTouchPadButtonPushes(self.pushes)
+        SLLockManager.sharedManager.writeTouchPadButtonPushes(touches: self.pushes)
     }
     
     func numberAndImageNameForTouchPadLocation(location: SLTouchPadLocation) -> [UInt8:String] {
         let imageName: String
         let number: UInt8
         switch location {
-        case .Top:
+        case .top:
             imageName = "button_keypad_up"
             number = 0x01
-        case .Right:
+        case .right:
             imageName = "button_keypad_right"
             number = 0x02
-        case .Bottom:
+        case .bottom:
             imageName = "button_keypad_down"
             number = 0x04
-        case .Left:
+        case .left:
             imageName = "button_keypad_left"
             number = 0x08
         }
@@ -243,11 +243,11 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
         self.pushes.removeLast()
         
         if self.pushes.count == 0 {
-            self.deleteButton.hidden = true
+            self.deleteButton.isHidden = true
         }
         
-        if self.savePinButton.enabled && self.pushes.count < self.minimumCodeNumber {
-            self.savePinButton.enabled = false
+        if self.savePinButton.isEnabled && self.pushes.count < self.minimumCodeNumber {
+            self.savePinButton.isEnabled = false
             self.savePinButton.backgroundColor = UIColor(red: 231, green: 231, blue: 233)
         }
     }
@@ -291,12 +291,12 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
     }
     
     //MARK: SLTouchPadViewDelegate methods
-    func touchPadViewLocationSelected(touchPadViewController: SLTouchPadView, location: SLTouchPadLocation) {
+    func touchPadViewLocationSelected(_ touchPadViewController: SLTouchPadView, location: SLTouchPadLocation) {
         if self.pushes.count == self.maximunCodeNumber {
             return
         }
         
-        let numberAndImageName = self.numberAndImageNameForTouchPadLocation(location)
+        let numberAndImageName = self.numberAndImageNameForTouchPadLocation(location: location)
         guard let number = numberAndImageName.keys.first else {
             return
         }
@@ -305,11 +305,11 @@ class SLTouchPadViewController: UIViewController, SLTouchPadViewDelegate {
             return
         }
         
-        self.addImageToPinEntryView(imageName)
+        self.addImageToPinEntryView(imageName: imageName)
         self.pushes.append(number)
-        self.deleteButton.hidden = false
-        if !self.savePinButton.enabled  && self.arrowInputViews.count >= self.minimumCodeNumber {
-            self.savePinButton.enabled = true
+        self.deleteButton.isHidden = false
+        if !self.savePinButton.isEnabled  && self.arrowInputViews.count >= self.minimumCodeNumber {
+            self.savePinButton.isEnabled = true
             self.savePinButton.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
         }
     }

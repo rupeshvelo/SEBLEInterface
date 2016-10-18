@@ -21,15 +21,16 @@ class SLDirectionAPIHelper: NSObject {
         self.isBiking = isBiking
     }
     
-    @objc func getDirections(completion: ([AnyObject]?, String?)->()) {
+    @objc func getDirections(completion: @escaping ([AnyObject]?, String?)->()) {
         let url = "https://maps.googleapis.com/maps/api/directions/json?" +
         "origin=\(self.startPoint.latitude),\(self.startPoint.longitude)" +
         "&destination=\(self.endPoint.latitude),\(self.endPoint.longitude)" +
         "&departure_time=now&mode=\(self.isBiking ? "bicycling" : "walking")"
         
-        SLRestManager.sharedManager().getGoogleDirectionsFromUrl(url) { (responseData: NSData?) -> Void in
+        let restManager = SLRestManager.sharedManager() as! SLRestManager
+        restManager.getGoogleDirections(fromUrl: url) { (responseData) in
             if let data = responseData {
-                let json = JSON(data: data)
+                var json = JSON(data: data)
                 var endAddress:String?
                 if let address = json["routes"][0]["legs"][0]["end_address"].string {
                     endAddress = address
@@ -53,11 +54,6 @@ class SLDirectionAPIHelper: NSObject {
     }
     
     func cleanHtmlFromDirections(inputString: String) -> String {
-        return inputString.stringByReplacingOccurrencesOfString(
-            "<[^>]+>",
-            withString: "",
-            options: .RegularExpressionSearch,
-            range: nil
-        )
+        return inputString.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil)
     }
 }

@@ -42,24 +42,24 @@ class SLLockInfoViewController: UIViewController {
         let text = self.lock.displayName()
         
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: self.lock.displayName(),
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            20.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: 20.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = .Left
+        label.textAlignment = .left
         label.font = font
         label.numberOfLines = 1
         
@@ -70,31 +70,31 @@ class SLLockInfoViewController: UIViewController {
         let labelWidth = self.lockNameLabel.bounds.size.width
         let utility = SLUtilities()
         let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 10)!
-        let df:NSDateFormatter = NSDateFormatter()
+        let df:DateFormatter = DateFormatter()
         df.dateFormat = "MMM d, H:mm a"
         
         let text = self.lock.displayName() +  " " + NSLocalizedString("Last Locked", comment: "") + " at "
-            + ( self.lock.lastConnected ==  nil ? "" : df.stringFromDate(self.lock.lastConnected!))
+            + ( self.lock.lastConnected ==  nil ? "" : df.string(from: self.lock.lastConnected!))
         
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: self.lock.displayName(),
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 1
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMaxY(self.lockNameLabel.frame) + 15.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.lockNameLabel.frame.maxY + 15.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(red: 187, green: 187, blue: 187)
         label.text = text
-        label.textAlignment = .Left
+        label.textAlignment = .left
         label.font = font
         label.numberOfLines = 0
         
@@ -155,19 +155,19 @@ class SLLockInfoViewController: UIViewController {
     lazy var getDirectionsButton:UIButton = {
         let height:CGFloat = 42.0
         let frame = CGRect(
-            x: CGRectGetMinX(self.lockNameLabel.frame),
+            x: self.lockNameLabel.frame.minX,
             y: self.view.bounds.size.height - height - 15.0,
             width: self.lockInfoLabel.bounds.size.width,
             height: height
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.setTitle(NSLocalizedString("GET DIRECTIONS", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        button.setTitle(NSLocalizedString("GET DIRECTIONS", comment: ""), for: .normal)
+        button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 12.0)
         button.backgroundColor = UIColor(red: 60, green: 83, blue: 119)
-        button.addTarget(self, action: #selector(getDirectionsButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(getDirectionsButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -184,10 +184,10 @@ class SLLockInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
 //        if !self.view.subviews.contains(self.showLessButton) {
@@ -232,6 +232,6 @@ class SLLockInfoViewController: UIViewController {
 //    }
     
     func getDirectionsButtonPressed() {
-        self.delegate?.directionsButtonPressed(self)
+        self.delegate?.directionsButtonPressed(livc: self)
     }
 }

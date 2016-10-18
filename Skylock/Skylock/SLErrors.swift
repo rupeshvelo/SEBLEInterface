@@ -8,6 +8,6 @@
 
 import Foundation
 
-enum SLError: ErrorType {
+enum SLError: Error {
     case ArrayIndexOutOfRange
 }

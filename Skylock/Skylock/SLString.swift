@@ -10,19 +10,16 @@ import Foundation
 
 extension String {
     func trimmedWhiteSpaces() -> String {
-        let trimmedString:String = self.stringByTrimmingCharactersInSet(
-            NSCharacterSet(charactersInString: " ")
-        )
-        return trimmedString
+        return self.trimmingCharacters(in: .whitespaces)
     }
     
     func macAddress() -> String? {
-        let hypenParts = self.componentsSeparatedByString("-")
+        let hypenParts = self.components(separatedBy: "-")
         if hypenParts.count == 2 {
             return hypenParts[1]
         }
         
-        let spacedParts = self.componentsSeparatedByString(" ")
+        let spacedParts = self.components(separatedBy: " ")
         if spacedParts.count == 2 {
             return spacedParts[1]
         }
@@ -40,8 +37,9 @@ extension String {
         var bytes:[UInt8] = [UInt8]()
         var index:Int = 0
         while index < count {
-            let strIndex = self.startIndex.advancedBy(index)
-            let subString = self.substringWithRange(strIndex..<strIndex.advancedBy(2))
+            let startIndex = self.index(self.startIndex, offsetBy: index)
+            let endIndex = self.index(startIndex, offsetBy: 2)
+            let subString = self.substring(with: startIndex..<endIndex)
             if let value = UInt8(subString, radix: 16) {
                 bytes.append(value)
             }

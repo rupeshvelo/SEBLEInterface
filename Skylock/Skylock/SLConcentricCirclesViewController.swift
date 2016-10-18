@@ -17,7 +17,7 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     var finalDiamter:CGFloat = 0.0
     
-    var initialCircleFrame:CGRect = CGRectZero
+    var initialCircleFrame:CGRect = CGRect.zero
     
     let numberOfCircles:Int = 5
     
@@ -32,7 +32,7 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     lazy var connectingEllipseLabel:UILabel = {
         let frame = CGRect(
             x: 0,
-            y: UIApplication.sharedApplication().statusBarFrame.size.height +
+            y: UIApplication.shared.statusBarFrame.size.height +
                 (self.navigationController?.navigationBar.bounds.size.height)! + 5.0,
             width: self.view.bounds.size.width,
             height: 20
@@ -40,9 +40,9 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         
         let label:UILabel = UILabel(frame: frame)
         label.text = NSLocalizedString("Connecting...", comment: "")
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.textColor = UIColor(red: 76, green: 79, blue: 97)
-        label.font = UIFont.systemFontOfSize(16)
+        label.font = UIFont.systemFont(ofSize: 16)
         label.numberOfLines = 0
         
         return label
@@ -58,9 +58,9 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(getHelpButtonPressed), forControlEvents: .TouchDown)
-        button.setTitle(NSLocalizedString("Get help", comment: ""), forState: .Normal)
-        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), forState: .Normal)
+        button.addTarget(self, action: #selector(getHelpButtonPressed), for: .touchDown)
+        button.setTitle(NSLocalizedString("Get help", comment: ""), for: .normal)
+        button.setTitleColor(UIColor(red: 87, green: 216, blue: 255), for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MonserratBold.rawValue, size: 14.0)
         return button
     }()
@@ -74,23 +74,23 @@ class SLConcentricCirclesViewController: SLBaseViewController {
             comment: ""
         )
         let labelSize:CGSize = utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.xPadding,
-            CGRectGetMinY(self.getHelpButton.frame) - labelSize.height - 50.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.xPadding,
+            y: self.getHelpButton.frame.minY - labelSize.height - 50.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor(red: 130, green: 156, blue: 178)
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.font = font
         label.numberOfLines = 0
         label.text = text
@@ -99,13 +99,13 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     }()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         self.navigationItem.title = NSLocalizedString("CONNECTING ELLIPSE...", comment: "")
         
         self.initialCircleFrame = CGRect(
@@ -122,29 +122,22 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         
         self.run()
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(connectedLock),
-            name: kSLNotificationLockPaired,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPaired),
+            object: nil,
+            queue: nil,
+            using: connectedLock
         )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockConnectionError(_:)),
-            name: kSLNotificationLockManagerErrorConnectingLock,
-            object: nil
-        )
-        
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(lockConnectionError(_:)),
-            name: kSLNotificationLockManagerErrorConnectingLock,
-            object: nil
+    
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+            object: nil,
+            queue: nil,
+            using: lockConnectionError
         )
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         self.viewHasAppeard = true
@@ -154,8 +147,8 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     }
     
     func run() {
-        NSTimer.scheduledTimerWithTimeInterval(
-            self.interval/Double(self.numberOfCircles),
+        Timer.scheduledTimer(
+            timeInterval: self.interval/Double(self.numberOfCircles),
             target: self,
             selector: #selector(timerFired),
             userInfo: nil,
@@ -167,18 +160,18 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         let circleView = self.createCircleView()
         self.view.addSubview(circleView)
         self.bringTopViewsToFront()
-        self.makeAnimation(circleView)
+        self.makeAnimation(circleView: circleView)
     }
     
     func makeAnimation(circleView: UIView) {
         let scale:CGFloat = self.finalDiamter/circleView.frame.size.width
         
-        UIView.animateWithDuration(
-            self.interval,
+        UIView.animate(
+            withDuration: self.interval,
             delay: 0.0,
-            options: UIViewAnimationOptions.CurveLinear,
+            options: UIViewAnimationOptions.curveLinear,
             animations: {
-                circleView.transform = CGAffineTransformScale(circleView.transform, scale, scale)
+                circleView.transform = circleView.transform.scaledBy(x: scale, y: scale)
                 circleView.alpha = 0.0
         }) { (finished) in
             circleView.removeFromSuperview()
@@ -187,7 +180,7 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     func createCircleView() -> UIView {
         let circle:UIView = UIView(frame: self.initialCircleFrame)
-        circle.backgroundColor = UIColor(red: 160, green: 200, blue: 224).colorWithAlphaComponent(0.5)
+        circle.backgroundColor = UIColor(red: 160, green: 200, blue: 224).withAlphaComponent(0.5)
         circle.layer.cornerRadius = 0.5*self.initialCircleFrame.size.width
         
         return circle
@@ -195,36 +188,40 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     func getHelpButtonPressed() {
         let webView = SLWebViewController(baseUrl: .Help)
-        self.navigationController == nil ? self.presentViewController(webView, animated: true, completion: nil)
+        self.navigationController == nil ? self.present(webView, animated: true, completion: nil)
             : self.navigationController!.pushViewController(webView, animated: true)
         
     }
     
     func bringTopViewsToFront() {
-        self.view.bringSubviewToFront(self.connectingEllipseLabel)
-        self.view.bringSubviewToFront(self.getHelpButton)
-        self.view.bringSubviewToFront(self.makeSureLabel)
+        self.view.bringSubview(toFront: self.connectingEllipseLabel)
+        self.view.bringSubview(toFront: self.getHelpButton)
+        self.view.bringSubview(toFront: self.makeSureLabel)
         if self.warningBackgroundView != nil {
-            self.view.bringSubviewToFront(self.warningBackgroundView!)
+            self.view.bringSubview(toFront: self.warningBackgroundView!)
         }
         if self.warningViewController != nil {
-            self.view.bringSubviewToFront(self.warningViewController!.view)
+            self.view.bringSubview(toFront: self.warningViewController!.view)
         }
     }
     
-    func connectedLock() {
+    func connectedLock(notificaiton: Notification) {
         if self.shouldDismiss {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         } else if self.navigationController != nil {
             let psvc = SLPairingSuccessViewController()
             self.navigationController?.pushViewController(psvc, animated: true)
         }
     }
     
-    func lockConnectionError(notification: NSNotification) {
+    func lockConnectionError(notification: Notification) {
+        guard let notificationObject = notification.object as? [String: AnyObject] else {
+            return
+        }
+        
         var info:String?
-        if let code = notification.object?["code"] as? NSNumber {
-            if code.unsignedIntegerValue == 0 {
+        if let code = notificationObject["code"] as? NSNumber {
+            if code.uintValue == 0 {
                 info = NSLocalizedString(
                     "Sorry. This lock belongs to another user. We can't add it to your account.",
                     comment: ""
@@ -233,7 +230,7 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         }
         
         if info == nil {
-            if let lock = notification.object?["lock"] as? SLLock {
+            if let lock = notificationObject["lock"] as? SLLock {
                 info = NSLocalizedString(
                     "Sorry. There was an error connecting to the lock \(lock.displayName())",
                     comment: ""
@@ -251,21 +248,21 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         ]
         
         if self.viewHasAppeard {
-            self.presentWarningViewControllerWithTexts(texts, cancelClosure: {
+            self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: {
                 if let navController = self.navigationController {
-                    navController.popViewControllerAnimated(true)
+                    navController.popViewController(animated: true)
                 } else {
-                    self.dismissViewControllerAnimated(true, completion: nil)
+                    self.dismiss(animated: true, completion: nil)
                 }
             })
         } else {
             self.lockConnectionErrorClosure = { [weak self] in
                 if let weakSelf = self {
-                    weakSelf.presentWarningViewControllerWithTexts(texts, cancelClosure: {
+                    weakSelf.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: {
                         if let navController = weakSelf.navigationController {
-                            navController.popViewControllerAnimated(true)
+                            navController.popViewController(animated: true)
                         } else {
-                            weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                            weakSelf.dismiss(animated: true, completion: nil)
                         }
                     })
                 }

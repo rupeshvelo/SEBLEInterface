@@ -56,7 +56,7 @@ class SLMapCalloutView: UIView {
     lazy var upperLabel: UILabel = {
         let frame = CGRect(
             x: 0,
-            y: CGRectGetMaxY(self.imageView.frame),
+            y: self.imageView.frame.maxY,
             width: self.bounds.size.width,
             height: 16.0
         )
@@ -64,7 +64,7 @@ class SLMapCalloutView: UIView {
         let label:UILabel = UILabel(frame: frame)
         label.text = self.upperText
         label.font = UIFont(name:"Helvetica", size:13)
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
         return label
     }()
@@ -72,7 +72,7 @@ class SLMapCalloutView: UIView {
     lazy var lowerLabel: UILabel = {
         let frame = CGRect(
             x: 0,
-            y: CGRectGetMaxY(self.upperLabel.frame),
+            y: self.upperLabel.frame.maxY,
             width: self.bounds.size.width,
             height: 12.0
         )
@@ -80,7 +80,7 @@ class SLMapCalloutView: UIView {
         let label:UILabel = UILabel(frame: frame)
         label.text = self.lowerText
         label.font = UIFont(name:"Helvetica", size:10)
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         
         return label
     }()
@@ -90,7 +90,7 @@ class SLMapCalloutView: UIView {
         
         let tgr:UITapGestureRecognizer = UITapGestureRecognizer(
             target: self,
-            action: #selector(SLMapCalloutView.viewTapped(_:))
+            action: #selector(viewTapped(tgr:))
         )
         tgr.numberOfTapsRequired = 1
         
@@ -103,7 +103,7 @@ class SLMapCalloutView: UIView {
     
     func viewTapped(tgr: UITapGestureRecognizer) {
         if let delegate = self.delegate {
-            delegate.calloutViewTapped(self)
+            delegate.calloutViewTapped(calloutView: self)
         }
         
         self.isSelected = !self.isSelected

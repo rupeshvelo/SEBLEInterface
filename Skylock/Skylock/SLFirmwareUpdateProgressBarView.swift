@@ -22,7 +22,7 @@ class SLFirmwareUpdateProgressBarView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.layer.borderColor = UIColor.whiteColor().CGColor
+        self.layer.borderColor = UIColor.white.cgColor
         self.layer.borderWidth = 1.0
     }
     
@@ -39,11 +39,11 @@ class SLFirmwareUpdateProgressBarView: UIView {
     }
     
     func updateBarWithRatio(ratio: Double) {
-        self.barView.frame = CGRectMake(
-            0.0,
-            0.0,
-            CGFloat(ratio)*self.bounds.size.width,
-            self.barView.bounds.size.height
+        self.barView.frame = CGRect(
+            x: 0.0,
+            y: 0.0,
+            width: CGFloat(ratio)*self.bounds.size.width,
+            height: self.barView.bounds.size.height
         )
     }
 }

@@ -29,8 +29,8 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
     var leftAccessoryType:SLLabelAndSwitchTableViewCellAccessoryType
     
     lazy var toggleSwitch:UISwitch = {
-        let toggle:UISwitch = UISwitch(frame: CGRectZero)
-        toggle.addTarget(self, action: #selector(switchFlipped(_:)), forControlEvents: .ValueChanged)
+        let toggle:UISwitch = UISwitch(frame: CGRect.zero)
+        toggle.addTarget(self, action: #selector(switchFlipped(toggleSwitch:)), for: .valueChanged)
         toggle.onTintColor = UIColor(red: 102, green: 177, blue: 227)
         
         return toggle
@@ -45,7 +45,7 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
     
     init(accessoryType: SLLabelAndSwitchTableViewCellAccessoryType, reuseId: String) {
         self.leftAccessoryType = accessoryType
-        super.init(style: .Default, reuseIdentifier: reuseId)
+        super.init(style: .default, reuseIdentifier: reuseId)
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -75,8 +75,8 @@ class SLLabelAndSwitchTableViewCell: UITableViewCell {
     }
     
     func switchFlipped(toggleSwitch: UISwitch) {
-        print("switch flipped to \(toggleSwitch.on)")
-        self.delegate?.switchFlippedForCell(self, isNowOn: toggleSwitch.on)
+        print("switch flipped to \(toggleSwitch.isOn)")
+        self.delegate?.switchFlippedForCell(cell: self, isNowOn: toggleSwitch.isOn)
     }
     
     func setAccessoryView() {

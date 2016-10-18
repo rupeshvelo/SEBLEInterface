@@ -26,7 +26,7 @@ class SLProfileViewController:
     
     private var keyboardShowing:Bool = false
     
-    private var selectedPath:NSIndexPath?
+    private var selectedPath:IndexPath?
     
     private let tableInfo:[[String]] = [
         [
@@ -70,32 +70,32 @@ class SLProfileViewController:
     lazy var cameraButton:UIButton = {
         let image:UIImage = UIImage(named: "icon_camera_Myprofile")!
         let frame = CGRect(
-            x: CGRectGetMaxX(self.profilePictureView.frame) - image.size.width - 10.0,
-            y: CGRectGetMaxY(self.profilePictureView.frame) - image.size.height - 10.0,
+            x: self.profilePictureView.frame.maxX - image.size.width - 10.0,
+            y: self.profilePictureView.frame.maxY - image.size.height - 10.0,
             width: image.size.width,
             height: image.size.height
         )
         
         let button:UIButton = UIButton(frame: frame)
-        button.addTarget(self, action: #selector(cameraButtonPressed), forControlEvents: .TouchDown)
-        button.setImage(image, forState: .Normal)
+        button.addTarget(self, action: #selector(cameraButtonPressed), for: .touchDown)
+        button.setImage(image, for: .normal)
         
         return button
     }()
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         table.dataSource = self
         table.delegate = self
         table.rowHeight = 55.0
-        table.backgroundColor = UIColor.whiteColor()
-        table.registerClass(
+        table.backgroundColor = UIColor.white
+        table.register(
             SLOpposingLabelsTableViewCell.self,
-            forCellReuseIdentifier: String(SLOpposingLabelsTableViewCell)
+            forCellReuseIdentifier: String(describing: SLOpposingLabelsTableViewCell.self)
         )
-        table.registerClass(
+        table.register(
             SLLabelAndSwitchTableViewCell.self,
-            forCellReuseIdentifier: String(SLLabelAndSwitchTableViewCell)
+            forCellReuseIdentifier: String(describing: SLLabelAndSwitchTableViewCell.self)
         )
         
         return table
@@ -105,39 +105,39 @@ class SLProfileViewController:
         weak var weakSelf:SLProfileViewController? = self
         let cancelAction = UIAlertAction(
             title: NSLocalizedString("Cancel", comment: ""),
-            style: .Cancel,
+            style: .cancel,
             handler: nil
         )
         
         let choosePhotoAction = UIAlertAction(
             title: NSLocalizedString("Choose photo...", comment: ""),
-            style: .Default,
+            style: .default,
             handler: { _ in
-                if let this = weakSelf where UIImagePickerController.isSourceTypeAvailable(.PhotoLibrary) {
+                if let this = weakSelf , UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
                     let imagePicker = UIImagePickerController()
                     imagePicker.delegate = self
-                    imagePicker.sourceType = .PhotoLibrary;
+                    imagePicker.sourceType = .photoLibrary;
                     imagePicker.allowsEditing = true
-                    this.presentViewController(imagePicker, animated: true, completion: nil)
+                    this.present(imagePicker, animated: true, completion: nil)
                 }
             }
         )
         
         let takePhotoAction = UIAlertAction(
             title: NSLocalizedString("Take a new photo", comment: ""),
-            style: .Default,
+            style: .default,
             handler: { _ in
-                if let this = weakSelf where UIImagePickerController.isSourceTypeAvailable(.Camera) {
+                if let this = weakSelf , UIImagePickerController.isSourceTypeAvailable(.camera) {
                     let imagePicker = UIImagePickerController()
                     imagePicker.delegate = self
-                    imagePicker.sourceType = .Camera;
+                    imagePicker.sourceType = .camera;
                     imagePicker.allowsEditing = true
-                    this.presentViewController(imagePicker, animated: true, completion: nil)
+                    this.present(imagePicker, animated: true, completion: nil)
                 }
             }
         )
         
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         alertController.addAction(cancelAction)
         alertController.addAction(choosePhotoAction)
         alertController.addAction(takePhotoAction)
@@ -147,7 +147,7 @@ class SLProfileViewController:
     
     deinit {
         print("deinit called")
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -157,7 +157,7 @@ class SLProfileViewController:
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
             image: menuImage,
-            style: .Plain,
+            style: .plain,
             target: self,
             action: #selector(menuButtonPressed)
         )
@@ -167,60 +167,64 @@ class SLProfileViewController:
         
         self.setPictureForUser()
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIKeyboardWillShowNotification,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.UIKeyboardWillShow,
+            object: nil,
+            queue: nil,
+            using: keyboardWillShow
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIKeyboardWillHideNotification,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.UIKeyboardWillHide,
+            object: nil,
+            queue: nil,
+            using: keyboardWillHide
         )
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            let cell = self.tableView.cellForRowAtIndexPath(indexPath)
-            cell?.selected = false
+            let cell = self.tableView.cellForRow(at: indexPath)
+            cell?.isSelected = false
         }
     }
 
     func cameraButtonPressed() {
-        self.presentViewController(self.alertViewController, animated: true, completion: nil)
+        self.present(self.alertViewController, animated: true, completion: nil)
     }
     
     func setPictureForUser() {
         let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        let user:SLUser = dbManager.currentUser
+        guard let user:SLUser = dbManager.getCurrentUser() else {
+            print("Error: can't set picture for current user. No current user in db")
+            return
+        }
         
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
         if user.userType == kSLUserTypeFacebook {
-            picManager.facebookPicForFBUserId(user.userId, completion: { (image) in
-                dispatch_async(dispatch_get_main_queue(), { 
+            picManager.facebookPic(forFBUserId: user.userId, completion: { (image) in
+                DispatchQueue.main.async {
                     self.profilePictureView.image = image
                     self.profilePictureView.setNeedsDisplay()
-                })
+                }
             })
         } else {
             picManager.getPicWithUserId(user.userId, withCompletion: { (cachedImage) in
                 if let image = cachedImage {
-                    dispatch_async(dispatch_get_main_queue(), {
+                    DispatchQueue.main.async {
                         self.profilePictureView.image = image
                         self.profilePictureView.setNeedsDisplay()
-                    })
+                    }
                 }
             })
         }
     }
     
     func profileInfomationRightText(row: Int) -> String? {
-        if let user = SLDatabaseManager.sharedManager().currentUser {
+        let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        if let user = dbManager.getCurrentUser() {
             if row == 0 || row == 1 {
                 return row == 0 ? user.firstName : user.lastName
             } else if row == 2 {
@@ -235,41 +239,46 @@ class SLProfileViewController:
         return nil
     }
     
-    func keyboardWillShow(notification: NSNotification) {
+    func keyboardWillShow(notification: Notification) {
         if self.keyboardShowing {
             return
         }
         
-        guard let userInfo:[NSObject:AnyObject] = notification.userInfo else {
+        guard let userInfo = notification.userInfo else {
             return
         }
         
-        let offset:CGFloat = UIApplication.sharedApplication().statusBarFrame.size.height +
+        guard let frameValue = userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue else {
+            return
+        }
+        
+        let offset:CGFloat = UIApplication.shared.statusBarFrame.size.height +
             (self.navigationController == nil ? 0.0 : self.navigationController!.navigationBar.bounds.size.height)
             + self.tableView(self.tableView, heightForHeaderInSection: 0)
-        let frameValue:NSValue = userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue
+        
+        
         self.tableView.contentSize = CGSize(
             width: self.tableView.contentSize.width,
-            height: self.tableView.contentSize.height + frameValue.CGRectValue().size.height
+            height: self.tableView.contentSize.height + frameValue.cgRectValue.size.height
         )
         self.tableView.contentOffset = CGPoint(x: 0.0, y: offset)
         
         self.keyboardShowing = true
         
         let rightButton:UIBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .Done,
+            barButtonSystemItem: .done,
             target: self,
             action: #selector(doneButtonPressed)
         )
         self.navigationItem.rightBarButtonItem = rightButton
         
         if self.selectedPath != nil {
-            self.tableView.scrollToRowAtIndexPath(self.selectedPath!, atScrollPosition: .Top, animated: true)
+            self.tableView.scrollToRow(at: self.selectedPath! as IndexPath, at: .top, animated: true)
         }
     }
     
-    func keyboardWillHide(notification: NSNotification) {
-        guard let userInfo:[NSObject:AnyObject] = notification.userInfo else {
+    func keyboardWillHide(notification: Notification) {
+        guard let userInfo = notification.userInfo else {
             return
         }
         
@@ -277,18 +286,21 @@ class SLProfileViewController:
         self.selectedPath = nil
         self.navigationItem.rightBarButtonItem = nil
         
-        let frameValue:NSValue = userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue
+        guard let frameValue:NSValue = userInfo[UIKeyboardFrameBeginUserInfoKey] as? NSValue else {
+            return
+        }
+        
         self.tableView.contentSize = CGSize(
             width: self.tableView.contentSize.width,
-            height: self.tableView.contentSize.height - frameValue.CGRectValue().size.height
+            height: self.tableView.contentSize.height - frameValue.cgRectValue.size.height
         )
     }
     
     func doneButtonPressed() {
         for i in 0...self.tableInfo.first!.count {
-            let path = NSIndexPath(forRow: i, inSection: 0)
+            let path = IndexPath(row: i, section: 0)
             if let cell:SLOpposingLabelsTableViewCell =
-                self.tableView.cellForRowAtIndexPath(path) as? SLOpposingLabelsTableViewCell
+                self.tableView.cellForRow(at: path) as? SLOpposingLabelsTableViewCell
             {
                 if cell.isTextFieldFirstResponder() {
                     cell.haveFieldResignFirstReponder()
@@ -303,18 +315,18 @@ class SLProfileViewController:
 //        self.modalPresentationStyle = .Custom
 //        self.transitioningDelegate = transitionHandler
         if let navController = self.navigationController {
-            navController.dismissViewControllerAnimated(true, completion: nil)
+            navController.dismiss(animated: true, completion: nil)
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
     // MARK tableview delegate & datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return self.tableInfo[0].count
         }
@@ -322,22 +334,22 @@ class SLProfileViewController:
         return self.tableInfo[1].count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellId:String
         if indexPath.section == 0 {
             let leftText = self.tableInfo[0][indexPath.row]
-            let rightText = self.profileInfomationRightText(indexPath.row)
+            let rightText = self.profileInfomationRightText(row: indexPath.row)
             
             let greyTextColor = UIColor(red: 157, green: 161, blue: 167)
             let blueTextColor = UIColor(red: 87, green: 216, blue: 255)
             
-            cellId = String(SLOpposingLabelsTableViewCell)
+            cellId = String(describing: SLOpposingLabelsTableViewCell.self)
             let cell: SLOpposingLabelsTableViewCell? =
-                tableView.dequeueReusableCellWithIdentifier(cellId) as? SLOpposingLabelsTableViewCell
-            cell?.selectionStyle = .None
+                tableView.dequeueReusableCell(withIdentifier: cellId) as? SLOpposingLabelsTableViewCell
+            cell?.selectionStyle = .none
             cell?.delegate = self
             cell?.setProperties(
-                leftText,
+                leftLabelText: leftText,
                 rightLabelText: rightText,
                 leftLabelTextColor: greyTextColor,
                 rightLabelTextColor: blueTextColor,
@@ -348,9 +360,9 @@ class SLProfileViewController:
             return cell!
         }
         
-        cellId = String(SLLabelAndSwitchTableViewCell)
+        cellId = String(describing: SLLabelAndSwitchTableViewCell.self)
         let cell: SLLabelAndSwitchTableViewCell? =
-            tableView.dequeueReusableCellWithIdentifier(cellId) as? SLLabelAndSwitchTableViewCell
+            tableView.dequeueReusableCell(withIdentifier: cellId) as? SLLabelAndSwitchTableViewCell
         cell?.delegate = self
         cell?.leftAccessoryType = .Arrow
         cell?.textLabel?.text = self.tableInfo[1][indexPath.row]
@@ -358,19 +370,19 @@ class SLProfileViewController:
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? self.profilePictureView.bounds.size.height + self.headerHeight : self.headerHeight
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0001
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         return self.tableView(tableView, heightForHeaderInSection: section)
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -402,14 +414,14 @@ class SLProfileViewController:
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         label.textColor = UIColor(white: 140.0/255.0, alpha: 1.0)
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         
         view.addSubview(label)
         
         return view
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
@@ -426,7 +438,7 @@ class SLProfileViewController:
                 self.navigationController?.pushViewController(msdvc, animated: true)
             case 4:
                 let lvc:SLLogoutViewController = SLLogoutViewController()
-                self.presentViewController(lvc, animated: true, completion: nil)
+                self.present(lvc, animated: true, completion: nil)
             default:
                 print("no action for \(indexPath.description)")
             }
@@ -440,12 +452,11 @@ class SLProfileViewController:
     
     // MARK: SLOpposingLabelsTableViewCellDelegate methods
     func opposingLabelsCellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell) {
-        self.selectedPath = self.tableView.indexPathForCell(cell)
+        self.selectedPath = self.tableView.indexPath(for: cell)
     }
     
-    // MARK: UIImagePickerViewControllerDelegate methods
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func imagePickerController(
@@ -454,11 +465,15 @@ class SLProfileViewController:
                               editingInfo: [String : AnyObject]?
         )
     {
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        guard let user:SLUser = dbManager.getCurrentUser() else {
+            return
+        }
+
         self.profilePictureView.image = image
-        let user:SLUser = SLDatabaseManager.sharedManager().currentUser
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
         picManager.savePicture(image, forUserId: user.userId)
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
 }

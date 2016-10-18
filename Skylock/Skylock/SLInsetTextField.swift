@@ -9,15 +9,15 @@
 class SLInsetTextField: UITextField {
     let horizonalInset:CGFloat = 20.0
     
-    override func textRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, self.horizonalInset, 0.0)
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: self.horizonalInset, dy: 0.0)
     }
     
-    override func editingRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, self.horizonalInset, 0.0)
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: self.horizonalInset, dy: 0.0)
     }
     
-    override func placeholderRectForBounds(bounds: CGRect) -> CGRect {
-        return CGRectInset(bounds, self.horizonalInset, 0.0)
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: self.horizonalInset, dy: 0.0)
     }
 }

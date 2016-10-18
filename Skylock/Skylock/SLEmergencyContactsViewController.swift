@@ -22,15 +22,15 @@ SLEmergenyContactTableViewCellDelegate
     let contactHandler:SLContactHandler = SLContactHandler()
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: .Grouped)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         table.delegate = self
         table.dataSource = self
         table.rowHeight = 92.0
-        table.separatorInset = UIEdgeInsetsZero
+        table.separatorInset = UIEdgeInsets.zero
         table.backgroundColor = UIColor(white: 242.0/255.0, alpha: 1.0)
-        table.registerClass(
+        table.register(
             SLEmergenyContactTableViewCell.self,
-            forCellReuseIdentifier: String(SLEmergenyContactTableViewCell)
+            forCellReuseIdentifier: String(describing: SLEmergenyContactTableViewCell.self)
         )
         
         return table
@@ -39,13 +39,13 @@ SLEmergenyContactTableViewCellDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.navigationItem.title = NSLocalizedString("FIND EMERGENCY CONTACTS", comment: "")
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
             image: menuImage,
-            style: .Plain,
+            style: .plain,
             target: self,
             action: #selector(menuButtonPressed)
         )
@@ -58,7 +58,7 @@ SLEmergenyContactTableViewCellDelegate
     
     func getEmergencyContats() {
         self.contacts.removeAll()
-        guard let emergencyContacts = SLDatabaseManager.sharedManager().emergencyContacts()
+        guard let emergencyContacts = (SLDatabaseManager.sharedManager() as AnyObject).emergencyContacts()
             as? [SLEmergencyContact] else
         {
             return
@@ -67,7 +67,7 @@ SLEmergenyContactTableViewCellDelegate
         var counter:Int = 0
         for contact in emergencyContacts {
             if let isCurrent = contact.isCurrentContact
-                where isCurrent.boolValue && counter < self.maxNumberOfContacts
+                , isCurrent.boolValue && counter < self.maxNumberOfContacts
             {
                 self.contacts.append(contact)
                 counter += 1
@@ -77,7 +77,7 @@ SLEmergenyContactTableViewCellDelegate
     
     func menuButtonPressed() {
         if self.onExit == nil {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         } else {
             self.onExit!()
         }
@@ -90,10 +90,15 @@ SLEmergenyContactTableViewCellDelegate
             return
         }
         
-        let currentUser:SLUser = SLDatabaseManager.sharedManager().currentUser
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        guard let currentUser = dbManager.getCurrentUser() else {
+            print("Error: Saving contact to server. No current user in database")
+            return
+        }
+        
         let keychainHandler = SLKeychainHandler()
         guard let token = keychainHandler.getItemForUsername(
-            currentUser.userId!,
+            userName: currentUser.userId!,
             additionalSeviceInfo: nil,
             handlerCase: .RestToken
             ) else
@@ -101,18 +106,18 @@ SLEmergenyContactTableViewCellDelegate
             return
         }
         
-        let restManager:SLRestManager = SLRestManager.sharedManager()
+        let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
         let authValue = restManager.basicAuthorizationHeaderValueUsername(token, password: "")
         let additionalHeaders = ["Authorization": authValue]
         let subRoutes = [currentUser.userId!, "mobiles"]
         let payload = ["mobile": phoneNumber]
         restManager.postObject(
             payload,
-            serverKey: .Main,
-            pathKey: .Users,
+            serverKey: .main,
+            pathKey: .users,
             subRoutes: subRoutes,
             additionalHeaders: additionalHeaders
-        ) { (status: UInt, response:[NSObject : AnyObject]?) in
+        ) { (status: UInt, response:[AnyHashable : Any]?) -> Void in
             if response == nil {
                 print("no response")
                 return
@@ -123,24 +128,24 @@ SLEmergenyContactTableViewCellDelegate
     }
     
     // MARK: UITableView Delegate and Datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return section == 0 ? self.contacts.count : 1
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            var cell:SLEmergenyContactTableViewCell? = tableView.dequeueReusableCellWithIdentifier(
-                String(SLEmergenyContactTableViewCell)
+            var cell:SLEmergenyContactTableViewCell? = tableView.dequeueReusableCell(
+                withIdentifier: String(describing: SLEmergenyContactTableViewCell.self)
                 ) as? SLEmergenyContactTableViewCell
             
             if cell == nil {
                 cell = SLEmergenyContactTableViewCell(
-                    style: .Default,
-                    reuseIdentifier: String(SLEmergenyContactTableViewCell)
+                    style: .default,
+                    reuseIdentifier: String(describing: SLEmergenyContactTableViewCell.self)
                 )
             }
             
@@ -149,15 +154,15 @@ SLEmergenyContactTableViewCellDelegate
                 let contact = self.contacts[indexPath.row]
                 name = contact.fullName()
                 if let identifier = contact.contactId {
-                    self.contactHandler.getImageForContact(identifier, completion: { (imageData:NSData?) in
-                        dispatch_async(dispatch_get_main_queue(), { 
+                    self.contactHandler.getImageForContact(identifier: identifier, completion: { (imageData:NSData?) in
+                        DispatchQueue.main.async {
                             if let data = imageData {
-                                let image = UIImage(data: data)
-                                cell?.updateImage(image)
+                                let image = UIImage(data: data as Data)
+                                cell?.updateImage(image: image)
                             } else {
-                                cell?.updateImage(nil)
+                                cell?.updateImage(image: nil)
                             }
-                        })
+                        }
                     })
                 }
             }
@@ -165,45 +170,45 @@ SLEmergenyContactTableViewCellDelegate
             
             let image = UIImage(named: "sharing_default_picture")!
             let properties:[SLEmergencyContactTableViewCellProperty:AnyObject] = [
-                .Name: name,
+                .Name: name as AnyObject,
                 .Pic: image
             ]
             
             cell?.delegate = self
-            cell?.setProperties(properties)
-            cell?.selectionStyle = .None
+            cell?.setProperties(properties: properties)
+            cell?.selectionStyle = .none
             
             return cell!
         }
         
         let cellId:String = "SLEmergenyContactDefaultTableViewCell"
-        var cell:UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+        var cell:UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId)
         if cell == nil {
-            cell = UITableViewCell(style: .Default, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: .default, reuseIdentifier: cellId)
         }
         
         cell?.textLabel!.text = NSLocalizedString("Contacts", comment: "")
-        cell?.textLabel!.font = UIFont.systemFontOfSize(14.0)
+        cell?.textLabel!.font = UIFont.systemFont(ofSize: 14.0)
         cell?.textLabel!.textColor = UIColor(red: 155, green: 155, blue: 155)
         cell?.imageView!.image = UIImage(named: "contacts_phone_icon")
-        cell?.selectionStyle = .None
+        cell?.selectionStyle = .none
         
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 10.0 : 144.0
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         return section == 0 ? 10.0 : 144.0
     }
     
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.0001
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0.0,
             y: 0.0,
@@ -217,31 +222,31 @@ SLEmergenyContactTableViewCellDelegate
             let xPadding:CGFloat = 26.0
             let labelWidth = self.view.bounds.size.width - 2*xPadding
             let utility = SLUtilities()
-            let font = UIFont.systemFontOfSize(12)
+            let font = UIFont.systemFont(ofSize: 12)
             let text = NSLocalizedString(
                 "Nominate 3 close friends or family members as your emergency contacts. In the event of a crash, " +
                 "they will be notified by the contact methods you choose.",
                 comment: ""
             )
             let labelSize:CGSize = utility.sizeForLabel(
-                font,
+                font: font,
                 text: text,
                 maxWidth: labelWidth,
-                maxHeight: CGFloat.max,
+                maxHeight: CGFloat.greatestFiniteMagnitude,
                 numberOfLines: 0
             )
             
-            let frame = CGRectMake(
-                xPadding,
-                0.5*(view.bounds.size.height - labelSize.height),
-                labelWidth,
-                labelSize.height
+            let frame = CGRect(
+                x: xPadding,
+                y: 0.5*(view.bounds.size.height - labelSize.height),
+                width: labelWidth,
+                height: labelSize.height
             )
             
             let label:UILabel = UILabel(frame: frame)
             label.textColor = UIColor(red: 155, green: 155, blue: 155)
             label.text = text
-            label.textAlignment = .Center
+            label.textAlignment = .center
             label.font = font
             label.numberOfLines = 0
             
@@ -251,7 +256,7 @@ SLEmergenyContactTableViewCellDelegate
         return view
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             let ccvc = SLChooseContactViewController()
             ccvc.delegate = self
@@ -266,21 +271,25 @@ SLEmergenyContactTableViewCellDelegate
         isSelected: Bool)
     {
         let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        contact.isCurrentContact = isSelected
+        contact.isCurrentContact = isSelected as NSNumber?
         
         if isSelected {
             if self.contacts.count < 3 {
                 dbManager.saveEmergencyContact(contact)
                 self.contacts.append(contact)
                 self.tableView.reloadData()
-                self.navigationController?.popViewControllerAnimated(true)
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), {
-                    self.saveContactToServer(contact, shouldDelete: false)
-                })
+                
+                if let navController = self.navigationController {
+                    navController.popViewController(animated: true)
+                }
+                
+                DispatchQueue.global().async {
+                    self.saveContactToServer(contact: contact, shouldDelete: false)
+                }
             }
         } else {
             var target:Int = -1
-            for (index, emergenyContact) in self.contacts.enumerate() {
+            for (index, emergenyContact) in self.contacts.enumerated() {
                 if emergenyContact.contactId == contact.contactId {
                     target = index
                     break
@@ -288,10 +297,12 @@ SLEmergenyContactTableViewCellDelegate
             }
             
             if target != -1 {
-                dbManager.deleteContactWithId(contact.contactId, completion: nil)
-                self.contacts.removeAtIndex(target)
+                dbManager.deleteContact(withId: contact.contactId!, completion: nil)
+                self.contacts.remove(at: target)
                 self.tableView.reloadData()
-                self.navigationController?.popViewControllerAnimated(true)
+                if let navController = self.navigationController {
+                    navController.popViewController(animated: true)
+                }
             }
         }
     }
@@ -304,16 +315,16 @@ SLEmergenyContactTableViewCellDelegate
     // MARK: SLEmergencyContactTableViewCellDelegate methods
     func removeButtonPressedOnCell(cell: SLEmergenyContactTableViewCell) {
         for i in 0 ..< self.contacts.count {
-            let indexPath = NSIndexPath(forRow: i, inSection: 0)
-            let emergencyCell = self.tableView.cellForRowAtIndexPath(indexPath)
+            let indexPath = IndexPath(row: i, section: 0)
+            let emergencyCell = self.tableView.cellForRow(at: indexPath)
             if cell == emergencyCell {
                 let contact = self.contacts[i]
                 let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-                dbManager.deleteContactWithId(contact.contactId, completion: nil)
-                self.contacts.removeAtIndex(i)
+                dbManager.deleteContact(withId: contact.contactId!, completion: nil)
+                self.contacts.remove(at: i)
                 
                 self.tableView.beginUpdates()
-                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                self.tableView.deleteRows(at: [indexPath], with: .left)
                 self.tableView.endUpdates()
                 
                 break

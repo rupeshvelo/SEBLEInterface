@@ -31,27 +31,27 @@ typedef NS_ENUM(NSUInteger, SLRestManagerPathKey) {
 
 @interface SLRestManager : NSObject
 
-+ (instancetype)sharedManager;
++ (id _Nonnull)sharedManager;
 
 - (void)getRequestWithServerKey:(SLRestManagerServerKey)serverKey
                         pathKey:(SLRestManagerPathKey)pathKey
-                      subRoutes:(NSArray *)subRoutes
-              additionalHeaders:(NSDictionary *)additionalHeaders
-                     completion:(void (^)(NSUInteger status, NSDictionary *payload))completion;
+                      subRoutes:(NSArray * _Nullable)subRoutes
+              additionalHeaders:(NSDictionary * _Nullable)additionalHeaders
+                     completion:(void (^ _Nullable)(NSUInteger status, NSDictionary * _Nullable))completion;
 
-- (void)postObject:(NSDictionary *)object
+- (void)postObject:(NSDictionary * _Nonnull)object
          serverKey:(SLRestManagerServerKey)serverKey
            pathKey:(SLRestManagerPathKey)pathKey
-         subRoutes:(NSArray *)subRoutes
- additionalHeaders:(NSDictionary *)additionalHeaders
-        completion:(void (^)(NSUInteger status, NSDictionary *payload))completion;
+         subRoutes:(NSArray * _Nullable)subRoutes
+ additionalHeaders:(NSDictionary * _Nullable)additionalHeaders
+        completion:(void (^ _Nullable)(NSUInteger, NSDictionary * _Nullable))completion;
 
-- (void)getPictureFromUrl:(NSString *)url withCompletion:(void(^)(NSData *))completion;
+- (void)getPictureFromUrl:(NSString * _Nonnull)url withCompletion:(void(^ _Nullable)(NSData * _Nullable))completion;
 
-- (NSString *)basicAuthorizationHeaderValueUsername:(NSString *)username password:(NSString *)password;
+- (NSString * _Nonnull)basicAuthorizationHeaderValueUsername:(NSString * _Nonnull)username password:(NSString * _Nonnull)password;
 
-- (void)getGoogleDirectionsFromUrl:(NSString *)urlString completion:(void(^)(NSData *reponseData))completion;
+- (void)getGoogleDirectionsFromUrl:(NSString * _Nonnull)urlString completion:(void(^ _Nonnull)(NSData * _Nullable))completion;
 
-- (NSString *)pathAsString:(SLRestManagerPathKey)pathKey;
+- (NSString * _Nonnull)pathAsString:(SLRestManagerPathKey)pathKey;
 
 @end

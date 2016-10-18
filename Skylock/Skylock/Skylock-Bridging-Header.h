@@ -16,7 +16,6 @@
 #import "SLNotifications.h"
 #import "SLFacebookManger.h"
 #import "SLPicManager.h"
-#import "SLEmergencyContact.h"
 #import "SLAccelerometerValues.h"
 #import "SLNotificationManager.h"
 #import "SEBLEInterface/SEBLEInterfaceManager.h"

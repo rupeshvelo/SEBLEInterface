@@ -51,7 +51,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         let field:UITextField = UITextField(frame: frame)
         field.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 14)
         field.text = ""
-        field.textAlignment = .Right
+        field.textAlignment = .right
         field.delegate = self
         
         return field
@@ -117,7 +117,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         self.leftLabel.textColor = leftLabelTextColor
         self.rightField.text = rightLabelText
         self.rightField.textColor = rightLabelTextColor
-        self.rightField.enabled = shouldEnableTextField
+        self.rightField.isEnabled = shouldEnableTextField
     }
     
     func haveFieldResignFirstReponder() {
@@ -125,29 +125,29 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func isTextFieldFirstResponder() -> Bool {
-        return self.rightField.isFirstResponder()
+        return self.rightField.isFirstResponder
     }
     
     func setTextFieldEnabled(shouldEnable: Bool) {
-        self.rightField.enabled = shouldEnable
+        self.rightField.isEnabled = shouldEnable
     }
     
     func haveFieldBecomeFirstResponder() {
-        dispatch_async(dispatch_get_main_queue()) { 
+        DispatchQueue.main.async {
             self.rightField.becomeFirstResponder()
         }
     }
     
     // MARK: UITextFieldDelegate methods
-    func textFieldDidBeginEditing(textField: UITextField) {
-        self.delegate?.opposingLabelsCellTextFieldBecameFirstResponder(self)
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.delegate?.opposingLabelsCellTextFieldBecameFirstResponder(cell: self)
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
        textField.resignFirstResponder()
     }
     
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         return self.isEditable
     }
 }

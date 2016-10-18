@@ -43,8 +43,8 @@ import Security
         handlerCase: SLKeychainHandlerCase
         ) -> String?
     {
-        let service:String = self.getService(additionalSeviceInfo, handlerCase: handlerCase)
-        return self.get(userName, service: service)
+        let service:String = self.getService(additionalServiceInfo: additionalSeviceInfo, handlerCase: handlerCase)
+        return self.get(userName: userName, service: service)
     }
     
     @objc public func setItemForUsername(
@@ -54,8 +54,8 @@ import Security
         handlerCase: SLKeychainHandlerCase
         )
     {
-        let service:String = self.getService(additionalSeviceInfo, handlerCase: handlerCase)
-        self.save(userName, service: service, value: inputValue)
+        let service:String = self.getService(additionalServiceInfo: additionalSeviceInfo, handlerCase: handlerCase)
+        self.save(userName: userName, service: service, value: inputValue)
     }
     
     @objc public func deleteItemForUsername(
@@ -64,12 +64,12 @@ import Security
         handlerCase: SLKeychainHandlerCase) -> Bool
     {
         
-        let service:String = self.getService(additionalServiceInfo, handlerCase: handlerCase)
-        return self.delete(userName, service: service)
+        let service:String = self.getService(additionalServiceInfo: additionalServiceInfo, handlerCase: handlerCase)
+        return self.delete(userName: userName, service: service)
     }
     
     private func getService(additionalServiceInfo: String?, handlerCase: SLKeychainHandlerCase) -> String {
-        var key:String = self.stringForHandlerCase(handlerCase)
+        var key:String = self.stringForHandlerCase(handlerCase: handlerCase)
         if let addServiceInfo = additionalServiceInfo {
             key += ".\(addServiceInfo)"
         }
@@ -78,59 +78,59 @@ import Security
     }
     
     private func save(userName: String, service: String, value: String) {
-        guard let data:NSData = value.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) else {
+        guard let data:Data = value.data(using: String.Encoding.utf8) else {
             print("Error: cannot encode string in SLKeychainHanlder save method")
             return;
         }
         
-        let keychainQuery:[String:AnyObject] = [
-            kSecClassValue: kSecClassGenericPasswordValue,
-            kSecAttrServiceValue: service,
-            kSecAttrAccountValue: userName,
+        let keychainQuery:[String:Any] = [
+            kSecClassValue: kSecClassGenericPasswordValue as AnyObject,
+            kSecAttrServiceValue: service as AnyObject,
+            kSecAttrAccountValue: userName as AnyObject,
             kSecValueDataValue: data
         ]
         
-        SecItemDelete(keychainQuery as CFDictionaryRef)
+        SecItemDelete(keychainQuery as CFDictionary)
         
-        let status: OSStatus = SecItemAdd(keychainQuery as CFDictionaryRef, nil)
+        let status: OSStatus = SecItemAdd(keychainQuery as CFDictionary, nil)
         print("saved item to key chain with status \(status)")
     }
     
     private func delete(userName: String, service: String) -> Bool {
-        guard let value = self.get(userName, service: service) else {
+        guard let value = self.get(userName: userName, service: service) else {
             print("Keychain cannot remove matching value for \(userName)'s service \(service). It does not exist")
             return true
         }
         
-        guard let data:NSData = value.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false) else {
+        guard let data:Data = value.data(using: String.Encoding.utf8) else {
             print("Error: cannot encode string in SLKeychainHanlder delete item for username method")
             return false;
         }
         
         let keychainQuery:[String:AnyObject] = [
-            kSecClassValue: kSecClassGenericPasswordValue,
-            kSecAttrServiceValue: service,
-            kSecAttrAccountValue: userName,
-            kSecValueDataValue: data
+            kSecClassValue: kSecClassGenericPasswordValue as AnyObject,
+            kSecAttrServiceValue: service as AnyObject,
+            kSecAttrAccountValue: userName as AnyObject,
+            kSecValueDataValue: data as NSData
         ]
         
-        return SecItemDelete(keychainQuery as CFDictionaryRef) == errSecSuccess
+        return SecItemDelete(keychainQuery as CFDictionary) == errSecSuccess
     }
     
     private func get(userName: String, service: String) -> String? {
         let keychainQuery:[String:AnyObject] = [
-            kSecClassValue: kSecClassGenericPasswordValue,
-            kSecAttrServiceValue: service,
-            kSecAttrAccountValue: userName,
+            kSecClassValue: kSecClassGenericPasswordValue as AnyObject,
+            kSecAttrServiceValue: service as AnyObject,
+            kSecAttrAccountValue: userName as AnyObject,
             kSecReturnDataValue: kCFBooleanTrue,
-            kSecMatchLimitValue: kSecMatchLimitOneValue
+            kSecMatchLimitValue: kSecMatchLimitOneValue as AnyObject
         ]
 
         
         var result: AnyObject?
-        let status: OSStatus = SecItemCopyMatching(keychainQuery, &result)
+        let status: OSStatus = SecItemCopyMatching(keychainQuery as CFDictionary, &result)
         if status == errSecSuccess {
-            if let data = result as? NSData, let value = NSString(data: data, encoding:NSUTF8StringEncoding) as? String {
+            if let data = result as? NSData, let value = NSString(data: data as Data, encoding:String.Encoding.utf8.rawValue) as? String {
                 return value
             }
         }

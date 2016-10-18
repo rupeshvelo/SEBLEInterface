@@ -35,18 +35,18 @@ class SLNotificationViewController: UIViewController {
     lazy var takeActionButton:UIButton = {
         let frame:CGRect = CGRect(
             x: self.padding,
-            y: self.padding + UIApplication.sharedApplication().statusBarFrame.size.height,
+            y: self.padding + UIApplication.shared.statusBarFrame.size.height,
             width: self.view.bounds.size.width - 2.0*self.padding,
             height: self.buttonHeight
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.backgroundColor = self.utility.color(.Color87_216_255)
-        button.setTitle(self.takeActionButtonTitle, forState: .Normal)
-        button.setTitleColor(self.utility.color(.Color255_255_255), forState: .Normal)
+        button.backgroundColor = self.utility.color(colorCode: .Color87_216_255)
+        button.setTitle(self.takeActionButtonTitle, for: .normal)
+        button.setTitleColor(self.utility.color(colorCode: .Color255_255_255), for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
-        button.addTarget(self, action: #selector(takeActionButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(takeActionButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -59,13 +59,13 @@ class SLNotificationViewController: UIViewController {
             height: self.buttonHeight
         )
         
-        let button:UIButton = UIButton(type: .System)
+        let button:UIButton = UIButton(type: .system)
         button.frame = frame
-        button.backgroundColor = self.utility.color(.Color255_255_255)
-        button.setTitle(self.cancelButtonTitle, forState: .Normal)
-        button.setTitleColor(self.utility.color(.Color109_194_223), forState: .Normal)
+        button.backgroundColor = self.utility.color(colorCode: .Color255_255_255)
+        button.setTitle(self.cancelButtonTitle, for: .normal)
+        button.setTitleColor(self.utility.color(colorCode: .Color109_194_223), for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
-        button.addTarget(self, action: #selector(cancelButtonPressed), forControlEvents: .TouchDown)
+        button.addTarget(self, action: #selector(cancelButtonPressed), for: .touchDown)
         
         return button
     }()
@@ -75,24 +75,24 @@ class SLNotificationViewController: UIViewController {
         let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 28.0)!
         let text = self.titleText
         let labelSize:CGSize = self.utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.padding,
-            0.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.padding,
+            y: 0.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = self.utility.color(.Color255_255_255)
+        label.textColor = self.utility.color(colorCode: .Color255_255_255)
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = font
         label.numberOfLines = 0
         
@@ -104,24 +104,24 @@ class SLNotificationViewController: UIViewController {
         let font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 12.0)!
         let text = self.infoText
         let labelSize:CGSize = self.utility.sizeForLabel(
-            font,
+            font: font,
             text: text,
             maxWidth: labelWidth,
-            maxHeight: CGFloat.max,
+            maxHeight: CGFloat.greatestFiniteMagnitude,
             numberOfLines: 0
         )
         
-        let frame = CGRectMake(
-            self.padding,
-            0.0,
-            labelWidth,
-            labelSize.height
+        let frame = CGRect(
+            x: self.padding,
+            y: 0.0,
+            width: labelWidth,
+            height: labelSize.height
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textColor = self.utility.color(.Color255_255_255)
+        label.textColor = self.utility.color(colorCode: .Color255_255_255)
         label.text = text
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = font
         label.numberOfLines = 0
         
@@ -146,7 +146,7 @@ class SLNotificationViewController: UIViewController {
     
         // In subclasses the label frames should be set here
         
-        self.view.backgroundColor = self.utility.color(.Color60_83_119)
+        self.view.backgroundColor = self.utility.color(colorCode: .Color60_83_119)
         
         self.view.addSubview(self.takeActionButton)
         self.view.addSubview(self.cancelButton)
@@ -156,10 +156,10 @@ class SLNotificationViewController: UIViewController {
     }
     
     func takeActionButtonPressed() {
-        self.delegate?.takeActionButtonPressed(self)
+        self.delegate?.takeActionButtonPressed(nvc: self)
     }
     
     func cancelButtonPressed() {
-        self.delegate?.cancelButtonPressed(self)
+        self.delegate?.cancelButtonPressed(nvc: self)
     }
 }

@@ -16,7 +16,7 @@
 #import "SLNotifications.h"
 #import "SLNotificationManager.h"
 #import "Ellipse-Swift.h"
-#import <Google/CloudMessaging.h>
+@import Firebase;
 
 #define kSLAppDelegateNotificationActionIgnore  @"kSLAppDelegateNotificationActionIgnore"
 #define kSLAppDelegateNotificationActionHelp    @"kSLAppDelegateNotificationActionHelp"
@@ -46,11 +46,18 @@
                                                  name:kSLNotificationAlertOccured
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(firebaseTokenUpdated)
+                                                 name:kFIRInstanceIDTokenRefreshNotification
+                                               object:nil];
+    
     UIPageControl *pageControl = [UIPageControl appearance];
     pageControl.pageIndicatorTintColor = [UIColor colorWithRed:215 green:215 blue:215];;
     pageControl.currentPageIndicatorTintColor = [UIColor colorWithRed:102 green:177 blue:227];
     pageControl.backgroundColor = [UIColor clearColor];
-        
+    
+    [FIRApp configure];
+    
     return [SLFacebookManger.sharedManager application:application finishedLauchingWithOptions:launchOptions];
 }
 
@@ -93,40 +100,9 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+    [self firebaseTokenUpdated];
     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserAcceptedNotifications
                                                         object:nil];
-    
-    GGLInstanceIDConfig *instanceIDConfig = [GGLInstanceIDConfig defaultConfig];
-    instanceIDConfig.delegate = self;
-    
-    NSDictionary *options = @{kGGLInstanceIDRegisterAPNSOption:deviceToken,
-                              kGGLInstanceIDAPNSServerTypeSandboxOption:@YES};
-    
-    [[GGLInstanceID sharedInstance] startWithConfig:instanceIDConfig];
-
-    [GGLInstanceID.sharedInstance
-     tokenWithAuthorizedEntity:@"750134088591"
-     scope:kGGLInstanceIDScopeGCM
-     options:options
-     handler:^(NSString *token, NSError *error) {
-         // TODO: This needs to be fixed in the google dev panel.
-         // This is a tempory fix
-         if (error) {
-             NSLog(@"Error getting google cloud service token %@", error.localizedDescription);
-             //return;
-         }
-         
-         if (!token) {
-             token = @"00000000000000000000000000000";
-         }
-         
-         NSLog(@"got token: %@", token);
-         dispatch_async(dispatch_get_main_queue(), ^{
-             NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
-             [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
-             [ud synchronize];
-         });
-     }];
 }
 
 - (UIViewController *)initialViewController
@@ -169,8 +145,6 @@
 {
     UIApplication *application = [UIApplication sharedApplication];
     
-    [[GCMService sharedInstance] startWithConfig:[GCMConfig defaultConfig]];
-    
     UIMutableUserNotificationAction *ignoreAction = [UIMutableUserNotificationAction new];
     ignoreAction.identifier = kSLAppDelegateNotificationActionIgnore;
     ignoreAction.title = NSLocalizedString(@"Ignore", nil);
@@ -212,6 +186,16 @@
     localNotification.userInfo = @{@"notificationId": notification.identifier};
     
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+}
+
+- (void)firebaseTokenUpdated
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *token = [[FIRInstanceID instanceID] token];
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        [ud setObject:token forKey:SLUserDefaultsPushNotificationToken];
+        [ud synchronize];
+    });
 }
 
 - (void)handleNotification:(NSNotification *)notification

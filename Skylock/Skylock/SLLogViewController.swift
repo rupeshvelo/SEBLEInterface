@@ -10,10 +10,10 @@ import UIKit
 
 class SLLogViewController:UIViewController, UITableViewDelegate, UITableViewDataSource {
     var logs:[SLLog] = [SLLog]()
-    let dateFormatter:NSDateFormatter = NSDateFormatter()
+    let dateFormatter:DateFormatter = DateFormatter()
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.Plain)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: UITableViewStyle.plain)
         table.rowHeight = 80.0
         table.delegate = self
         table.dataSource = self
@@ -23,7 +23,7 @@ class SLLogViewController:UIViewController, UITableViewDelegate, UITableViewData
     
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -31,7 +31,7 @@ class SLLogViewController:UIViewController, UITableViewDelegate, UITableViewData
         
         self.view.addSubview(self.tableView)
         let backButton:UIBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonSystemItem.Done,
+            barButtonSystemItem: UIBarButtonSystemItem.done,
             target: self,
             action: #selector(backButtonPressed)
         )
@@ -41,56 +41,53 @@ class SLLogViewController:UIViewController, UITableViewDelegate, UITableViewData
         
         let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
         self.logs = databaseManager.getAllLogs() as! [SLLog]
-        self.logs.sortInPlace({$0.date!.compare($1.date!) == .OrderedDescending})
+        self.logs.sort(by: {$0.date!.compare($1.date!) == .orderedDescending})
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(newLogAdded(_:)),
-            name: kSLNotificationLogUpdated,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: Notification.Name(rawValue: kSLNotificationLogUpdated),
+            object: nil,
+            queue: nil,
+            using: newLogAdded
         )
     }
     
     func backButtonPressed() {
-        self.navigationController!.popViewControllerAnimated(true)
+        self.navigationController!.popViewController(animated: true)
     }
     
-    func newLogAdded(notification: NSNotification) {
+    func newLogAdded(notification: Notification) {
         if let info = notification.object as? [String:SLLog], let log = info["log"] {
-            self.logs.insert(log, atIndex: 0)
-            let newIndexPath = NSIndexPath(forRow: 0, inSection: 0)
-            self.tableView.insertRowsAtIndexPaths(
-                [newIndexPath],
-                withRowAnimation: UITableViewRowAnimation.Automatic
-            )
+            self.logs.insert(log, at: 0)
+            let newIndexPath = IndexPath(row: 0, section: 0)
+            self.tableView.insertRows(at: [newIndexPath], with: UITableViewRowAnimation.automatic)
         }
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.logs.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellId = "SLLogViewControllerCell"
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+        var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId)
         if cell == nil {
-            cell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: cellId)
         }
         
         let log = self.logs[indexPath.row]
         cell!.textLabel?.text = log.entry
-        cell!.detailTextLabel?.text = self.dateFormatter.stringFromDate(log.date!)
+        cell!.detailTextLabel?.text = self.dateFormatter.string(from: log.date!)
         
         return cell!
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let log = self.logs[indexPath.row]
         let dvc:SLLogDetailViewController = SLLogDetailViewController(nibName: nil, bundle: nil, log: log)
-        self.navigationController?.pushViewController(dvc, animated: true) 
+        self.navigationController?.pushViewController(dvc, animated: true)
     }
 }

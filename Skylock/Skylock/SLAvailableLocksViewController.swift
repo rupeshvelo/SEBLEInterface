@@ -20,9 +20,9 @@ import UIKit
     var dismissConcentricCirclesViewController:Bool = false
     
     lazy var tableView:UITableView = {
-        let table:UITableView = UITableView(frame: self.view.bounds, style: .Plain)
+        let table:UITableView = UITableView(frame: self.view.bounds, style: .plain)
         table.rowHeight = 110.0
-        table.backgroundColor = UIColor.clearColor()
+        table.backgroundColor = UIColor.clear
         table.delegate = self
         table.dataSource = self
         
@@ -38,7 +38,7 @@ import UIKit
         )
         
         let label:UILabel = UILabel(frame: frame)
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
         label.textColor = UIColor(red: 130, green: 156, blue: 178)
         label.numberOfLines = 2
@@ -47,7 +47,7 @@ import UIKit
     }()
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewDidLoad() {
@@ -55,13 +55,13 @@ import UIKit
         
         self.navigationItem.title = NSLocalizedString("SELECT AN ELLIPSE", comment: "")
         
-        self.view.backgroundColor = UIColor.whiteColor()
+        self.view.backgroundColor = UIColor.white
         
         self.view.addSubview(self.tableView)
         
         let backButton = UIBarButtonItem(
             image: UIImage(named: "lock_screen_close_icon"),
-            style: UIBarButtonItemStyle.Plain,
+            style: UIBarButtonItemStyle.plain,
             target: self,
             action: #selector(backButtonPressed)
         )
@@ -73,35 +73,35 @@ import UIKit
             lockManager.startActiveSearch()
         }
         
-        self.setHeaderTextForNumberOfLocks(self.locks.count)
+        self.setHeaderTextForNumberOfLocks(numberOfLocks: self.locks.count)
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(foundLock(_:)),
-            name: kSLNotificationLockManagerDiscoverdLock,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDiscoverdLock),
+            object: nil,
+            queue: nil,
+            using: foundLock
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self, selector:
-            #selector(lockShallowlyConntected(_:)),
-            name: kSLNotificationLockManagerShallowlyConnectedLock,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerShallowlyConnectedLock),
+            object: nil,
+            queue: nil,
+            using: lockShallowlyConntected
         )
         
-        NSNotificationCenter.defaultCenter().addObserver(
-            self,
-            selector: #selector(bleHardwarePoweredOn(_:)),
-            name: kSLNotificationLockManagerBlePoweredOn,
-            object: nil
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerBlePoweredOn),
+            object: nil,
+            queue: nil,
+            using: bleHardwarePoweredOn
         )
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         for lock in SLLockManager.sharedManager.locksInActiveSearch() {
-            self.addLock(lock)
+            self.addLock(lock: lock)
         }
         
         self.tableView.reloadData()
@@ -120,7 +120,7 @@ import UIKit
             self.locks.append(lock)
         }
     }
-    func foundLock(notification: NSNotification) {
+    func foundLock(notification: Notification) {
         guard let lock = notification.object as? SLLock else {
             print("Error: found lock but it was not included in notification")
             return
@@ -135,29 +135,29 @@ import UIKit
         if addLock {
             self.locks.append(lock)
             // If this is the first lock found, we need to update the header text.
-            self.setHeaderTextForNumberOfLocks(self.locks.count)
+            self.setHeaderTextForNumberOfLocks(numberOfLocks: self.locks.count)
             
-            let indexPath:NSIndexPath = NSIndexPath(forRow: self.locks.count - 1, inSection: 0)
+            let indexPath:IndexPath = IndexPath(row: self.locks.count - 1, section: 0)
             self.tableView.beginUpdates()
-            self.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+            self.tableView.insertRows(at: [indexPath as IndexPath], with: .left)
             self.tableView.endUpdates()
         }
     }
     
-    func lockShallowlyConntected(notificaiton: NSNotification) {
+    func lockShallowlyConntected(notificaiton: Notification) {
         guard let connectedLock = notificaiton.object as? SLLock else {
             return
         }
         
-        for (index, lock) in self.locks.enumerate() {
+        for (index, lock) in self.locks.enumerated() {
             if lock.macAddress == connectedLock.macAddress {
-                self.enableButtonAtIndex(index)
+                self.enableButtonAtIndex(index: index)
                 break
             }
         }
     }
     
-    func bleHardwarePoweredOn(notificaiton: NSNotification) {
+    func bleHardwarePoweredOn(notificaiton: Notification) {
         let lockManager = SLLockManager.sharedManager
         lockManager.startActiveSearch()
     }
@@ -180,10 +180,11 @@ import UIKit
     }
     
     func connectButtonPressed(button: UIButton) {
-        for (i, lock) in self.locks.enumerate() {
-            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-            
+        for (i, lock) in self.locks.enumerated() {
+            let indexPath:IndexPath = IndexPath(row: i, section: 0)
+            guard let cell:UITableViewCell = self.tableView.cellForRow(at: indexPath) else {
+                continue
+            }
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
@@ -193,7 +194,7 @@ import UIKit
 
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
-                    lockManager.connectToLockWithMacAddress(lock.macAddress!)
+                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!)
                     break
                 }
             }
@@ -201,10 +202,14 @@ import UIKit
     }
     
     func backButtonPressed() {
-        if self.navigationController?.viewControllers.first == self {
-            self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+        guard let navController = self.navigationController else {
+            return
+        }
+        
+        if navController.viewControllers.first == self {
+            navController.dismiss(animated: true, completion: nil)
         } else {
-            self.navigationController?.popViewControllerAnimated(true)
+            navController.popViewController(animated: true)
         }
         
         let lockManager = SLLockManager.sharedManager
@@ -215,14 +220,14 @@ import UIKit
     func enableButtonAtIndex(index: Int) {
         if index < tempButtons.count {
             let button:UIButton = self.tempButtons[index]
-            button.enabled = true
+            button.isEnabled = true
         }
     }
     
     func skipDatShit() {
         if self.hideBackButton || self.navigationController?.viewControllers.first! == self {
             let lvc = SLLockViewController()
-            self.presentViewController(lvc, animated: true, completion: nil)
+            self.present(lvc, animated: true, completion: nil)
         }
     }
     
@@ -232,19 +237,19 @@ import UIKit
     }
     
     // MARK: UITableView delegate and datasource methods
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.locks.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cellId = "SLAvaliableLocksViewControllerCell"
-        var cell: UITableViewCell? = tableView.dequeueReusableCellWithIdentifier(cellId)
+        var cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: cellId)
         if cell == nil {
-            cell = UITableViewCell(style: .Subtitle, reuseIdentifier: cellId)
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellId)
         }
         
         let lock = self.locks[indexPath.row]
@@ -255,8 +260,8 @@ import UIKit
             width: image.size.width,
             height: image.size.height)
         )
-        button.setImage(image, forState: .Normal)
-        button.addTarget(self, action: #selector(connectButtonPressed(_:)), forControlEvents: .TouchDown)
+        button.setImage(image, for: .normal)
+        button.addTarget(self, action: #selector(connectButtonPressed(button:)), for: .touchDown)
         button.tag = indexPath.row + self.buttonTagShift
         
         self.tempButtons.append(button)
@@ -265,16 +270,16 @@ import UIKit
         cell?.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         cell?.textLabel?.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 17.0)
         cell?.accessoryView = button
-        cell?.selectionStyle = .None
+        cell?.selectionStyle = .none
         
         return cell!
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 90.0
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let viewFrame = CGRect(
             x: 0,
             y: 0,
@@ -283,7 +288,7 @@ import UIKit
         )
         
         let view:UIView = UIView(frame: viewFrame)
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white
         
         view.addSubview(self.headerLabel)
         
@@ -303,7 +308,7 @@ import UIKit
         let tgr:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(skipDatShit))
         tgr.numberOfTapsRequired = 5
         view.addGestureRecognizer(tgr)
-        view.userInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         
         return view
     }

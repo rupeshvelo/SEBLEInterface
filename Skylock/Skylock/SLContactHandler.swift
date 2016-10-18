@@ -22,25 +22,25 @@ enum SLUserDefaultsEmergencyContactId: String {
     }
     
     private let keysToFetch: [CNKeyDescriptor] = [
-        CNContactGivenNameKey,
-        CNContactFamilyNameKey,
-        CNContactImageDataKey,
-        CNContactEmailAddressesKey,
-        CNContactPhoneNumbersKey
+        CNContactGivenNameKey as CNKeyDescriptor,
+        CNContactFamilyNameKey as CNKeyDescriptor,
+        CNContactImageDataKey as CNKeyDescriptor,
+        CNContactEmailAddressesKey as CNKeyDescriptor,
+        CNContactPhoneNumbersKey as CNKeyDescriptor
     ]
     
     func getContactsWithIds(contactIds: [String]) throws -> [CNContact] {
-        return try self.getContacts(PredicateType.Ids, predicateArgument: contactIds)
+        return try self.getContacts(predicateType: PredicateType.Ids, predicateArgument: contactIds)
     }
     
     func getContactsWithName(name: String) throws -> [CNContact] {
-        return try self.getContacts(PredicateType.Name, predicateArgument: name)
+        return try self.getContacts(predicateType: PredicateType.Name, predicateArgument: [name])
     }
     
     func allContacts(completion: ([CNContact]) -> Void) throws {
         let fetchRequest = CNContactFetchRequest(keysToFetch: self.keysToFetch)
         var contacts:[CNContact] = [CNContact]()
-        try CNContactStore().enumerateContactsWithFetchRequest(fetchRequest) { (contact, nil) in
+        try CNContactStore().enumerateContacts(with: fetchRequest) { (contact, nil) in
             contacts.append(contact)
         }
         
@@ -68,37 +68,36 @@ enum SLUserDefaultsEmergencyContactId: String {
         newContact.isCurrentContact = false
         
         if !contact.phoneNumbers.isEmpty {
-            if let phoneNumber = contact.phoneNumbers[0].value as? CNPhoneNumber {
-                newContact.phoneNumber = phoneNumber.valueForKey("digits") as? String
-                newContact.countyCode = phoneNumber.valueForKey("countryCode") as? String
-            }
+            let phoneNumber = contact.phoneNumbers[0].value
+            newContact.phoneNumber = phoneNumber.value(forKey: "digits") as? String
+            newContact.countyCode = phoneNumber.value(forKey: "countryCode") as? String
         }
         
         if !contact.emailAddresses.isEmpty {
-            newContact.email = (contact.emailAddresses[0]).valueForKey("value") as? String
+            newContact.email = (contact.emailAddresses[0]).value(forKey: "value") as? String
         }
         
         return newContact
     }
     
-    func getImageForContact(identifier: String, completion:((imageData: NSData?) -> ())?) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+    func getImageForContact(identifier: String, completion:((_: NSData?) -> ())?) {
+        DispatchQueue.global().async {
             var contact:CNContact?
             do {
-                contact = try CNContactStore().unifiedContactWithIdentifier(
-                    identifier,
-                    keysToFetch: [CNContactImageDataKey]
+                contact = try CNContactStore().unifiedContact(
+                    withIdentifier: identifier,
+                    keysToFetch: [CNContactImageDataKey as CNKeyDescriptor]
                 )
             } catch {
                 if let exit = completion {
-                    exit(imageData: nil)
+                    exit(nil)
                 }
             }
             
             if let exit = completion {
-                exit(imageData: contact?.imageData)
+                exit(contact?.imageData as NSData?)
             }
-        })
+        }
     }
     
     func getActiveEmergencyContacts() -> [SLEmergencyContact]? {
@@ -108,7 +107,7 @@ enum SLUserDefaultsEmergencyContactId: String {
         
         var activeContacts:[SLEmergencyContact] = [SLEmergencyContact]()
         for contact:SLEmergencyContact in contacts {
-            if let isCurrent = contact.isCurrentContact where isCurrent.boolValue {
+            if let isCurrent = contact.isCurrentContact, isCurrent.boolValue {
                 activeContacts.append(contact)
             }
         }
@@ -122,30 +121,30 @@ enum SLUserDefaultsEmergencyContactId: String {
         shouldSaveToServer: Bool
         )
     {
-        let ud = NSUserDefaults.standardUserDefaults()
-        ud.setObject(contact.identifier, forKey: contactId.rawValue)
+        let ud = UserDefaults.standard
+        ud.set(contact.identifier, forKey: contactId.rawValue)
         ud.synchronize()
         
         if shouldSaveToServer {
             self.saveContactToServer(
-                contact,
-                index: self.indexFromUserDefaultsContactId(contactId)
+                contact: contact,
+                index: self.indexFromUserDefaultsContactId(contactId: contactId)
             )
         }
     }
     
     func emergencyContactIdFromUserDefaults(contactId: SLUserDefaultsEmergencyContactId) -> String? {
-        let ud = NSUserDefaults.standardUserDefaults()
-        return ud.objectForKey(contactId.rawValue) as? String
+        let ud = UserDefaults.standard
+        return ud.object(forKey: contactId.rawValue) as? String
     }
     
     @objc func emergencyContactsCommaSeperatedFirstNames() -> String {
         var names = ""
         let udContactIds: [SLUserDefaultsEmergencyContactId] = [.One, .Two, .Three]
-        for (index, udContactId) in udContactIds.enumerate() {
-            if let contactId = self.emergencyContactIdFromUserDefaults(udContactId) {
+        for (index, udContactId) in udContactIds.enumerated() {
+            if let contactId = self.emergencyContactIdFromUserDefaults(contactId: udContactId) {
                 do {
-                    let contacts = try self.getContactsWithIds([contactId])
+                    let contacts = try self.getContactsWithIds(contactIds: [contactId])
                     if let contact = contacts.first {
                         names += contact.givenName + (index == udContactIds.count - 1 ? "" : ", ")
                     }
@@ -161,7 +160,7 @@ enum SLUserDefaultsEmergencyContactId: String {
     func phoneNumberForUserDefualtContactId(contactId: String) -> String? {
         let contacts: [CNContact]
         do {
-            contacts = try self.getContactsWithIds([contactId])
+            contacts = try self.getContactsWithIds(contactIds: [contactId])
         } catch {
             print("Error: could not get CNContact with Id: \(contactId)")
             return nil
@@ -169,7 +168,7 @@ enum SLUserDefaultsEmergencyContactId: String {
         
         
         if let contact = contacts.first {
-            return self.phoneNumberForContact(contact)
+            return self.phoneNumberForContact(contact: contact)
         }
         
         return nil
@@ -177,10 +176,8 @@ enum SLUserDefaultsEmergencyContactId: String {
     
     func phoneNumberForContact(contact: CNContact) -> String? {
         if contact.isKeyAvailable(CNContactPhoneNumbersKey) {
-            if let phoneNumber = contact.phoneNumbers.first,
-                let number = phoneNumber.value as? CNPhoneNumber
-            {
-                return number.stringValue
+            if let phoneNumber = contact.phoneNumbers.first {
+                return phoneNumber.value.stringValue
             }
         }
         
@@ -205,36 +202,37 @@ enum SLUserDefaultsEmergencyContactId: String {
     }
     
     func authorizedToAccessContacts() -> Bool {
-        let status:CNAuthorizationStatus = CNContactStore.authorizationStatusForEntityType(.Contacts)
-        return status == .Authorized
+        let status:CNAuthorizationStatus = CNContactStore.authorizationStatus(for: .contacts)
+        return status == .authorized
     }
     
-    func requestAuthorization(completion: ((allowedAccess:Bool) -> Void)?) {
-        CNContactStore().requestAccessForEntityType(.Contacts) { (didAllowAccess:Bool, error:NSError?) in
+    func requestAuthorization(completion: ((_:Bool) -> Void)?) {
+        CNContactStore().requestAccess(for: .contacts) { (didAllowAccess:Bool, error:Error?) -> Void in
             guard let completionBlock = completion else {
                 return
             }
             
             if error == nil {
-                completionBlock(allowedAccess: didAllowAccess)
+                completionBlock(didAllowAccess)
             } else {
-                completionBlock(allowedAccess: false)
+                completionBlock(false)
             }
+
         }
     }
     
-    private func getContacts(predicateType: PredicateType, predicateArgument: AnyObject) throws -> [CNContact]  {
+    private func getContacts(predicateType: PredicateType, predicateArgument: [String]) throws -> [CNContact]  {
         let predicate:NSPredicate
         
         switch predicateType {
         case .Ids:
-            predicate = CNContact.predicateForContactsWithIdentifiers(predicateArgument as! [String])
+            predicate = CNContact.predicateForContacts(withIdentifiers: predicateArgument)
         case .Name:
-            predicate = CNContact.predicateForContactsMatchingName(predicateArgument as! String)
+            predicate = CNContact.predicateForContacts(matchingName: predicateArgument.first!)
         }
 
-        let contacts = try CNContactStore().unifiedContactsMatchingPredicate(
-            predicate,
+        let contacts = try CNContactStore().unifiedContacts(
+            matching: predicate,
             keysToFetch: self.keysToFetch
         )
         
@@ -243,21 +241,20 @@ enum SLUserDefaultsEmergencyContactId: String {
     }
     
     private func saveContactToServer(contact: CNContact, index: Int) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), {
-            let dataBaseManager = SLDatabaseManager.sharedManager()
-            let ud = NSUserDefaults.standardUserDefaults()
-            
-            guard let user = dataBaseManager.currentUser else {
+        DispatchQueue.global().async {
+            let dataBaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+            let ud = UserDefaults.standard
+            guard let user = dataBaseManager.getCurrentUser() else {
                 print("Error could not retrieve current user to post contact to server with Id: \(contact.identifier)")
                 return
             }
             
-            guard let phoneNumber = self.phoneNumberForContact(contact) else {
+            guard let phoneNumber = self.phoneNumberForContact(contact: contact) else {
                 print("Error: failed to retrieve contact phone with Id: \(contact.identifier) to server")
                 return
             }
             
-            guard let token = ud.valueForKey(SLUserDefaultsUserToken) as? String else {
+            guard let token = ud.value(forKey: SLUserDefaultsUserToken) as? String else {
                 print("Error: no user token found when trying to save contact \(contact.identifier) to server")
                 return
             }
@@ -265,7 +262,7 @@ enum SLUserDefaultsEmergencyContactId: String {
             
             let body = [
                 "emergency_contact": phoneNumber,
-                "emergency_contact_name": self.fullNameForContact(contact)
+                "emergency_contact_name": self.fullNameForContact(contact: contact)
             ]
             
             let subRoutes = [
@@ -274,19 +271,21 @@ enum SLUserDefaultsEmergencyContactId: String {
                 String(index)
             ]
             
-            let restManager = SLRestManager.sharedManager()
+            let restManager = SLRestManager.sharedManager() as! SLRestManager
             let authValue: String = restManager.basicAuthorizationHeaderValueUsername(token, password: "")
             let additionalHeaders = ["Authorization": authValue]
             
             restManager.postObject(
-                body, serverKey: SLRestManagerServerKey.Main,
-                pathKey: SLRestManagerPathKey.Users,
+                body,
+                serverKey: .main,
+                pathKey: .users,
                 subRoutes: subRoutes,
-                additionalHeaders: additionalHeaders)
-            { (status: UInt, payload:[NSObject : AnyObject]!) in
-                print("Got payload from saving contact with Id: \(contact.identifier)")
-            }
-        })
+                additionalHeaders: additionalHeaders,
+                completion: { (status: UInt, payload: [AnyHashable : Any]?) in
+                    print("Got payload from saving contact with Id: \(contact.identifier)")
+                }
+            )
+        }
     }
     
     private func indexFromUserDefaultsContactId(contactId: SLUserDefaultsEmergencyContactId) -> Int {
