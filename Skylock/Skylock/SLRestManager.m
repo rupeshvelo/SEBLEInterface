@@ -36,7 +36,7 @@
     NSString *url;
     switch (serverKey) {
         case SLRestManagerServerKeyMain:
-            url = @"http://ellipse-aws.us-west-1.elasticbeanstalk.com/api/v1/";
+            url = @"https://velo-labs.com/api/v1/";
             break;
         default:
             break;
