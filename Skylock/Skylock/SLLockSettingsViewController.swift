@@ -162,20 +162,17 @@ SLLabelAndSwitchCellDelegate
             return
         }
         
-        let start = firmwareValues.count - 4
+        let start = firmwareValues.count - 9
         if start < 0 {
             return
         }
         
         self.firmwareVersion = ""
         print(firmwareValues.description)
-        for i in start..<firmwareValues.count {
-            let value = firmwareValues[i]
-            if value.intValue != 0 {
-                self.firmwareVersion += String(describing: value)
-            }
+        for i in start..<start + 3 {
+            self.firmwareVersion += String(describing: firmwareValues[i])
             
-            if i == start + 1 {
+            if i == start {
                 self.firmwareVersion += "."
             }
         }

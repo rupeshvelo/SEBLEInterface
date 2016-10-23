@@ -36,7 +36,7 @@
     NSString *url;
     switch (serverKey) {
         case SLRestManagerServerKeyMain:
-            url = @"https://velo-labs.com/api/v1/";
+            url = @"https://lattisapi.io/api/v1/";
             break;
         default:
             break;
