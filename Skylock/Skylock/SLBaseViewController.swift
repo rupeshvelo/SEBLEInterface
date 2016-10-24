@@ -71,9 +71,10 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
     }
     
     func dismissLoadingViewWithCompletion(completion: (() -> ())?) {
-        UIView.animate(withDuration: 0.2, animations: { 
-            self.warningBackgroundView?.alpha = 0.0
-            self.loadingView.alpha = 0.0
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.2, animations: {
+                self.warningBackgroundView?.alpha = 0.0
+                self.loadingView.alpha = 0.0
             }) { (finished) in
                 self.warningBackgroundView?.removeFromSuperview()
                 self.loadingView.removeFromSuperview()
@@ -81,6 +82,7 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
                 if let completionClosure = completion {
                     completionClosure()
                 }
+            }
         }
     }
     

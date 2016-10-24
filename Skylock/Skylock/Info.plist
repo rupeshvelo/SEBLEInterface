@@ -110,6 +110,10 @@
 	<string>Allow Ellipse to use your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>I'm a mini eye...but still nefarious</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ellipse would like access to your photos so you can choose a photo for your profile picture.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>The Ellipse app uses Bluetooth to communicate with your Ellipse Lock.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>

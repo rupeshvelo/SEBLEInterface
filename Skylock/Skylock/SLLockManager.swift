@@ -941,7 +941,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     private func writeFirmwareForLockWithMacAddress(macAddress: String) {
         if self.firmware == nil {
-            print("Error: cannot write firmware. The firmware array in nil")
+            print("Error: cannot write firmware. The firmware array is nil")
             return
         }
         

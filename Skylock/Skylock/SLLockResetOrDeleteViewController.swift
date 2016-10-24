@@ -122,7 +122,7 @@ class SLLockResetOrDeleteViewController: SLBaseViewController {
         
         NotificationCenter.default.addObserver(
             forName: Notification.Name(rawValue: kSLNotificationLockManagerDeletedLock),
-            object: self,
+            object: nil,
             queue: nil,
             using: handleLockRemoved
         )

@@ -304,7 +304,9 @@
     if (serverReply[@"error"] == [NSNull null]) {
         if (serverReply[@"payload"]) {
             NSDictionary *payload;
-            if ([serverReply[@"payload"] isKindOfClass:[NSArray class]]) {
+            if ([serverReply[@"payload"] isKindOfClass:[NSArray class]] ||
+                [serverReply[@"payload"] isKindOfClass:[NSString class]])
+            {
                 // this is a hack till we get a standard response from the server
                 payload = @{@"payload": serverReply[@"payload"]};
             } else {
