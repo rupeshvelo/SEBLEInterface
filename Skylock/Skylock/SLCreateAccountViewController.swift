@@ -51,7 +51,7 @@ SLBoxTextFieldWithButtonDelegate
     
     let passwordMaxLength:Int = 16
     
-    let minimumPhoneNumberLength = 4
+    let maximumPhoneNumberLength = 10
     
     var isKeyboardShowing:Bool = false
     
@@ -128,7 +128,6 @@ SLBoxTextFieldWithButtonDelegate
         field.delegate = self
         field.autocapitalizationType = UITextAutocapitalizationType.none
         field.inputAccessoryView = nil
-        
         return field
     }()
     
@@ -148,7 +147,6 @@ SLBoxTextFieldWithButtonDelegate
         field.textBoxDelegate = self
         field.autocapitalizationType = UITextAutocapitalizationType.none
         field.isSecureTextEntry = true
-        
         return field
     }()
     
@@ -218,6 +216,80 @@ SLBoxTextFieldWithButtonDelegate
         return label
     }()
     
+    lazy var optionLabel:UILabel = {
+        let padding:CGFloat = 130.0
+        let labelWidth = self.view.bounds.size.width - 2*padding
+        let utility = SLUtilities()
+        let text = NSLocalizedString(
+            "- OR -",
+            comment: ""
+        )
+        
+        
+        let frame = CGRect(
+            x: self.facebookButton.frame.minX + 112,
+            y: self.facebookButton.frame.maxY - 112,
+            width: 23,
+            height: 23
+        )
+        
+        
+        let label:UILabel = UILabel(frame: frame)
+        label.textColor = self.textColor
+        label.text = text
+        label.font  = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 22.0)
+        label.textAlignment = .center
+        label.sizeToFit()
+        label.numberOfLines = 0
+        label.isHidden = true
+        return label
+    }()
+    
+    lazy var forgotPasswordButton:UIButton = {
+        
+        let padding:CGFloat = 50.0
+        let frame = CGRect(
+            x: self.facebookButton.frame.minX + 30,
+            y: self.facebookButton.frame.maxY - 224,
+            width: 23,
+            height: 9
+        )
+
+        
+        let button:UIButton = UIButton(frame: frame)
+        button.addTarget(self, action: #selector(forgotPasswordButtonPressed), for: .touchDown)
+        button.setTitle(NSLocalizedString("F O R G O T  P A S S W O R D", comment: ""), for: .normal)
+        let color = UIColor(red: 87, green: 216, blue: 255)
+        button.setTitleColor(color, for: .normal)
+        button.titleLabel?.font = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 22.0)
+        button.sizeToFit()
+        button.isHidden = true
+        return button
+    }()
+    
+    
+    func forgotPasswordButtonPressed(){
+        
+        SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: "", callback: {(status: UInt, response: [AnyHashable: Any]?) in
+            
+            DispatchQueue.main.async{
+                
+                var errorFlag = 1
+                if((status == 200 || status == 201) && (response != nil)){
+                    
+                    errorFlag = 0
+                    
+                }
+                
+                let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:true, error: UInt(errorFlag), token: "")
+                
+                self.present(ctvc, animated: true, completion: nil)
+            }
+            
+        })
+    }
+
+
     lazy var sendTextButton:UIButton = {
         let frame = CGRect(
             x: 0.0,
@@ -236,7 +308,6 @@ SLBoxTextFieldWithButtonDelegate
             action: #selector(startLoginProcedure),
             for: .touchDown
         )
-        button.isHidden = true
         
         return button
     }()
@@ -321,8 +392,25 @@ SLBoxTextFieldWithButtonDelegate
             self.scrollView.addSubview(self.phoneNumberField)
             self.scrollView.addSubview(self.passwordField)
             self.view.addSubview(self.facebookButton)
+            self.view.addSubview(self.optionLabel)
+            self.view.addSubview(self.forgotPasswordButton)
+            let widthConstraint = NSLayoutConstraint(item:
+                self.forgotPasswordButton, attribute: .width, relatedBy: .equal,
+                                                     toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 250)
+            self.view.addConstraint(widthConstraint)
+            
+            let heightConstraint = NSLayoutConstraint(item:         self.forgotPasswordButton, attribute: .height, relatedBy: .equal,
+                                                      toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100)
+            self.view.addConstraint(heightConstraint)
+            
+            let xConstraint = NSLayoutConstraint(item:         self.forgotPasswordButton, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: 0)
+            
+            let yConstraint = NSLayoutConstraint(item:   self.forgotPasswordButton, attribute: .centerY, relatedBy: .equal, toItem: self.view, attribute: .centerY, multiplier: 1, constant: 0)
+            
+            self.view.addConstraint(xConstraint)
+            
+            self.view.addConstraint(yConstraint)
         }
-        
         self.view.addSubview(self.exitButton)
         
         self.setCurrentFields()
@@ -346,8 +434,10 @@ SLBoxTextFieldWithButtonDelegate
             queue: nil,
             using: keyboardWillHide
         )
+        
     }
     
+
     func setCurrentFields() {
         switch self.currentPhase {
         case .Create:
@@ -421,16 +511,27 @@ SLBoxTextFieldWithButtonDelegate
             print("Response from server after login request: \(responseDict))")
             guard let response:[String:AnyObject] = responseDict as? [String:AnyObject] else {
                 print("response dictionary is not in the correct format")
+                DispatchQueue.main.async {
+                        self.forgotPasswordButton.isHidden = false
+                        self.optionLabel.isHidden = true
+                        self.loginButton.isHidden = true
+                }
                 self.presentWarningController(errorType: .InternalServer)
                 return
             }
             
             guard let userToken:String = response["token"] as? String else {
+                DispatchQueue.main.async {
+                    self.forgotPasswordButton.isHidden = false
+                    self.optionLabel.isHidden = true
+                    self.loginButton.isHidden = true
+                }
                 print("no rest token in server response")
                 self.presentWarningController(errorType: .InternalServer)
                 return
             }
             
+    
             let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
             dbManager.saveUser(with: userProperties, isFacebookUser: false)
             
@@ -461,30 +562,35 @@ SLBoxTextFieldWithButtonDelegate
                         }
                     }
                 } else {
+                    DispatchQueue.main.async {
+                        self.forgotPasswordButton.isHidden = false
+                        self.optionLabel.isHidden = true
+                        self.loginButton.isHidden = true
+                    }
                     self.presentWarningController(errorType: .SignInFailure)
                 }
             } else {
-                let subRoutes:[String] = [
-                    currentUser.userId!,
-                    restManager.path(asString: .phoneVerificaiton)
-                ]
                 
-                let headers = [
-                    "Authorization": restManager.basicAuthorizationHeaderValueUsername(userToken, password: "")
-                ]
                 
-                restManager.getRequestWith(
-                    .main,
-                    pathKey: .users,
-                    subRoutes: subRoutes,
-                    additionalHeaders: headers,
-                    completion: { (status: UInt, textResponseDict:[AnyHashable:Any]?) in
-                        DispatchQueue.main.async {
-                            let ctvc = SLConfirmTextCodeViewController()
-                            self.present(ctvc, animated: true, completion: nil)
+                SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: userToken, callback: {(status: UInt, response: [AnyHashable: Any]?) in
+                    
+                    DispatchQueue.main.async{
+                        
+                        var errorFlag = 1
+                        if((status == 200 || status == 201) && (response != nil)){
+                            
+                            errorFlag = 0
+                            
                         }
+                        
+                        let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:false,
+                                                                   error: UInt(errorFlag), token: userToken)
+                        
+                        self.present(ctvc, animated: true, completion: nil)
                     }
-                )
+                    
+                 })
+                
             }
         })
     }
@@ -558,6 +664,7 @@ SLBoxTextFieldWithButtonDelegate
         }
     }
     
+    
     func areFieldsValid() -> Bool {
         var allFieldsValid = true
         for (key, value) in self.fieldValues {
@@ -578,7 +685,7 @@ SLBoxTextFieldWithButtonDelegate
             {
                 isValid = false
                 allFieldsValid = false
-            } else if key == .PhoneNumber && value.characters.count < self.minimumPhoneNumberLength {
+            } else if key == .PhoneNumber && value.characters.count < self.maximumPhoneNumberLength {
                 isValid = false
                 allFieldsValid = false
             }
@@ -729,11 +836,14 @@ SLBoxTextFieldWithButtonDelegate
             keyboardType = .default
         }
         
-        if textField == self.passwordField {
+        if textField == self.passwordField{
             // Adding this line since the secure entry option erases all text in the field when
             // on the user's first keystroke
             self.fieldValues[.Password] = ""
             self.passwordField.text = ""
+            if self.currentPhase == .SignIn{
+                self.loginButton.isHidden = true
+            }
         }
         
         textField.keyboardType = keyboardType
@@ -764,7 +874,10 @@ SLBoxTextFieldWithButtonDelegate
                 } else {
                     if !self.view.subviews.contains(self.loginButton) {
                         self.view.addSubview(self.loginButton)
+                        self.optionLabel.isHidden = false
+                        
                     }
+                    self.loginButton.isHidden = false
                 }
             } else {
                 if self.currentPhase == .Create {
@@ -778,6 +891,8 @@ SLBoxTextFieldWithButtonDelegate
                 } else {
                     if self.view.subviews.contains(self.loginButton) {
                         self.loginButton.removeFromSuperview()
+                        self.optionLabel.isHidden = true
+                        self.forgotPasswordButton.isHidden = true
                     }
                 }
             }

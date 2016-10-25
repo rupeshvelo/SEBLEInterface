@@ -15,6 +15,14 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     
     let codeLength:Int = 6
     
+    var resetFlag = false
+    
+    var userToken:String = ""
+    
+    var error:UInt = 0
+    
+    var phoneNumber:String = ""
+    
     lazy var exitButton:UIButton = {
         let image:UIImage = UIImage(named: "sign_in_close_icon")!
         let frame:CGRect = CGRect(
@@ -25,7 +33,6 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         )
         let button:UIButton = UIButton(frame: frame)
         button.setImage(image, for: UIControlState.normal)
-        button.isHidden = true
         button.addTarget(
             self,
             action: #selector(exitButtonPressed),
@@ -36,36 +43,81 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     }()
     
     lazy var verificationLabel:UILabel = {
-        let user:SLUser = (SLDatabaseManager.sharedManager() as! SLDatabaseManager).getCurrentUser()!
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let font = UIFont.systemFont(ofSize: 14)
-        let firstText = NSLocalizedString("A verification code was sent via SMS to ", comment: "")
-        let text = user.phoneNumber == nil ? firstText : firstText + user.phoneNumber!
-        let labelSize:CGSize = utility.sizeForLabel(
-            font:font,
-            text: text,
-            maxWidth: labelWidth,
-            maxHeight: CGFloat.greatestFiniteMagnitude,
-            numberOfLines: 0
-        )
+        let firstText = self.resetFlag ? NSLocalizedString("We’ve sent a 6 digit reset code to ", comment:"") : NSLocalizedString("A verification code was sent via SMS to ", comment: "")
+        let text = self.resetFlag ? firstText + self.phoneNumber + "  .Please enter it now" : firstText + self.phoneNumber
         
         let frame = CGRect(
-            x: self.xPadding,
+            x: self.xPadding + 2,
             y: 2.0*self.ySpacer,
             width: labelWidth,
-            height: labelSize.height
+            height: 2
         )
         
         let label:UILabel = UILabel(frame: frame)
         label.textColor = UIColor.white
         label.text = text
+        label.font = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 30)
         label.textAlignment = .center
-        label.font = font
         label.numberOfLines = 0
-        
+        label.adjustsFontSizeToFitWidth = true
+        label.sizeToFit()
         return label
     }()
+    
+    lazy var submitCodeButton:UIButton = {
+        let height:CGFloat = 55.0
+        let frame = CGRect(
+            x: 0.0,
+            y: self.view.bounds.size.height - height - 200,
+            width: self.view.bounds.size.width,
+            height: height
+        )
+        
+        let title = NSLocalizedString("SUBMIT CODE", comment: "")
+        let button:UIButton = UIButton(type: .system)
+        button.frame = frame
+        button.setTitle(title, for: .normal)
+        button.titleLabel?.textAlignment = NSTextAlignment.center
+        button.backgroundColor = UIColor(red: 87, green: 216, blue: 255)
+        button.setTitleColor(UIColor.white, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(submitCodeButtonPressed),
+            for: .touchDown
+        )
+        button.isHidden = true
+        return button
+    }()
+    
+    func submitCodeButtonPressed(){
+        
+        SLVerifyTextCode().verifyTextCode(phoneNumber: self.phoneNumber, verifyHint: self.codeEntryField.text!, userToken: "", completion: {(status, response) in
+            
+            if((status == 200 || status == 201) && response != nil)
+            {
+                
+                DispatchQueue.main.async {
+                    let spvc = SLSavePasswordViewController(phoneNumber: self.phoneNumber)
+                    self.present(spvc, animated: true, completion: nil)
+                    
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: "Code Verification Error", message: "Sorry: The Code you entered is not Valid. please try again", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("Error", comment: ""),style: .default, handler: nil))
+                    self.resendCodeButton.isHidden = false
+                    self.verificationLabel.isHidden = true
+                    self.submitCodeButton.isHidden = true
+                    self.codeEntryField.text = ""
+                self.present(alertController, animated: true, completion: nil)
+            }
+          }
+            
+      })
+    }
     
     lazy var codeEntryView:UIView = {
         let height:CGFloat = 62.0
@@ -83,6 +135,18 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     }()
     
     lazy var codeEntryField:UITextField = {
+        let toolBarFrame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width, height: 45.0)
+        let numberToolbar:UIToolbar = UIToolbar(frame: toolBarFrame)
+        numberToolbar.barStyle = UIBarStyle.default
+        numberToolbar.items = [
+            UIBarButtonItem(
+                title: NSLocalizedString("Done", comment: ""),
+                style: UIBarButtonItemStyle.plain,
+                target: self,
+                action: #selector(toolbarDoneButtonPressed)
+            )
+        ]
+        numberToolbar.sizeToFit()
         let xPadding:CGFloat = 10.0
         let labelWidth = self.codeEntryView.bounds.size.width - 2*xPadding
         let utility = SLUtilities()
@@ -105,7 +169,8 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
             string: NSLocalizedString("Enter code", comment: ""),
             attributes: [NSForegroundColorAttributeName : UIColor(red: 102, green: 177, blue: 227)]
         )
-        
+        field.returnKeyType = .done
+        field.inputAccessoryView = numberToolbar
         return field
     }()
     
@@ -121,9 +186,10 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(resendCodeButtonPressed), for: .touchDown)
         button.setTitle(NSLocalizedString("RESEND CODE", comment: ""), for: .normal)
-        button.setTitleColor(UIColor.white, for: .normal)
-        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 10.0)
-    
+        let color = self.resetFlag ? UIColor(red: 87, green: 216, blue: 255) : UIColor.white
+        button.setTitleColor(color, for: .normal)
+        button.titleLabel?.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
+        button.isHidden = true
         return button
     }()
     
@@ -151,6 +217,10 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         return button
     }()
     
+    func toolbarDoneButtonPressed() {
+        self.codeEntryField.resignFirstResponder()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -158,55 +228,89 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         
         self.view.addSubview(self.codeEntryView)
         self.codeEntryView.addSubview(self.codeEntryField)
+        self.view.addSubview(self.submitCodeButton)
         self.view.addSubview(self.verificationLabel)
         self.view.addSubview(self.resendCodeButton)
         self.view.addSubview(self.signUpButton)
+        self.view.addSubview(self.exitButton)
+
+        let widthConstraint = NSLayoutConstraint(item:         self.verificationLabel, attribute: .width, relatedBy: .equal,
+                                                 toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 250)
+        self.view.addConstraint(widthConstraint)
+        
+        let heightConstraint = NSLayoutConstraint(item:         self.verificationLabel, attribute: .height, relatedBy: .equal,
+                                                  toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 100)
+        self.view.addConstraint(heightConstraint)
+        
+        let xConstraint = NSLayoutConstraint(item:         self.verificationLabel, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: 0)
+        
+        let yConstraint = NSLayoutConstraint(item:         self.verificationLabel, attribute: .centerY, relatedBy: .equal, toItem: self.view, attribute: .centerY, multiplier: 1, constant: 0)
+        
+        self.view.addConstraint(xConstraint)
+        
+        self.view.addConstraint(yConstraint)
+        
+        
+    }
+    
+    override func viewDidAppear(_ animated:Bool) {
+        super.viewDidAppear(animated)
+        if(error == 1){
+            DispatchQueue.main.async {
+                let alertController = UIAlertController(title: "Generation of Verification Code Failed", message: "Sorry: Unable to send Verification Code. please try again", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""),style: .default, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
+            }
+            self.resendCodeButton.isHidden = false
+            self.verificationLabel.isHidden = true
+        } else {
+            
+            self.resendCodeButton.isHidden = true
+            self.verificationLabel.isHidden = false
+        }
+        
     }
     
     func resendCodeButtonPressed() {
-        print("resend code button pressed")
+        
+        let userToken = (self.resetFlag) ? "" : self.userToken
+        self.codeEntryField.text = ""
+        SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumber, userToken: userToken){(status: UInt?, response: [AnyHashable:Any]?) in
+            
+            if(status == 200 || status == 201 && response != nil){
+                DispatchQueue.main.async {
+                self.resendCodeButton.isHidden = true
+                self.verificationLabel.isHidden = false
+              }
+                
+            } else {
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: "Generation of Verification Code Failed", message: "Sorry: Unable to send Verification Code. please try again", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""),style: .default, handler: nil ))
+                    self.present(alertController, animated: true, completion: nil)
+                    self.resendCodeButton.isHidden = false
+                    self.verificationLabel.isHidden = true
+                    self.codeEntryField.text = ""
+                }
+                
+            }
+            
+            
+        }
+
     }
     
     func exitButtonPressed() {
-        self.codeEntryField.resignFirstResponder()
+        self.dismiss(animated: true, completion: nil)
     }
     
     func signUpButtonPressed() {
-        guard let user:SLUser = (SLDatabaseManager.sharedManager() as! SLDatabaseManager).getCurrentUser() else {
-            // TODO: present error to user
-            return
-        }
+        let userToken = (self.resetFlag) ? "" : self.userToken
         
-        guard let userId = user.userId else {
-            // TODO: present error to user
-            return
-        }
-        
-        let keychainHandeler = SLKeychainHandler()
-        guard let restToken = keychainHandeler.getItemForUsername(
-            userName: userId,
-            additionalSeviceInfo: nil,
-            handlerCase: SLKeychainHandlerCase.RestToken
-        ) else {
-            // TODO: present error to user
-            return
-        }
-        
-        let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
-        let headers = [
-            "Authorization": restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
-        ]
-        let subRoutes:[String] = [user.userId!,restManager.path(asString: .phoneCodeVerification)]
-        let postObject = ["verify_hint": self.codeEntryField.text!]
-        
-        restManager.postObject(
-        postObject,
-        serverKey: .main,
-        pathKey: .users,
-        subRoutes: subRoutes,
-        additionalHeaders: headers)
-        { (status:UInt, payload:[AnyHashable: Any]?) -> Void in
-            if status == 201 && payload != nil {
+        SLVerifyTextCode().verifyTextCode(phoneNumber: self.phoneNumber, verifyHint: self.codeEntryField.text!, userToken: userToken, completion: {(status, response) in
+            
+            if((status == 200 || status == 201) && response != nil)
+            {
                 let userDefaults = UserDefaults.standard
                 userDefaults.set(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
@@ -223,21 +327,29 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
                         nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
                         self.present(nc, animated: true, completion: nil)
                     }
-                }
+                
+              }
+                
             } else {
-                // Handle errors here. Should show a popup
+                DispatchQueue.main.async {
+                let alertController = UIAlertController(title: "Code Verification Failed", message: "Sorry: The Code you entered is not Valid. please try again", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""),style: .default, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
+                self.resendCodeButton.isHidden = false
+                if(!self.resetFlag){
+                    self.signUpButton.isHidden = true
+                }
+                if(self.resetFlag){
+                    self.submitCodeButton.isHidden = true
+                }
+                self.verificationLabel.isHidden = true
+              }
             }
-        }
+            
+        })
+        
     }
     
-    // MARK: UITextFieldDelegate methods
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.exitButton.isHidden = false
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.exitButton.isHidden = true
-    }
     
     func textField(
         _ textField: UITextField,
@@ -250,9 +362,38 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
             if newText.characters.count > self.codeLength {
                 return false
             }
-            self.signUpButton.isHidden = newText.characters.count < self.codeLength
+            self.signUpButton.isHidden = !(resetFlag) ? newText.characters.count < self.codeLength : true
+            
+            self.submitCodeButton.isHidden = (resetFlag) ? newText.characters.count < self.codeLength : true
+            
+            if(!self.submitCodeButton.isHidden){
+                self.resendCodeButton.isHidden = (newText.characters.count == self.codeLength) ? true : false
+            }
+
         }
         
         return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+      self.codeEntryField.text = ""
+        if(self.resetFlag){
+            self.submitCodeButton.isHidden = true
+        } else {
+            self.signUpButton.isHidden = true
+        }
+    }
+
+    
+    init(phoneNumber:String, resetFlag:Bool, error:UInt, token:String) {
+        self.phoneNumber = phoneNumber
+        self.resetFlag = resetFlag
+        self.error = error
+        self.userToken = token
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
