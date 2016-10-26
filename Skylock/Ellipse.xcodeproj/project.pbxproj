@@ -135,6 +135,10 @@
 		65D9DA8A1D5D459400A909AA /* SLTouchSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */; };
 		65D9DA911D5E9E3400A909AA /* SLUser+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */; };
 		65D9DA931D625E7400A909AA /* SLLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D9DA921D625E7400A909AA /* SLLockManager.swift */; };
+		824276371DC08918003DC8DD /* SLSavePassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824276341DC08918003DC8DD /* SLSavePassword.swift */; };
+		824276381DC08918003DC8DD /* SLSendTextCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824276351DC08918003DC8DD /* SLSendTextCode.swift */; };
+		824276391DC08918003DC8DD /* SLVerifyTextCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824276361DC08918003DC8DD /* SLVerifyTextCode.swift */; };
+		8242763C1DC089D9003DC8DD /* SLSavePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8242763B1DC089D9003DC8DD /* SLSavePasswordViewController.swift */; };
 		AB66EEB3A0A831FE285CD228 /* SkylockColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66E177922F1A8561753E36 /* SkylockColors.swift */; };
 		DC0250161C81F00A00208508 /* SLUserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0250151C81F00A00208508 /* SLUserHandler.swift */; };
 		DC04279F1B2EF118008F3DDE /* libSEBLEInterface.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC04279C1B2EF073008F3DDE /* libSEBLEInterface.a */; };
@@ -542,6 +546,10 @@
 		65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLUser+CoreDataProperties.m"; sourceTree = "<group>"; };
 		65D9DA921D625E7400A909AA /* SLLockManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLockManager.swift; sourceTree = "<group>"; };
 		714661567D1CFEF65597C139 /* Pods-Ellipse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ellipse.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ellipse/Pods-Ellipse.release.xcconfig"; sourceTree = "<group>"; };
+		824276341DC08918003DC8DD /* SLSavePassword.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSavePassword.swift; sourceTree = "<group>"; };
+		824276351DC08918003DC8DD /* SLSendTextCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSendTextCode.swift; sourceTree = "<group>"; };
+		824276361DC08918003DC8DD /* SLVerifyTextCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLVerifyTextCode.swift; sourceTree = "<group>"; };
+		8242763B1DC089D9003DC8DD /* SLSavePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSavePasswordViewController.swift; sourceTree = "<group>"; };
 		8D8BD420DBB71D6EFE8B2BF0 /* Pods_Skylock.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Skylock.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB66E177922F1A8561753E36 /* SkylockColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SkylockColors.swift; sourceTree = "<group>"; };
 		B944E2A091EB36ABA618B515 /* Pods-Skylock.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Skylock.release.xcconfig"; path = "Pods/Target Support Files/Pods-Skylock/Pods-Skylock.release.xcconfig"; sourceTree = "<group>"; };
@@ -1109,6 +1117,7 @@
 		DC0520C81B4C0EC500FBAAB7 /* controllers */ = {
 			isa = PBXGroup;
 			children = (
+				8242763B1DC089D9003DC8DD /* SLSavePasswordViewController.swift */,
 				DCBAAAE01D03ED380000C6AA /* SLAcceptNotificationsViewController.swift */,
 				6505646A1D6DDF2500201466 /* SLBaseViewController.swift */,
 				65D9DA891D5D459400A909AA /* SLTouchSliderViewController.swift */,
@@ -1165,6 +1174,9 @@
 		DC0520C91B4C0EFE00FBAAB7 /* models */ = {
 			isa = PBXGroup;
 			children = (
+				824276341DC08918003DC8DD /* SLSavePassword.swift */,
+				824276351DC08918003DC8DD /* SLSendTextCode.swift */,
+				824276361DC08918003DC8DD /* SLVerifyTextCode.swift */,
 				659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */,
 				659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */,
 				65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */,
@@ -1594,6 +1606,7 @@
 						CreatedOnToolsVersion = 6.3.2;
 						DevelopmentTeam = 4WD59CZ9Z6;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1954,7 +1967,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1974,6 +1987,7 @@
 				DC10D25B1C52C86000C8F023 /* SLLoginTextField.swift in Sources */,
 				DC535E6C1D52BE82006D5CDE /* SLLogoutViewController.swift in Sources */,
 				DC77BF5E1D09F5DD0081C7B6 /* SLLockSettingsViewController.swift in Sources */,
+				8242763C1DC089D9003DC8DD /* SLSavePasswordViewController.swift in Sources */,
 				DC6DB57F1D04DFE700B159B3 /* SLLockViewController.swift in Sources */,
 				DCAAEBBF1D32E49A00946B61 /* SLEmergenyContactTableViewCell.swift in Sources */,
 				DCE2CE0F1B375FB8007C4AC5 /* SLNavigationViewController.m in Sources */,
@@ -2024,6 +2038,7 @@
 				DC2E04F71B3EEA2200B7D6F6 /* SLContact.m in Sources */,
 				DC7E70D01B8C3382006E74DC /* SLNotificationManager.m in Sources */,
 				DCC1E73F1B49800B0083A665 /* SLDatabaseManager.m in Sources */,
+				824276381DC08918003DC8DD /* SLSendTextCode.swift in Sources */,
 				DC4402721B9BAE5900D1C2B9 /* SLDbLockSharedContact.m in Sources */,
 				DCF41CA91CE7F56C008C17DE /* SLLog.m in Sources */,
 				DC17ACB51B5C6B620090BE8A /* UIImage+Skylock.m in Sources */,
@@ -2048,6 +2063,7 @@
 				DCFFF31D1B8EB94D0076C167 /* SLAccelerometerValues.m in Sources */,
 				DC156BD71C5D240D00015B53 /* SLUser.m in Sources */,
 				DC3003751D440EEF004CE560 /* SLTheftNotificationViewController.swift in Sources */,
+				824276391DC08918003DC8DD /* SLVerifyTextCode.swift in Sources */,
 				DC17ACAE1B5C3C3B0090BE8A /* SLPicManager.m in Sources */,
 				DCD82FE11B1FCBBC00B38910 /* Skylock.xcdatamodeld in Sources */,
 				DCF945011B29CC2E00136E39 /* SLRestManager.m in Sources */,
@@ -2058,6 +2074,7 @@
 				65ACCE211DA59624009525C6 /* SLData.swift in Sources */,
 				65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */,
 				DC3CCE2A1BA3534000528992 /* SLDirectionsTableViewCell.m in Sources */,
+				824276371DC08918003DC8DD /* SLSavePassword.swift in Sources */,
 				DC4402591B98EEB300D1C2B9 /* SLTouchPadView.swift in Sources */,
 				DCD82FE41B1FCBBC00B38910 /* SLMapViewController.m in Sources */,
 				DC3CCE041BA30ED000528992 /* SLDirection.swift in Sources */,
@@ -2229,7 +2246,7 @@
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4WD59CZ9Z6;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2247,8 +2264,8 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "867f4235-a832-46c2-ac6a-dcc4cf7dda94";
-				PROVISIONING_PROFILE_SPECIFIER = "Ellipse-2016-10-24-Development";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2266,10 +2283,10 @@
 				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				CODE_SIGN_ENTITLEMENTS = Ellipse.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Velo Labs Inc. (4WD59CZ9Z6)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Velo Labs Inc. (4WD59CZ9Z6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 4WD59CZ9Z6;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2287,8 +2304,8 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = www.skylock.Ellipse;
 				PRODUCT_NAME = Ellipse;
-				PROVISIONING_PROFILE = "bdc997b7-788c-40fe-899e-d72294ee5e35";
-				PROVISIONING_PROFILE_SPECIFIER = "Ellipse-2016-10-24-Production";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_OBJC_BRIDGING_HEADER = "Skylock/Skylock-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;

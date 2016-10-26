@@ -49,7 +49,7 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         let text = self.resetFlag ? firstText + self.phoneNumber + "  .Please enter it now" : firstText + self.phoneNumber
         
         let frame = CGRect(
-            x: self.xPadding + 2,
+            x: self.xPadding + 2.0,
             y: 2.0*self.ySpacer,
             width: labelWidth,
             height: 2
@@ -384,6 +384,15 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        if(self.resetFlag){
+            self.submitCodeButton.isHidden =  !((self.codeEntryField.text?.characters.count)! > 0)
+        } else {
+            self.signUpButton.isHidden = !((self.codeEntryField.text?.characters.count)! > 0)
+
+        }
+    }
     
     init(phoneNumber:String, resetFlag:Bool, error:UInt, token:String) {
         self.phoneNumber = phoneNumber

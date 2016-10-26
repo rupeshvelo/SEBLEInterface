@@ -25,10 +25,10 @@ class SLSavePasswordViewController: UIViewController, UITextFieldDelegate, SLBox
         
         let labelWidth = self.view.bounds.size.width - 2*self.xPadding
         let utility = SLUtilities()
-        let text = "Now create a new password for your account:"
+        let text = NSLocalizedString("Now create a new password for\n your account:", comment: "")
         
         let frame = CGRect(
-            x: self.passwordField.frame.minX,
+            x: self.passwordField.frame.minX + 2,
             y: 2.0*self.yFieldSpacer + 8,
             width: labelWidth,
             height: 2
@@ -39,7 +39,8 @@ class SLSavePasswordViewController: UIViewController, UITextFieldDelegate, SLBox
         label.text = text
         label.font = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 30)
         label.textAlignment = .center
-        label.numberOfLines = 0
+        label.numberOfLines = 2
+        label.lineBreakMode = .byWordWrapping
         label.adjustsFontSizeToFitWidth = true
         label.sizeToFit()
         return label
@@ -234,7 +235,10 @@ class SLSavePasswordViewController: UIViewController, UITextFieldDelegate, SLBox
         self.passwordField.text = ""
         self.savePasswordButton.isHidden = true
     }
-    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        self.savePasswordButton.isHidden = !((self.passwordField.text?.characters.count)! > 0)
+    }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

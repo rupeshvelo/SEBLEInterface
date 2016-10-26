@@ -29,7 +29,12 @@ SLBoxTextFieldWithButtonDelegate
     private enum ResponseError {
         case InternalServer
         case SignInFailure
+        case SignUpFailure
     }
+    
+    var verified = 0
+    
+    var fieldLength = 0
     
     var textFieldSize:CGSize = CGSize.zero
     
@@ -254,7 +259,6 @@ SLBoxTextFieldWithButtonDelegate
             width: 23,
             height: 9
         )
-
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(forgotPasswordButtonPressed), for: .touchDown)
@@ -268,24 +272,16 @@ SLBoxTextFieldWithButtonDelegate
     }()
     
     
-    func forgotPasswordButtonPressed(){
-        
+    func forgotPasswordButtonPressed() {
         SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: "", callback: {(status: UInt, response: [AnyHashable: Any]?) in
-            
             DispatchQueue.main.async{
                 
-                var errorFlag = 1
-                if((status == 200 || status == 201) && (response != nil)){
-                    
-                    errorFlag = 0
-                    
-                }
-                
+                let errorFlag:UInt = ((status == 200 || status == 201) && (response != nil)) ? 0 : 1
+
                 let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:true, error: UInt(errorFlag), token: "")
                 
                 self.present(ctvc, animated: true, completion: nil)
             }
-            
         })
     }
 
@@ -571,26 +567,26 @@ SLBoxTextFieldWithButtonDelegate
                 }
             } else {
                 
+                self.verified = response["user"]?["verified"] as! Int
                 
+                if  self.verified == 0{
                 SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: userToken, callback: {(status: UInt, response: [AnyHashable: Any]?) in
                     
                     DispatchQueue.main.async{
                         
-                        var errorFlag = 1
-                        if((status == 200 || status == 201) && (response != nil)){
-                            
-                            errorFlag = 0
-                            
-                        }
+                        let errorFlag:UInt = ((status == 200 || status == 201) && (response != nil)) ? 0 : 1
                         
-                        let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:false,
-                                                                   error: UInt(errorFlag), token: userToken)
+                        let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:false,error: UInt(errorFlag),
+                                                                   token: userToken)
                         
                         self.present(ctvc, animated: true, completion: nil)
                     }
                     
                  })
-                
+                } else {
+                    self.presentWarningController(errorType: .SignUpFailure)
+                    
+                }
             }
         })
     }
@@ -641,6 +637,13 @@ SLBoxTextFieldWithButtonDelegate
                     + "You can also sign up using your Facebook account.",
                 comment: ""
             )
+        case .SignUpFailure:
+            info = NSLocalizedString(
+                "Sorry. Unable to send Phone Verification right now, since you are already a verified user. Please check your info and try again. "
+                    + "You can also sign up using your Facebook account.",
+                comment: ""
+            )
+            
         }
         
         let texts:[SLWarningViewControllerTextProperty:String?] = [
@@ -841,15 +844,24 @@ SLBoxTextFieldWithButtonDelegate
             // on the user's first keystroke
             self.fieldValues[.Password] = ""
             self.passwordField.text = ""
-            if self.currentPhase == .SignIn{
-                self.loginButton.isHidden = true
-            }
         }
-        
+        if(self.currentPhase == .SignIn){
+            self.loginButton.isHidden = true
+        } else {
+            self.sendTextButton.isHidden = true
+        }
         textField.keyboardType = keyboardType
         textField.returnKeyType = .done
     }
-    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        if(self.currentPhase == .SignIn){
+           self.loginButton.isHidden =  !((self.passwordField.text?.characters.count)! > 0 && (self.phoneNumberField.text?.characters.count)! > 0)
+           self.optionLabel.isHidden =  !((self.passwordField.text?.characters.count)! > 0 && (self.phoneNumberField.text?.characters.count)! > 0)
+        } else {
+            self.sendTextButton.isHidden = !((self.emailField.text?.characters.count)! > 0 && (self.passwordField.text?.characters.count)! > 0 && (self.phoneNumberField.text?.characters.count)! > 0)
+        }
+    }
     func textField(
         _ textField: UITextField,
         shouldChangeCharactersIn range: NSRange,

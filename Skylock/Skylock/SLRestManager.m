@@ -70,6 +70,14 @@
         case SLRestManagerPathKeyPhoneCodeVerification:
             url = @"phoneverify/";
             break;
+        case SLRestManagerPathKeyPasswordReset:
+            url = @"passwordreset/";
+            break;
+        case SLRestManagerPathKeyPasswordCode:
+            url = @"passwordcode/";
+            break;
+        case SLRestManagerPathKeyNewPassword:
+            url = @"password/";
         default:
             break;
     }
