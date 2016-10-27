@@ -675,7 +675,6 @@ SLBoxTextFieldWithButtonDelegate
             if self.currentPhase == .SignIn && key == .Email {
                 continue
             }
-            
             var isValid = true
             if value == "" {
                 isValid = false
@@ -872,6 +871,11 @@ SLBoxTextFieldWithButtonDelegate
             let tempText:NSString = text as NSString
             let newText = tempText.replacingCharacters(in: range, with: string)
             self.fieldValues[fieldName] = newText as String
+            if ((textField == self.passwordField && newText.characters.count > self.passwordMaxLength || textField == self.phoneNumberField && newText.characters.count > self.maximumPhoneNumberLength))
+            {
+                
+                return false
+            }
             if self.areFieldsValid() {
                 if self.currentPhase == .Create {
                     if self.hasSentTextMessage {
