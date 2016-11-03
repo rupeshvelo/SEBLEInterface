@@ -8,8 +8,14 @@
 
 import UIKit
 
-enum SLLockManagerConnectionError:UInt {
-    case NotAuthorized = 0
+enum SLLockManagerConnectionError {
+    case NotAuthorized
+    case NoUser
+    case MissingKeys
+    case IncorrectKeys
+    case InvalidSecurityState
+    case NoRestToken
+    case Default
 }
 
 class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegate {
@@ -170,7 +176,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 // been detected there.
                 self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!)
             } else if !lock.hasConnected!.boolValue && !lock.isConnecting!.boolValue {
-                // In this case, the lock was deteted durring a scan, but was never 
+                // In this case, the lock was detected during a scan, but was never 
                 // connected. We can get rid of these locks from the blue tooth manager
                 // and the database.
                 self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!)
@@ -246,7 +252,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         
         var unconnectedLocks = [SLLock]()
         for lock in locks {
-            if let isCurrentLock = lock.isCurrentLock, !isCurrentLock.boolValue {
+            if !self.bleManager.hasConnectedPeripheral(withKey: lock.macAddress!) {
                 unconnectedLocks.append(lock)
             }
         }
@@ -722,9 +728,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             ) else
         {
             print("Error: could not get singed message and public key. No rest token for user: \(user.fullName()).")
-            let info:[String: Any] = [
+            let info:[String: Any?] = [
                 "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                "code": NSNumber(value: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                "error": SLLockManagerConnectionError.NoRestToken,
+                "message": self.textForConnectionError(error: .NoRestToken)
             ]
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
@@ -743,12 +750,26 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             subRoutes: [user.userId!, "keys"],
             additionalHeaders: ["Authorization": authValue]
         ) { (status:UInt, response:[AnyHashable : Any]?) in
-            // TODO: Check what the status is if there is an error and present the correct UI.
+            if status == 400 {
+                print("lock: \(macAddress) belongs to another user")
+                let info:[String: Any?] = [
+                    "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                    "error": SLLockManagerConnectionError.NotAuthorized,
+                    "message": self.textForConnectionError(error: .NotAuthorized)
+                ]
+                NotificationCenter.default.post(
+                    name: Notification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                    object: info
+                )
+                return
+            }
+            
             guard let signedMessage = response?["signed_message"] as? String else {
                 print("Error: no signed message in response from server.")
-                let info:[String: Any] = [
+                let info:[String: Any?] = [
                     "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                    "code": NSNumber(value: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                    "error": SLLockManagerConnectionError.MissingKeys,
+                    "message": self.textForConnectionError(error: .MissingKeys)
                 ]
                 NotificationCenter.default.post(
                     name: Notification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
@@ -759,9 +780,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             
             guard let publicKey = response?["public_key"] as? String else {
                 print("Error: no public key in response from server.")
-                let info:[String: Any] = [
+                let info:[String: Any?] = [
                     "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                    "code": NSNumber(value: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                    "error": SLLockManagerConnectionError.MissingKeys,
+                    "message": self.textForConnectionError(error: .MissingKeys)
                 ]
                 NotificationCenter.default.post(
                     name: Notification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
@@ -987,6 +1009,42 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         )
     }
     
+    private func textForConnectionError(error: SLLockManagerConnectionError) -> String {
+        // TODO: This methods should be moved to another class. Having it in the lock manager
+        // is a bit cumbersome and is bad encapsulation.
+        let text:String
+        switch error {
+        case .NotAuthorized:
+            text = NSLocalizedString(
+                "Sorry. This Ellipse belongs to another user. We can't add it to your account.",
+                comment: ""
+            )
+        case .NoUser:
+            text = NSLocalizedString(
+                "Sorry. We're not able to connect to your Ellipse right now. We had a problem finding your user.",
+                comment: ""
+            )
+        case .MissingKeys:
+            text = NSLocalizedString("Sorry. We couldn't find the keys for your Ellipse on your device.", comment: "")
+        case .IncorrectKeys:
+            text = NSLocalizedString("Sorry. The keys for your Ellipse are not correct.", comment: "")
+        case .InvalidSecurityState:
+            text = NSLocalizedString(
+                "Sorry. The Ellipse you are trying to connect to is in an invalid security state.",
+                comment: ""
+            )
+        case .NoRestToken:
+            text = NSLocalizedString(
+                "Sorry. We're having trouble authenticating you with our servers at the current time.",
+                comment: ""
+            )
+        case .Default:
+            text = NSLocalizedString("Sorry. There was an error connecting to your Ellipse", comment: "")
+        }
+    
+        return text
+    }
+    
     // MARK: Update handlers
     private func handleCommandStatusUpdateForLockMacAddress(macAddress: String, data: NSData) {
         guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
@@ -1071,18 +1129,61 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             )
         } else if value == 129 {
             // If the value is 129, it signals that "Access denied because of invalid security state."
-            // If there is no signed message, or public key this could occur. To fix this we can
+            // If there is no signed message, or no public key this could occur. To fix this we can
             // refetch the keys from the server and try writing this again.
             print("Error: command status got invalid security state error.")
-            let info = [
-                "lock": lock,
-                "code": NSNumber(value: SLLockManagerConnectionError.NotAuthorized.rawValue)
-            ]
+            guard let user = self.dbManager.getCurrentUser() else {
+                print(
+                    "Error: Could not handle command status update for lock with mac address: \(macAddress). " +
+                    "No user found in database"
+                )
+                
+                let info:[String: Any?] = [
+                    "lock": lock,
+                    "error": SLLockManagerConnectionError.NoUser,
+                    "message": self.textForConnectionError(error: .NoUser)
+                ]
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                    object: info
+                )
+                return
+            }
             
-            NotificationCenter.default.post(
-                name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: info
-            )
+            if self.keychainHandler.getItemForUsername(
+                userName: user.userId!,
+                additionalSeviceInfo: macAddress,
+                handlerCase: .SignedMessage
+            ) == nil ||
+                self.keychainHandler.getItemForUsername(
+                    userName: user.userId!,
+                    additionalSeviceInfo: macAddress,
+                    handlerCase: .PublicKey
+                ) == nil
+            {
+                let info:[String:Any?] = [
+                    "lock": lock,
+                    "error": SLLockManagerConnectionError.MissingKeys,
+                    "message": self.textForConnectionError(error: .MissingKeys)
+                ]
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                    object: info
+                )
+            } else {
+                let info:[String:Any?] = [
+                    "lock": lock,
+                    "error": SLLockManagerConnectionError.InvalidSecurityState,
+                    "message": self.textForConnectionError(error: .InvalidSecurityState)
+                ]
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                    object: info
+                )
+            }
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
             // Although this is not very good encapsulation (the lock/unlock characteristic is
@@ -1183,7 +1284,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     private func handleAccelerometerForLockMacAddress(macAddress: String, data: NSData) {
-        
         var xmav:UInt16 = 0
         var ymav:UInt16 = 0
         var zmav:UInt16 = 0
@@ -1235,9 +1335,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     private func handleChallengeDataForLockMacAddress(macAddress: String, data: NSData) {
         if data.length != 32 {
             print("Error: challenge data from lock is not 32 bytes")
+            let info:[String: Any?] = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "error": SLLockManagerConnectionError.IncorrectKeys,
+                "message": self.textForConnectionError(error: .IncorrectKeys)
+            ]
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: nil
+                object: info
             )
             return
         }
@@ -1247,9 +1352,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 "Error: could not write challege data for lock with address: \(macAddress). "
                     + "Could not retrieve user from the database"
             )
+            let info:[String: Any?] = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "error": SLLockManagerConnectionError.NoUser,
+                "message": self.textForConnectionError(error: .NoUser)
+            ]
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: nil
+                object: info
             )
             return
         }
@@ -1264,9 +1374,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 "Error: could not write challege data for lock with address: \(macAddress). "
                 + "Could not retrieve challege key from the keychain"
             )
+            let info:[String: Any?] = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "error": SLLockManagerConnectionError.MissingKeys,
+                "message": self.textForConnectionError(error: .MissingKeys)
+            ]
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: nil
+                object: info
             )
             return
         }
@@ -1353,9 +1468,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     private func handlePublicKeyConnectionPhaseForMacAddress(macAddress: String) {
         guard let user = self.dbManager.getCurrentUser() else {
             print("Error: could not enter public key connection phase. No user.")
-            let info:[String: AnyObject?] = [
+            let info:[String: Any?] = [
                 "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                "code": NSNumber(value: SLLockManagerConnectionError.NotAuthorized.rawValue)
+                "error": SLLockManagerConnectionError.NoUser,
+                "message": self.textForConnectionError(error: .NoUser)
             ]
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
@@ -1399,6 +1515,16 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             handlerCase: .RestToken
             ) else
         {
+            let info:[String: Any?] = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "error": SLLockManagerConnectionError.NoRestToken,
+                "message": self.textForConnectionError(error: .NoRestToken)
+            ]
+            NotificationCenter.default.post(
+                name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                object: info
+            )
+            
             print("Error: keychain handler does not have a rest token for user \(user.fullName()).")
             return
         }
@@ -1459,7 +1585,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
         
         guard let data = signedMessage.bytesString() else {
-            print("Error: could not converted signed messsage to bytes")
+            print("Error: could not convert signed messsage to bytes")
             return
         }
         
@@ -1693,8 +1819,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     func bleInterfaceManager(
         _ interfaceManager: SEBLEInterfaceMangager!,
-        wroteValueToPeripheralNamed peripheralName: String!,
-                                    forUUID uuid: String!,
+        wroteValueToPeripheralNamed peripheralName: String,
+                                    forUUID uuid: String,
                                             withWriteSuccess success: Bool
         )
     {
@@ -1739,9 +1865,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     public func bleInterfaceManager(
         _ interfaceManager: SEBLEInterfaceMangager!,
-        updatedPeripheralNamed peripheralName: String!,
-        forCharacteristicUUID characteristicUUID: String!,
-        with data: Data!)
+        updatedPeripheralNamed peripheralName: String,
+        forCharacteristicUUID characteristicUUID: String,
+        with data: Data)
     {
         guard let macAddress = peripheralName.macAddress() else {
             print(

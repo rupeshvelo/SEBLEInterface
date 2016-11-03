@@ -419,14 +419,14 @@ SLBoxTextFieldWithButtonDelegate
         
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name.UIKeyboardWillShow,
-            object: self,
+            object: nil,
             queue: nil,
             using: keyboardWillShow
         )
         
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name.UIKeyboardWillHide,
-            object: self,
+            object: nil,
             queue: nil,
             using: keyboardWillHide
         )

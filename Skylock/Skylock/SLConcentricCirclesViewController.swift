@@ -215,29 +215,14 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     }
     
     func lockConnectionError(notification: Notification) {
-        guard let notificationObject = notification.object as? [String: AnyObject] else {
+        guard let notificationObject = notification.object as? [String: Any?] else {
+            print("no connection error in notification for method: lockConnectionError")
             return
         }
         
-        var info:String?
-        if let code = notificationObject["code"] as? NSNumber {
-            if code.uintValue == 0 {
-                info = NSLocalizedString(
-                    "Sorry. This lock belongs to another user. We can't add it to your account.",
-                    comment: ""
-                )
-            }
-        }
-        
-        if info == nil {
-            if let lock = notificationObject["lock"] as? SLLock {
-                info = NSLocalizedString(
-                    "Sorry. There was an error connecting to the lock \(lock.displayName())",
-                    comment: ""
-                )
-            } else {
-                info = NSLocalizedString("Sorry. There was an error connecting to the lock", comment: "")
-            }
+        guard let info = notificationObject["message"] as? String else {
+            print("no connection error messsage in notification for method: lockConnectionError")
+            return
         }
         
         let texts:[SLWarningViewControllerTextProperty:String?] = [
