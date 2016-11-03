@@ -68,11 +68,6 @@ import UIKit
 
         self.navigationItem.leftBarButtonItem = backButton
         
-        let lockManager = SLLockManager.sharedManager
-        if lockManager.isBlePoweredOn() && !lockManager.isInActiveSearch() {
-            lockManager.startActiveSearch()
-        }
-        
         self.setHeaderTextForNumberOfLocks(numberOfLocks: self.locks.count)
         
         NotificationCenter.default.addObserver(
@@ -99,11 +94,12 @@ import UIKit
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        for lock in SLLockManager.sharedManager.locksInActiveSearch() {
-            self.addLock(lock: lock)
+        let lockManager = SLLockManager.sharedManager
+        if lockManager.isBlePoweredOn() && !lockManager.isInActiveSearch() {
+            lockManager.startActiveSearch()
         }
         
+        self.locks = SLLockManager.sharedManager.locksInActiveSearch()
         self.tableView.reloadData()
     }
     
@@ -120,6 +116,7 @@ import UIKit
             self.locks.append(lock)
         }
     }
+    
     func foundLock(notification: Notification) {
         guard let lock = notification.object as? SLLock else {
             print("Error: found lock but it was not included in notification")
