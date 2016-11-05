@@ -1183,6 +1183,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
                     object: info
                 )
+                
+                
             }
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.

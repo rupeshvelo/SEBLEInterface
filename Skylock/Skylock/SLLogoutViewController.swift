@@ -8,7 +8,7 @@
 
 class SLLogoutViewController: UIViewController {
     let buttonHeight:CGFloat = 55.0
-    
+    var userId:String = ""
     lazy var closeButton:UIButton = {
         let padding:CGFloat = 20.0
         let image:UIImage = UIImage(named: "close_x_white_icon")!
@@ -120,7 +120,9 @@ class SLLogoutViewController: UIViewController {
             lockManager.disconnectFromCurrentLock(completion: { [unowned lockManager] in
                 lockManager.endActiveSearch()
             })
-            
+            if(!SLKeychainHandler().deleteItemForUsername(userName: self.userId, additionalServiceInfo: nil, handlerCase: .Password)){
+                print ("Error: Failed to delete item from keyChain")
+            }
             user.isCurrentUser = NSNumber(value: false)
             dbManager.save(user, withCompletion: nil)
             
@@ -128,5 +130,14 @@ class SLLogoutViewController: UIViewController {
             let appDelegate:SLAppDelegate = UIApplication.shared.delegate as! SLAppDelegate
             appDelegate.window.rootViewController = svc
         }
+    }
+    
+    init(userId: String) {
+        self.userId = userId
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

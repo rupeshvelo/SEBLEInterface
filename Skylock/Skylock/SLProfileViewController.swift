@@ -9,9 +9,10 @@
 import UIKit
 
 class SLProfileViewController:
-    UIViewController,
+    SLBaseViewController,
     UITableViewDelegate,
     UITableViewDataSource,
+    UITextFieldDelegate,
     SLLabelAndSwitchCellDelegate,
     SLOpposingLabelsTableViewCellDelegate,
     UIImagePickerControllerDelegate,
@@ -20,9 +21,15 @@ class SLProfileViewController:
     private enum UserProperty {
         case FirstName
         case LastName
-        case Password
+        case PhoneNumber
         case Email
     }
+    
+    private enum ResponseError {
+        case InternalServer
+    }
+    
+    let user:SLUser = (SLDatabaseManager.sharedManager() as! SLDatabaseManager).getCurrentUser()!
     
     private var keyboardShowing:Bool = false
     
@@ -36,20 +43,18 @@ class SLProfileViewController:
             NSLocalizedString("Email address", comment: ""),
         ],
         [
-            NSLocalizedString("Change first name", comment: ""),
-            NSLocalizedString("Change last name", comment: ""),
-            NSLocalizedString("Change my number", comment: ""),
             NSLocalizedString("Change my password", comment: ""),
+            //NSLocalizedString("Change my number", comment: ""),
             //NSLocalizedString("Delete my account", comment: ""),
             NSLocalizedString("Logout", comment: "")
         ]
     ]
     
-    private var changedUserProperties: [UserProperty:String?] = [
-        .FirstName: nil,
-        .LastName: nil,
-        .Password: nil,
-        .Email: nil
+    private var changedUserProperties:[UserProperty:String] = [
+        .FirstName: "",
+        .LastName: "",
+        .PhoneNumber: "",
+        .Email: ""
     ]
     
     let headerHeight:CGFloat = 50.0
@@ -59,11 +64,10 @@ class SLProfileViewController:
             x: 0.0,
             y: 0.0,
             width: self.view.bounds.size.width,
-            height: 280.0
+            height: self.view.bounds.size.width
         )
         
         let imageView:UIImageView = UIImageView(frame: frame)
-        
         return imageView
     }()
     
@@ -87,8 +91,9 @@ class SLProfileViewController:
         let table:UITableView = UITableView(frame: self.view.bounds, style: .grouped)
         table.dataSource = self
         table.delegate = self
-        table.rowHeight = 55.0
+        table.rowHeight = 42.0
         table.backgroundColor = UIColor.white
+        table.allowsSelectionDuringEditing = true
         table.register(
             SLOpposingLabelsTableViewCell.self,
             forCellReuseIdentifier: String(describing: SLOpposingLabelsTableViewCell.self)
@@ -99,6 +104,14 @@ class SLProfileViewController:
         )
         
         return table
+    }()
+    
+    lazy var imagePickerController:UIImagePickerController = {
+        let imagePicker:UIImagePickerController = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = false
+        
+        return imagePicker
     }()
     
     lazy var alertViewController:UIAlertController = {
@@ -113,28 +126,22 @@ class SLProfileViewController:
             title: NSLocalizedString("Choose photo...", comment: ""),
             style: .default,
             handler: { _ in
-                if let this = weakSelf , UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-                    let imagePicker = UIImagePickerController()
-                    imagePicker.delegate = self
-                    imagePicker.sourceType = .photoLibrary;
-                    imagePicker.allowsEditing = true
-                    this.present(imagePicker, animated: true, completion: nil)
+                if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+                    self.imagePickerController.sourceType = .photoLibrary
+                    self.present(self.imagePickerController, animated: true, completion: nil)
                 }
-            }
+        }
         )
         
         let takePhotoAction = UIAlertAction(
             title: NSLocalizedString("Take a new photo", comment: ""),
             style: .default,
             handler: { _ in
-                if let this = weakSelf , UIImagePickerController.isSourceTypeAvailable(.camera) {
-                    let imagePicker = UIImagePickerController()
-                    imagePicker.delegate = self
-                    imagePicker.sourceType = .camera;
-                    imagePicker.allowsEditing = true
-                    this.present(imagePicker, animated: true, completion: nil)
+                if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                    self.imagePickerController.sourceType = .camera
+                    self.present(self.imagePickerController, animated: true, completion: nil)
                 }
-            }
+        }
         )
         
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -146,7 +153,6 @@ class SLProfileViewController:
     }()
     
     deinit {
-        print("deinit called")
         NotificationCenter.default.removeObserver(self)
     }
     
@@ -154,6 +160,7 @@ class SLProfileViewController:
         super.viewDidLoad()
         
         self.view.addSubview(self.tableView)
+        
         let menuImage = UIImage(named: "lock_screen_hamburger_menu")!
         let menuButton:UIBarButtonItem = UIBarButtonItem(
             image: menuImage,
@@ -164,7 +171,6 @@ class SLProfileViewController:
         
         self.navigationItem.leftBarButtonItem = menuButton
         self.navigationItem.title = NSLocalizedString("MY PROFILE", comment: "")
-        
         self.setPictureForUser()
         
         NotificationCenter.default.addObserver(
@@ -184,59 +190,222 @@ class SLProfileViewController:
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let cell = self.tableView.cellForRow(at: indexPath)
             cell?.isSelected = false
         }
     }
-
+    
+    private func presentWarningController(errorType: ResponseError) {
+        let info:String
+        switch errorType {
+        case .InternalServer:
+            info = NSLocalizedString(
+                "Sorry. Error in Response",
+                comment: ""
+            )
+            let texts:[SLWarningViewControllerTextProperty:String?] = [
+                .Header: NSLocalizedString("Server Error", comment: ""),
+                .Info: info,
+                .CancelButton: NSLocalizedString("OK", comment: ""),
+                .ActionButton: nil
+            ]
+            
+            self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+        }
+    }
+    
     func cameraButtonPressed() {
         self.present(self.alertViewController, animated: true, completion: nil)
     }
     
     func setPictureForUser() {
-        let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        guard let user:SLUser = dbManager.getCurrentUser() else {
-            print("Error: can't set picture for current user. No current user in db")
-            return
-        }
-        
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
-        if user.userType == kSLUserTypeFacebook {
-            picManager.facebookPic(forFBUserId: user.userId, completion: { (image) in
-                DispatchQueue.main.async {
-                    self.profilePictureView.image = image
-                    self.profilePictureView.setNeedsDisplay()
+        if self.user.userType == kSLUserTypeFacebook {
+            picManager.facebookPic(forFBUserId: self.user.userId, completion: { (image) in
+                if let profileImage = image {
+                    self.setProfile(image: profileImage)
                 }
             })
         } else {
-            picManager.getPicWithUserId(user.userId, withCompletion: { (cachedImage) in
-                if let image = cachedImage {
-                    DispatchQueue.main.async {
-                        self.profilePictureView.image = image
-                        self.profilePictureView.setNeedsDisplay()
-                    }
+            picManager.getPicWithUserId(self.user.userId, withCompletion: { (cachedImage) in
+                if let profileImage = cachedImage {
+                    self.setProfile(image: profileImage)
                 }
             })
         }
     }
     
-    func profileInfomationRightText(row: Int) -> String? {
-        let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        if let user = dbManager.getCurrentUser() {
-            if row == 0 || row == 1 {
-                return row == 0 ? user.firstName : user.lastName
-            } else if row == 2 {
-                return user.phoneNumber
-            } else if row == 3 {
-                return user.email
-            } else if row == 4 {
-                return nil
+    func setProfile(image: UIImage) {
+        DispatchQueue.main.async {
+            for subview in self.profilePictureView.subviews {
+                subview.removeFromSuperview()
             }
+            
+            self.profilePictureView.image = image
+            
+            let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            blurEffectView.frame = self.profilePictureView.bounds
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            
+            let scaledImage = self.scaledProfile(image: image)
+            let scaledImageView:UIImageView = UIImageView(image: scaledImage)
+            scaledImageView.frame = CGRect(
+                x: 0.5*(self.profilePictureView.bounds.size.width - scaledImageView.bounds.size.width),
+                y: 0.5*(self.profilePictureView.bounds.size.height - scaledImageView.bounds.size.height),
+                width: scaledImageView.bounds.size.width,
+                height: scaledImageView.bounds.size.height
+            )
+        
+            self.profilePictureView.addSubview(blurEffectView)
+            self.profilePictureView.addSubview(scaledImageView)
+            self.profilePictureView.setNeedsDisplay()
+        }
+    }
+    
+    func profileInfomationRightText(row: Int) -> String? {
+        if row == 0 || row == 1 {
+            return row == 0 ? self.user.firstName != nil ? self.user.firstName : "" :
+                self.user.lastName != nil ? self.user.lastName : ""
+        } else if row == 2 {
+            return self.user.phoneNumber != nil ? self.user.phoneNumber : ""
+        } else if row == 3 {
+            return self.user.email != nil ? self.user.email : ""
+        } else if row == 4 {
+            return nil
         }
         
         return nil
+    }
+    
+    func updateUser() {
+        if !((self.changedUserProperties[.FirstName]! != "" &&
+            self.changedUserProperties[.FirstName]! != self.user.firstName) ||
+            (self.changedUserProperties[.LastName]! != "" &&
+                self.changedUserProperties[.LastName]! != self.user.lastName) ||
+            (self.changedUserProperties[.PhoneNumber]! != "" &&
+                self.changedUserProperties[.PhoneNumber]! != self.user.phoneNumber) ||
+            (self.changedUserProperties[.Email]! != "" &&
+                self.changedUserProperties[.Email]! != self.user.email))
+        {
+            // Since no user properties have been changed, we can just bail out here.
+            return
+        }
+        
+        let keyChainHandler = SLKeychainHandler()
+        guard let restToken = keyChainHandler.getItemForUsername(
+            userName: self.user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            // TODO: There should probably be some UI here to notify the user if this occurs.
+            print("Error: could not update user in profile. The current user does not have a REST token")
+            return
+        }
+        
+        guard let password = keyChainHandler.getItemForUsername(
+            userName: self.user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .Password
+            ) else
+        {
+            // TODO: There should probably be some UI here to notify the user if this occurs.
+            print("Error: could not update user in profile. The current user does not have a password.")
+            return
+        }
+        
+        let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
+        let headers = [
+            "Authorization": restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+        ]
+        
+        let subRoutes = [self.user.userId!, restManager.path(asString: .profile)]
+        var firstName:Any = NSNull()
+        var lastName:Any = NSNull()
+        var phoneNumber:Any = NSNull()
+        var email:Any = NSNull()
+        
+        if let fName = self.changedUserProperties[.FirstName] {
+            firstName = fName
+        }
+        
+        if let lName = self.changedUserProperties[.LastName] {
+            lastName = lName
+        }
+        
+        if let pNumber = self.changedUserProperties[.PhoneNumber] {
+            phoneNumber = pNumber
+        }
+        
+        if let mail = self.changedUserProperties[.Email] {
+            email = mail
+        }
+        
+        let userProperties:[String:Any] = [
+            "first_name": firstName,
+            "last_name": lastName,
+            "email": email,
+            "phone_number": phoneNumber,
+            "user_id": self.user.userId!,
+            "password": password,
+            "user_type": self.user.userType!,
+            "country_code": NSNull()
+        ]
+        
+        restManager.postObject(
+            userProperties,
+            serverKey: SLRestManagerServerKey.main,
+            pathKey: SLRestManagerPathKey.users,
+            subRoutes: subRoutes,
+            additionalHeaders: headers,
+            completion: { (status: UInt, response:[AnyHashable : Any]?) in
+                DispatchQueue.main.async {
+                    if status == 200 || status == 201 {
+                        var propertiesToSave:[String:Any] = [String:Any]()
+                        for (key, property) in userProperties {
+                            if !(property is NSNull) || (property is String && property as! String != "") {
+                                propertiesToSave[key] = property
+                            }
+                        }
+                        
+                        let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+                        databaseManager.saveUser(
+                            with: propertiesToSave,
+                            isFacebookUser: self.user.userType == kSLUserTypeFacebook
+                        )
+                        self.tableView.reloadData()
+                    } else {
+                        let texts:[SLWarningViewControllerTextProperty:String?] = [
+                            .Header: NSLocalizedString("Server Error", comment: ""),
+                            .Info: NSLocalizedString(
+                                "There was an error saving your info. Please try again later.",
+                                comment: ""
+                            ),
+                            .CancelButton: NSLocalizedString("OK", comment: ""),
+                            .ActionButton: nil
+                        ]
+                        
+                        self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+                    }
+                }
+        }
+        )
+    }
+    
+    func scaledProfile(image: UIImage) -> UIImage? {
+        let scale = image.size.width > image.size.height ? self.profilePictureView.bounds.size.width/image.size.width
+            : self.profilePictureView.bounds.size.height/image.size.height
+        let size = image.size.applying(CGAffineTransform(scaleX: scale, y: scale))
+        
+        UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+        image.draw(in: CGRect(origin: CGPoint.zero, size: size))
+        
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImage
     }
     
     func keyboardWillShow(notification: Notification) {
@@ -311,9 +480,10 @@ class SLProfileViewController:
     }
     
     func menuButtonPressed() {
-//        let transitionHandler = SLViewControllerTransitionHandler()
-//        self.modalPresentationStyle = .Custom
-//        self.transitioningDelegate = transitionHandler
+        //        let transitionHandler = SLViewControllerTransitionHandler()
+        //        self.modalPresentationStyle = .Custom
+        //        self.transitioningDelegate = transitionHandler
+        self.updateUser()
         if let navController = self.navigationController {
             navController.dismiss(animated: true, completion: nil)
         } else {
@@ -353,10 +523,9 @@ class SLProfileViewController:
                 rightLabelText: rightText,
                 leftLabelTextColor: greyTextColor,
                 rightLabelTextColor: blueTextColor,
-                shouldEnableTextField: false
+                shouldEnableTextField: true
             )
             cell?.tag = indexPath.row
-            
             return cell!
         }
         
@@ -421,23 +590,15 @@ class SLProfileViewController:
         return view
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .FirstName)
-                self.navigationController?.pushViewController(msdvc, animated: true)
-            case 1:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .LastName)
-                self.navigationController?.pushViewController(msdvc, animated: true)
-            case 2:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .PhoneNumber)
-                self.navigationController?.pushViewController(msdvc, animated: true)
-            case 3:
                 let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
                 self.navigationController?.pushViewController(msdvc, animated: true)
-            case 4:
-                let lvc:SLLogoutViewController = SLLogoutViewController()
+            case 1:
+                let lvc:SLLogoutViewController = SLLogoutViewController(userId: user.userId!)
                 self.present(lvc, animated: true, completion: nil)
             default:
                 print("no action for \(indexPath.description)")
@@ -455,24 +616,42 @@ class SLProfileViewController:
         self.selectedPath = self.tableView.indexPath(for: cell)
     }
     
+    func opposingLablesCellTextFieldChangeEventOccured(cell: SLOpposingLabelsTableViewCell) {
+        guard let indexPath = self.tableView.indexPath(for: cell) else {
+            print("Error: no index path for opposing label table view cell")
+            return
+        }
+        
+        let property:UserProperty
+        switch indexPath.row {
+        case 0:
+            property = .FirstName
+        case 1:
+            property = .LastName
+        case 2:
+            property = .PhoneNumber
+        default:
+            property = .Email
+        }
+        
+        self.changedUserProperties[property] = cell.rightField.text
+    }
+    
+    // UIImagePickerController Delegate Methods
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         self.dismiss(animated: true, completion: nil)
     }
     
-    func imagePickerController(
-        picker: UIImagePickerController,
-        didFinishPickingImage image: UIImage,
-                              editingInfo: [String : AnyObject]?
-        )
-    {
-        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-        guard let user:SLUser = dbManager.getCurrentUser() else {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+            print("Error: could not set profile image. There was no image returned by the picker")
+            self.dismiss(animated: true, completion: nil)
             return
         }
-
-        self.profilePictureView.image = image
+        
         let picManager:SLPicManager = SLPicManager.sharedManager() as! SLPicManager
-        picManager.savePicture(image, forUserId: user.userId)
+        picManager.savePicture(image, forUserId: self.user.userId)
+        self.setProfile(image: image)
         
         self.dismiss(animated: true, completion: nil)
     }
