@@ -9,45 +9,26 @@
 import Foundation
 
 class SLSendTextCode : NSObject{
-    
-    public func sendTextCode(phoneNumber:String, userToken:String,
-                             callback: @escaping (UInt, [AnyHashable: Any]?) -> Void){
+    public func sendTextCode(
+        phoneNumber:String,
+        userToken:String?,
+        callback: @escaping (UInt, [AnyHashable: Any]?) -> Void)
+    {
         
         let restManager = SLRestManager.sharedManager() as! SLRestManager
-    
-        
-        var subRoutes:[String] = []
-        
-        let headers = [
-            "Authorization": restManager.basicAuthorizationHeaderValueUsername(userToken, password: "")
-        ]
-        
-        if(userToken.characters.count > 0){
-
-            
-            subRoutes = [
-                phoneNumber,
-                restManager.path(asString: .phoneVerificaiton)
+        var headers:[String:String]?
+        if let token = userToken {
+            headers = [
+                "Authorization": restManager.basicAuthorizationHeaderValueUsername(token, password: "")
             ]
-
-        } else {
-            
-           subRoutes = [
-                phoneNumber,
-                restManager.path(asString: .passwordReset)
-            ]
-
         }
-        
         
         restManager.getRequestWith(
             .main,
             pathKey: .users,
-            subRoutes: subRoutes,
+            subRoutes: [phoneNumber],
             additionalHeaders: headers,
             completion: callback
         )
-    
     }
-    
 }

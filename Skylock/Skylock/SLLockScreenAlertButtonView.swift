@@ -8,10 +8,22 @@
 
 import UIKit
 
+enum SLLockScreenAlertButtonTextPlacement {
+    case left
+    case right
+}
+
 class SLLockScreenAlertButton: UIButton {
     let xSpacer:CGFloat = 5
     
-    init(activeImageName: String, inactiveImageName:String, titleText: String, textColor:UIColor) {
+    init(
+        activeImageName: String,
+        inactiveImageName:String,
+        titleText: String,
+        textColor:UIColor,
+        textPlacement: SLLockScreenAlertButtonTextPlacement
+        )
+    {
         let activeImage = UIImage(named: activeImageName)!
         let inactiveImage = UIImage(named: inactiveImageName)!
         
@@ -57,19 +69,52 @@ class SLLockScreenAlertButton: UIButton {
 //            right: 0
 //        )
 //        self.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        self.imageEdgeInsets = UIEdgeInsets(
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
-        )
+        let imageInsetTop:CGFloat
+        let imageInsetLeft:CGFloat
+        let imageInsetBottom:CGFloat
+        let imageInsetRight:CGFloat
+        let titleInsetTop:CGFloat
+        let titleInsetLeft:CGFloat
+        let titleInsetBottom:CGFloat
+        let titleInsetRight:CGFloat
+        switch textPlacement {
+        case .right:
+            imageInsetTop = 0.0
+            imageInsetLeft = 0.0
+            imageInsetRight = 0.0
+            imageInsetBottom = 0.0
+            titleInsetTop = 0.0
+            titleInsetLeft = 5.0
+            titleInsetRight = 0.0
+            titleInsetBottom = 0.0
+            self.titleLabel?.textAlignment = .left
+        case .left:
+            imageInsetTop = 0.0
+            imageInsetLeft = frame.size.width - activeImage.size.width
+            imageInsetRight = 0.0
+            imageInsetBottom = 0.0
+            titleInsetTop = 0.0
+            titleInsetLeft = -0.5*frame.size.width - 0.5*activeImage.size.width - 5.0
+            titleInsetRight = 0.0
+            titleInsetBottom = 0.0
+            self.titleLabel?.textAlignment = .right
+        }
+        
         self.titleEdgeInsets = UIEdgeInsets(
-            top: 0,
-            left: 5.0,
-            bottom: 0,
-            right: 0
+            top: titleInsetTop,
+            left: titleInsetLeft,
+            bottom: titleInsetBottom,
+            right: titleInsetRight
         )
-        self.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        
+        self.imageEdgeInsets = UIEdgeInsets(
+            top: imageInsetTop,
+            left: imageInsetLeft,
+            bottom: imageInsetBottom,
+            right: imageInsetRight
+        )
+        
+        self.contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
     }
     
     required init?(coder aDecoder: NSCoder) {
