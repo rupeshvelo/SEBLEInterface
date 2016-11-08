@@ -123,7 +123,7 @@ SLEmergenyContactTableViewCellDelegate
                 return
             }
             
-            print(response)
+            print(response!)
         }
     }
     

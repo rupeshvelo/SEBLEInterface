@@ -10,8 +10,8 @@ import UIKit
 import WebKit
 
 enum SLWebViewControllerBaseURL: String {
-    case Help = "http://lattis.helpscoutdocs.com/"
-    case Skylock = "http://skylock.cc"
+    case Help = "https://support.lattis.io"
+    case Skylock = "https://www.lattis.io"
 }
 
 class SLWebViewController: UIViewController, UIWebViewDelegate {

@@ -67,7 +67,7 @@ SLLockBarViewControllerDelegate
         let frame = CGRect(
             x: self.xPadding,
             y: self.view.bounds.size.height - 80.0,
-            width: self.view.bounds.size.width - 2*self.xPadding,
+            width: self.view.bounds.size.width - 2.0*self.xPadding,
             height: 1.0
         )
         
@@ -105,7 +105,8 @@ SLLockBarViewControllerDelegate
             activeImageName: "lock_screen_crash_detection_on",
             inactiveImageName: "lock_screen_crash_detection_off",
             titleText: NSLocalizedString("Crash\ndetection", comment: ""),
-            textColor: UIColor.white
+            textColor: UIColor.white,
+            textPlacement: .right
         )
         button.frame = CGRect(
             x: self.xPadding,
@@ -127,7 +128,8 @@ SLLockBarViewControllerDelegate
             activeImageName: "lock_screen_theft_detection_on",
             inactiveImageName: "lock_screen_theft_detection_off",
             titleText: NSLocalizedString("Theft\ndetection", comment: ""),
-            textColor: UIColor.white
+            textColor: UIColor.white,
+            textPlacement: .left
         )
         button.frame = CGRect(
             x: self.view.bounds.size.width - button.bounds.size.width - self.xPadding,

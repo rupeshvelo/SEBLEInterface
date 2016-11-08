@@ -262,7 +262,7 @@ SLBoxTextFieldWithButtonDelegate
         
         let button:UIButton = UIButton(frame: frame)
         button.addTarget(self, action: #selector(forgotPasswordButtonPressed), for: .touchDown)
-        button.setTitle(NSLocalizedString("F O R G O T  P A S S W O R D", comment: ""), for: .normal)
+        button.setTitle(NSLocalizedString("FORGOT PASSWORD", comment: ""), for: .normal)
         let color = UIColor(red: 87, green: 216, blue: 255)
         button.setTitleColor(color, for: .normal)
         button.titleLabel?.font = UIFont(name: SLFont.YosemiteRegular.rawValue, size: 22.0)
@@ -273,12 +273,18 @@ SLBoxTextFieldWithButtonDelegate
     
     
     func forgotPasswordButtonPressed() {
-        SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: "", callback: {(status: UInt, response: [AnyHashable: Any]?) in
+        SLSendTextCode().sendTextCode(
+            phoneNumber: self.phoneNumberField.text!,
+            userToken: "",
+            callback: {(status: UInt, response: [AnyHashable: Any]?) in
             DispatchQueue.main.async{
-                
                 let errorFlag:UInt = ((status == 200 || status == 201) && (response != nil)) ? 0 : 1
-
-                let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:true, error: UInt(errorFlag), token: "")
+                let ctvc = SLConfirmTextCodeViewController(
+                    phoneNumber: self.phoneNumberField.text!,
+                    resetFlag:true,
+                    error: UInt(errorFlag),
+                    token: ""
+                )
                 
                 self.present(ctvc, animated: true, completion: nil)
             }
@@ -465,11 +471,10 @@ SLBoxTextFieldWithButtonDelegate
     
     func startLoginProcedure() {
         let ud:UserDefaults = UserDefaults.standard
-        
-//        guard let pushId = ud.objectForKey(SLUserDefaultsPushNotificationToken) else {
-//            // TODO alert the user of this failure
-//            return
-//        }
+        guard let pushId = ud.string(forKey: SLUserDefaultsPushNotificationToken) else {
+            // TODO alert the user of this failure
+            return
+        }
         
         let networkInfo:CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
         var countryCode:Any = NSNull()
@@ -490,7 +495,7 @@ SLBoxTextFieldWithButtonDelegate
             "user_id": user_id,
             "password": password,
             "user_type": kSLUserTypeEllipse,
-            "reg_id": "000000000000000000",
+            "reg_id": pushId,
             "country_code": countryCode
         ]
         
@@ -566,22 +571,18 @@ SLBoxTextFieldWithButtonDelegate
                     self.presentWarningController(errorType: .SignInFailure)
                 }
             } else {
-                
                 self.verified = response["user"]?["verified"] as! Int
-                
-                if  self.verified == 0{
-                SLSendTextCode().sendTextCode(phoneNumber: self.phoneNumberField.text!, userToken: userToken, callback: {(status: UInt, response: [AnyHashable: Any]?) in
-                    
+                if  self.verified == 0 {
+                SLSendTextCode().sendTextCode(
+                    phoneNumber: self.phoneNumberField.text!,
+                    userToken: userToken,
+                    callback: {(status: UInt, response: [AnyHashable: Any]?) in
                     DispatchQueue.main.async{
-                        
                         let errorFlag:UInt = ((status == 200 || status == 201) && (response != nil)) ? 0 : 1
-                        
                         let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:false,error: UInt(errorFlag),
                                                                    token: userToken)
-                        
                         self.present(ctvc, animated: true, completion: nil)
                     }
-                    
                  })
                 } else {
                     self.presentWarningController(errorType: .SignUpFailure)

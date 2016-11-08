@@ -132,8 +132,8 @@
     
     self.lockMarkers = [NSMutableDictionary new];
     
-    NSArray *previouslyConnectedLocks = [[SLLockManager sharedManager] allLocksForCurrentUser];
-    self.locks = [NSMutableArray arrayWithArray: previouslyConnectedLocks];
+    NSArray *allLocks = [[SLLockManager sharedManager] allLocksForCurrentUser];
+    self.locks = [NSMutableArray arrayWithArray: allLocks];
 
     
     self.isInitialLoad = YES;
@@ -182,7 +182,9 @@
         }];
     } else {
         for (SLLock *lock in self.locks) {
-            [self addLockToMap:lock];
+            if (!self.lockMarkers[lock.macAddress]) {
+                [self addLockToMap:lock];
+            }
         }
     }
     

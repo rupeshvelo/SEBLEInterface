@@ -64,7 +64,7 @@ class SLSignInViewController: SLBaseViewController {
         button.addTarget(
             self,
             action: #selector(existingUserButtonPressed),
-            for: UIControlEvents.touchDown
+            for: .touchDown
         )
         
         return button
@@ -88,7 +88,7 @@ class SLSignInViewController: SLBaseViewController {
         button.addTarget(
             self,
             action: #selector(signUpWithEmailButtonPressed),
-            for: UIControlEvents.touchDown
+            for: .touchDown
         )
         
         return button
