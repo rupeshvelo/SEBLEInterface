@@ -76,6 +76,9 @@
         case SLRestManagerPathKeyPasswordCode:
             url = @"passwordcode/";
             break;
+        case SLRestManagerPathKeyProfile:
+            url = @"profile/";
+            break;
         case SLRestManagerPathKeyNewPassword:
             url = @"password/";
         default:

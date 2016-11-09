@@ -488,7 +488,7 @@ SLBoxTextFieldWithButtonDelegate
         let user_id:Any = self.phoneNumberField.text == nil ? NSNull() : self.phoneNumberField.text!
         let password:Any = self.passwordField.text == nil ? NSNull() : self.passwordField.text!
         
-        let userProperties:[String:Any] = [
+        var userProperties:[String:Any] = [
             "first_name": NSNull(),
             "last_name": NSNull(),
             "email": email,
@@ -532,23 +532,34 @@ SLBoxTextFieldWithButtonDelegate
                 return
             }
             
-    
+            if let serverUserProperties:[String:Any] = response["user"] as? [String: Any] {
+                for (key, value) in serverUserProperties {
+                    userProperties[key] = value
+                }
+            }
+            
             let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
             dbManager.saveUser(with: userProperties, isFacebookUser: false)
             
             let currentUser:SLUser = (SLDatabaseManager.sharedManager() as! SLDatabaseManager).getCurrentUser()!
             let keyChainHandler = SLKeychainHandler()
-            keyChainHandler.setItemForUsername(
-                userName: currentUser.userId!,
-                inputValue: userToken,
-                additionalSeviceInfo: nil,
-                handlerCase: .RestToken
-            )
             
             if self.currentPhase == .SignIn {
                 if status == 200 || status == 201 {
                     ud.set(true, forKey: "SLUserDefaultsSignedIn")
                     ud.synchronize()
+                    keyChainHandler.setItemForUsername(
+                        userName: currentUser.userId!,
+                        inputValue: userToken,
+                        additionalSeviceInfo: nil,
+                        handlerCase: .RestToken
+                    )
+                    keyChainHandler.setItemForUsername(
+                        userName: currentUser.userId!,
+                        inputValue: password as! String,
+                        additionalSeviceInfo: nil,
+                        handlerCase: .Password
+                    )
                     DispatchQueue.main.async {
                         if SLLockManager.sharedManager.hasLocksForCurrentUser() {
                             let lvc = SLLockViewController()
@@ -640,11 +651,10 @@ SLBoxTextFieldWithButtonDelegate
             )
         case .SignUpFailure:
             info = NSLocalizedString(
-                "Sorry. Unable to send Phone Verification right now, since you are already a verified user. Please check your info and try again. "
-                    + "You can also sign up using your Facebook account.",
+                "Sorry. Unable to send Phone Verification since you are already a verified user. " +
+                    "Please proceed to the login screen.",
                 comment: ""
             )
-            
         }
         
         let texts:[SLWarningViewControllerTextProperty:String?] = [

@@ -107,11 +107,6 @@
 - (void)savePicture:(UIImage *)image forUserId:(NSString *)userId
 {
     NSString *hash = [userId MD5String];
-    if ([self.profilePicCache objectForKey:hash]) {
-        [self.profilePicCache setObject:image forKey:hash];
-        return;
-    }
-    
     NSString *path = [self profilePicPathForFileWithHashedName:hash];
     NSData *data = [NSData dataWithData:UIImageJPEGRepresentation(image, 1.0f)];
     if (![data writeToFile:path atomically:YES]) {

@@ -10,6 +10,7 @@ import UIKit
 
 protocol SLOpposingLabelsTableViewCellDelegate:class {
     func opposingLabelsCellTextFieldBecameFirstResponder(cell: SLOpposingLabelsTableViewCell)
+    func opposingLablesCellTextFieldChangeEventOccured(cell: SLOpposingLabelsTableViewCell)
 }
 
 class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
@@ -40,6 +41,14 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         return label
     }()
     
+    
+    func condenseWhiteSpace(string: String) -> String {
+        return string.characters
+            .split { $0 == " " }
+            .map { String($0) }
+            .joined(separator: " ")
+    }
+    
     lazy var rightField:UITextField = {
         let frame = CGRect(
             x: 0.5*self.bounds.size.width,
@@ -53,10 +62,9 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         field.text = ""
         field.textAlignment = .right
         field.delegate = self
-        
         return field
     }()
-    
+
     lazy var arrowView:UIImageView = {
         let image:UIImage = UIImage(named: "lock_settings_right_arrow")!
         let imageView = UIImageView(image: image)
@@ -66,7 +74,6 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
         if self.showArrow {
             self.accessoryView = self.arrowView
         }
@@ -94,7 +101,6 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         self.accessoryView = nil
     }
     
@@ -143,11 +149,12 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         self.delegate?.opposingLabelsCellTextFieldBecameFirstResponder(cell: self)
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-       textField.resignFirstResponder()
-    }
-    
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         return self.isEditable
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+        self.delegate?.opposingLablesCellTextFieldChangeEventOccured(cell: self)
     }
 }

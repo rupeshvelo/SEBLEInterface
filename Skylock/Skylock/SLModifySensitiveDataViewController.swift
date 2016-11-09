@@ -6,14 +6,19 @@
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
+import CoreTelephony
+
 enum SLModifySensitiveDataViewControllerType {
-    case FirstName
-    case LastName
     case Password
     case PhoneNumber
 }
 
-class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate {
+class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDelegate {
+    
+    private enum ResponseError {
+        case InternalServer
+    }
+    
     let type:SLModifySensitiveDataViewControllerType
     
     let xPadding:CGFloat = 20.0
@@ -73,12 +78,6 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         case .Password:
             text = NSLocalizedString("Password", comment: "")
             placeHolder = NSLocalizedString("Password", comment: "")
-        case .FirstName:
-            text = self.user.firstName == nil ? "" : self.user.firstName!
-            placeHolder = NSLocalizedString("First name", comment: "")
-        case .LastName:
-            text = self.user.lastName == nil ? "" : self.user.lastName!
-            placeHolder = NSLocalizedString("Last name", comment: "")
         }
         
         let field:SLInsetTextField = SLInsetTextField(frame: frame)
@@ -144,6 +143,26 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
             using: keyboardWillShow
         )
     }
+
+    private func presentWarningController(errorType: ResponseError) {
+        let info:String
+        switch errorType {
+        case .InternalServer:
+            info = NSLocalizedString(
+                "Sorry. Error in Response",
+                comment: ""
+            )
+            let texts:[SLWarningViewControllerTextProperty:String?] = [
+                .Header: NSLocalizedString("Server Error", comment: ""),
+                .Info: info,
+                .CancelButton: NSLocalizedString("OK", comment: ""),
+                .ActionButton: nil
+            ]
+            
+            self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+        }
+    }
+
     
     func infoText() -> String {
         let text:String
@@ -156,10 +175,6 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
                 "to verify your new number. You cannot undo this.",
                 comment: ""
             )
-        case .FirstName:
-            text = NSLocalizedString("Go ahead and change your first name", comment: "")
-        case .LastName:
-            text = NSLocalizedString("Go ahead and change your last name",comment: "")
         }
         
         return text
@@ -174,25 +189,14 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         if self.type == .Password && (self.textField.text?.characters.count)! >= self.passwordLength {
             // TODO: Handle the password case
             print("User has changed password")
+            shouldSave = true
         } else if self.type == .PhoneNumber && (self.textField.text?.characters.count)! >= self.phoneNumberLength {
             self.user.phoneNumber = self.textField.text
             shouldSave = true
-        } else if self.type == .FirstName && (self.textField.text?.characters.count)! > 0 {
-            self.user.firstName = self.textField.text
-            shouldSave = true
-        } else if self.type == .LastName && (self.textField.text?.characters.count)! > 0 {
-            self.user.lastName = self.textField.text
-            shouldSave = true
         }
-        
         if shouldSave {
-            let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
-            dbManager.save(self.user, withCompletion: nil)
+            self.updateProfileSettings(password: self.type == .Password ? self.textField.text! : "", phoneNumber: self.type == .PhoneNumber ? self.textField.text! : "")
         }
-    }
-    
-    func saveUser(newPassword: String?) {
-    
     }
     
     func keyboardWillShow(notification: Notification) {
@@ -227,6 +231,56 @@ class SLModifySensitiveDataViewController: UIViewController, UITextFieldDelegate
         return true
     }
     
+    func updateProfileSettings(password: String, phoneNumber:String){
+        let networkInfo:CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
+        var countryCode:String? = ""
+        if let providerInfo:CTCarrier = networkInfo.subscriberCellularProvider,
+            let cc = providerInfo.isoCountryCode
+        {
+            countryCode = cc
+        }
+        let userProperties: [String: Any] = [
+            "first_name" : "",
+            "last_name" : "",
+            "email":"",
+            "password": password,
+            "phone_number":phoneNumber,
+            "country_code" : countryCode!
+        ]
+        let dbManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+        let restManager:SLRestManager = SLRestManager.sharedManager() as! SLRestManager
+        let currentUser:SLUser = dbManager.getCurrentUser()!
+        let subRoutes:[String] = [
+            currentUser.userId!,
+            restManager.path(asString: .profile)
+        ]
+        let keyChainHandler = SLKeychainHandler()
+        let restToken = keyChainHandler.getItemForUsername(
+            userName: currentUser.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+        );
+        let headers = [
+            "Authorization": restManager.basicAuthorizationHeaderValueUsername(restToken!, password: "")
+        ]
+        restManager.postObject(
+            userProperties,
+            serverKey: SLRestManagerServerKey.main,
+            pathKey: SLRestManagerPathKey.users,
+            subRoutes: subRoutes,
+            additionalHeaders: headers,
+            completion: { (status: UInt, textResponseDict:[AnyHashable : Any]?) in
+                DispatchQueue.main.async{
+                    if status != 200 && status != 201 {
+                        self.presentWarningController(errorType: .InternalServer)
+                    } else {
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        )
+    }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if self.textField.isFirstResponder {
             self.textField.resignFirstResponder()
