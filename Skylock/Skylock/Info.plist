@@ -28,13 +28,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>FacebookAppID</key>
 	<string>1057259287662727</string>
 	<key>FacebookDisplayName</key>
 	<string>Ellipse</string>
 	<key>GoogleMapsApiKey</key>
 	<string>AIzaSyBIjXXg3kdlzKscFldEbK34dUTu7CtgWRY</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -75,6 +77,8 @@
 	</dict>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>The Ellipse app uses Bluetooth to communicate with your Ellipse Lock.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Ellipse would like access to your camera so you can take a photo for your profile picture.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Ellipse can detect if you’ve been in an accident and alert your loved ones by SMS. You can switch this off at any time.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -83,8 +87,6 @@
 	<string>I'm a mini eye...but still nefarious</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Ellipse would like access to your photos so you can choose a photo for your profile picture.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Ellipse would like access to your camera so you can take a photo for your profile picture.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>OpenSans-Bold.ttf</string>
@@ -113,7 +115,5 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 </dict>
 </plist>
