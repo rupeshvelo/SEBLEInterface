@@ -345,6 +345,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         
         lock.givenName = newName;
         self.dbManager.save(lock)
+        
+        self.updateLockName(macAddress: lock.macAddress!, updatedName: newName, completion: nil)
     }
     
     func hasLocksForCurrentUser() -> Bool {
@@ -808,6 +810,63 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             
             if completion != nil {
                 completion!(true)
+            }
+        }
+    }
+    
+    func updateLockName(macAddress: String, updatedName: String, completion:((Bool) -> ())?) {
+        guard let lock = self.getCurrentLock() else {
+            print("Error: could not update lock name. There is no lock with address: \(macAddress)")
+            return
+        }
+        
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: could not update lock name. No user.")
+            return
+        }
+        
+        guard let restToken = self.keychainHandler.getItemForUsername(
+            userName: user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            let info:[String: Any?] = [
+                "lock": self.dbManager.getLockWithMacAddress(macAddress),
+                "error": SLLockManagerConnectionError.NoRestToken,
+                "message": self.textForConnectionError(error: .NoRestToken)
+            ]
+            NotificationCenter.default.post(
+                name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                object: info
+            )
+            
+            print(
+                "Error: Cannot update lock name keychain handler " +
+                "does not have a rest token for user \(user.fullName())."
+            )
+            return
+        }
+        
+        let restManager = SLRestManager.sharedManager() as! SLRestManager
+        let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+        let additionalHeaders = ["Authorization": authValue]
+        let subRoutes = [user.userId!, "lockname"]
+        let postObject:[String: Any] = [
+            "mac_id": lock.macAddress!,
+            "lock_name": updatedName
+        ]
+        
+        restManager.postObject(
+            postObject,
+            serverKey: .main,
+            pathKey: .users,
+            subRoutes: subRoutes,
+            additionalHeaders: additionalHeaders
+        ) { (status:UInt, response:[AnyHashable:Any]?) -> Void in
+            print("got response updating lock name: \(updatedName) with address: \(macAddress) \(response)")
+            if completion != nil {
+                completion!(status == 200 || status == 201)
             }
         }
     }
