@@ -123,7 +123,7 @@ SLLabelAndSwitchCellDelegate
             let lockManager:SLLockManager = SLLockManager.sharedManager
             lockManager.readFirmwareDataForCurrentLock()
             lockManager.readSerialNumberForCurrentLock()
-        }
+        }        
     }
     
     func fieldValueFor(index: Int) -> SettingFieldValue {
@@ -334,6 +334,15 @@ SLLabelAndSwitchCellDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let lock = self.lock {
             if indexPath.section == 0 {
+                if indexPath.row == 0 {
+                    let sdvc = SLModifySensitiveDataViewController(type: .LockName)
+                    sdvc.onExit = {[weak weakSelf=self] in
+                        if let this = weakSelf {
+                            this.tableView.reloadRows(at: [indexPath], with: .none)
+                        }
+                    }
+                    self.navigationController?.pushViewController(sdvc, animated: true)
+                }
                 if indexPath.row == 3 {
                     let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
                     self.present(fuvc, animated: true, completion: nil)

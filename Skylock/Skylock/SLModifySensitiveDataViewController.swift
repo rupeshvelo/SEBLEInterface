@@ -11,6 +11,7 @@ import CoreTelephony
 enum SLModifySensitiveDataViewControllerType {
     case Password
     case PhoneNumber
+    case LockName
 }
 
 class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDelegate {
@@ -28,6 +29,8 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
     let passwordLength = 8
     
     let phoneNumberLength = 12
+    
+    var onExit:(() -> ())?
     
     lazy var infoLabel:UILabel = {
         let font = UIFont.systemFont(ofSize: 9)
@@ -78,6 +81,15 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
         case .Password:
             text = NSLocalizedString("Password", comment: "")
             placeHolder = NSLocalizedString("Password", comment: "")
+        case .LockName:
+            let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+            if let lock:SLLock = lockManager.getCurrentLock(), let givenName = lock.givenName {
+                text = givenName
+            } else {
+                text = ""
+            }
+            
+            placeHolder = NSLocalizedString("Lock name", comment: "")
         }
         
         let field:SLInsetTextField = SLInsetTextField(frame: frame)
@@ -109,7 +121,7 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
         button.backgroundColor = UIColor.color(102, green: 177, blue: 227)
         button.setTitle(NSLocalizedString("Save", comment: ""), for: .normal)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.isHidden = true
+        button.isHidden = self.type != .LockName
         
         return button
     }()
@@ -148,10 +160,7 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
         let info:String
         switch errorType {
         case .InternalServer:
-            info = NSLocalizedString(
-                "Sorry. Error in Response",
-                comment: ""
-            )
+            info = NSLocalizedString("Sorry. We couldn't save your information right now.", comment: "")
             let texts:[SLWarningViewControllerTextProperty:String?] = [
                 .Header: NSLocalizedString("Server Error", comment: ""),
                 .Info: info,
@@ -175,6 +184,8 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
                 "to verify your new number. You cannot undo this.",
                 comment: ""
             )
+        case .LockName:
+            text = NSLocalizedString("Enter your Ellipse's Name", comment: "")
         }
         
         return text
@@ -187,15 +198,65 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
     func saveButtonPressed() {
         var shouldSave = false
         if self.type == .Password && (self.textField.text?.characters.count)! >= self.passwordLength {
-            // TODO: Handle the password case
-            print("User has changed password")
             shouldSave = true
         } else if self.type == .PhoneNumber && (self.textField.text?.characters.count)! >= self.phoneNumberLength {
             self.user.phoneNumber = self.textField.text
             shouldSave = true
+        } else if self.type == .LockName {
+            shouldSave = true
         }
+        
         if shouldSave {
-            self.updateProfileSettings(password: self.type == .Password ? self.textField.text! : "", phoneNumber: self.type == .PhoneNumber ? self.textField.text! : "")
+            if self.type == .LockName {
+                let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+                if let lock = lockManager.getCurrentLock(), let macAddress = lock.macAddress {
+                    lockManager.updateLockName(
+                        macAddress: macAddress,
+                        updatedName: self.textField.text!,
+                        completion: { (success) in
+                            let texts:[SLWarningViewControllerTextProperty:String?]
+                            if success {
+                                texts = [
+                                    .Header: NSLocalizedString("Ellipse's Name Updated!", comment: ""),
+                                    .Info: NSLocalizedString("The name of your Ellispe has been updated.", comment: ""),
+                                    .CancelButton: NSLocalizedString("OK", comment: ""),
+                                    .ActionButton: nil
+                                ]
+                                
+                                lock.givenName = self.textField.text!
+                                let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+                                dbManager.save(lock)
+                            } else {
+                                texts = [
+                                    .Header: NSLocalizedString("Hmmm...Something went wrong", comment: ""),
+                                    .Info: NSLocalizedString(
+                                        "The name of your Ellipse could not be updated right now.",
+                                        comment: ""
+                                    ),
+                                    .CancelButton: NSLocalizedString("OK", comment: ""),
+                                    .ActionButton: nil
+                                ]
+                            }
+                            
+                            self.presentWarningViewControllerWithTexts(texts: texts) {
+                                if let navController = self.navigationController {
+                                    navController.popViewController(animated: true)
+                                } else {
+                                    self.dismiss(animated: true, completion: nil)
+                                }
+                                
+                                if self.onExit != nil {
+                                    self.onExit!()
+                                }
+                            }
+                    })
+                }
+            } else {
+                self.updateProfileSettings(
+                    password: self.type == .Password ? self.textField.text! : "",
+                    phoneNumber: self.type == .PhoneNumber ? self.textField.text! : ""
+                )
+            }
         }
     }
     
@@ -225,6 +286,8 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
                 }
             } else if self.type == .Password {
                 self.saveButton.isHidden = newText.characters.count > self.passwordLength
+            } else if self.type == .LockName {
+                self.saveButton.isHidden = false
             }
         }
         

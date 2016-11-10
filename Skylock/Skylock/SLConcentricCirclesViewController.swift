@@ -165,7 +165,6 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     func makeAnimation(circleView: UIView) {
         let scale:CGFloat = self.finalDiamter/circleView.frame.size.width
-        
         UIView.animate(
             withDuration: self.interval,
             delay: 0.0,
