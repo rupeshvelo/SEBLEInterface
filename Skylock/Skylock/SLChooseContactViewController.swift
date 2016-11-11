@@ -355,13 +355,12 @@ UISearchBarDelegate
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 65.0 : 26.0
+        return section == 0 ? 80.0 : 26.0
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         var view:UIView
         let labelWrapperView:UIView
-        let letterLabelHeight = self.tableView(tableView, heightForHeaderInSection: 1)
         let letterHeight:CGFloat = 14.0
         let xSpacer:CGFloat = 10.0
         
@@ -370,7 +369,7 @@ UISearchBarDelegate
                 x: 0.0,
                 y: 0.0,
                 width: self.tableView.bounds.size.width,
-                height: self.tableView(tableView, heightForHeaderInSection: section) + letterLabelHeight
+                height: self.tableView(tableView, heightForHeaderInSection: section)
             )
             
             view = UIView(frame: frame)
