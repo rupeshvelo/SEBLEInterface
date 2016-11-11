@@ -88,6 +88,7 @@ class SLOpposingLabelsTableViewCell: UITableViewCell, UITextFieldDelegate {
         let width = self.showArrow ?
             0.5*self.bounds.size.width - self.arrowView.bounds.size.width - self.xPadding - 20.0 :
             0.5*self.bounds.size.width - self.xPadding
+        
         self.rightField.frame = CGRect(
             x: 0.5*self.bounds.size.width,
             y: 0.0,

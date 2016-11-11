@@ -551,6 +551,87 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
     }
     
+    func getCurrentUsersLocksFromServer(completion: (([String]?) -> ())?) {
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: could not get locks for current user. There is no current user in the database")
+            completion?(nil)
+            return
+        }
+        
+        guard let restToken = self.keychainHandler.getItemForUsername(
+            userName: user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            print("Error: could not get locks for current user. The user does not have a rest token")
+            completion?(nil)
+            return
+        }
+        
+        let restManager = SLRestManager.sharedManager() as! SLRestManager
+        let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+        let additionalHeaders = ["Authorization": authValue]
+        let subRoutes = [user.userId!, "locks"]
+        
+        restManager.getRequestWith(
+            .main,
+            pathKey: .users,
+            subRoutes: subRoutes,
+            additionalHeaders: additionalHeaders
+        ) { (status:UInt, response:[AnyHashable:Any]?) -> Void in
+            if status != 200 && status != 201 {
+                print("Error: error retieving user locks from server")
+                completion?(nil)
+                return
+            }
+            
+            if let serverLocks:[[String:Any]] = (response?["locks"] as? [String:Any])?["my_locks"] as? [[String:Any]] {
+                let allLocks = self.allLocksForCurrentUser()
+                var updatedMacAddresses:[String] = [String]()
+                
+                for serverLock in serverLocks {
+                    if let macAddress:String = serverLock["mac_id"] as? String {
+                        var oldLock:SLLock?
+                        for lock in allLocks {
+                            if lock.macAddress! == macAddress {
+                                oldLock = lock
+                                break
+                            }
+                        }
+                        
+                        if oldLock == nil {
+                            if let givenName:String = serverLock["lock_name"] as? String {
+                                let newLock = self.dbManager.newLockWith(
+                                    givenName: givenName,
+                                    andMacAddress: macAddress
+                                )
+                                
+                                if let currentUser = self.dbManager.getCurrentUser() {
+                                    newLock.user = currentUser
+                                    self.dbManager.save(newLock)
+                                }
+                                
+                                updatedMacAddresses.append(macAddress)
+                            }
+                        } else {
+                            oldLock?.updateProperties(withServerDictionary: serverLock)
+                            self.dbManager.save(oldLock!)
+                            updatedMacAddresses.append(macAddress)
+                        }
+                    }
+                }
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerUpdatedLocksFromServer),
+                    object: updatedMacAddresses
+                )
+                
+                completion?(updatedMacAddresses)
+            }
+        }
+    }
+    
     // MARK: Private Methods
     private func namesToConntect() -> [String] {
         return [
@@ -979,7 +1060,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             }
         }
     }
-    
+
     private func deleteLockFromServerWithMacAddress(macAddress: String, completion: ((_ success: Bool) -> ())?) {
         guard let user = self.dbManager.getCurrentUser() else {
             print("Error: could not delete lock from server. No current user in database")
@@ -1210,6 +1291,50 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 return
             }
             
+            self.getCurrentUsersLocksFromServer(completion: { (usersLockAddresses:[String]?) in
+                var isOwnersLock = false
+                if let lockAddresses = usersLockAddresses {
+                    for usersLockAddress in lockAddresses where usersLockAddress == macAddress {
+                        isOwnersLock = true
+                        break
+                    }
+                }
+                
+                if !isOwnersLock {
+                    let info:[String:Any?] = [
+                        "lock": lock,
+                        "error": SLLockManagerConnectionError.NotAuthorized,
+                        "message": self.textForConnectionError(error: .NotAuthorized)
+                    ]
+                    
+                    NotificationCenter.default.post(
+                        name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                        object: info
+                    )
+                    return
+                }
+                
+                self.getSignedMessageAndPublicKeyFromServerForMacAddress(
+                    macAddress: macAddress,
+                    completion: { (success) in
+                        if success {
+                            if self.bleManager.notConnectedPeripheral(forKey: macAddress) == nil {
+                                print(
+                                    "Error: connecting lock. No not connected peripheral " +
+                                    "in ble manager with key: \(macAddress)."
+                                )
+                                return
+                            }
+                        
+                            self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
+                            self.bleManager.connectToPeripheral(withKey: macAddress)
+                        } else {
+                            // TODO: Handle this failure
+                            print("Error: failed to retreive signed message and public key for lock: \(macAddress)")
+                        }
+                })
+            })
+            
             if self.keychainHandler.getItemForUsername(
                 userName: user.userId!,
                 additionalSeviceInfo: macAddress,
@@ -1242,8 +1367,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
                     object: info
                 )
-                
-                
             }
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
@@ -1741,7 +1864,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             lock.name = lockName
             self.dbManager.save(lock)
         } else {
-            lock = self.dbManager.newLock(withName: lockName, andUUID: peripheral.cbuuidasString())!
+            lock = self.dbManager.newLock(withName: lockName, andUUID: peripheral.cbuuidasString())
         }
         
         if let lockUser = lock.user,

@@ -74,7 +74,33 @@
     }
     
     [self saveLock:lock];
-    NSLog(@"lock: %@", lock.description);
+    NSLog(@"created lock with name and uuid: %@", lock.description);
+    
+    return lock;
+}
+
+- (SLLock *)newLockWithGivenName:(NSString *)givenName andMacAddress:(NSString *)macAddress
+{
+    SLLock *lock;
+    NSArray *dbLocks = self.allLocks;
+    
+    for (SLLock *dbLock in dbLocks) {
+        if ([dbLock.macAddress isEqualToString:macAddress]) {
+            lock = dbLock;
+            break;
+        }
+    }
+    
+    if (!lock) {
+        lock = self.newLock;
+        lock.givenName = givenName;
+        lock.macAddress = macAddress;
+        lock.isShallowConnection = @(NO);
+        lock.isCurrentLock = @(NO);
+    }
+    
+    [self saveLock:lock];
+    NSLog(@"created lock with given name and macAddress lock: %@", lock.description);
     
     return lock;
 }

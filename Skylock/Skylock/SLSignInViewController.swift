@@ -135,6 +135,8 @@ class SLSignInViewController: SLBaseViewController {
                     nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
                     self.present(nc, animated: true, completion: nil)
                 }
+                
+                lockManager.getCurrentUsersLocksFromServer(completion: nil)
             } else {
                 let texts:[SLWarningViewControllerTextProperty:String?] = [
                     .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),

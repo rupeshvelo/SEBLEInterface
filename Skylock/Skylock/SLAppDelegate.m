@@ -32,8 +32,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [SLDatabaseManager.sharedManager setContext:self.managedObjectContext];
     [SLDatabaseManager.sharedManager setCurrentUser];
-    [[SLLockManager sharedManager] startBluetoothManager];
-    
+    [SLLockManager.sharedManager startBluetoothManager];
+    [SLLockManager.sharedManager getCurrentUsersLocksFromServerWithCompletion:nil];
+
     NSString *googleMapApiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GoogleMapsApiKey"];
     [GMSServices provideAPIKey:googleMapApiKey];
     

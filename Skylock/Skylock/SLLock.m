@@ -138,6 +138,16 @@
     }
 }
 
+- (void)updatePropertiesWithServerDictionary:(NSDictionary *)dictionary
+{
+    if (dictionary[@"lock_name"]) {
+        self.givenName = dictionary[@"lock_name"];
+    }
+    
+    if (dictionary[@"mac_id"]) {
+        self.macAddress = dictionary[@"mac_id"];
+    }
+}
 
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary
 {

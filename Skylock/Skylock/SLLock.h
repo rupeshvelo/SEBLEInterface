@@ -51,6 +51,7 @@ typedef NS_ENUM(NSUInteger, SLLockPosition) {
 - (void)updateAccelerometerValues:(NSDictionary *)dictionary;
 - (void)setInitialProperties:(NSDictionary *)dictionary;
 - (void)updateProperties:(NSDictionary *)dictionary;
+- (void)updatePropertiesWithServerDictionary:(NSDictionary *)dictionary;
 - (NSString *)displayName;
 - (BOOL)isInFactoryMode;
 - (CLLocationCoordinate2D)location;

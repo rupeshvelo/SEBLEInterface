@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum SLConcentricCirclesViewControllerAction {
+    case dismiss
+    case showSuccessVC
+}
+
 class SLConcentricCirclesViewController: SLBaseViewController {
     let interval:Double = 2.3
     
@@ -23,11 +28,11 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     
     let xPadding:CGFloat = 35.0
     
-    var shouldDismiss:Bool = false
-    
     var viewHasAppeard:Bool = false
     
     var lockConnectionErrorClosure:(() -> ())?
+    
+    let action:SLConcentricCirclesViewControllerAction
     
     lazy var connectingEllipseLabel:UILabel = {
         let frame = CGRect(
@@ -97,6 +102,15 @@ class SLConcentricCirclesViewController: SLBaseViewController {
         
         return label
     }()
+    
+    init(action: SLConcentricCirclesViewControllerAction) {
+        self.action = action
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -205,11 +219,13 @@ class SLConcentricCirclesViewController: SLBaseViewController {
     }
     
     func connectedLock(notificaiton: Notification) {
-        if self.shouldDismiss {
+        switch self.action {
+        case .dismiss:
             self.dismiss(animated: true, completion: nil)
-        } else if self.navigationController != nil {
+        case .showSuccessVC:
             let psvc = SLPairingSuccessViewController()
-            self.navigationController?.pushViewController(psvc, animated: true)
+            self.navigationController == nil ? self.present(psvc, animated: true, completion: nil) :
+                self.navigationController?.pushViewController(psvc, animated: true)
         }
     }
     

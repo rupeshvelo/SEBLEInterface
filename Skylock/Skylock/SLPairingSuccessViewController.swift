@@ -10,7 +10,9 @@ import UIKit
 
 class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     let xPadding:CGFloat = 30.0
+    
     let lightBlueColor = UIColor(red: 102, green: 177, blue: 227)
+    
     let buttonSeperation:CGFloat = 20.0
     
     lazy var dismissKeyboardButton:UIButton = {
@@ -161,6 +163,9 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
     }()
     
     lazy var nameField:UITextField = {
+        let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+        let lock:SLLock? = lockManager.getCurrentLock()
+        
         let xSpacer:CGFloat = 10.0
         let frame = CGRect(
             x: xSpacer,
@@ -171,6 +176,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         
         let field:UITextField = UITextField(frame: frame)
         field.font = UIFont.systemFont(ofSize: 18)
+        field.text = lock?.displayName()
         field.placeholder = NSLocalizedString("Name your Ellipse.", comment: "")
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1)
         field.textAlignment = .center
