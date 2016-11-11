@@ -595,8 +595,25 @@ class SLProfileViewController:
         if indexPath.section == 1 {
             switch indexPath.row {
             case 0:
-                let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
-                self.navigationController?.pushViewController(msdvc, animated: true)
+                if self.user.userType == nil || self.user.userType == kSLUserTypeFacebook {
+                    let texts:[SLWarningViewControllerTextProperty:String?] = [
+                        .Header: NSLocalizedString("Uh-oh...", comment: ""),
+                        .Info: NSLocalizedString(
+                            "Since you signed in with Facebook, we're not able to change your password.",
+                            comment: ""
+                        ),
+                        .CancelButton: NSLocalizedString("OK", comment: ""),
+                        .ActionButton: nil
+                    ]
+                    
+                    self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+                    if let cell = tableView.cellForRow(at: indexPath) {
+                        cell.setSelected(false, animated: false)
+                    }
+                } else {
+                    let msdvc:SLModifySensitiveDataViewController = SLModifySensitiveDataViewController(type: .Password)
+                    self.navigationController?.pushViewController(msdvc, animated: true)
+                }
             case 1:
                 let lvc:SLLogoutViewController = SLLogoutViewController(userId: user.userId!)
                 self.present(lvc, animated: true, completion: nil)
