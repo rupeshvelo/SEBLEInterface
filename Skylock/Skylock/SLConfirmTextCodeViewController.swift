@@ -92,7 +92,6 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
     }()
     
     func submitCodeButtonPressed(){
-        
         SLVerifyTextCode().verifyTextCode(phoneNumber: self.phoneNumber, verifyHint: self.codeEntryField.text!, userToken: "", completion: {(status, response) in
             
             if((status == 200 || status == 201) && response != nil)
@@ -309,14 +308,15 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
         
         SLVerifyTextCode().verifyTextCode(phoneNumber: self.phoneNumber, verifyHint: self.codeEntryField.text!, userToken: userToken, completion: {(status, response) in
             
-            if((status == 200 || status == 201) && response != nil)
-            {
+            if((status == 200 || status == 201) && response != nil) {
                 let userDefaults = UserDefaults.standard
                 userDefaults.set(true, forKey: "SLUserDefaultsSignedIn")
                 userDefaults.synchronize()
                 
                 DispatchQueue.main.async {
-                    if SLLockManager.sharedManager.hasLocksForCurrentUser() {
+                    let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+                    lockManager.getCurrentUsersLocksFromServer(completion: nil)
+                    if lockManager.hasLocksForCurrentUser() {
                         let lvc = SLLockViewController()
                         self.present(lvc, animated: true, completion: nil)
                     } else {
@@ -327,9 +327,7 @@ class SLConfirmTextCodeViewController: UIViewController, UITextFieldDelegate {
                         nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
                         self.present(nc, animated: true, completion: nil)
                     }
-                
               }
-                
             } else {
                 DispatchQueue.main.async {
                 let alertController = UIAlertController(title: "Code Verification Failed", message: "Sorry: The Code you entered is not Valid. please try again", preferredStyle: .alert)

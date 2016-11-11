@@ -436,7 +436,6 @@ SLBoxTextFieldWithButtonDelegate
             queue: nil,
             using: keyboardWillHide
         )
-        
     }
     
 
@@ -560,8 +559,10 @@ SLBoxTextFieldWithButtonDelegate
                         additionalSeviceInfo: nil,
                         handlerCase: .Password
                     )
+                    let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+                    lockManager.getCurrentUsersLocksFromServer(completion: nil)
                     DispatchQueue.main.async {
-                        if SLLockManager.sharedManager.hasLocksForCurrentUser() {
+                        if lockManager.hasLocksForCurrentUser() {
                             let lvc = SLLockViewController()
                             self.present(lvc, animated: true, completion: nil)
                         } else {
