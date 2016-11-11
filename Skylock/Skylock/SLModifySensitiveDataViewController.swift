@@ -334,11 +334,8 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
             additionalHeaders: headers,
             completion: { (status: UInt, textResponseDict:[AnyHashable : Any]?) in
                 DispatchQueue.main.async{
-                    if status != 200 && status != 201 {
+                    (status == 200 || status == 201) ? self.dismiss(animated: true, completion: nil) :
                         self.presentWarningController(errorType: .InternalServer)
-                    } else {
-                        self.dismiss(animated: true, completion: nil)
-                    }
                 }
             }
         )

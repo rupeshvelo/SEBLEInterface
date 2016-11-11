@@ -186,8 +186,9 @@ import UIKit
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
-                    let ccvc = SLConcentricCirclesViewController()
-                    ccvc.shouldDismiss = self.dismissConcentricCirclesViewController
+                    let ccvc = SLConcentricCirclesViewController(
+                        action: self.dismissConcentricCirclesViewController ? .dismiss : .showSuccessVC
+                    )
 
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager

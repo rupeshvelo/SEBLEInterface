@@ -551,6 +551,72 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
     }
     
+    func getCurrentUsersLocksFromServer(completion: ((Bool) -> ())?) {
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: could not get locks for current user. There is no current user in the database")
+            completion?(false)
+            return
+        }
+        
+        guard let restToken = self.keychainHandler.getItemForUsername(
+            userName: user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            print("Error: could not get locks for current user. The user does not have a rest token")
+            completion?(false)
+            return
+        }
+        
+        let restManager = SLRestManager.sharedManager() as! SLRestManager
+        let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+        let additionalHeaders = ["Authorization": authValue]
+        let subRoutes = [user.userId!, "locks"]
+        
+        restManager.getRequestWith(
+            .main,
+            pathKey: .users,
+            subRoutes: subRoutes,
+            additionalHeaders: additionalHeaders
+        ) { (status:UInt, response:[AnyHashable:Any]?) -> Void in
+            if let serverLocks:[[String:Any]] = (response?["locks"] as? [String:Any])?["my_locks"] as? [[String:Any]] {
+                let allLocks = self.allLocksForCurrentUser()
+                var updatedMacAddresses:[String] = [String]()
+                for serverLock in serverLocks {
+                    if let macAddress:String = serverLock["mac_id"] as? String {
+                        var oldLock:SLLock?
+                        for lock in allLocks {
+                            if lock.macAddress! == macAddress {
+                                oldLock = lock
+                                break
+                            }
+                        }
+                        
+                        if oldLock == nil {
+                            if let givenName:String = serverLock["lock_name"] as? String {
+                                self.dbManager.newLockWith(
+                                    givenName: givenName,
+                                    andMacAddress: macAddress
+                                )
+                            }
+                        } else {
+                            oldLock?.updateProperties(withServerDictionary: serverLock)
+                            self.dbManager.save(oldLock!)
+                        }
+                        
+                        updatedMacAddresses.append(macAddress)
+                    }
+                }
+                
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerUpdatedLocksFromServer),
+                    object: updatedMacAddresses
+                )
+            }
+        }
+    }
+    
     // MARK: Private Methods
     private func namesToConntect() -> [String] {
         return [
@@ -979,7 +1045,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             }
         }
     }
-    
+
     private func deleteLockFromServerWithMacAddress(macAddress: String, completion: ((_ success: Bool) -> ())?) {
         guard let user = self.dbManager.getCurrentUser() else {
             print("Error: could not delete lock from server. No current user in database")
@@ -1741,7 +1807,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             lock.name = lockName
             self.dbManager.save(lock)
         } else {
-            lock = self.dbManager.newLock(withName: lockName, andUUID: peripheral.cbuuidasString())!
+            lock = self.dbManager.newLock(withName: lockName, andUUID: peripheral.cbuuidasString())
         }
         
         if let lockUser = lock.user,

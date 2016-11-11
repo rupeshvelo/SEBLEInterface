@@ -31,7 +31,8 @@
 - (void)setCurrentLock:(SLLock * _Nonnull)lock;
 - (void)deselectAllLocks;
 - (SLLock * _Nullable)getLockWithMacAddress:(NSString * _Nonnull)macAddress;
-- (SLLock * _Nullable)newLockWithName:(NSString * _Nonnull)name andUUID:(NSString * _Nonnull)uuid;
+- (SLLock * _Nonnull)newLockWithName:(NSString * _Nonnull)name andUUID:(NSString * _Nonnull)uuid;
+- (SLLock * _Nonnull)newLockWithGivenName:(NSString * _Nonnull)givenName andMacAddress:(NSString * _Nonnull)macAddress;
 - (BOOL)doesCurrentUserHaveLock:(SLLock * _Nonnull)lock;
 - (NSArray * _Nonnull)getAllLogs;
 - (void)saveLogEntry:(NSString * _Nonnull)entry;
