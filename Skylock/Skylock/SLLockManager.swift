@@ -1291,6 +1291,50 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 return
             }
             
+            self.getCurrentUsersLocksFromServer(completion: { (usersLockAddresses:[String]?) in
+                var isOwnersLock = false
+                if let lockAddresses = usersLockAddresses {
+                    for usersLockAddress in lockAddresses where usersLockAddress == macAddress {
+                        isOwnersLock = true
+                        break
+                    }
+                }
+                
+                if !isOwnersLock {
+                    let info:[String:Any?] = [
+                        "lock": lock,
+                        "error": SLLockManagerConnectionError.NotAuthorized,
+                        "message": self.textForConnectionError(error: .NotAuthorized)
+                    ]
+                    
+                    NotificationCenter.default.post(
+                        name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                        object: info
+                    )
+                    return
+                }
+                
+                self.getSignedMessageAndPublicKeyFromServerForMacAddress(
+                    macAddress: macAddress,
+                    completion: { (success) in
+                        if success {
+                            if self.bleManager.notConnectedPeripheral(forKey: macAddress) == nil {
+                                print(
+                                    "Error: connecting lock. No not connected peripheral " +
+                                    "in ble manager with key: \(macAddress)."
+                                )
+                                return
+                            }
+                        
+                            self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
+                            self.bleManager.connectToPeripheral(withKey: macAddress)
+                        } else {
+                            // TODO: Handle this failure
+                            print("Error: failed to retreive signed message and public key for lock: \(macAddress)")
+                        }
+                })
+            })
+            
             if self.keychainHandler.getItemForUsername(
                 userName: user.userId!,
                 additionalSeviceInfo: macAddress,
@@ -1323,8 +1367,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
                     object: info
                 )
-                
-                
             }
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
