@@ -130,7 +130,11 @@ import Security
         var result: AnyObject?
         let status: OSStatus = SecItemCopyMatching(keychainQuery as CFDictionary, &result)
         if status == errSecSuccess {
-            if let data = result as? NSData, let value = NSString(data: data as Data, encoding:String.Encoding.utf8.rawValue) as? String {
+            if let data = result as? NSData, let value = NSString(
+                data: data as Data,
+                encoding:String.Encoding.utf8.rawValue
+                ) as? String
+            {
                 return value
             }
         }

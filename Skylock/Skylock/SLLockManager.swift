@@ -510,6 +510,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             if dbLock.macAddress == macAddress {
                 self.dbManager.delete(dbLock, withCompletion: { (success: Bool) in
                     if success {
+                        self.removeKeyChainItemsForLock(macAddress: macAddress)
                         NotificationCenter.default.post(
                             name: NSNotification.Name(rawValue: kSLNotificationLockManagerDeletedLock),
                             object: macAddress
@@ -519,6 +520,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                         print("Error: could not delete lock with mac address: \(macAddress). Something went wrong")
                     }
                 })
+                
                 break
             }
         }
@@ -1272,25 +1274,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // If there is no signed message, or no public key this could occur. To fix this we can
             // refetch the keys from the server and try writing this again.
             print("Error: command status got invalid security state error.")
-            guard let user = self.dbManager.getCurrentUser() else {
-                print(
-                    "Error: Could not handle command status update for lock with mac address: \(macAddress). " +
-                    "No user found in database"
-                )
-                
-                let info:[String: Any?] = [
-                    "lock": lock,
-                    "error": SLLockManagerConnectionError.NoUser,
-                    "message": self.textForConnectionError(error: .NoUser)
-                ]
-                
-                NotificationCenter.default.post(
-                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                    object: info
-                )
-                return
-            }
-            
             self.getCurrentUsersLocksFromServer(completion: { (usersLockAddresses:[String]?) in
                 var isOwnersLock = false
                 if let lockAddresses = usersLockAddresses {
@@ -1334,40 +1317,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                         }
                 })
             })
-            
-            if self.keychainHandler.getItemForUsername(
-                userName: user.userId!,
-                additionalSeviceInfo: macAddress,
-                handlerCase: .SignedMessage
-            ) == nil ||
-                self.keychainHandler.getItemForUsername(
-                    userName: user.userId!,
-                    additionalSeviceInfo: macAddress,
-                    handlerCase: .PublicKey
-                ) == nil
-            {
-                let info:[String:Any?] = [
-                    "lock": lock,
-                    "error": SLLockManagerConnectionError.MissingKeys,
-                    "message": self.textForConnectionError(error: .MissingKeys)
-                ]
-                
-                NotificationCenter.default.post(
-                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                    object: info
-                )
-            } else {
-                let info:[String:Any?] = [
-                    "lock": lock,
-                    "error": SLLockManagerConnectionError.InvalidSecurityState,
-                    "message": self.textForConnectionError(error: .InvalidSecurityState)
-                ]
-                
-                NotificationCenter.default.post(
-                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                    object: info
-                )
-            }
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
             // Although this is not very good encapsulation (the lock/unlock characteristic is
@@ -1781,7 +1730,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         )
     }
     
-    func handleFirmwareUpdateCompletion(macAddress: String, success: Bool) {
+    private func handleFirmwareUpdateCompletion(macAddress: String, success: Bool) {
         guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
             print("Error: could not handle firmware completion. No lock with address: \(macAddress) in database")
             return
@@ -1796,6 +1745,38 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         NotificationCenter.default.post(
             name: NSNotification.Name(rawValue: kSLNotificationLockManagerEndedFirmwareUpdate),
             object: macAddress
+        )
+    }
+    
+    private func removeKeyChainItemsForLock(macAddress: String) {
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: cannot remove key chain items for lock: \(macAddress). There is no current user in the db")
+            return
+        }
+        
+        let deletedSignedMessageSuccess = self.keychainHandler.deleteItemForUsername(
+            userName: user.userId!,
+            additionalServiceInfo: macAddress,
+            handlerCase: .SignedMessage
+        )
+        
+        let deletedPublicKeySuccess = self.keychainHandler.deleteItemForUsername(
+            userName: user.userId!,
+            additionalServiceInfo: macAddress,
+            handlerCase: .PublicKey
+        )
+        
+        let deletedChallengeKeySuccess = self.keychainHandler.deleteItemForUsername(
+            userName: user.userId!,
+            additionalServiceInfo: macAddress,
+            handlerCase: .ChallengeKey
+        )
+        
+        print(
+            "Deleted signed message, public key and challenge key from keychain with result: " +
+                "\(deletedSignedMessageSuccess), " +
+                "\(deletedPublicKeySuccess), " +
+            "\(deletedChallengeKeySuccess)"
         )
     }
     
@@ -1885,6 +1866,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             self.bleManager.stopScan()
             self.stopGettingHardwareInfo()
             self.currentState = .FindCurrentLock
+            self.removeKeyChainItemsForLock(macAddress: macAddress)
             NotificationCenter.default.post(
                 name: Notification.Name(rawValue: kSLNotificationLockManagerDeletedLock),
                 object: macAddress
