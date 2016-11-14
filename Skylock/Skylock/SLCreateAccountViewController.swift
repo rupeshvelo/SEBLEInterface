@@ -56,7 +56,7 @@ SLBoxTextFieldWithButtonDelegate
     
     let passwordMaxLength:Int = 16
     
-    let maximumPhoneNumberLength = 10
+    let minimumPhoneNumberLength = 5
     
     var isKeyboardShowing:Bool = false
     
@@ -699,7 +699,7 @@ SLBoxTextFieldWithButtonDelegate
             {
                 isValid = false
                 allFieldsValid = false
-            } else if key == .PhoneNumber && value.characters.count < self.maximumPhoneNumberLength {
+            } else if key == .PhoneNumber && value.characters.count <= self.minimumPhoneNumberLength {
                 isValid = false
                 allFieldsValid = false
             }
@@ -883,11 +883,10 @@ SLBoxTextFieldWithButtonDelegate
             let tempText:NSString = text as NSString
             let newText = tempText.replacingCharacters(in: range, with: string)
             self.fieldValues[fieldName] = newText as String
-            if ((textField == self.passwordField && newText.characters.count > self.passwordMaxLength || textField == self.phoneNumberField && newText.characters.count > self.maximumPhoneNumberLength))
-            {
-                
+            if textField == self.passwordField && newText.characters.count > self.passwordMaxLength {
                 return false
             }
+            
             if self.areFieldsValid() {
                 if self.currentPhase == .Create {
                     if self.hasSentTextMessage {
