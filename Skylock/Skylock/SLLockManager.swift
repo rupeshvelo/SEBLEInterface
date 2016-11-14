@@ -674,7 +674,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         return [
             self.characteristicUUID(characteristic: .Magnet),
             self.characteristicUUID(characteristic: .Accelerometer),
-            self.characteristicUUID(characteristic: .CommandStatus)
+            self.characteristicUUID(characteristic: .CommandStatus),
+            self.characteristicUUID(characteristic: .Lock),
+            self.characteristicUUID(characteristic: .HardwareInfo)
         ]
     }
     
@@ -1221,6 +1223,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 // We can get hardware updates to this section of code. For example, 
                 // the lock/unlock state in the command status will be updated here.
                 print("Lock has been open/closed successfully")
+                self.checkCurrentLockOpenOrClosed()
             }
         } else if value == 1 {
             // TODO: Handle this case for/when sharing is implemented
