@@ -245,9 +245,7 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
                                     self.dismiss(animated: true, completion: nil)
                                 }
                                 
-                                if self.onExit != nil {
-                                    self.onExit!()
-                                }
+                                self.onExit?()
                             }
                     })
                 }

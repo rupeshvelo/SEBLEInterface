@@ -13,7 +13,7 @@ enum SLLockManagerConnectionError {
     case NoUser
     case MissingKeys
     case IncorrectKeys
-    case InvalidSecurityState
+    case InvalidSecurityStateOwner
     case NoRestToken
     case Default
 }
@@ -246,6 +246,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     func allPreviouslyConnectedLocksForCurrentUser() -> [SLLock] {
+        let user = self.dbManager.getCurrentUser()!
+        print("current user: \(user.fullName()) type: \(user.userType)")
         guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
             return [SLLock]()
         }
@@ -591,7 +593,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             if let serverLocks:[[String:Any]] = (response?["locks"] as? [String:Any])?["my_locks"] as? [[String:Any]] {
                 let allLocks = self.allLocksForCurrentUser()
                 var updatedMacAddresses:[String] = [String]()
-                
                 for serverLock in serverLocks {
                     if let macAddress:String = serverLock["mac_id"] as? String {
                         var oldLock:SLLock?
@@ -1160,7 +1161,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         switch error {
         case .NotAuthorized:
             text = NSLocalizedString(
-                "Sorry. This Ellipse belongs to another user. We can't add it to your account.",
+                "Sorry. This Ellipse belongs to another user. We can't add it to your account. " +
+                "You might need to reset the Ellipse. If you need help with this, please see the help section.",
                 comment: ""
             )
         case .NoUser:
@@ -1172,9 +1174,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             text = NSLocalizedString("Sorry. We couldn't find the keys for your Ellipse on your device.", comment: "")
         case .IncorrectKeys:
             text = NSLocalizedString("Sorry. The keys for your Ellipse are not correct.", comment: "")
-        case .InvalidSecurityState:
+        case .InvalidSecurityStateOwner:
             text = NSLocalizedString(
-                "Sorry. The Ellipse you are trying to connect to is in an invalid security state.",
+                "Sorry. Although you are the owner of this Ellipse, it will need to be reset before you " +
+                "can connected to it. If you need help with this, please see the help section.",
                 comment: ""
             )
         case .NoRestToken:
@@ -1286,39 +1289,25 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     }
                 }
                 
-                if !isOwnersLock {
-                    let info:[String:Any?] = [
+                let info:[String:Any?]
+                if isOwnersLock {
+                    info = [
+                        "lock": lock,
+                        "error": SLLockManagerConnectionError.InvalidSecurityStateOwner,
+                        "message": self.textForConnectionError(error: .InvalidSecurityStateOwner)
+                    ]
+                } else {
+                    info = [
                         "lock": lock,
                         "error": SLLockManagerConnectionError.NotAuthorized,
                         "message": self.textForConnectionError(error: .NotAuthorized)
                     ]
-                    
-                    NotificationCenter.default.post(
-                        name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                        object: info
-                    )
-                    return
                 }
                 
-                self.getSignedMessageAndPublicKeyFromServerForMacAddress(
-                    macAddress: macAddress,
-                    completion: { (success) in
-                        if success {
-                            if self.bleManager.notConnectedPeripheral(forKey: macAddress) == nil {
-                                print(
-                                    "Error: connecting lock. No not connected peripheral " +
-                                    "in ble manager with key: \(macAddress)."
-                                )
-                                return
-                            }
-                        
-                            self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
-                            self.bleManager.connectToPeripheral(withKey: macAddress)
-                        } else {
-                            // TODO: Handle this failure
-                            print("Error: failed to retreive signed message and public key for lock: \(macAddress)")
-                        }
-                })
+                NotificationCenter.default.post(
+                    name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+                    object: info
+                )
             })
         } else if value == 130 {
             // If there is a lock/unlock error, the error is being sent to the sercurity service.
@@ -1533,7 +1522,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             challengeString += byteString
         }
         
-        print("challenge string: " + challengeString)
         let challegeDataString = challengeKey + challengeString
         print("challenge string length: \(challegeDataString.characters.count)")
         guard let unhashedChallegeData = challegeDataString.bytesString() as? Data else {

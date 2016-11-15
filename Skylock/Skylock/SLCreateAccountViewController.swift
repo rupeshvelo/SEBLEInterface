@@ -678,8 +678,7 @@ SLBoxTextFieldWithButtonDelegate
             }
         }
     }
-    
-    
+
     func areFieldsValid() -> Bool {
         var allFieldsValid = true
         for (key, value) in self.fieldValues {
