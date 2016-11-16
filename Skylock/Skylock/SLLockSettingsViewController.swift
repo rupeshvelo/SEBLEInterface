@@ -8,6 +8,14 @@
 
 import UIKit
 
+protocol SLLockSettingViewControllerDelegate:class {
+    func lockSettingVCValueChanged(fieldValue: SLLockSettingsViewControllerValue)
+}
+
+enum SLLockSettingsViewControllerValue {
+    case LockName
+}
+
 class SLLockSettingsViewController:
 UIViewController,
 UITableViewDataSource,
@@ -28,6 +36,8 @@ SLLabelAndSwitchCellDelegate
     var firmwareVersion:String = ""
     
     var serialNumber:String = ""
+    
+    weak var delegate:SLLockSettingViewControllerDelegate?
     
     let settingTitles:[String] = [
         NSLocalizedString("Theft detection settings", comment: ""),
@@ -273,7 +283,8 @@ SLLabelAndSwitchCellDelegate
         let leftText = self.settingTitles[indexPath.row]
         let accessoryType:SLLabelAndSwitchTableViewCellAccessoryType =
             (indexPath.row == SettingFieldValue.ProximityLock.rawValue ||
-                indexPath.row == SettingFieldValue.ProximityUnlock.rawValue) ? .ToggleSwitch : .Arrow
+                indexPath.row == SettingFieldValue.ProximityUnlock.rawValue) ?
+                    .ToggleSwitch : .Arrow
         
         cellId = String(describing: SLLabelAndSwitchTableViewCell.self)
         var cell: SLLabelAndSwitchTableViewCell? =
@@ -303,8 +314,8 @@ SLLabelAndSwitchCellDelegate
         let text = section == 0 ? NSLocalizedString("Lock Details", comment: "")
             : NSLocalizedString("Device Settings", comment: "")
         let frame = CGRect(
-            x: 0,
-            y: 0,
+            x: 0.0,
+            y: 0.0,
             width: tableView.bounds.size.width,
             height: self.tableView(tableView, heightForHeaderInSection: section)
         )
@@ -339,11 +350,11 @@ SLLabelAndSwitchCellDelegate
                     sdvc.onExit = {[weak weakSelf=self] in
                         if let this = weakSelf {
                             this.tableView.reloadRows(at: [indexPath], with: .none)
+                            this.delegate?.lockSettingVCValueChanged(fieldValue: .LockName)
                         }
                     }
                     self.navigationController?.pushViewController(sdvc, animated: true)
-                }
-                if indexPath.row == 3 {
+                } else if indexPath.row == 3 {
                     let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
                     self.present(fuvc, animated: true, completion: nil)
                 }

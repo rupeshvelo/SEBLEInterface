@@ -246,6 +246,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     func allPreviouslyConnectedLocksForCurrentUser() -> [SLLock] {
+        let user = self.dbManager.getCurrentUser()!
+        print("current user: \(user.fullName()) type: \(user.userType)")
         guard let locks:[SLLock] = self.dbManager.locksForCurrentUser() as? [SLLock] else {
             return [SLLock]()
         }
@@ -591,7 +593,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             if let serverLocks:[[String:Any]] = (response?["locks"] as? [String:Any])?["my_locks"] as? [[String:Any]] {
                 let allLocks = self.allLocksForCurrentUser()
                 var updatedMacAddresses:[String] = [String]()
-                
                 for serverLock in serverLocks {
                     if let macAddress:String = serverLock["mac_id"] as? String {
                         var oldLock:SLLock?
@@ -1521,7 +1522,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             challengeString += byteString
         }
         
-        print("challenge string: " + challengeString)
         let challegeDataString = challengeKey + challengeString
         print("challenge string length: \(challegeDataString.characters.count)")
         guard let unhashedChallegeData = challegeDataString.bytesString() as? Data else {

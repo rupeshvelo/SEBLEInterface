@@ -10,7 +10,12 @@ import UIKit
 
 
 
-class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SLLockDetailsViewController:
+UIViewController,
+UITableViewDelegate,
+UITableViewDataSource,
+SLLockSettingViewControllerDelegate
+{
     var connectedLock:SLLock?
     
     let utilities:SLUtilities = SLUtilities()
@@ -37,7 +42,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         return self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
     }()
     
-    lazy var dataFormatter:DateFormatter = {
+    lazy var dateFormatter:DateFormatter = {
         let df:DateFormatter = DateFormatter()
         df.dateFormat = "MMM d, H:mm a"
         
@@ -165,7 +170,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             mainText = unconnectedLock.displayName()
             if let lastConnectedDate = unconnectedLock.lastConnected {
                 detailText = NSLocalizedString("Last connected on", comment: "") + " "
-                    + self.dataFormatter.string(from: lastConnectedDate)
+                    + self.dateFormatter.string(from: lastConnectedDate)
             }
         }
         
@@ -273,6 +278,7 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
             { (rowAction, index) in
                 if let lock = self.connectedLock {
                     let lsvc = SLLockSettingsViewController(lock: lock)
+                    lsvc.delegate = self
                     self.navigationController?.pushViewController(lsvc, animated: true)
                 }
             }
@@ -299,6 +305,16 @@ class SLLockDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         if let lock = self.connectedLock , indexPath.section == 0 && indexPath.row == 1 {
             let lsvc = SLLockSettingsViewController(lock: lock)
             self.navigationController?.pushViewController(lsvc, animated: true)
+        }
+    }
+    
+    // MARK - SLLockSettingsViewControllerDelegate
+    func lockSettingVCValueChanged(fieldValue: SLLockSettingsViewControllerValue) {
+        switch fieldValue {
+        case .LockName:
+            self.unconnectedLocks = self.lockManager.allPreviouslyConnectedLocksForCurrentUser()
+            self.connectedLock = self.lockManager.getCurrentLock()
+            self.tableView.reloadData()
         }
     }
 }

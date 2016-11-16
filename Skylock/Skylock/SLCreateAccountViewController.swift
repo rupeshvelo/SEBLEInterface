@@ -470,10 +470,12 @@ SLBoxTextFieldWithButtonDelegate
     
     func startLoginProcedure() {
         let ud:UserDefaults = UserDefaults.standard
-        guard let pushId = ud.string(forKey: SLUserDefaultsPushNotificationToken) else {
-            // TODO alert the user of this failure
-            return
-        }
+//        guard let pushId = ud.string(forKey: SLUserDefaultsPushNotificationToken) else {
+//            // TODO alert the user of this failure
+//            return
+//        }
+        
+        let pushId = "00000000001010000dfjdfdifaojfaodfjdijf"
         
         let networkInfo:CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
         var countryCode:Any = NSNull()
@@ -678,8 +680,7 @@ SLBoxTextFieldWithButtonDelegate
             }
         }
     }
-    
-    
+
     func areFieldsValid() -> Bool {
         var allFieldsValid = true
         for (key, value) in self.fieldValues {

@@ -12,7 +12,7 @@ class SLSignInViewController: SLBaseViewController {
     let buttonSpacer:CGFloat = 20
     
     lazy var logoView:UIImageView = {
-        let image = UIImage(named: "placeholder_logo_animation")!
+        let image = UIImage(named: "splash_screen_logo")!
         let view = UIImageView(image: image)
         view.frame = CGRect(
             x: 0.5*(self.view.bounds.size.width - image.size.width),
