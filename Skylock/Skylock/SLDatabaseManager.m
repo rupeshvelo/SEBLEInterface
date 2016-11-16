@@ -185,6 +185,7 @@
 - (NSArray *)locksForCurrentUser
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+    NSLog(@"current user: %@", self.currentUser.userId);
     NSMutableArray *locks = [NSMutableArray arrayWithArray:self.currentUser.locks.allObjects];
     [locks sortUsingComparator:^NSComparisonResult(SLLock * _Nonnull lock1, SLLock*  _Nonnull lock2) {
         return [lock1.lastConnected compare:lock2.lastConnected];

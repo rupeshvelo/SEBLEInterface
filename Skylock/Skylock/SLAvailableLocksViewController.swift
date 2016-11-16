@@ -263,7 +263,7 @@ import UIKit
         button.tag = indexPath.row + self.buttonTagShift
         
         self.tempButtons.append(button)
-        
+        print("lock: \(lock)")
         cell?.textLabel?.text = lock.displayName()
         cell?.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         cell?.textLabel?.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 17.0)

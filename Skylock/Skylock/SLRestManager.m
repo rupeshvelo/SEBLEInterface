@@ -146,6 +146,9 @@
         }
     }
     
+    NSLog(@"get request url: %@", request.URL.absoluteString);
+    NSLog(@"get request headers %@", [request allHTTPHeaderFields]);
+    
     NSURLSessionConfiguration *sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     [sessionConfig setHTTPAdditionalHeaders:@{@"Accept": @"application/json"}];
     
@@ -197,9 +200,9 @@
         }
     }
     
-    NSLog(@"post object: %@", object.description);
-    NSLog(@"post url: %@", request.URL.absoluteString);
-    NSLog(@"post request %@", [request allHTTPHeaderFields]);
+    NSLog(@"post request object: %@", object.description);
+    NSLog(@"post request url: %@", request.URL.absoluteString);
+    NSLog(@"post request headers%@", [request allHTTPHeaderFields]);
     
     [SLDatabaseManager.sharedManager saveLogEntry:[NSString stringWithFormat:
                                                    @"REST manager posting object %@. to url: %@, with headers: %@",

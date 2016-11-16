@@ -83,6 +83,8 @@
 		652306D51D5A22BC00091873 /* rssi4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B11D5A22BC00091873 /* rssi4@3x.png */; };
 		652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B21D5A22BC00091873 /* temp_phone_info@2x.png */; };
 		652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B31D5A22BC00091873 /* temp_phone_info@3x.png */; };
+		6570A1EE1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6570A1EC1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png */; };
+		6570A1EF1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6570A1ED1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png */; };
 		659BA18A1D761DBC000001E2 /* loading_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 659BA1881D761DBC000001E2 /* loading_icon@2x.png */; };
 		659BA18B1D761DBC000001E2 /* loading_icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 659BA1891D761DBC000001E2 /* loading_icon@3x.png */; };
 		659BA18E1D762249000001E2 /* SLLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659BA18D1D762249000001E2 /* SLLoadingView.swift */; };
@@ -333,9 +335,6 @@
 		DCD511DB1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD511DA1CF2A16200CFAEAA /* SLLock+CoreDataProperties.m */; };
 		DCD679761CF779920081D225 /* SLOnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD679751CF779920081D225 /* SLOnboardingPageViewController.swift */; };
 		DCD679781CF77A030081D225 /* SLOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD679771CF77A030081D225 /* SLOnboardingViewController.swift */; };
-		DCD6797A1CF9FECD0081D225 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DCD679791CF9FECD0081D225 /* Launch.storyboard */; };
-		DCD6797E1CF9FFB50081D225 /* placeholder_logo_animation@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD6797C1CF9FFB50081D225 /* placeholder_logo_animation@2x.png */; };
-		DCD6797F1CF9FFB50081D225 /* placeholder_logo_animation@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD6797D1CF9FFB50081D225 /* placeholder_logo_animation@3x.png */; };
 		DCD679811CFA444E0081D225 /* SLSignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD679801CFA444E0081D225 /* SLSignInViewController.swift */; };
 		DCD82FDB1B1FCBBC00B38910 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDA1B1FCBBC00B38910 /* main.m */; };
 		DCD82FDE1B1FCBBC00B38910 /* SLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD82FDD1B1FCBBC00B38910 /* SLAppDelegate.m */; };
@@ -491,6 +490,8 @@
 		652306B21D5A22BC00091873 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
 		652306B31D5A22BC00091873 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
 		65688FD51DBDE05300538974 /* Ellipse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Ellipse.entitlements; sourceTree = "<group>"; };
+		6570A1EC1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash_screen_logo@2x.png"; sourceTree = "<group>"; };
+		6570A1ED1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash_screen_logo@3x.png"; sourceTree = "<group>"; };
 		659BA1881D761DBC000001E2 /* loading_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_icon@2x.png"; sourceTree = "<group>"; };
 		659BA1891D761DBC000001E2 /* loading_icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "loading_icon@3x.png"; sourceTree = "<group>"; };
 		659BA18D1D762249000001E2 /* SLLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLLoadingView.swift; sourceTree = "<group>"; };
@@ -761,9 +762,6 @@
 		DCD554421B27D6650035B78C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		DCD679751CF779920081D225 /* SLOnboardingPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLOnboardingPageViewController.swift; sourceTree = "<group>"; };
 		DCD679771CF77A030081D225 /* SLOnboardingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLOnboardingViewController.swift; sourceTree = "<group>"; };
-		DCD679791CF9FECD0081D225 /* Launch.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Launch.storyboard; sourceTree = "<group>"; };
-		DCD6797C1CF9FFB50081D225 /* placeholder_logo_animation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder_logo_animation@2x.png"; sourceTree = "<group>"; };
-		DCD6797D1CF9FFB50081D225 /* placeholder_logo_animation@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder_logo_animation@3x.png"; sourceTree = "<group>"; };
 		DCD679801CFA444E0081D225 /* SLSignInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLSignInViewController.swift; sourceTree = "<group>"; };
 		DCD82FD51B1FCBBC00B38910 /* Ellipse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ellipse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCD82FD91B1FCBBC00B38910 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1419,8 +1417,8 @@
 		DCD6797B1CF9FFB50081D225 /* splash_screen */ = {
 			isa = PBXGroup;
 			children = (
-				DCD6797C1CF9FFB50081D225 /* placeholder_logo_animation@2x.png */,
-				DCD6797D1CF9FFB50081D225 /* placeholder_logo_animation@3x.png */,
+				6570A1EC1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png */,
+				6570A1ED1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png */,
 			);
 			path = splash_screen;
 			sourceTree = "<group>";
@@ -1476,7 +1474,6 @@
 				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
 				DC17ACB31B5C6B620090BE8A /* UIImage+Skylock.h */,
 				DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */,
-				DCD679791CF9FECD0081D225 /* Launch.storyboard */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -1690,12 +1687,12 @@
 				659BA22D1D7655BF000001E2 /* ProximaNova-SemiboldItalic.otf in Resources */,
 				652306D01D5A22BC00091873 /* rssi2@2x.png in Resources */,
 				DC06EF8D1D484C1A00C96DF9 /* lock_status_bar@3x.png in Resources */,
-				DCD6797E1CF9FFB50081D225 /* placeholder_logo_animation@2x.png in Resources */,
 				652306891D5941AF00091873 /* sharing_default_picture@2x.png in Resources */,
 				DC06EF931D484C1A00C96DF9 /* locks_setting_button@3x.png in Resources */,
 				DC52B3B31D53B2CB00DEF5EC /* onboarding_main_image_2@3x.png in Resources */,
 				652306831D5941AF00091873 /* contacts_unselected_circle@2x.png in Resources */,
 				659BA2211D7655BF000001E2 /* OpenSans-Semibold.ttf in Resources */,
+				6570A1EE1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png in Resources */,
 				652306571D58E79C00091873 /* map_close_details_x_icon@3x.png in Resources */,
 				DC52B3E61D53B2D800DEF5EC /* button_keypad_up_Onboarding@3x.png in Resources */,
 				6523065E1D58E79C00091873 /* map_lock_info_x_button@2x.png in Resources */,
@@ -1722,7 +1719,6 @@
 				652306BA1D5A22BC00091873 /* battery3@2x.png in Resources */,
 				65C12D261D86F0CA0067D1BA /* GoogleService-Info.plist in Resources */,
 				659BA22A1D7655BF000001E2 /* ProximaNova-Regular.otf in Resources */,
-				DCD6797F1CF9FFB50081D225 /* placeholder_logo_animation@3x.png in Resources */,
 				652306CB1D5A22BC00091873 /* lock_screen_theft_detection_on@3x.png in Resources */,
 				DC2DDD4A1D1C85AB004A5857 /* sign_in_confirm_code_button@3x.png in Resources */,
 				DC52B3B21D53B2CB00DEF5EC /* onboarding_main_image_2@2x.png in Resources */,
@@ -1752,7 +1748,6 @@
 				659BA22C1D7655BF000001E2 /* ProximaNova-Semibold.otf in Resources */,
 				652306BC1D5A22BC00091873 /* battery4@2x.png in Resources */,
 				DC52B3AA1D53B2CB00DEF5EC /* lock_onboarding_connect_button@2x.png in Resources */,
-				DCD6797A1CF9FECD0081D225 /* Launch.storyboard in Resources */,
 				652306B41D5A22BC00091873 /* battery0@2x.png in Resources */,
 				DC52B3DC1D53B2D800DEF5EC /* button_keypad_left@3x.png in Resources */,
 				652306801D5941AF00091873 /* contacts_phone_icon@3x.png in Resources */,
@@ -1898,6 +1893,7 @@
 				DCE5C2201CFB5D910084F8A2 /* button_yes_Onboarding@3x.png in Resources */,
 				DC94E13C1D0D3726002D32C3 /* icon_camera_Myprofile@3x.png in Resources */,
 				DC2DDD341D1C85AB004A5857 /* button_log_in_email_Onboarding@3x.png in Resources */,
+				6570A1EF1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png in Resources */,
 				DC2DDD3C1D1C85AB004A5857 /* button_text_confirmation_code_Onboarding@3x.png in Resources */,
 				659BA18B1D761DBC000001E2 /* loading_icon@3x.png in Resources */,
 				DC2DDD2D1D1C85AB004A5857 /* button_close_window_extra_large_Onboarding@2x.png in Resources */,

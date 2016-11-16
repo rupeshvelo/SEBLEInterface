@@ -176,8 +176,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         
         let field:UITextField = UITextField(frame: frame)
         field.font = UIFont.systemFont(ofSize: 18)
-        field.text = lock?.displayName()
-        field.placeholder = NSLocalizedString("Name your Ellipse.", comment: "")
+        field.placeholder = lock?.givenName == nil ? NSLocalizedString("Name your Ellipse.", comment: "") : lock?.givenName
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1)
         field.textAlignment = .center
         field.delegate = self
