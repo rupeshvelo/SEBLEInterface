@@ -83,6 +83,7 @@
 		652306D51D5A22BC00091873 /* rssi4@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B11D5A22BC00091873 /* rssi4@3x.png */; };
 		652306D61D5A22BC00091873 /* temp_phone_info@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B21D5A22BC00091873 /* temp_phone_info@2x.png */; };
 		652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 652306B31D5A22BC00091873 /* temp_phone_info@3x.png */; };
+		655DAA4B1DDD14480054E3A3 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 655DAA4A1DDD14480054E3A3 /* Launch Screen.storyboard */; };
 		6570A1EE1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6570A1EC1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png */; };
 		6570A1EF1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6570A1ED1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png */; };
 		659BA18A1D761DBC000001E2 /* loading_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 659BA1881D761DBC000001E2 /* loading_icon@2x.png */; };
@@ -489,6 +490,7 @@
 		652306B11D5A22BC00091873 /* rssi4@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "rssi4@3x.png"; sourceTree = "<group>"; };
 		652306B21D5A22BC00091873 /* temp_phone_info@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@2x.png"; sourceTree = "<group>"; };
 		652306B31D5A22BC00091873 /* temp_phone_info@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "temp_phone_info@3x.png"; sourceTree = "<group>"; };
+		655DAA4A1DDD14480054E3A3 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		65688FD51DBDE05300538974 /* Ellipse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Ellipse.entitlements; sourceTree = "<group>"; };
 		6570A1EC1DDCE0D1005D6DA6 /* splash_screen_logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash_screen_logo@2x.png"; sourceTree = "<group>"; };
 		6570A1ED1DDCE0D1005D6DA6 /* splash_screen_logo@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash_screen_logo@3x.png"; sourceTree = "<group>"; };
@@ -1474,6 +1476,7 @@
 				DCD82FD81B1FCBBC00B38910 /* Supporting Files */,
 				DC17ACB31B5C6B620090BE8A /* UIImage+Skylock.h */,
 				DC17ACB41B5C6B620090BE8A /* UIImage+Skylock.m */,
+				655DAA4A1DDD14480054E3A3 /* Launch Screen.storyboard */,
 			);
 			path = Skylock;
 			sourceTree = "<group>";
@@ -1759,6 +1762,7 @@
 				DC06EF911D484C1A00C96DF9 /* locks_delete_lock_button@3x.png in Resources */,
 				DC52B3D61D53B2D800DEF5EC /* button_close_window_large_Onboarding@3x.png in Resources */,
 				DC2DDD311D1C85AB004A5857 /* button_get_help_Onboarding@2x.png in Resources */,
+				655DAA4B1DDD14480054E3A3 /* Launch Screen.storyboard in Resources */,
 				652306D71D5A22BC00091873 /* temp_phone_info@3x.png in Resources */,
 				DC2DDD2B1D1C85AB004A5857 /* button_blink_device_Onboarding@2x.png in Resources */,
 				652306871D5941AF00091873 /* emergency_contacts_phone_image@2x.png in Resources */,

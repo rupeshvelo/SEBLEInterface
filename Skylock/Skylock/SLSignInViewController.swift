@@ -120,23 +120,27 @@ class SLSignInViewController: SLBaseViewController {
         facebookManager.login(from: self) { (success) in
             if success {
                 let userDefaults = UserDefaults.standard
-                userDefaults.set(true, forKey: "SLUserDefaultsSignedIn")
-                userDefaults.synchronize()
-                
+                let everSignedIn:Bool? = userDefaults.bool(forKey: SLUserDefaultsEverSignedIn)
                 let lockManager:SLLockManager = SLLockManager.sharedManager
-                if lockManager.hasLocksForCurrentUser() {
-                    let lvc = SLLockViewController()
-                    self.present(lvc, animated: true, completion: nil)
-                } else {
-                    let clvc = SLConnectLockInfoViewController()
-                    let nc:UINavigationController = UINavigationController(rootViewController: clvc)
-                    nc.navigationBar.barStyle = UIBarStyle.black
-                    nc.navigationBar.tintColor = UIColor.white
-                    nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
-                    self.present(nc, animated: true, completion: nil)
-                }
-                
-                lockManager.getCurrentUsersLocksFromServer(completion: nil)
+                lockManager.getCurrentUsersLocksFromServer(completion: { (serverLocks:[String]?) in
+                    DispatchQueue.main.async {
+                        userDefaults.set(true, forKey: SLUserDefaultsSignedIn)
+                        userDefaults.set(true, forKey: SLUserDefaultsEverSignedIn)
+                        userDefaults.synchronize()
+                        
+                        if let signedIn = everSignedIn, signedIn, lockManager.hasLocksForCurrentUser() {
+                            let lvc = SLLockViewController()
+                            self.present(lvc, animated: true, completion: nil)
+                        } else {
+                            let clvc = SLConnectLockInfoViewController()
+                            let nc:UINavigationController = UINavigationController(rootViewController: clvc)
+                            nc.navigationBar.barStyle = UIBarStyle.black
+                            nc.navigationBar.tintColor = UIColor.white
+                            nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
+                            self.present(nc, animated: true, completion: nil)
+                        }
+                    }
+                })
             } else {
                 let texts:[SLWarningViewControllerTextProperty:String?] = [
                     .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),

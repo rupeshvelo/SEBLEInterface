@@ -14,5 +14,6 @@
 #define SLUserDefaultsProfilePicCacheDate   @"SLUserDefaultsProfilePicCacheDate"
 #define SLUserDefaultsPushNotificationToken @"SLUserDefaultsPushNotificationToken"
 #define SLUserDefaultsUserToken             @"SLUserDefaultsUserToken"
+#define SLUserDefaultsEverSignedIn          @"SLUserDefaultsEverSignedIn"
 
 #endif
