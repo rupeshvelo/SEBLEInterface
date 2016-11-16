@@ -94,17 +94,19 @@
                                 } else if (result.isCancelled) {
                                     NSLog(@"Canceled login to facebook");
                                 } else {
-                                    [self getFBUserInfo];
+                                    
                                     success = YES;
                                 }
                                 
-                                if (completion) {
+                                if (success) {
+                                    [self getFBUserInfoWithCompletion:completion];
+                                } else if (completion) {
                                     completion(success);
                                 }
                             }];
 }
 
-- (void)getFBUserInfo
+- (void)getFBUserInfoWithCompletion:(void (^)(BOOL success))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     if ([FBSDKAccessToken currentAccessToken]) {
@@ -112,14 +114,18 @@
         [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me"
                                            parameters:@{@"fields": fields}]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-             if (!error) {
-                 [self userInfoRecieved:result];
+             if (error) {
+                 if (completion) {
+                     completion(NO);
+                 }
+             } else {
+                 [self userInfoRecieved:result withCompletion:completion];
              }
          }];
     }
 }
 
-- (void)userInfoRecieved:(NSDictionary *)info
+- (void)userInfoRecieved:(NSDictionary *)info withCompletion:(void (^)(BOOL success))completion
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
     NSLog(@"fetched user:%@", info);
@@ -131,9 +137,10 @@
     if ([ud objectForKey:SLUserDefaultsPushNotificationToken]) {
         pushToken = [ud objectForKey:SLUserDefaultsPushNotificationToken];
     } else {
-        pushToken = @"111111111111111111111";
-        [SLDatabaseManager.sharedManager saveLogEntry:
-         @"No google push token retreived. Creating a false token"];
+        if (completion) {
+            completion(NO);
+        }
+        return;
     }
     
     modifiedInfo[@"googlePushId"] = pushToken;
@@ -144,9 +151,12 @@
     
     SLUser *user = [SLDatabaseManager.sharedManager getCurrentUser];
     if (!user) {
-        // TODO: handle this error in UI
+        if (completion) {
+            completion(NO);
+        }
         return;
     }
+    
     NSMutableDictionary *userDict = [[NSMutableDictionary alloc] initWithDictionary:user.asRestDictionary];
     userDict[@"password"] = facebookUserId;
     
@@ -172,6 +182,7 @@
                                                           @"got response saving facebook userId: %@ Response Info: %@",
                                                           user.userId,
                                                           responseDict];
+                                     
                                      NSLog(@"%@", message);
                                      [SLDatabaseManager.sharedManager saveLogEntry:message];
                                      
@@ -179,10 +190,16 @@
                                                                           inputValue:responseDict[@"token"]
                                                                 additionalSeviceInfo:nil
                                                                          handlerCase:SLKeychainHandlerCaseRestToken];
+                                     
+                                     if (completion) {
+                                         completion(YES);
+                                     }
+                                     
+                                     [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
+                                                                                         object:nil];
                                  }];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kSLNotificationUserSignedInFacebook
-                                                        object:nil];
+    
 }
 
 - (void)getFacebookPicForUserId:(NSString *)userId withCompletion:(void (^)(UIImage *))completion

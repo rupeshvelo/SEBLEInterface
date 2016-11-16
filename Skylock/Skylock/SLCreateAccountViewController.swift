@@ -470,12 +470,10 @@ SLBoxTextFieldWithButtonDelegate
     
     func startLoginProcedure() {
         let ud:UserDefaults = UserDefaults.standard
-//        guard let pushId = ud.string(forKey: SLUserDefaultsPushNotificationToken) else {
-//            // TODO alert the user of this failure
-//            return
-//        }
-        
-        let pushId = "00000000001010000dfjdfdifaojfaodfjdijf"
+        guard let pushId = ud.string(forKey: SLUserDefaultsPushNotificationToken) else {
+            // TODO alert the user of this failure
+            return
+        }
         
         let networkInfo:CTTelephonyNetworkInfo = CTTelephonyNetworkInfo()
         var countryCode:Any = NSNull()
@@ -754,17 +752,27 @@ SLBoxTextFieldWithButtonDelegate
         facebookManager.login(from: self) { (success) in
             if success {
                 let userDefaults = UserDefaults.standard
-                userDefaults.set(true, forKey: "SLUserDefaultsSignedIn")
-                userDefaults.synchronize()
-                
-                if SLLockManager.sharedManager.hasLocksForCurrentUser() {
-                    let lvc = SLLockViewController()
-                    self.present(lvc, animated: true, completion: nil)
-                } else {
-                    let clvc = SLConnectLockInfoViewController()
-                    let navController:UINavigationController = UINavigationController(rootViewController: clvc)
-                    self.present(navController, animated: true, completion: nil)
-                }
+                let everSignedIn:Bool? = userDefaults.bool(forKey: SLUserDefaultsEverSignedIn)
+                let lockManager:SLLockManager = SLLockManager.sharedManager
+                lockManager.getCurrentUsersLocksFromServer(completion: { (serverLocks:[String]?) in
+                    DispatchQueue.main.async {
+                        userDefaults.set(true, forKey: SLUserDefaultsSignedIn)
+                        userDefaults.set(true, forKey: SLUserDefaultsEverSignedIn)
+                        userDefaults.synchronize()
+                        
+                        if let signedIn = everSignedIn, signedIn, lockManager.hasLocksForCurrentUser() {
+                            let lvc = SLLockViewController()
+                            self.present(lvc, animated: true, completion: nil)
+                        } else {
+                            let clvc = SLConnectLockInfoViewController()
+                            let nc:UINavigationController = UINavigationController(rootViewController: clvc)
+                            nc.navigationBar.barStyle = UIBarStyle.black
+                            nc.navigationBar.tintColor = UIColor.white
+                            nc.navigationBar.barTintColor = UIColor(red: 130, green: 156, blue: 178)
+                            self.present(nc, animated: true, completion: nil)
+                        }
+                    }
+                })
             } else {
                 let texts:[SLWarningViewControllerTextProperty:String?] = [
                     .Header: NSLocalizedString("Hmmm...Login Failed", comment: ""),
