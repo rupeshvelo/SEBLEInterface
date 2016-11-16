@@ -897,57 +897,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 handlerCase: .PublicKey
             )
             
-            restManager.getRequestWith(
-                .main,
-                pathKey: .challengeKey,
-                subRoutes: [user.userId!, "challenge_key"],
-                additionalHeaders: additionalHeaders
-            ) { (status:UInt, response:[AnyHashable:Any]?) -> Void in
-                // TODO: check what the status should be here and take the necassary actions.
-                if status != 200 && status != 201 {
-                    print("Error: could not retreive challenge key for lock: \(macAddress).")
-                    let info:[String: Any?] = [
-                        "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                        "error": SLLockManagerConnectionError.MissingKeys,
-                        "message": self.textForConnectionError(error: .MissingKeys)
-                    ]
-                    NotificationCenter.default.post(
-                        name: Notification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                        object: info
-                    )
-                    completion?(false)
-                    return
-                }
-                
-                guard let challengeKey = response?["challenge_key"] as? String else {
-                    // TODO: handle this error
-                    print("Error while getting challenge key. No challege key returned by server.")
-                    return
-                }
-                
-                guard let challengeKeyData = challengeKey.bytesString() else {
-                    print("Error: Could not convert challege key to data")
-                    return
-                }
-                
-                self.keychainHandler.setItemForUsername(
-                    userName: user.userId!,
-                    inputValue: challengeKey,
-                    additionalSeviceInfo: macAddress,
-                    handlerCase: .ChallengeKey
-                )
-                
-                self.writeToLockWithMacAddress(
-                    macAddress: macAddress,
-                    service: .Security,
-                    characteristic: .ChallengeKey,
-                    data: challengeKeyData
-                )
-                
-                if completion != nil {
-                    completion!(true)
-                }
-            }
+            completion?(true)
         }
     }
     
@@ -1203,6 +1153,24 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             characteristic: .TxPower,
             data: data
         )
+    }
+    
+    private func challengeKeyForCurrentUser() -> String? {
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: could not create challege key. No current user")
+            return nil
+        }
+        
+        var challengeKey:String = user.userId!
+        var index = user.userId!.characters.count
+        while index < 64 {
+            challengeKey.append("f")
+            index += 1
+        }
+        
+        let l = challengeKey.characters.count
+        print(l)
+        return challengeKey
     }
     
     private func textForConnectionError(error: SLLockManagerConnectionError) -> String {
@@ -1523,29 +1491,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        guard let user = self.dbManager.getCurrentUser() else {
-            print(
-                "Error: could not write challege data for lock with address: \(macAddress). "
-                    + "Could not retrieve user from the database"
-            )
-            let info:[String: Any?] = [
-                "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                "error": SLLockManagerConnectionError.NoUser,
-                "message": self.textForConnectionError(error: .NoUser)
-            ]
-            NotificationCenter.default.post(
-                name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: info
-            )
-            return
-        }
-        
-        guard let challengeKey = self.keychainHandler.getItemForUsername(
-            userName: user.userId!,
-            additionalSeviceInfo: macAddress,
-            handlerCase: .ChallengeKey
-            ) else
-        {
+        guard let challengeKey = self.challengeKeyForCurrentUser() else {
             print(
                 "Error: could not write challege data for lock with address: \(macAddress). "
                 + "Could not retrieve challege key from the keychain"
@@ -1679,68 +1625,22 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     }
     
     private func handleChallengeKeyConnectionPhaseForMacAddress(macAddress: String) {
-        guard let user = self.dbManager.getCurrentUser() else {
-            print("Error: could not enter challenge key connection phase. No user.")
+        guard let challengeKey = self.challengeKeyForCurrentUser() else {
+            print("Error: Could not get challenge data for current user.")
+            return
+        }
+            
+        guard let challengeKeyData = challengeKey.bytesString() else {
+            print("Error: Could not convert challege key to data")
             return
         }
         
-        guard let restToken = self.keychainHandler.getItemForUsername(
-            userName: user.userId!,
-            additionalSeviceInfo: nil,
-            handlerCase: .RestToken
-            ) else
-        {
-            let info:[String: Any?] = [
-                "lock": self.dbManager.getLockWithMacAddress(macAddress),
-                "error": SLLockManagerConnectionError.NoRestToken,
-                "message": self.textForConnectionError(error: .NoRestToken)
-            ]
-            NotificationCenter.default.post(
-                name: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-                object: info
-            )
-            
-            print("Error: keychain handler does not have a rest token for user \(user.fullName()).")
-            return
-        }
-        
-        let restManager = SLRestManager.sharedManager() as! SLRestManager
-        let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
-        let additionalHeaders = ["Authorization": authValue]
-        let subRoutes = [user.userId!, "challenge_key"]
-        
-        restManager.getRequestWith(
-            .main,
-            pathKey: .challengeKey,
-            subRoutes: subRoutes,
-            additionalHeaders: additionalHeaders
-        ) { (status:UInt, response:[AnyHashable:Any]?) -> Void in
-            // TODO: check what the status should be here and take the necassary actions.
-            guard let challengeKey = response?["challenge_key"] as? String else {
-                // TODO: handle this error
-                print("Error while getting challenge key. No challege key returned by server.")
-                return
-            }
-            
-            guard let challengeKeyData = challengeKey.bytesString() else {
-                print("Error: Could not convert challege key to data")
-                return
-            }
-            
-            self.keychainHandler.setItemForUsername(
-                userName: user.userId!,
-                inputValue: challengeKey,
-                additionalSeviceInfo: macAddress,
-                handlerCase: .ChallengeKey
-            )
-            
-            self.writeToLockWithMacAddress(
-                macAddress: macAddress,
-                service: .Security,
-                characteristic: .ChallengeKey,
-                data: challengeKeyData
-            )
-        }
+        self.writeToLockWithMacAddress(
+            macAddress: macAddress,
+            service: .Security,
+            characteristic: .ChallengeKey,
+            data: challengeKeyData
+        )
     }
     
     private func handleSignedMessageConnectionPhaseForMacAddress(macAddress: String) {
@@ -1808,17 +1708,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             handlerCase: .PublicKey
         )
         
-        let deletedChallengeKeySuccess = self.keychainHandler.deleteItemForUsername(
-            userName: user.userId!,
-            additionalServiceInfo: macAddress,
-            handlerCase: .ChallengeKey
-        )
-        
         print(
             "Deleted signed message, public key and challenge key from keychain with result: " +
-                "\(deletedSignedMessageSuccess), " +
-                "\(deletedPublicKeySuccess), " +
-            "\(deletedChallengeKeySuccess)"
+                "\(deletedSignedMessageSuccess), \(deletedPublicKeySuccess)"
         )
     }
     

@@ -12,7 +12,6 @@ import Security
 @objc public enum SLKeychainHandlerCase: Int {
     case PublicKey
     case SignedMessage
-    case ChallengeKey
     case Password
     case RestToken
 }
@@ -146,8 +145,6 @@ import Security
     private func stringForHandlerCase(handlerCase: SLKeychainHandlerCase) -> String {
         let handlerCaseString: String
         switch handlerCase {
-        case .ChallengeKey:
-            handlerCaseString = "challenge.key"
         case .SignedMessage:
             handlerCaseString = "signed.message"
         case .PublicKey:
