@@ -1049,6 +1049,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 return
             }
             
+            print(response?["info"])
+            let info:String? = response?["info"] as? String
+            print(info)
+            
             self.firmware = [String]()
             self.maxFirmwareLines = firmware.count
             // Doing this in reverse order so on writing to the lock
@@ -1168,8 +1172,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             index += 1
         }
         
-        let l = challengeKey.characters.count
-        print(l)
         return challengeKey
     }
     
@@ -1372,9 +1374,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         
         print("Lock rssi: \(lock.rssiStrength)")
         var value:UInt8?
-        if lock.isLocked!.boolValue && user.isAutoUnlockOn!.boolValue && lock.rssiStrength.floatValue >= -65.0 {
+        if lock.isLocked!.boolValue && user.isAutoUnlockOn!.boolValue && lock.rssiStrength.floatValue >= -70.0 {
             value = 0x00
-        } else if !lock.isLocked!.boolValue && user.isAutoLockOn!.boolValue && lock.rssiStrength.floatValue <= -70.0 {
+        } else if !lock.isLocked!.boolValue && user.isAutoLockOn!.boolValue && lock.rssiStrength.floatValue <= -80.0 {
             value = 0x01
         }
         
