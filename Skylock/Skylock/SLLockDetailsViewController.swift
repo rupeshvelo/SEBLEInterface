@@ -29,7 +29,7 @@ SLLockSettingViewControllerDelegate
         table.separatorStyle = UITableViewCellSeparatorStyle.none
         table.backgroundColor = UIColor.white
         table.rowHeight = 92.0
-        table.isScrollEnabled = false
+        table.isScrollEnabled = true
         table.register(
             SLLockDetailsTableViewCell.self,
             forCellReuseIdentifier: String(describing: SLLockDetailsTableViewCell.self)
