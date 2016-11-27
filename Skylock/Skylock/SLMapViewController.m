@@ -13,7 +13,7 @@
 #import "SLDatabaseManager.h"
 #import "UIColor+RGB.h"
 #import "SLPicManager.h"
-#import "SLLock.h"
+#import "SLLock+CoreDataClass.h"
 #import "UIImage+Skylock.h"
 #import "SLNavigationViewController.h"
 #import <CoreLocation/CoreLocation.h>

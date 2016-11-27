@@ -8,7 +8,7 @@
 
 #import "SLUser+CoreDataProperties.h"
 #import "SLUser.h"
-#import "SLLock.h"
+#import "SLLock+CoreDataClass.h"
 #import<CoreTelephony/CTCallCenter.h>
 #import<CoreTelephony/CTCall.h>
 #import<CoreTelephony/CTCarrier.h>

@@ -1,12 +1,12 @@
 //
-//  SLLock.m
-//  Skylock
+//  SLLock+CoreDataClass.m
+//  Ellipse
 //
-//  Created by Andre Green on 1/30/16.
+//  Created by Andre Green on 11/27/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
-#import "SLLock.h"
+#import "SLLock+CoreDataClass.h"
 #import "SLDbLockSharedContact.h"
 #import "SLUser.h"
 #import "SLAccelerometerValues.h"
@@ -99,7 +99,7 @@
             range = SLLockParameterRangeZero;
         }
     }
-
+    
     return range;
 }
 
@@ -198,3 +198,4 @@
 }
 
 @end
+

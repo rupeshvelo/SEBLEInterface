@@ -2,22 +2,24 @@
 //  SLLock+CoreDataProperties.m
 //  Ellipse
 //
-//  Created by Andre Green on 9/8/16.
+//  Created by Andre Green on 11/27/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
-//
-//  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
-//  to delete and recreate this implementation file for your updated model.
 //
 
 #import "SLLock+CoreDataProperties.h"
 
 @implementation SLLock (CoreDataProperties)
 
++ (NSFetchRequest<SLLock *> *)fetchRequest {
+	return [[NSFetchRequest alloc] initWithEntityName:@"SLLock"];
+}
+
 @dynamic givenName;
 @dynamic hasConnected;
 @dynamic isConnecting;
 @dynamic isCurrentLock;
 @dynamic isInBootMode;
+@dynamic isLocked;
 @dynamic isSetForDeletion;
 @dynamic lastConnected;
 @dynamic latitude;
@@ -26,7 +28,7 @@
 @dynamic macAddress;
 @dynamic name;
 @dynamic uuid;
-@dynamic isLocked;
+@dynamic lastLocked;
 @dynamic sharedContacts;
 @dynamic user;
 

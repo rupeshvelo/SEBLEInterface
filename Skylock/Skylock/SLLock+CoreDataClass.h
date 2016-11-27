@@ -1,8 +1,8 @@
 //
-//  SLLock.h
-//  Skylock
+//  SLLock+CoreDataClass.h
+//  Ellipse
 //
-//  Created by Andre Green on 1/30/16.
+//  Created by Andre Green on 11/27/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 

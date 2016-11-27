@@ -74,7 +74,7 @@ class SLLockInfoViewController: UIViewController {
         df.dateFormat = "MMM d, H:mm a"
         
         let text = self.lock.displayName() +  " " + NSLocalizedString("Last Locked", comment: "") + " at "
-            + ( self.lock.lastConnected ==  nil ? "" : df.string(from: self.lock.lastConnected!))
+            + (self.lock.lastConnected ==  nil ? "" : df.string(from: self.lock.lastConnected!))
         
         let labelSize:CGSize = utility.sizeForLabel(
             font: font,
