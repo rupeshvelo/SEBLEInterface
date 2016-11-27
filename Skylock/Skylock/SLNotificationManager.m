@@ -10,7 +10,7 @@
 #import "NSString+Skylock.h"
 #import "SLNotification.h"
 #import "SLNotifications.h"
-#import "SLLock.h"
+#import "SLLock+CoreDataClass.h"
 #import "SLAccelerometerValues.h"
 #import "SLDatabaseManager.h"
 #import "SLUser.h"

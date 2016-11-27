@@ -7,12 +7,12 @@
 //
 
 #import "SLDatabaseManager.h"
-#import "NSString+Skylock.h"
-#import "SLLock.h"
+#import "SLLock+CoreDataClass.h"
 #import "SLUser.h"
 #import "SLLog.h"
 #import "SLNotifications.h"
 #import "Ellipse-Swift.h"
+#import "NSString+Skylock.h"
 
 #define kSLDatabaseManagerEnityLock             @"SLLock"
 #define kSLDatabaseManagerEnityUser             @"SLUser"

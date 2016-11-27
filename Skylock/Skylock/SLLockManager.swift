@@ -1279,6 +1279,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             lock.isCurrentLock = true
             lock.hasConnected = true
             lock.isConnecting = false
+            lock.lastConnected = Date()
             lock.user = user
             self.dbManager.save(lock)
             
@@ -1415,6 +1416,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         case .invalid:
             notification = kSLNotificationLockPositionInvalid
         case .locked:
+            lock.lastLocked = Date()
             notification = kSLNotificationLockPositionLocked
             isLocked = true
         // TODO: the middle case should be handled on its own.
