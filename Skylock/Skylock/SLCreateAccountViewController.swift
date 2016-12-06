@@ -591,14 +591,17 @@ SLBoxTextFieldWithButtonDelegate
                     callback: {(status: UInt, response: [AnyHashable: Any]?) in
                     DispatchQueue.main.async{
                         let errorFlag:UInt = ((status == 200 || status == 201) && (response != nil)) ? 0 : 1
-                        let ctvc = SLConfirmTextCodeViewController(phoneNumber: self.phoneNumberField.text!, resetFlag:false,error: UInt(errorFlag),
-                                                                   token: userToken)
+                        let ctvc = SLConfirmTextCodeViewController(
+                            phoneNumber: self.phoneNumberField.text!,
+                            resetFlag:false,
+                            error: UInt(errorFlag),
+                            token: userToken
+                        )
                         self.present(ctvc, animated: true, completion: nil)
                     }
                  })
                 } else {
                     self.presentWarningController(errorType: .SignUpFailure)
-                    
                 }
             }
         })

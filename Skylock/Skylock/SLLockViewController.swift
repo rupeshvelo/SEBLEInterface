@@ -841,8 +841,73 @@ SLLockBarViewControllerDelegate
         var completion:(() -> Void)?
         if let notification:SLNotification = notificationManager.lastNotification() {
             if notification.type == SLNotificationType.crashPre {
-                // this is where the emergency contacts should be contacted, 
-                // and any associated UI should be presented.
+                let databaseManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+                guard let user = databaseManager.getCurrentUser() else {
+                    print("Error: could not get signed message and public key. No user in database")
+                    return
+                }
+                
+                guard let lock:SLLock = self.lock else {
+                    print("Error: no current lock. Cannot send emergency text")
+                    return
+                }
+                
+                let keychainHandler:SLKeychainHandler = SLKeychainHandler()
+                guard let restToken = keychainHandler.getItemForUsername(
+                    userName: user.userId!,
+                    additionalSeviceInfo: nil,
+                    handlerCase: .RestToken
+                    ) else
+                {
+                    print(
+                        "Error: could not send crash notification to emergency contact. " +
+                        "No rest token for user: \(user.fullName())."
+                    )
+                    return
+                }
+                
+                guard let contacts = databaseManager.emergencyContactsForCurrentUser() as? [SLEmergencyContact] else {
+                    print(
+                        "Error: could not send crash notification. " +
+                        "The current user does not have any emergency contacts."
+                    )
+                    return
+                }
+                
+                var formatedContacts = [[String:String]]()
+                for contact in contacts {
+                    if let phoneNumber = contact.phoneNumber, let firstName = contact.firstName {
+                        formatedContacts.append([
+                            "phone_number": phoneNumber,
+                            "first_name": firstName
+                        ])
+                    }
+                }
+                
+                let restManager = SLRestManager.sharedManager() as! SLRestManager
+                let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+                let additionalHeaders = ["Authorization": authValue]
+                let postObject:[String:Any?] = [
+                    "mac_id": lock.macAddress,
+                    "position": ["latitude": user.location.latitude, "longitude": user.location.longitude],
+                    "contacts": formatedContacts
+                ]
+                
+                restManager.postObject(
+                    postObject,
+                    serverKey: .main,
+                    pathKey: .keys,
+                    subRoutes: [user.userId!, "sendhelp"],
+                    additionalHeaders: additionalHeaders
+                ) { (status:UInt, response:[AnyHashable : Any]?) in
+                    if status != 200 || status != 201 {
+                        // TODO: add error handling on the client side. We currently don't have UI For this
+                        // This should also set the callback params appropriately.
+                        return
+                    }
+                    
+                    print(response)
+                }
             } else if notification.type == SLNotificationType.theft {
                 completion = {
                     self.isMapShowing = true

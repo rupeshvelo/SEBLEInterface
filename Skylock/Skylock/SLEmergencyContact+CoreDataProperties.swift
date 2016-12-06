@@ -2,7 +2,7 @@
 //  SLEmergencyContact+CoreDataProperties.swift
 //  Ellipse
 //
-//  Created by Andre Green on 10/3/16.
+//  Created by Andre Green on 11/27/16.
 //  Copyright © 2016 Andre Green. All rights reserved.
 //
 
@@ -23,5 +23,6 @@ extension SLEmergencyContact {
     @NSManaged public var isCurrentContact: NSNumber?
     @NSManaged public var lastName: String?
     @NSManaged public var phoneNumber: String?
+    @NSManaged public var userId: String?
 
 }
