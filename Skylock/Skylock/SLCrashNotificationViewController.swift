@@ -104,4 +104,6 @@ class SLCrashNotificationViewController: SLNotificationViewController {
         self.timer?.invalidate()
         super.cancelButtonPressed()
     }
+    
+    
 }

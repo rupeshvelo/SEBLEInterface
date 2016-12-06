@@ -883,6 +883,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 return
             }
             
+            print("signed message:", signedMessage);
+            
             self.keychainHandler.setItemForUsername(
                 userName: user.userId!,
                 inputValue: signedMessage,
@@ -1048,10 +1050,6 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 
                 return
             }
-            
-            print(response?["info"])
-            let info:String? = response?["info"] as? String
-            print(info)
             
             self.firmware = [String]()
             self.maxFirmwareLines = firmware.count

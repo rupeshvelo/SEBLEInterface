@@ -275,6 +275,12 @@ SLEmergenyContactTableViewCellDelegate
         
         if isSelected {
             if self.contacts.count < 3 {
+                guard let user:SLUser = dbManager.getCurrentUser() else {
+                    print("Error: could not set emergency contact. No current user in database")
+                    return
+                }
+                
+                contact.userId = user.userId
                 dbManager.saveEmergencyContact(contact)
                 self.contacts.append(contact)
                 self.tableView.reloadData()

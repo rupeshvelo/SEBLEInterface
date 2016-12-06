@@ -130,10 +130,10 @@
 		659BA2391D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */; };
 		659BA23A1D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */; };
 		659EF8431DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */; };
-		659EF8441DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */; };
 		65ACCE211DA59624009525C6 /* SLData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65ACCE201DA59624009525C6 /* SLData.swift */; };
 		65BD745A1DEB2EE9006EE0EF /* SLLock+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BD74571DEB2EE9006EE0EF /* SLLock+CoreDataClass.m */; };
 		65BD745B1DEB2EE9006EE0EF /* SLLock+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BD74591DEB2EE9006EE0EF /* SLLock+CoreDataProperties.m */; };
+		65BD74691DEC0016006EE0EF /* SLEmergencyContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BD74681DEC0016006EE0EF /* SLEmergencyContact+CoreDataProperties.swift */; };
 		65C12D261D86F0CA0067D1BA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */; };
 		65CF01D01D7331B9000C8D38 /* SLWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */; };
 		65D5FDE61D6A12DD0088DE80 /* SLCryptoHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D5FDE51D6A12DD0088DE80 /* SLCryptoHandler.m */; };
@@ -538,13 +538,13 @@
 		659BA2111D7655BF000001E2 /* System-San-Francisco-Display-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Thin.ttf"; sourceTree = "<group>"; };
 		659BA2121D7655BF000001E2 /* System-San-Francisco-Display-Ultralight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "System-San-Francisco-Display-Ultralight.ttf"; sourceTree = "<group>"; };
 		659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SLEmergencyContact+CoreDataClass.swift"; sourceTree = "<group>"; };
-		659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SLEmergencyContact+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		65ACCE201DA59624009525C6 /* SLData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLData.swift; sourceTree = "<group>"; };
 		65BD74481DEB2A2A006EE0EF /* Ellipse1.0.3.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Ellipse1.0.3.6.xcdatamodel; sourceTree = "<group>"; };
 		65BD74561DEB2EE9006EE0EF /* SLLock+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataClass.h"; sourceTree = "<group>"; };
 		65BD74571DEB2EE9006EE0EF /* SLLock+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLock+CoreDataClass.m"; sourceTree = "<group>"; };
 		65BD74581DEB2EE9006EE0EF /* SLLock+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SLLock+CoreDataProperties.h"; sourceTree = "<group>"; };
 		65BD74591DEB2EE9006EE0EF /* SLLock+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SLLock+CoreDataProperties.m"; sourceTree = "<group>"; };
+		65BD74681DEC0016006EE0EF /* SLEmergencyContact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SLEmergencyContact+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		65C12D251D86F0CA0067D1BA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		65CF01CF1D7331B9000C8D38 /* SLWebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLWebViewController.swift; sourceTree = "<group>"; };
 		65D5FDE41D6A12DD0088DE80 /* SLCryptoHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SLCryptoHandler.h; sourceTree = "<group>"; };
@@ -1182,8 +1182,8 @@
 				824276341DC08918003DC8DD /* SLSavePassword.swift */,
 				824276351DC08918003DC8DD /* SLSendTextCode.swift */,
 				824276361DC08918003DC8DD /* SLVerifyTextCode.swift */,
+				65BD74681DEC0016006EE0EF /* SLEmergencyContact+CoreDataProperties.swift */,
 				659EF8411DA2854E004C470E /* SLEmergencyContact+CoreDataClass.swift */,
-				659EF8421DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift */,
 				65D9DA8F1D5E9E3400A909AA /* SLUser+CoreDataProperties.h */,
 				65D9DA901D5E9E3400A909AA /* SLUser+CoreDataProperties.m */,
 				DCF41CA41CE7F56C008C17DE /* SLLog+CoreDataProperties.h */,
@@ -1978,7 +1978,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				659EF8441DA2854E004C470E /* SLEmergencyContact+CoreDataProperties.swift in Sources */,
 				DC77BF611D0A1E0F0081C7B6 /* SLOpposingLabelsTableViewCell.swift in Sources */,
 				DC30034F1D43D9D2004CE560 /* SLWarningViewController.swift in Sources */,
 				DCF41CA81CE7F56C008C17DE /* SLLog+CoreDataProperties.m in Sources */,
@@ -2050,6 +2049,7 @@
 				DCAAEB871D32CB6F00946B61 /* SLRequestContactsAccessViewController.swift in Sources */,
 				65D9DA931D625E7400A909AA /* SLLockManager.swift in Sources */,
 				DC3003731D4405FD004CE560 /* SLNotificationViewController.swift in Sources */,
+				65BD74691DEC0016006EE0EF /* SLEmergencyContact+CoreDataProperties.swift in Sources */,
 				659BA18E1D762249000001E2 /* SLLoadingView.swift in Sources */,
 				DCD679811CFA444E0081D225 /* SLSignInViewController.swift in Sources */,
 				DC763D371CB471C800037EF9 /* SLChooseContactViewController.swift in Sources */,

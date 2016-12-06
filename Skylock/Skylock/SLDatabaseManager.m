@@ -432,6 +432,16 @@
     return contacts;
 }
 
+- (NSArray * _Nullable)emergencyContactsForCurrentUser
+{
+    if (!self.currentUser) {
+        return nil;
+    }
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"userId == %@", self.currentUser.userId];
+    return [self getManagedObjectsWithPredicate:predicate forEnityNamed:kSLDatabaseManagerEnityEmergencyContact];
+}
+
 - (SLEmergencyContact *)getContactWithContactId:(NSString *)contactId
 {
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));

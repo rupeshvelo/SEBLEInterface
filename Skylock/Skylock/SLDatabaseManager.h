@@ -39,6 +39,7 @@
 - (void)saveLockConnectedDate:(SLLock * _Nonnull)lock;
 - (void)saveLock:(SLLock * _Nullable)lock;
 - (NSArray * _Nullable)emergencyContacts;
+- (NSArray * _Nullable)emergencyContactsForCurrentUser;
 - (void)saveEmergencyContact:(SLEmergencyContact * _Nonnull)contact;
 - (SLEmergencyContact * _Nullable)getContactWithContactId:(NSString * _Nonnull)contactId;
 - (SLEmergencyContact * _Nonnull)newEmergencyContact;
