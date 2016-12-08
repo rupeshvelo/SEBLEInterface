@@ -64,6 +64,9 @@
         case SLRestManagerPathKeyFirmwareUpdate:
             url = @"updates/";
             break;
+        case SLRestManagerPathKeyFirmwareVersion:
+            url = @"firmwareversion/";
+            break;
         case SLRestManagerPathKeyPhoneVerificaiton:
             url = @"phoneverification/";
             break;

@@ -8,26 +8,37 @@
 
 import UIKit
 enum SLFirmwareUpdateStage {
+    case FetchingInfo
     case Available
+    case NotAvailable
     case InProgress
     case Finished
 }
 
 class SLFirmwareUpdateViewController: SLBaseViewController {
+    private enum FirmWareVersion {
+        case release
+        case revision
+    }
+    
     let xPadding:CGFloat = 25.0
     
     let buttonHeight:CGFloat = 55.0
     
-    var stage:SLFirmwareUpdateStage = .Available
+    var stage:SLFirmwareUpdateStage = .FetchingInfo
+    
+    let currentFirmwareVersion:String
     
     let updateText:[SLFirmwareUpdateStage:String] = [
+        .FetchingInfo: NSLocalizedString("Gathering update information", comment: ""),
         .Available: NSLocalizedString("Firmware update available", comment: ""),
+        .NotAvailable: NSLocalizedString("Your Ellipse's firmware is up to date...", comment: ""),
         .InProgress: NSLocalizedString("Firmware update in progress", comment: ""),
         .Finished: NSLocalizedString("All Done! Restarting your Ellipse...", comment: "")
     ]
     
     // This should be passed in in the initialzer once it is implemnted on the server
-    let newFeatures:[String] = [String]()
+    var updateLog:[String]?
     
     override var preferredStatusBarStyle:UIStatusBarStyle {
         return .lightContent
@@ -45,6 +56,16 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
         label.text = self.updateText[self.stage]
         label.textColor = UIColor.white
+        
+        return label
+    }()
+    
+    lazy var updateLogLabel:UILabel = {
+        let label:UILabel = UILabel(frame: CGRect.zero)
+        label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 14.0)
+        label.text = self.updateText[.Available]
+        label.textColor = UIColor.white
+        label.numberOfLines = 0
         
         return label
     }()
@@ -116,9 +137,19 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         return button
     }()
     
+    init(firmwareVersionString: String) {
+        self.currentFirmwareVersion = firmwareVersionString
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -129,6 +160,44 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         self.view.addSubview(self.progressBar)
         self.view.addSubview(self.updateLaterButton)
         self.view.addSubview(self.updateNowButton)
+        self.view.addSubview(self.updateLogLabel)
+        
+        let lockManager:SLLockManager = SLLockManager.sharedManager as SLLockManager
+        lockManager.getFirmwareInfoFromServer { (firmwareInfo: [String:Any]?) in
+            if let versionString:String = firmwareInfo?["update_firmware"] as? String,
+                let updateLog:String = firmwareInfo?["firmware_fixes"] as? String
+            {
+                guard let firmwareVersionDict = self.parseFirmware(versionString: "2.19") else {
+                    self.setFirmwareStage(stage: .NotAvailable)
+                    return
+                }
+                
+                guard let currentFirmwareVersionDict = self.parseFirmware(versionString: self.currentFirmwareVersion)
+                    else
+                {
+                    self.setFirmwareStage(stage: .NotAvailable)
+                    return
+                }
+                
+                self.updateLog = self.parseFirmware(updateLogString: updateLog)
+                self.setUpdateLogLabelText()
+                
+                if let release:Int = firmwareVersionDict[.release],
+                    let version:Int = firmwareVersionDict[.revision],
+                    let currentRelease:Int = currentFirmwareVersionDict[.release],
+                    let currentVersion:Int = currentFirmwareVersionDict[.revision]
+                {
+                    let stage:SLFirmwareUpdateStage =
+                        (version > currentVersion || (version == currentVersion && release > currentRelease)) ?
+                            .Available : .NotAvailable
+                    self.setFirmwareStage(stage: stage)
+                    return
+                } else {
+                    self.setFirmwareStage(stage: .NotAvailable)
+                }
+            }
+            
+        }
         
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: kSLNotificationLockManagerFirmwareUpdateState),
@@ -159,13 +228,107 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
         )
     }
     
+    private func parseFirmware(versionString: String) -> [FirmWareVersion: Int]? {
+        let parts = versionString.components(separatedBy: ".")
+        if parts.count <= 1 {
+            return nil
+        }
+        
+        if let release:Int = Int(parts[0]), let revision = Int(parts[1]) {
+            return [.release: release, .revision: revision]
+        }
+        
+        return nil
+    }
+    
+    func parseFirmware(updateLogString: String) -> [String] {
+        return updateLogString.components(separatedBy: "\n")
+    }
+    
     func setFirmwareStage(stage: SLFirmwareUpdateStage) {
         self.stage = stage
         self.updateViewsForStage()
     }
     
     func updateViewsForStage() {
-        self.progressBar.isHidden = self.stage == .Available
+        DispatchQueue.main.async {
+            self.updateLabel.text = self.updateText[self.stage]
+            
+            switch self.stage {
+            case .Available:
+                self.updateNowButton.isHidden = false
+                self.updateNowButton.isEnabled = true
+                self.updateLaterButton.isHidden = false
+                self.updateLaterButton.isEnabled = true
+                self.progressBar.isHidden = true
+                self.progressLabel.isHidden = true
+                self.updateLogLabel.isHidden = false
+            case .NotAvailable:
+                self.updateNowButton.isHidden = false
+                self.updateNowButton.isEnabled = false
+                self.updateLaterButton.isHidden = false
+                self.updateLaterButton.isEnabled = true
+                self.progressBar.isHidden = true
+                self.progressLabel.isHidden = true
+                self.updateLogLabel.isHidden = true
+            case .FetchingInfo:
+                self.updateNowButton.isHidden = true
+                self.updateNowButton.isEnabled = false
+                self.updateLaterButton.isHidden = true
+                self.updateLaterButton.isEnabled = false
+                self.progressBar.isHidden = true
+                self.progressLabel.isHidden = true
+                self.updateLogLabel.isHidden = true
+            case .InProgress:
+                self.updateNowButton.isHidden = true
+                self.updateNowButton.isEnabled = false
+                self.updateLaterButton.isHidden = true
+                self.updateLaterButton.isEnabled = false
+                self.progressBar.isHidden = false
+                self.progressLabel.isHidden = false
+                self.updateLogLabel.isHidden = true
+            case .Finished:
+                self.updateNowButton.isHidden = false
+                self.updateNowButton.isEnabled = false
+                self.updateLaterButton.isHidden = false
+                self.updateLaterButton.isEnabled = true
+                self.progressBar.isHidden = true
+                self.progressLabel.isHidden = true
+                self.updateLogLabel.isHidden = true
+            }
+        }
+    }
+    
+    func setUpdateLogLabelText() {
+        DispatchQueue.main.async {
+            var text = NSLocalizedString("UPDATES\n\n", comment: "")
+            if let updateLog = self.updateLog {
+                for update in updateLog {
+                    text += update + "\n"
+                }
+            }
+            
+            let labelWidth = self.view.bounds.size.width - 2*self.xPadding
+            let utility = SLUtilities()
+            let font = UIFont.systemFont(ofSize: 22)
+            let labelSize:CGSize = utility.sizeForLabel(
+                font: font,
+                text: text,
+                maxWidth: labelWidth,
+                maxHeight: CGFloat.greatestFiniteMagnitude,
+                numberOfLines: 0
+            )
+            
+            let frame = CGRect(
+                x: self.xPadding,
+                y: self.updateLabel.frame.maxY + 20.0,
+                width: labelWidth,
+                height: labelSize.height
+            )
+            
+            self.updateLogLabel.frame = frame
+            self.updateLogLabel.text = text
+        }
     }
     
     func updateLaterButtonPressed() {
@@ -173,12 +336,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
     }
     
     func updateNowButtonPressed() {
-        self.stage = .InProgress
-        self.updateLabel.text = self.updateText[self.stage]
-        self.progressLabel.isHidden = false
-        self.progressBar.isHidden = false
-        self.updateNowButton.isHidden = true
-        self.updateLaterButton.isHidden = true
+        self.setFirmwareStage(stage: .InProgress)
         SLLockManager.sharedManager.updateFirmwareForCurrentLock()
     }
     
