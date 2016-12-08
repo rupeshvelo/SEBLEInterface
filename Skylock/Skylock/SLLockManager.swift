@@ -635,6 +635,47 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
     }
     
+    func getFirmwareInfoFromServer(completion: ((_ completion: [String: Any]?) -> ())?) {
+        guard let user = self.dbManager.getCurrentUser() else {
+            print("Error: could not get firmware info from server. No current user.")
+            completion?(nil)
+            return
+        }
+        
+        guard let restToken = self.keychainHandler.getItemForUsername(
+            userName: user.userId!,
+            additionalSeviceInfo: nil,
+            handlerCase: .RestToken
+            ) else
+        {
+            print("Error: could not get locks for current user. The user does not have a rest token")
+            completion?(nil)
+            return
+        }
+        
+        let restManager = SLRestManager.sharedManager() as! SLRestManager
+        let authValue = restManager.basicAuthorizationHeaderValueUsername(restToken, password: "")
+        
+        restManager.getRequestWith(
+            .main,
+            pathKey: .users,
+            subRoutes: [user.userId!, "firmwareversion"],
+            additionalHeaders: ["Authorization": authValue]
+        ) { (status: UInt, response: [AnyHashable : Any]?) in
+            if status != 201 {
+                completion?(nil)
+                return
+            }
+            
+            guard let firmwareInfo = response?["firmware_version"] as? [String:Any] else {
+                completion?(nil)
+                return
+            }
+            
+            completion?(firmwareInfo)
+        }
+    }
+    
     // MARK: Private Methods
     private func namesToConntect() -> [String] {
         return [
@@ -1038,6 +1079,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     completionClosure(false)
                 }
             }
+            
             // The firmware should be in the format of an array of dictionaries with
             // entries of ["boot_loader": "8373739393003fme"] for example.
             // TODO: This should be changed so the server sends the payload as an array
@@ -1050,6 +1092,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 
                 return
             }
+            
+            
             
             self.firmware = [String]()
             self.maxFirmwareLines = firmware.count

@@ -226,6 +226,10 @@ class SLModifySensitiveDataViewController: SLBaseViewController, UITextFieldDele
                                 lock.givenName = self.textField.text!
                                 let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
                                 dbManager.save(lock)
+                                NotificationCenter.default.post(
+                                    name: NSNotification.Name(rawValue: kSLNotificationLockNameChanged),
+                                    object: lock
+                                )
                             } else {
                                 texts = [
                                     .Header: NSLocalizedString("Hmmm...Something went wrong", comment: ""),

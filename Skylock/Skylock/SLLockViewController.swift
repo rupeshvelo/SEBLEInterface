@@ -389,6 +389,13 @@ SLLockBarViewControllerDelegate
             queue: nil,
             using: lockConnectionError
         )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockNameChanged),
+            object: nil,
+            queue: nil,
+            using: lockNameChanged
+        )
     }
     
     func showAcceptNotificaitonViewController() {
@@ -636,6 +643,13 @@ SLLockBarViewControllerDelegate
         ]
         
         self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+    }
+    
+    func lockNameChanged(notification: Notification) {
+        DispatchQueue.main.async {
+            self.lock = self.databaseManager.getCurrentLockForCurrentUser()
+            self.lockNameLabel.text = self.lock?.givenName
+        }
     }
     
     func setLockDisabled() {
@@ -906,7 +920,8 @@ SLLockBarViewControllerDelegate
                         return
                     }
                     
-                    print(response)
+                    // TODO: There should probably be some UI to inform the user that their emergency contacts
+                    // have been notified successfully.
                 }
             } else if notification.type == SLNotificationType.theft {
                 completion = {

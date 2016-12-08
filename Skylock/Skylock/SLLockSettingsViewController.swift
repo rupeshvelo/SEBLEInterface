@@ -119,6 +119,13 @@ SLLabelAndSwitchCellDelegate
             queue: nil,
             using: disconnectedLock
         )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockNameChanged),
+            object: nil,
+            queue: nil,
+            using: lockNameChanged
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -207,6 +214,18 @@ SLLabelAndSwitchCellDelegate
         }
     }
     
+    func lockNameChanged(notification: Notification) {
+        DispatchQueue.main.async {
+            let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
+            if let lock = dbManager.getCurrentLockForCurrentUser() {
+                self.lock = lock
+                let indexPath = IndexPath(row: 0, section: 0)
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.delegate?.lockSettingVCValueChanged(fieldValue: .LockName)
+            }
+        }
+    }
+    
     // Mark: UITableViewDelegate and Datasource methods
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
@@ -226,8 +245,8 @@ SLLabelAndSwitchCellDelegate
             let leftText:String
             var rightText:String?
             let leftTextColor = UIColor(red: 157, green: 161, blue: 167)
-            let rightTextColor = (indexPath.row == 1 || indexPath.row == 2)  ? UIColor(red: 140, green: 140, blue: 140) :
-                UIColor(red: 69, green: 217, blue: 255)
+            let rightTextColor = (indexPath.row == 1 || indexPath.row == 2) ?
+                UIColor(red: 140, green: 140, blue: 140) : UIColor(red: 69, green: 217, blue: 255)
             let showArrow:Bool
             
             if indexPath.row == 0 {
@@ -347,15 +366,11 @@ SLLabelAndSwitchCellDelegate
             if indexPath.section == 0 {
                 if indexPath.row == 0 {
                     let sdvc = SLModifySensitiveDataViewController(type: .LockName)
-                    sdvc.onExit = {[weak weakSelf=self] in
-                        if let this = weakSelf {
-                            this.tableView.reloadRows(at: [indexPath], with: .none)
-                            this.delegate?.lockSettingVCValueChanged(fieldValue: .LockName)
-                        }
-                    }
                     self.navigationController?.pushViewController(sdvc, animated: true)
                 } else if indexPath.row == 3 {
-                    let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController()
+                    let fuvc:SLFirmwareUpdateViewController = SLFirmwareUpdateViewController(
+                        firmwareVersionString: self.firmwareVersion
+                    )
                     self.present(fuvc, animated: true, completion: nil)
                 }
             } else {
