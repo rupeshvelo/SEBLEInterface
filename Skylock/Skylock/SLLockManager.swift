@@ -1360,6 +1360,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                         "error": SLLockManagerConnectionError.InvalidSecurityStateOwner,
                         "message": self.textForConnectionError(error: .InvalidSecurityStateOwner)
                     ]
+                    
+                    self.deleteLockFromServerWithMacAddress(macAddress: lock.macAddress!, completion: nil)
                 } else {
                     info = [
                         "lock": lock,

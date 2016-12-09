@@ -167,7 +167,7 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
             if let versionString:String = firmwareInfo?["update_firmware"] as? String,
                 let updateLog:String = firmwareInfo?["firmware_fixes"] as? String
             {
-                guard let firmwareVersionDict = self.parseFirmware(versionString: "2.19") else {
+                guard let firmwareVersionDict = self.parseFirmware(versionString: versionString) else {
                     self.setFirmwareStage(stage: .NotAvailable)
                     return
                 }
@@ -196,7 +196,6 @@ class SLFirmwareUpdateViewController: SLBaseViewController {
                     self.setFirmwareStage(stage: .NotAvailable)
                 }
             }
-            
         }
         
         NotificationCenter.default.addObserver(
