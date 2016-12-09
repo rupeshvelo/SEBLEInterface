@@ -15,7 +15,13 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
     
     var cancelClosure:(() -> ())?
     
-    lazy var loadingView:SLLoadingView = {
+    var loadingView:SLLoadingView?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    func makeLoadingView() -> SLLoadingView {
         let height:CGFloat = 200.0
         let frame = CGRect(
             x: 0.0,
@@ -28,10 +34,6 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
         view.backgroundColor = UIColor.clear
         
         return view
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
     }
     
     func presentWarningViewControllerWithTexts(
@@ -65,23 +67,23 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
     
     func presentLoadingViewWithMessage(message: String) {
         self.addWarningBackgroundView()
-        self.loadingView.setMessage(message: message)
-        self.view.addSubview(self.loadingView)
-        self.loadingView.rotate()
+        self.loadingView = self.makeLoadingView()
+        self.loadingView!.setMessage(message: message)
+        self.view.addSubview(self.loadingView!)
+        self.loadingView!.rotate()
     }
     
     func dismissLoadingViewWithCompletion(completion: (() -> ())?) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: 0.2, animations: {
                 self.warningBackgroundView?.alpha = 0.0
-                self.loadingView.alpha = 0.0
+                self.loadingView?.alpha = 0.0
             }) { (finished) in
                 self.warningBackgroundView?.removeFromSuperview()
-                self.loadingView.removeFromSuperview()
+                self.loadingView?.removeFromSuperview()
+                self.loadingView = nil
                 self.warningBackgroundView = nil
-                if let completionClosure = completion {
-                    completionClosure()
-                }
+                completion?()
             }
         }
     }
@@ -113,15 +115,11 @@ class SLBaseViewController: UIViewController, SLWarningViewControllerDelegate {
                 background.removeFromSuperview()
                 self.warningBackgroundView = nil
                 self.warningViewController = nil
-                if self.cancelClosure != nil {
-                    self.cancelClosure!()
-                }
+                self.cancelClosure?()
             }
         } else {
             print("Error: could not find background view while removing warning view controller")
-            if self.cancelClosure != nil {
-                self.cancelClosure!()
-            }
+            self.cancelClosure?()
         }
     }
 }

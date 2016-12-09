@@ -11,7 +11,7 @@ import UIKit
 
 
 class SLLockDetailsViewController:
-UIViewController,
+SLBaseViewController,
 UITableViewDelegate,
 UITableViewDataSource,
 SLLockSettingViewControllerDelegate
@@ -21,6 +21,12 @@ SLLockSettingViewControllerDelegate
     let utilities:SLUtilities = SLUtilities()
     
     let lockManager:SLLockManager = SLLockManager.sharedManager
+    
+    var previousLockToConnect:SLLock?
+    
+    var previousLockTimer:Timer?
+    
+    let previousConnectionTimeout:Double = 15.0
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .grouped)
@@ -89,10 +95,31 @@ SLLockSettingViewControllerDelegate
         )
         
         NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDisconnectedLock),
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerConnectedLock),
             object: self,
             queue: nil,
             using: lockConnected
+        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDiscoverdLock),
+            object: nil,
+            queue: nil,
+            using: foundLock
+        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockPaired),
+            object: nil,
+            queue: nil,
+            using: connectedLock
+        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+            object: nil,
+            queue: nil,
+            using: lockConnectionError
         )
     }
     
@@ -111,9 +138,37 @@ SLLockSettingViewControllerDelegate
     
     func addLock() {
         self.lockManager.startActiveSearch()
-        
         let alvc = SLAvailableLocksViewController()
         self.navigationController?.pushViewController(alvc, animated: true)
+    }
+    
+    func connectToPreviouslyConnected(lock: SLLock) {
+        if self.lockManager.isBlePoweredOn() {
+            self.previousLockToConnect = lock
+            self.navigationItem.rightBarButtonItem?.isEnabled = false
+            self.navigationItem.leftBarButtonItem?.isEnabled = false
+            
+            self.lockManager.endActiveSearch()
+            
+            if self.connectedLock == nil {
+                self.lockManager.startActiveSearch()
+            } else {
+                self.lockManager.disconnectFromCurrentLock(completion: {
+                    self.lockManager.startActiveSearch()
+                })
+            }
+            
+            let message = NSLocalizedString("Connecting to ", comment: "") + lock.displayName()
+            self.presentLoadingViewWithMessage(message: message)
+            
+            self.previousLockTimer = Timer.scheduledTimer(
+                timeInterval: self.previousConnectionTimeout,
+                target: self,
+                selector: #selector(previousConnectedLockNotFound(timer:)),
+                userInfo: nil,
+                repeats: false
+            )
+        }
     }
     
     func rowActionTextForIndexPath(indexPath: IndexPath) -> String {
@@ -138,6 +193,110 @@ SLLockSettingViewControllerDelegate
         }
         
         self.tableView.reloadData()
+    }
+    
+    func foundLock(notification: Notification) {
+        guard let lock = notification.object as? SLLock else {
+            print("Error: found lock but it was not included in notification")
+            return
+        }
+        
+        guard let previousLock = self.previousLockToConnect else {
+            return
+        }
+        
+        if lock.macAddress != previousLock.macAddress {
+            return
+        }
+        
+        self.lockManager.connectToLockWithMacAddress(macAddress: previousLock.macAddress!)
+    }
+    
+    func connectedLock(notificaiton: Notification) {
+        self.previousLockTimer?.invalidate()
+        guard let previousLock = self.previousLockToConnect else {
+            return
+        }
+        
+        self.lockManager.endActiveSearch()
+        self.dismissLoadingViewWithCompletion(completion: { [weak self] in
+            self?.connectedLock = previousLock
+            if let previousLocks = self?.lockManager.allPreviouslyConnectedLocksForCurrentUser() {
+                self?.unconnectedLocks = previousLocks
+            }
+            
+            self?.tableView.reloadData()
+            self?.previousLockToConnect = nil
+            self?.previousLockTimer = nil
+            self?.navigationItem.rightBarButtonItem?.isEnabled = true
+            self?.navigationItem.leftBarButtonItem?.isEnabled = true
+        })
+    }
+    
+    func lockConnectionError(notification: Notification) {
+        if self.previousLockToConnect == nil {
+            return
+        }
+        
+        guard let notificationObject = notification.object as? [String: Any?] else {
+            print("no connection error in notification for method: lockConnectionError")
+            return
+        }
+        
+        guard let info = notificationObject["message"] as? String else {
+            print("no connection error messsage in notification for method: lockConnectionError")
+            return
+        }
+        
+        self.previousLockTimer?.invalidate()
+        self.previousLockTimer = nil
+        self.previousLockToConnect = nil
+        self.lockManager.endActiveSearch()
+        self.dismissLoadingViewWithCompletion {
+            let texts:[SLWarningViewControllerTextProperty:String?] = [
+                .Header: NSLocalizedString("Failed to connect to Ellipse", comment: "") ,
+                .Info: info,
+                .CancelButton: NSLocalizedString("OK", comment: ""),
+                .ActionButton: nil
+            ]
+            
+            self.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: { [weak self] in
+                if let navController = self?.navigationController {
+                    navController.popViewController(animated: true)
+                } else {
+                    self?.dismiss(animated: true, completion: nil)
+                }
+                
+                self?.navigationItem.rightBarButtonItem?.isEnabled = true
+                self?.navigationItem.leftBarButtonItem?.isEnabled = true
+            })
+        }
+    }
+    
+    func previousConnectedLockNotFound(timer: Timer) {
+        self.lockManager.endActiveSearch()
+        timer.invalidate()
+        
+        guard let previousLock = self.previousLockToConnect else {
+            return
+        }
+        
+        let info = NSLocalizedString("Sorry, We couldn't connect to ", comment: "")
+            + previousLock.displayName() + NSLocalizedString(" at this time", comment: "")
+        self.dismissLoadingViewWithCompletion(completion: { [weak self] in
+            let texts:[SLWarningViewControllerTextProperty:String?] = [
+                .Header: NSLocalizedString("Couldn't Connect", comment: ""),
+                .Info: info,
+                .CancelButton: NSLocalizedString("OK", comment: ""),
+                .ActionButton: nil
+            ]
+            
+            self?.presentWarningViewControllerWithTexts(texts: texts, cancelClosure: nil)
+            self?.previousLockTimer = nil
+            self?.previousLockToConnect = nil
+            self?.navigationItem.rightBarButtonItem?.isEnabled = true
+            self?.navigationItem.leftBarButtonItem?.isEnabled = true
+        })
     }
     
     // MARK: UITableView Delegate & Datasource methods
@@ -289,7 +448,7 @@ SLLockSettingViewControllerDelegate
                 style: .normal,
                 title: self.rowActionTextForIndexPath(indexPath: indexPath))
             { (rowAction, index) in
-                self.addLock()
+                self.connectToPreviouslyConnected(lock: self.unconnectedLocks[indexPath.row])
             }
             connectAction.backgroundColor = UIColor(patternImage: connectImage)
             actions.append(connectAction)
