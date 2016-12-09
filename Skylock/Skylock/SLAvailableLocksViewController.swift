@@ -17,7 +17,7 @@ import UIKit
     
     var hideBackButton:Bool = false
     
-    var dismissConcentricCirclesViewController:Bool = false
+    var dismissConcentricCirclesViewController:Bool?
     
     lazy var tableView:UITableView = {
         let table:UITableView = UITableView(frame: self.view.bounds, style: .plain)
@@ -182,14 +182,23 @@ import UIKit
             guard let cell:UITableViewCell = self.tableView.cellForRow(at: indexPath) else {
                 continue
             }
+            
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
                 let accessoryButtonTag = accessoryButton.tag
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
-                    let ccvc = SLConcentricCirclesViewController(
-                        action: self.dismissConcentricCirclesViewController ? .dismiss : .showSuccessVC
-                    )
-
+                    let action:SLConcentricCirclesViewControllerAction
+                    if let dismiss = self.dismissConcentricCirclesViewController {
+                        action = dismiss ? .dismiss : .showSuccessVC
+                    } else {
+                        if let hasConnected:NSNumber = lock.hasConnected, hasConnected.boolValue {
+                            action = .dismiss
+                        } else {
+                            action = .showSuccessVC
+                        }
+                    }
+                    
+                    let ccvc = SLConcentricCirclesViewController(action: action)
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
                     lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!)
@@ -263,7 +272,6 @@ import UIKit
         button.tag = indexPath.row + self.buttonTagShift
         
         self.tempButtons.append(button)
-        print("lock: \(lock)")
         cell?.textLabel?.text = lock.displayName()
         cell?.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
         cell?.textLabel?.font = UIFont(name: SLFont.OpenSansRegular.rawValue, size: 17.0)

@@ -176,7 +176,8 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         
         let field:UITextField = UITextField(frame: frame)
         field.font = UIFont.systemFont(ofSize: 18)
-        field.placeholder = lock?.givenName == nil ? NSLocalizedString("Name your Ellipse.", comment: "") : lock?.givenName
+        field.placeholder = lock?.givenName == nil ?
+            NSLocalizedString("Name your Ellipse.", comment: "") : lock?.givenName
         field.textColor = UIColor(white: 155.0/255.0, alpha: 1)
         field.textAlignment = .center
         field.delegate = self
@@ -302,7 +303,7 @@ class SLPairingSuccessViewController: UIViewController, UITextFieldDelegate {
         self.saveNewLockName()
         
         let lvc = SLLockViewController()
-        self.present(lvc, animated: false, completion: nil)
+        self.present(lvc, animated: true, completion: nil)
     }
     
     func dismissKeyboardButtonPressed() {
