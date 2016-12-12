@@ -1334,6 +1334,11 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             self.setTxPowerForLockWithMacAddress(macAddress: macAddress)
             self.removeAllUnconnectedLocks()
             
+            self.bleManager.setCharacteristicUUIDToNotify(
+                self.characteristicUUID(characteristic: .HardwareInfo),
+                forPeripheralWithKey: macAddress
+            )
+            
             // TODO: Set TxPower here
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockPaired),
@@ -1404,8 +1409,23 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         lock.temperature = NSNumber(value: values[2])
         lock.rssiStrength = NSNumber(value: values[3])
         
+        var isLocked:Int8 = values[4]
+        var sendLockUpdate = false
+        if isLocked == 0 && lock.isLocked!.boolValue {
+            lock.isLocked = NSNumber(value: false)
+            sendLockUpdate = true
+        } else if isLocked == 1 && !lock.isLocked!.boolValue {
+            lock.isLocked = false
+            sendLockUpdate = true
+        }
+        
         self.dbManager.save(lock)
     
+        if (sendLockUpdate) {
+            let data = NSData(bytes: &isLocked, length: MemoryLayout.size(ofValue: isLocked))
+            self.handleLockStateForLockMacAddress(macAddress: macAddress, data: data)
+        }
+        
         NotificationCenter.default.post(
             name: NSNotification.Name(rawValue: kSLNotificationLockManagerUpdatedHardwareValues),
             object: lock.macAddress!
