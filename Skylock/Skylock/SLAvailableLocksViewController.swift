@@ -90,6 +90,20 @@ import UIKit
             queue: nil,
             using: bleHardwarePoweredOn
         )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockLedTurnedOff),
+            object: nil,
+            queue: nil,
+            using: ledTurnedOff
+        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+            object: nil,
+            queue: nil,
+            using: ledTurnedOff
+        )
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -160,20 +174,22 @@ import UIKit
     }
     
     func blinkLockButtonPressed(button: UIButton) {
-//        for (i, lock) in self.locks.enumerate() {
-//            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-//            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-//            print("\(cell.textLabel?.text!)")
-//            
-//            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
-//                let accessoryButtonTag = accessoryButton.tag
-//                let buttonTag = button.tag
-//                if accessoryButtonTag == buttonTag {
-//                    SLLockManager.sharedManager.flashLEDsForLock(lock)
-//                    break
-//                }
-//            }
-//        }
+        for (i, lock) in self.locks.enumerated() {
+            let indexPath:IndexPath = IndexPath(row: i, section: 0)
+            let cell:UITableViewCell = self.tableView.cellForRow(at:indexPath)!
+            print("\(cell.textLabel?.text!)")
+            
+            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+                let accessoryButtonTag = accessoryButton.tag
+                let buttonTag = button.tag
+                if accessoryButtonTag == buttonTag {
+                    self.presentLoadingViewWithMessage(message: "")
+                    SLLockManager.sharedManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink: true)
+                    break
+                    
+                }
+            }
+        }
     }
     
     func connectButtonPressed(button: UIButton) {
@@ -201,7 +217,7 @@ import UIKit
                     let ccvc = SLConcentricCirclesViewController(action: action)
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
-                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!)
+                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink : false)
                     break
                 }
             }
@@ -271,6 +287,21 @@ import UIKit
         button.addTarget(self, action: #selector(connectButtonPressed(button:)), for: .touchDown)
         button.tag = indexPath.row + self.buttonTagShift
         
+        let blinkLEDButton:UIButton = UIButton(frame: CGRect(
+            x: -50,
+            y: 70,
+            width: 273,
+            height: 29)
+        )
+        
+        
+        blinkLEDButton.setTitle("Blink this Ellipse", for: .normal)
+        blinkLEDButton.setTitleColor(UIColor(red: 87, green: 216, blue: 255), for: .normal)
+        blinkLEDButton.addTarget(self, action: #selector(blinkLockButtonPressed(button:)), for: .touchDown)
+        blinkLEDButton.tag = indexPath.row + self.buttonTagShift
+        cell?.contentView.addSubview(blinkLEDButton)
+        
+        
         self.tempButtons.append(button)
         cell?.textLabel?.text = lock.displayName()
         cell?.textLabel?.textColor = UIColor(white: 155.0/255.0, alpha: 1.0)
@@ -317,5 +348,9 @@ import UIKit
         view.isUserInteractionEnabled = true
         
         return view
+    }
+    
+    func ledTurnedOff(notification : Notification){
+        self.dismissLoadingViewWithCompletion(completion: nil)
     }
 }

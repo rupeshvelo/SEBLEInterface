@@ -89,6 +89,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
     
     private let dbManager:SLDatabaseManager = SLDatabaseManager.sharedManager() as! SLDatabaseManager
     
+    private var isTurnOnLedBlink = false
+    
     private var currentState:SLLockManagerState = .FindCurrentLock
     
     private var securityPhase:SLLockManagerSecurityPhase = .PublicKey
@@ -174,12 +176,12 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 // not currently connecting. We'll try to remove it from the 
                 // bluetooth managers not connected peripherals in case it has 
                 // been detected there.
-                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!)
+                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!, status: self.isTurnOnLedBlink)
             } else if !lock.hasConnected!.boolValue && !lock.isConnecting!.boolValue {
                 // In this case, the lock was detected during a scan, but was never 
                 // connected. We can get rid of these locks from the blue tooth manager
                 // and the database.
-                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!)
+                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!, status: self.isTurnOnLedBlink)
                 self.dbManager.delete(lock, withCompletion: nil)
             } else {
                 print(
@@ -385,7 +387,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 } else {
                     self.dbManager.delete(lock, withCompletion: nil)
                     self.bleManager.removePeripheral(forKey: macAddress)
-                    self.bleManager.removeNotConnectPeripheral(forKey: macAddress)
+                    self.bleManager.removeNotConnectPeripheral(forKey: macAddress, status: self.isTurnOnLedBlink)
                     
                     NotificationCenter.default.post(
                         name: Notification.Name(rawValue: kSLNotificationLockManagerDeletedLock),
@@ -457,16 +459,18 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.bleManager.stopScan()
         let locks = self.locksInActiveSearch()
         for lock in locks where !lock.isConnecting!.boolValue {
-            self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!)
+            self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!, status: self.isTurnOnLedBlink)
         }
     }
     
-    func connectToLockWithMacAddress(macAddress: String) {
+    func connectToLockWithMacAddress(macAddress: String, isTurnOnLedBlink : Bool) {
         print("Attempting to connect to lock with address: \(macAddress)")
         guard let lock = self.dbManager.getLockWithMacAddress(macAddress) else {
             print("Error: Could not connect to lock \(macAddress). It is not in database.")
             return
         }
+        
+        self.isTurnOnLedBlink = isTurnOnLedBlink
         
         self.securityPhase = lock.isInFactoryMode() ? .PublicKey : .SignedMessage
         
@@ -474,8 +478,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             // There is no current lock. Let's just connect the lock that
             // the user has asked to connect.
             self.connectToLockWithMacAddressHelper(macAddress: macAddress)
-            self.endActiveSearch()
-            self.deleteAllNeverConnectedAndNotConnectingLocks()
+            if(!self.isTurnOnLedBlink){
+                self.endActiveSearch()
+                self.deleteAllNeverConnectedAndNotConnectingLocks()
+            }
         } else {
             // If there is a current lock, we'll need to disconnect from it before
             // connecting the new lock.
@@ -551,7 +557,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         
         
         for lock in locks where !self.bleManager.hasConnectedPeripheral(withKey: lock.macAddress) {
-            self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress)
+            self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress, status: self.isTurnOnLedBlink)
         }
     }
     
@@ -1039,6 +1045,13 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             characteristic: .LED,
             data: data
         )
+        if(self.isTurnOnLedBlink){
+           NotificationCenter.default.post(
+            name: NSNotification.Name(rawValue: kSLNotificationLockLedTurnedOff),
+            object: macAddress
+           )
+           self.bleManager.disconnectFromPeripheral(withKey: macAddress)
+        }
     }
     
     private func stopGettingHardwareInfo() {
@@ -1864,7 +1877,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         if lock.isSetForDeletion!.boolValue {
             self.dbManager.delete(lock, withCompletion: nil)
             self.bleManager.removePeripheral(forKey: macAddress)
-            self.bleManager.removeNotConnectPeripheral(forKey: macAddress)
+            self.bleManager.removeNotConnectPeripheral(forKey: macAddress, status: self.isTurnOnLedBlink)
             self.bleManager.stopScan()
             self.stopGettingHardwareInfo()
             self.currentState = .FindCurrentLock
@@ -1876,7 +1889,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         } else if self.currentState == .FindCurrentLock && lock.isCurrentLock!.boolValue {
             // Case 1: Check if lock is the current lock. This is the case that happens
             // when the app first connects to the current lock after a disconnection.
-            self.connectToLockWithMacAddress(macAddress: macAddress)
+            self.connectToLockWithMacAddress(macAddress: macAddress, isTurnOnLedBlink: self.isTurnOnLedBlink)
         } else if self.currentState == .ActiveSearch && !hasBeenDetected {
             // Case 2: We are actively looking for locks. When a new lock is found 
             // We'll send out an alert to let the rest of the app know that the lock was discovered
@@ -1887,7 +1900,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         } else if self.currentState == .UpdateFirmware && lock.isInBootMode!.boolValue {
             // Case 3: The lock has been reset to boot mode. This is currently used for firmware update,
             // however, there are other use cases for this mode.
-            self.connectToLockWithMacAddress(macAddress: macAddress)
+            self.connectToLockWithMacAddress(macAddress: macAddress, isTurnOnLedBlink: self.isTurnOnLedBlink)
         } else {
             // Case 4: If the lock does not pass any of the preceeding tests, we should handle
             // the case here. We may need to disconnect the peripheral in the ble manager, but
@@ -1906,7 +1919,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        self.bleManager.removeNotConnectPeripheral(forKey: macAddress)
+        self.bleManager.removeNotConnectPeripheral(forKey: macAddress, status: self.isTurnOnLedBlink)
         self.bleManager.setConnectedPeripheral(peripheral, forKey: macAddress)
         self.bleManager.discoverServices(nil, forPeripheralWithKey: macAddress)
     }
@@ -1967,6 +1980,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         }
         
         if characteristicUUID == self.characteristicUUID(characteristic: .CommandStatus) {
+            if(!self.isTurnOnLedBlink){
             switch self.securityPhase {
             case .PublicKey:
                 self.handlePublicKeyConnectionPhaseForMacAddress(macAddress: macAddress)
@@ -1979,6 +1993,9 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     "Changed notification state for uuid: \(characteristicUUID) "
                     + "case not handled for security state: \(self.securityPhase)"
                 )
+            }
+            } else {
+                self.flashLEDsForLockMacAddress(macAddress: macAddress)
             }
         } else {
             print("Warning: changed notification state for uuid: \(characteristicUUID), but the case is not handled.")
@@ -2084,7 +2101,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
         self.stopGettingHardwareInfo()
         self.currentState = .FindCurrentLock
         self.bleManager.removeConnectedPeripheral(forKey: macAddress)
-        self.bleManager.removeNotConnectPeripheral(forKey: macAddress)
+        self.bleManager.removeNotConnectPeripheral(forKey: macAddress, status: self.isTurnOnLedBlink)
         
         NotificationCenter.default.post(
             name: NSNotification.Name(rawValue: kSLNotificationLockManagerDisconnectedLock),
