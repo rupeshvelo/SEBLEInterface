@@ -29,6 +29,7 @@ import UIKit
         return table
     }()
     
+    
     lazy var headerLabel:UILabel = {
         let frame = CGRect(
             x: 0,
@@ -42,7 +43,7 @@ import UIKit
         label.font = UIFont(name: SLFont.MontserratRegular.rawValue, size: 18.0)
         label.textColor = UIColor(red: 130, green: 156, blue: 178)
         label.numberOfLines = 2
-
+        
         return label
     }()
     
@@ -65,7 +66,7 @@ import UIKit
             target: self,
             action: #selector(backButtonPressed)
         )
-
+        
         self.navigationItem.leftBarButtonItem = backButton
         
         self.setHeaderTextForNumberOfLocks(numberOfLocks: self.locks.count)
@@ -90,7 +91,23 @@ import UIKit
             queue: nil,
             using: bleHardwarePoweredOn
         )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockLedTurnedOff),
+            object: nil,
+            queue: nil,
+            using: ledTurnedOff
+        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+            object: nil,
+            queue: nil,
+            using: ledTurnedOff
+        )
+        
     }
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -160,20 +177,21 @@ import UIKit
     }
     
     func blinkLockButtonPressed(button: UIButton) {
-//        for (i, lock) in self.locks.enumerate() {
-//            let indexPath:NSIndexPath = NSIndexPath(forRow: i, inSection: 0)
-//            let cell:UITableViewCell = self.tableView(self.tableView, cellForRowAtIndexPath: indexPath)
-//            print("\(cell.textLabel?.text!)")
-//            
-//            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
-//                let accessoryButtonTag = accessoryButton.tag
-//                let buttonTag = button.tag
-//                if accessoryButtonTag == buttonTag {
-//                    SLLockManager.sharedManager.flashLEDsForLock(lock)
-//                    break
-//                }
-//            }
-//        }
+        for (i, lock) in self.locks.enumerated() {
+            let indexPath:IndexPath = IndexPath(row: i, section: 0)
+            let cell:UITableViewCell = self.tableView.cellForRow(at: indexPath)!
+            print("\(cell.textLabel?.text!)")
+            if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
+                let accessoryButtonTag = accessoryButton.tag
+                let buttonTag = button.tag
+                if accessoryButtonTag == buttonTag {
+                    self.navigationItem.leftBarButtonItem?.isEnabled = false
+                    self.presentLoadingViewWithMessage(message: "")
+                    SLLockManager.sharedManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink: true)
+                    break
+                }
+            }
+        }
     }
     
     func connectButtonPressed(button: UIButton) {
@@ -201,7 +219,7 @@ import UIKit
                     let ccvc = SLConcentricCirclesViewController(action: action)
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
-                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!)
+                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink: false)
                     break
                 }
             }
@@ -270,6 +288,17 @@ import UIKit
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(connectButtonPressed(button:)), for: .touchDown)
         button.tag = indexPath.row + self.buttonTagShift
+        let button1:UIButton = UIButton(frame: CGRect(
+            x: -50,
+            y: 70,
+            width: 273,
+            height: 29)
+        )
+        button1.setTitle("Blink this Ellipse", for: .normal)
+        button1.setTitleColor(UIColor(red: 87, green: 216, blue: 255), for: .normal)
+        button1.addTarget(self, action: #selector(blinkLockButtonPressed(button:)), for: .touchDown)
+        button1.tag = indexPath.row + self.buttonTagShift
+        cell?.contentView.addSubview(button1)
         
         self.tempButtons.append(button)
         cell?.textLabel?.text = lock.displayName()
@@ -317,5 +346,10 @@ import UIKit
         view.isUserInteractionEnabled = true
         
         return view
+    }
+    
+    func ledTurnedOff(notification : Notification){
+        self.navigationItem.leftBarButtonItem?.isEnabled = true
+        self.dismissLoadingViewWithCompletion(completion: nil)
     }
 }
