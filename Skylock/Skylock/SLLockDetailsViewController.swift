@@ -209,7 +209,7 @@ SLLockSettingViewControllerDelegate
             return
         }
         
-        self.lockManager.connectToLockWithMacAddress(macAddress: previousLock.macAddress!, isTurnOnLedBlink: false)
+        self.lockManager.connectToLockWithMacAddress(macAddress: previousLock.macAddress!)
     }
     
     func connectedLock(notificaiton: Notification) {
