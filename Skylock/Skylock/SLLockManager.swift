@@ -181,7 +181,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                 // In this case, the lock was detected during a scan, but was never 
                 // connected. We can get rid of these locks from the blue tooth manager
                 // and the database.
-                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!, isTurnOnLedBlink: self.isTurnOnLedBlink)
+                self.bleManager.removeNotConnectPeripheral(forKey: lock.macAddress!,isTurnOnLedBlink: self.isTurnOnLedBlink)
                 self.dbManager.delete(lock, withCompletion: nil)
             } else {
                 print(

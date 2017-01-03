@@ -176,7 +176,9 @@ import UIKit
     func blinkLockButtonPressed(button: UIButton) {
         for (i, lock) in self.locks.enumerated() {
             let indexPath:IndexPath = IndexPath(row: i, section: 0)
-            let cell:UITableViewCell = self.tableView.cellForRow(at:indexPath)!
+            guard let cell:UITableViewCell = self.tableView.cellForRow(at: indexPath) else {
+                continue
+            }
             print("\(cell.textLabel?.text!)")
             
             if let accessoryButton:UIButton = cell.accessoryView as? UIButton {
