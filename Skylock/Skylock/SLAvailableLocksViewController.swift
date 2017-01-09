@@ -81,7 +81,7 @@ import UIKit
             forName: NSNotification.Name(rawValue: kSLNotificationLockManagerShallowlyConnectedLock),
             object: nil,
             queue: nil,
-            using: lockShallowlyConntected
+            using: lockShallowlyConnected
         )
         
         NotificationCenter.default.addObserver(
@@ -104,6 +104,22 @@ import UIKit
             queue: nil,
             using: ledTurnedOff
         )
+
+    
+//        NotificationCenter.default.addObserver(
+//            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDiscoveredShallowlyConnectedLock),
+//            object: nil,
+//            queue: nil,
+//            using: discoveredShallowlyConnectedLock
+//        )
+        
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
+            object: nil,
+            queue: nil,
+            using: ledTurnedOff
+        )
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,6 +131,7 @@ import UIKit
         
         self.locks = SLLockManager.sharedManager.locksInActiveSearch()
         self.tableView.reloadData()
+        
     }
     
     func addLock(lock: SLLock) {
@@ -129,6 +146,13 @@ import UIKit
         if addLock {
             self.locks.append(lock)
         }
+    }
+    
+    func lockShallowlyConnected(notification : Notification) {
+        guard let macAddress = notification.object as? String else {
+           return
+        }
+        //SLLockManager.sharedManager.flashLEDsForLockMacAddress(macAddress: macAddress)
     }
     
     func foundLock(notification: Notification) {
@@ -155,18 +179,6 @@ import UIKit
         }
     }
     
-    func lockShallowlyConntected(notificaiton: Notification) {
-        guard let connectedLock = notificaiton.object as? SLLock else {
-            return
-        }
-        
-        for (index, lock) in self.locks.enumerated() {
-            if lock.macAddress == connectedLock.macAddress {
-                self.enableButtonAtIndex(index: index)
-                break
-            }
-        }
-    }
     
     func bleHardwarePoweredOn(notificaiton: Notification) {
         let lockManager = SLLockManager.sharedManager
@@ -186,9 +198,8 @@ import UIKit
                 let buttonTag = button.tag
                 if accessoryButtonTag == buttonTag {
                     self.presentLoadingViewWithMessage(message: "")
-                    SLLockManager.sharedManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink: true)
+                    SLLockManager.sharedManager.shallowlyConnectToLock(macAddress: lock.macAddress!)
                     break
-                    
                 }
             }
         }
@@ -219,7 +230,7 @@ import UIKit
                     let ccvc = SLConcentricCirclesViewController(action: action)
                     self.navigationController?.pushViewController(ccvc, animated: true)
                     let lockManager = SLLockManager.sharedManager
-                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!, isTurnOnLedBlink : false)
+                    lockManager.connectToLockWithMacAddress(macAddress: lock.macAddress!)
                     break
                 }
             }
@@ -240,6 +251,7 @@ import UIKit
         let lockManager = SLLockManager.sharedManager
         lockManager.endActiveSearch()
         lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
+        lockManager.disconnectAllShallowlyConnectedLocks()
     }
     
     func enableButtonAtIndex(index: Int) {
@@ -293,16 +305,15 @@ import UIKit
             x: -50,
             y: 70,
             width: 273,
-            height: 29)
+            height: 29
+           )
         )
         
-        
-        blinkLEDButton.setTitle("Blink this Ellipse", for: .normal)
+        blinkLEDButton.setTitle(NSLocalizedString("Blink This Ellipse", comment:""), for: .normal)
         blinkLEDButton.setTitleColor(UIColor(red: 87, green: 216, blue: 255), for: .normal)
         blinkLEDButton.addTarget(self, action: #selector(blinkLockButtonPressed(button:)), for: .touchDown)
         blinkLEDButton.tag = indexPath.row + self.buttonTagShift
         cell?.contentView.addSubview(blinkLEDButton)
-        
         
         self.tempButtons.append(button)
         cell?.textLabel?.text = lock.displayName()
@@ -351,6 +362,7 @@ import UIKit
         
         return view
     }
+    
     
     func ledTurnedOff(notification : Notification){
         self.dismissLoadingViewWithCompletion(completion: nil)

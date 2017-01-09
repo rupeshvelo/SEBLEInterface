@@ -46,5 +46,5 @@
 #define kSLNotificationUserAcceptedNotifications            @"kSLNotificationUserAcceptedNotifications"
 #define kSLNotificationShowLockBar                          @"kSLNotificationShowLockBar"
 #define kSLNotificationHideLockBar                          @"kSLNotificationHideLockBar"
-#define kSLNotificationLockLedTurnedOff                     @"kSLLockLedTurnedOff" 
+#define kSLNotificationLockLedTurnedOff                     @"kSLLockLedTurnedOff"
 #endif
