@@ -78,13 +78,6 @@ import UIKit
         )
         
         NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerShallowlyConnectedLock),
-            object: nil,
-            queue: nil,
-            using: lockShallowlyConnected
-        )
-        
-        NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: kSLNotificationLockManagerBlePoweredOn),
             object: nil,
             queue: nil,
@@ -97,21 +90,6 @@ import UIKit
             queue: nil,
             using: ledTurnedOff
         )
-        
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
-            object: nil,
-            queue: nil,
-            using: ledTurnedOff
-        )
-
-    
-//        NotificationCenter.default.addObserver(
-//            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerDiscoveredShallowlyConnectedLock),
-//            object: nil,
-//            queue: nil,
-//            using: discoveredShallowlyConnectedLock
-//        )
         
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: kSLNotificationLockManagerErrorConnectingLock),
@@ -148,12 +126,6 @@ import UIKit
         }
     }
     
-    func lockShallowlyConnected(notification : Notification) {
-        guard let macAddress = notification.object as? String else {
-           return
-        }
-        //SLLockManager.sharedManager.flashLEDsForLockMacAddress(macAddress: macAddress)
-    }
     
     func foundLock(notification: Notification) {
         guard let lock = notification.object as? SLLock else {
@@ -251,7 +223,19 @@ import UIKit
         let lockManager = SLLockManager.sharedManager
         lockManager.endActiveSearch()
         lockManager.deleteAllNeverConnectedAndNotConnectingLocks()
-        lockManager.disconnectAllShallowlyConnectedLocks()
+    }
+    
+    func lockShallowlyConntected(notificaiton: Notification) {
+        guard let connectedLock = notificaiton.object as? SLLock else {
+            return
+        }
+        
+        for (index, lock) in self.locks.enumerated() {
+            if lock.macAddress == connectedLock.macAddress {
+                self.enableButtonAtIndex(index: index)
+                break
+            }
+        }
     }
     
     func enableButtonAtIndex(index: Int) {

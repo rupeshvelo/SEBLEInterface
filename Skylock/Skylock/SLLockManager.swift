@@ -1042,11 +1042,17 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             data: data
         )
         
+        // if a lock is shallowly connected then we first we set its peripheral for lock 
+        // since people cannot connect to the same lock again then
+        // disconnect it
         if(self.shallowlyConnectedLock[macAddress] != nil){
             NotificationCenter.default.post(
                 name: NSNotification.Name(rawValue: kSLNotificationLockLedTurnedOff),
                 object: macAddress
             )
+            let peripheral = self.bleManager.connectedPeripheral(forKey: macAddress)
+            self.bleManager.setNotConnectedPeripheral(peripheral, forKey: macAddress)
+            self.bleManager.disconnectFromPeripheral(withKey: macAddress)
         }
     }
     
@@ -1914,20 +1920,14 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print("Ble Manager does not have a not connect peripheral named: \(peripheralName)")
             return
         }
-        
         self.bleManager.removeNotConnectPeripheral(forKey: macAddress)
         self.bleManager.setConnectedPeripheral(peripheral, forKey: macAddress)
         self.bleManager.discoverServices(nil, forPeripheralWithKey: macAddress)
     }
     
     func shallowlyConnectToLock(macAddress: String) {
-        deleteAllPreviousShallowlyConnectedLocks()
-        if self.shallowlyConnectedLock[macAddress] == nil {
-            self.shallowlyConnectedLock[macAddress] = true
-            self.bleManager.connectToPeripheral(withKey : macAddress)
-        } else {
-            self.flashLEDsForLockMacAddress(macAddress: macAddress)
-        }
+        self.shallowlyConnectedLock[macAddress] = true
+        self.bleManager.connectToPeripheral(withKey : macAddress)
     }
     
     func bleInterfaceManager(
@@ -1970,25 +1970,10 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
                     }
                 })
             }
+            // If a lock is shallowly connected then blink its LED
         } else if self.shallowlyConnectedLock[macAddress] != nil &&
             self.serviceUUID(service: .Hardware) == serviceUUID {
             self.flashLEDsForLockMacAddress(macAddress: macAddress)
-        }
-    }
-    
-    func deleteAllPreviousShallowlyConnectedLocks() {
-        if(self.shallowlyConnectedLock.count == 6) {
-          for (macAddress, _) in self.shallowlyConnectedLock {
-                self.shallowlyConnectedLock[macAddress] = nil
-                self.bleManager.disconnectFromPeripheral(withKey: macAddress)
-                break
-           }
-        }
-    }
-    
-    func disconnectAllShallowlyConnectedLocks() {
-        for (macAddress, _) in self.shallowlyConnectedLock {
-            self.bleManager.disconnectFromPeripheral(withKey: macAddress)
         }
     }
     
@@ -2003,8 +1988,7 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             return
         }
         
-        if self.shallowlyConnectedLock[macAddress] == nil  &&
-            characteristicUUID == self.characteristicUUID(characteristic: .CommandStatus) {
+        if characteristicUUID == self.characteristicUUID(characteristic: .CommandStatus) {
             switch self.securityPhase {
             case .PublicKey:
                 self.handlePublicKeyConnectionPhaseForMacAddress(macAddress: macAddress)
@@ -2118,6 +2102,8 @@ class SLLockManager: NSObject, SEBLEInterfaceManagerDelegate, SLLockValueDelegat
             print("Could not get mac address from periphreal name: " + peripheralName)
             return
         }
+        // It is removing the peripherals of the connected lock 
+        // so that's why this check is necessary
         if(shallowlyConnectedLock[macAddress] != nil) {
             self.shallowlyConnectedLock[macAddress] = nil
             return
