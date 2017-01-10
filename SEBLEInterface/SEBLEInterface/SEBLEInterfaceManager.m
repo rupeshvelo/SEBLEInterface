@@ -204,7 +204,6 @@
     SEBLEPeripheral *blePeripheral = self.connectedPeripherals[key];
     NSDictionary *characteristics = blePeripheral.services[serviceUUID][kSEBLEPeripheralCharacteristics];
     CBCharacteristic *characteristic = characteristics[characteristicUUID];
-    
     [blePeripheral.peripheral writeValue:data
                        forCharacteristic:characteristic
                                     type:CBCharacteristicWriteWithResponse];
@@ -265,6 +264,11 @@
     [self.centralManager cancelPeripheralConnection:peripheral.peripheral];
 }
 
+- (SEBLEPeripheral *)connectedPeripheralForKey:(NSString *)key
+{
+    return self.connectedPeripherals[key];
+}
+
 - (void)setCharacteristicUUIDToNotify:(NSString *)uuid forPeripheralWithKey:(NSString *)key
 {
     if (!self.connectedPeripherals[uuid]) {
@@ -302,7 +306,9 @@
                 }
             }
         }
+        
     }
+    
 }
 
 - (void)discoverServicesForPeripheralKey:(NSString *)key
@@ -500,6 +506,7 @@ didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
     
 }
 
+
 - (void)centralManager:(CBCentralManager *)central
     didDisconnectPeripheral:(CBPeripheral *)peripheral
                  error:(NSError *)error
@@ -509,7 +516,6 @@ didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
               peripheral.name,
               error);
     }
-    
     if ([self.delegate respondsToSelector:@selector(bleInterfaceManager:disconnectedPeripheralNamed:)]) {
         [self.delegate bleInterfaceManager:self disconnectedPeripheralNamed:peripheral.name];
     }
