@@ -78,6 +78,13 @@ import UIKit
         )
         
         NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: kSLNotificationLockManagerShallowlyConnectedLock),
+            object: nil,
+            queue: nil,
+            using: lockShallowlyConntected
+        )
+        
+        NotificationCenter.default.addObserver(
             forName: NSNotification.Name(rawValue: kSLNotificationLockManagerBlePoweredOn),
             object: nil,
             queue: nil,
